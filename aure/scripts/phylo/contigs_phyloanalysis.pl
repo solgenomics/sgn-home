@@ -875,6 +875,21 @@ if ($step == 8) {
 	if ($bootstrap_pass == 1) {
 	    while( my $tree = $treeio->next_tree ) {
 	    		
+
+		## Store the tree asociated to a contig
+		
+		my $tree_string = $tree->as_text('newick');		
+	   
+		chomp($tree_string);	
+
+		## store only the contig name
+		my $contig_id = $tree_filename;
+		if ($tree_filename =~ m/ref_(.+?)\.\w+/) {
+		    $contig_id = $1;
+		}
+
+		$co_tree{$contig_id} = $tree_string;
+
 		## It will change a couple of things inside the nodes.	
 
 		my @tr_nodes = $tree->get_nodes();
@@ -925,15 +940,7 @@ if ($step == 8) {
 		my $tree_as_string = $tree->as_text('newick');		
 	   
 		chomp($tree_as_string);	
-
-		## store only the contig name
-		my $contig_id = $tree_filename;
-		if ($tree_filename =~ m/ref_(.+?)\.\w+/) {
-		    $contig_id = $1;
-		}
-
-		$co_tree{$contig_id} = $tree_as_string;
-
+	
 		my @data = split(/,\(/, $tree_as_string);
 		my @ord_b_data;
 		foreach my $b_data (@data) {
@@ -2012,8 +2019,10 @@ sub extract_align_from_maf {
 
 		    if (defined $assem_exec{'strain_data'}) { 
 			foreach my $check_str (keys %strain_list) {
-			    unless ($strain_c{$check_str} >= $strain_list{$check_str}) {
-				$is_elegible = 0;
+			    if (defined $strain_c{$check_str}) {
+				unless ($strain_c{$check_str} >= $strain_list{$check_str}) {
+				    $is_elegible = 0;
+				}
 			    }
 			}
 		    }
@@ -2508,7 +2517,7 @@ sub change_format {
     ## Depending of the file type it will change format for aligments or trees
 
     my $bioperl_trees = { 
-	                  'netwick'     => 1, 
+	                  'newick'     => 1, 
 			  'nexus'       => 1, 
 			  'nhx'         => 1, 
 			  'lintree'     => 1, 
