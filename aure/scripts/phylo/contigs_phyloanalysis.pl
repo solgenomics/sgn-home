@@ -2135,7 +2135,7 @@ sub extract_align_from_maf {
 
 		    my @shuff_rds = shuffle(@rds);
 
-		    foreach my $sel_rd_id (@rds) {
+		    foreach my $sel_rd_id (@shuff_rds) {
 			
 			## It can happens that there are more than one sequence from the same strain
 			## (With the request variable at least it have selected that number, but it can have more)
