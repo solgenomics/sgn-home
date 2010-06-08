@@ -26,6 +26,9 @@ for my $repo (@repos) {
     }
     chdir $cwd;
 }
+
+print "\n\nSGN repos updated! Make sure to restart Apache:\n\nsudo apache2ctl restart\n\n";
+
 sub stash_if_necessary {
     my ($repo, $status) = @_;
     unless ($status =~ m/nothing to commit/) {
