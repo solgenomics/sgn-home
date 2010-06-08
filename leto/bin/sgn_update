@@ -35,8 +35,17 @@ my @repos = ( qw/sgn cxgn-corelibs ITAG ITAG-analyses tomato_genome
 for my $repo (@repos) {
     chdir $repo;
     my $status = qx{ git status -u };
+    chomp( my $branch = qx{ git rev-parse --symbolic-full-name HEAD } );
+
+    if ($branch =~ m/HEAD/) {
+        print "$repo was in detached HEAD state, leaving alone\n";
+        chdir $cwd;
+        next;
+    }
+    $branch =~ s!refs/heads/!!g;
+
     # This will stash changes on top of whatever the current branch is
-    stash_if_necessary($repo, $status);
+    my $stashed = stash_if_necessary($repo, $status);
 
     print "Rebasing master branch of $repo from origin\n";
     system("git checkout master");
@@ -45,8 +54,17 @@ for my $repo (@repos) {
         chdir $cwd;
         next;
     } else {
+        # We could get conflicts!
         system("git pull --rebase");
         handle_errors($?) if $?;
+        system("git checkout $branch");
+        if ($?) {
+            handle_errors($?);
+            print "Could not change back to $branch in $repo !\n";
+            chdir $cwd;
+            next;
+        }
+        system("git stash pop") if $stashed;
     }
     chdir $cwd;
 }
@@ -58,8 +76,15 @@ sub stash_if_necessary {
     unless ($status =~ m/nothing to commit/) {
         print "Stashing work in $repo\n";
         system("git stash");
+        if( $? ) {
+            handle_errors($?);
+            print "Stashing failed!\n";
+            return 0;
+        }
+        return 1;
     } else {
         print  "Nothing to stash in $repo\n";
+        return 0;
     }
 }
 sub handle_errors {
