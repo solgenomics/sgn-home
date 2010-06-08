@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Cwd;
+
+my $cwd = getcwd;
+my @repos = qw/sgn cxgn-corelibs ITAG ITAG-analyses tomato_genome
+               Phenome Cview perlcyc javacyc SMMID gff3_validator
+               sgn-home sgn-devtools art /;
+
+for my $repo (@repos) {
+    chdir $repo;
+    my $status = qx{ git status -u };
+    # This will stash changes on top of whatever the current branch is
+    stash_if_necessary($repo, $status);
+
+    print "Rebasing master branch of $repo from origin\n";
+    system("git checkout master");
+    if ($?) {
+        handle_errors($?);
+        chdir $cwd;
+        next;
+    } else {
+        system("git pull --rebase");
+        handle_errors($?) if $?;
+    }
+    chdir $cwd;
+}
+sub stash_if_necessary {
+    my ($repo, $status) = @_;
+    unless ($status =~ m/nothing to commit/) {
+        print "Stashing work in $repo\n";
+        system("git stash");
+    } else {
+        print  "Nothing to stash in $repo\n";
+    }
+}
+sub handle_errors {
+    my ($exit_code) = @_;
+    if ($exit_code == -1) {
+        print "Error: failed to execute: $!\n";
+    } elsif ($exit_code & 127) {
+        printf "Error: child died with signal %d, %s coredump\n",
+            ($exit_code & 127),  ($exit_code & 128) ? 'with' : 'without';
+    } else {
+        printf "Error: child exited with value %d\n", $? >> 8;
+    }
+}
