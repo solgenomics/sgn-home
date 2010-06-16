@@ -57,6 +57,11 @@ for my $repo (@repos) {
         # We could get conflicts!
         system("git pull --rebase");
         handle_errors($?) if $?;
+
+        if( -e "Build.PL" ) {
+            system("perl Build.PL; ./Build installdeps");
+        }
+
         system("git checkout $branch");
         if ($?) {
             handle_errors($?);
