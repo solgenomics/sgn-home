@@ -31,6 +31,10 @@ Usage:
 
   Options:
 
+    -s
+     if passed, sort the gff3 file by reference sequence and start
+     coordinate.  Sync (###) markers will not be preserved.
+
     -S fasta_file
      add sequence-region statements for the sequences in the given
      FASTA file
@@ -87,7 +91,7 @@ EOU
 sub HELP_MESSAGE {usage()}
 
 our %opt;
-getopts('l:e:A:S:u:UL:If:i',\%opt) or usage();
+getopts('sl:e:A:S:u:UL:If:i',\%opt) or usage();
 $uniq_sep = $opt{u} if defined $opt{u};
 $lb_size = $opt{l} if defined $opt{l};
 
@@ -154,7 +158,16 @@ unless ( $opt{i} ) {		#< if we are not interleaving seqregions, print them all h
   }
 }
 
-while (<>) {
+my $in_fh;
+if( $opt{s} ) {
+    open $in_fh, "sort -k 1,1 -k 4,4g -s @ARGV | grep -v '^###' |"
+        or die "$! running sort";
+} else {
+    open $in_fh, "cat @ARGV |"
+        or die "$! running cat";
+}
+
+while (<$in_fh>) {
   $_ = $opt{L}->($_) if $opt{L}; #< do the global -L alteration if present
   next if /^##gff-version/;
 
