@@ -229,7 +229,7 @@ while (<$in_fh>) {
 	  if ( $name eq 'Parent') {
             my $key = join ':',@fields[0,1],$val;
 	    #find the uniqified version in the lookback buffer
-	    $uniq_lb{$key} or die "no feature found with key '$key', either this file is not valid GFF3, or you have parent and child features very far away from eachother in this file and need to increase the lookback buffer size with the -l option\n".Dumper(\%uniq_lb);
+	    $uniq_lb{$key} or die "no feature found with key '$key', either this file is not valid GFF3, or you have parent and child features very far away from eachother in this file and need to increase the lookback buffer size with the -l option (currently -l $opt{l})\n".Dumper(\%uniq_lb);
 	    $val = $uniq_lb{$key};
 	  } elsif ( $name eq 'ID' ) {
 	    my $new = $val;
