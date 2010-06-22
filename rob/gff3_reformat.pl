@@ -234,7 +234,8 @@ while (<$in_fh>) {
 	  } elsif ( $name eq 'ID' ) {
 	    my $new = $val;
 	    $new =~ s/$uniq_sep\d+$//;
-	    $new .= $uniq_sep.++$uniq_ctrs{$new};
+            my $index = ++$uniq_ctrs{$new};
+	    $new .= $uniq_sep.$index unless $index == 1;
 
             my $key = join ':', @fields[0,1], $val;
 
