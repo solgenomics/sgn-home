@@ -1,161 +1,113 @@
 #!/usr/bin/env perl
 use strict;
+use warnings;
+
+use Getopt::Std;
+use Pod::Usage;
+
 use Spreadsheet::ParseExcel;
-use Spreadsheet::XLSX;
 
-# declare some varibles local
-my($row, $col, $sheet, $cell, $usage, $basename, $sheetnumber, $filename);
+my %opt;
+getopts( 'is:', \%opt ) or pod2usage;
+$opt{s} && $opt{s} =~ /^\d+$/ or pod2usage('must provide an integer -s arg');
 
-##
-## Usage information
-##
-$usage = <<EOF;
+my @files = @ARGV or pod2usage;
+my $excelp = Spreadsheet::ParseExcel->new;
 
-xls2csv.pl <excel file> [<output file>] [<worksheet number>]
+foreach my $file (@files) {
+    my $book = $excelp->Parse($file);
 
-Translate the Microsoft Excel spreadsheet file contained in
-<excel file> into comma separated value format (CSV) and store
-in <output file>.
+    #     print "\n";
+    #     print "Original Filename :", $book->{File} , "\n";
+    #     print "Number of Sheets  :", $book->{SheetCount} , "\n";
+    #     print "Author            :", $book->{Author} , "\n";
+    #     print "\n";
 
-If <output file> is not specified, the output file will have the
-same name as the input file with '.xls' or '.XLS' (if any)
-removed and '.csv' appended.
+    use Data::Dumper;
+    $Data::Dumper::Maxdepth = 2;
+    my $sheet = $book->{Worksheet}->[ $opt{s} - 1 ];
+    defined $sheet or die "no sheet $opt{s} found in file $file\n";
+    my $sheetname = $sheet->{Name};
 
-If no worksheet number is given, each worksheet will be written to
-a separate file with the name '<output file>_<worksheet name>.csv'.
+    my $out_fh = do {
+        if ( $opt{i} ) {
+            my $f = $file;
+            $f =~ s/\.xls$/.csv/i;
+            open my $o, '>', $f or die "$! writing $f";
+            $o;
+        }
+        else {
+            \*STDOUT;
+        }
+    };
 
-EOF
+    my $cumulativeBlankLines = 0;
 
-##
-## parse arguments
-##
+    my $minrow = $sheet->{MinRow};
+    my $maxrow = $sheet->{MaxRow};
+    my $mincol = $sheet->{MinCol};
+    my $maxcol = $sheet->{MaxCol};
 
-if(!defined($ARGV[0]))
-  {
-    print $usage;
-    exit 1;
-  }
+    #print "Minrow=$minrow Maxrow=$maxrow Mincol=$mincol Maxcol=$maxcol\n";
 
-$basename = $ARGV[1];
-$basename =~ s/.csv//;
-if ($basename eq "")
-  {
-    my @path;
-    @path = split(/[\/\\]/, $ARGV[0]); # split on file separator
-    $basename =  $path[$#path];
-    $basename =~ s/.xls//i;
-  }
+    for ( my $row = $minrow ; $row <= $maxrow ; $row++ ) {
+        my $outputLine = "";
 
-if(defined($ARGV[2]) )
-  {
-    $sheetnumber = $ARGV[2];
-    die "Sheetnumber must be an integer larger than 0." if $sheetnumber < 1;
-  }
+        for ( my $col = $mincol ; $col <= $maxcol ; $col++ ) {
+            my $cell = $sheet->{Cells}[$row][$col];
+            if ( defined($cell) ) {
+                $_ = $cell->Value;    #{Val};
 
-##
-## open spreadsheet
-##
+                # convert '#NUM!' strings to missing (empty) values
+                s/#NUM!//;
 
-my $oExcel = new Spreadsheet::ParseExcel;
+                # escape double-quote characters in the data since
+                # they are used as field delimiters
+                s/\"/\\\"/g;
+            }
+            else {
+                $_ = '';
+            }
 
-print "Loading $ARGV[0] ...\n";
+            $outputLine .= "\"" . $_ . "\"" if ( length($_) > 0 );
 
-open(FH, "<$ARGV[0]") or die "Unable to open file '$ARGV[0]'.\n";
-close(FH);
+            # separate cells with commas
+            $outputLine .= "," if ( $col != $maxcol );
 
-my $oBook = $oExcel->Parse($ARGV[0]);
+        }
 
-print "\n";
-print "Orignal Filename :", $oBook->{File} , "\n";
-print "Number of Sheets :", $oBook->{SheetCount} , "\n";
-print "Author           :", $oBook->{Author} , "\n";
-print "\n";
+        #$outputLine =~ s/[, ]+$//g;  ## strip off trailing blanks and commas
 
-my @sheetlist =  (@{$oBook->{Worksheet}});
-if (defined($sheetnumber))
-  {
-    @sheetlist=($sheetlist[$sheetnumber-1]);
-  }
-
-##
-## iterate across each worksheet, writing out a separat csv file
-##
-
-my $i=0;
-foreach my $sheet (@sheetlist)
-{
-  $i++;
-
-  my $sheetname = $sheet->{Name};
-  if(defined($sheetnumber))
-    {
-      $filename = "${basename}.csv";
-    }
-  else
-    {
-      $filename = "${basename}_${sheetname}.csv";
+        # skip blank/empty lines
+        if ( $outputLine =~ /^[, ]*$/ ) {
+            $cumulativeBlankLines++;
+        }
+        else {
+            $out_fh->print("$outputLine\n");
+        }
     }
 
-  print "Writing Sheet number $i ('$sheetname') to file '$filename'\n";
-
-  open(OutFile,">$filename");
-
-  my $cumulativeBlankLines=0;
-
-  my $minrow = $sheet->{MinRow};
-  my $maxrow = $sheet->{MaxRow};
-  my $mincol = $sheet->{MinCol};
-  my $maxcol = $sheet->{MaxCol};
-
-  print "Minrow=$minrow Maxrow=$maxrow Mincol=$mincol Maxcol=$maxcol\n";
-
-  for(my $row =  $minrow; $row <= $maxrow; $row++)
-    {
-       my $outputLine = "";
-
-       for(my $col = $mincol; $col <= $maxcol; $col++)
-         {
-           my $cell = $sheet->{Cells}[$row][$col];
-	   if( defined($cell) )
-	      {
-		$_=$cell->Value; #{Val};
-
-		# convert '#NUM!' strings to missing (empty) values
-		s/#NUM!//;
-
-		# escape double-quote characters in the data since
-		# they are used as field delimiters
-		s/\"/\\\"/g;
-	      }
-	   else 
-	     {
-	       $_ = '';
-	     }
-
-	   $outputLine .= "\"" . $_ . "\"" if(length($_)>0);
-
-	   # separate cells with commas
-	   $outputLine .= "," if( $col != $maxcol) ;
-
-         }
-
-       #$outputLine =~ s/[, ]+$//g;  ## strip off trailing blanks and commas
-
-       # skip blank/empty lines
-       if( $outputLine =~ /^[, ]*$/ )
-	 {
-	   $cumulativeBlankLines++
-	 }
-       else
-	 {
-	   print OutFile "$outputLine\n"
-	 }
-     }
-
-  close OutFile;
-
-  print "  (Ignored $cumulativeBlankLines blank lines.)\n" 
-    if ($cumulativeBlankLines);
-  print "\n";
+    #print "  (Ignored $cumulativeBlankLines blank lines.)\n"
+    #if ($cumulativeBlankLines);
+    #print "\n";
 }
 
+=head1 NAME
+
+xls2csv.pl
+
+=head1 SYNOPSIS
+
+xls2csv.pl [options] -s <sheetnum>  file file file ...
+
+=head1 DESCRIPTION
+
+Translate the Microsoft Excel spreadsheet file contained in <excel
+file> into comma separated value format.  By default, dumps all CSV to
+stdout.
+
+Options:
+
+  -i  in-place translation, make a new .csv file next to each .xls
+      file containing CSV for the given sheet number
+=cut
