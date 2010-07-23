@@ -2,14 +2,14 @@
 
 =head1 NAME
 
- contigs_phyloanalysis.pl
+ phylotypes_pipeline.pl
  Pipeline to create phylogenetic tree from maf assembly files (version.0.1).
 
 =cut
 
 =head1 SYPNOSIS
 
- contigs_phyloanalysis.pl [-h] -i <maf_file> -c <control_file> [-s <step>] [-d <input_dir>] 
+ phylotypes_pipeline.pl [-h] -i <maf_file> -c <control_file> [-s <step>] [-d <input_dir>] 
                           [-o <output_basename>] [-f <input_format>] [-X][-D]
 
 =head1 EXAMPLE
@@ -1116,13 +1116,13 @@ sub help {
          
     Usage:
 
-      contig_phyloanalysis.pl [-h] -i <maf_file> -c <control_file> 
+      phylotypes_pipeline.pl [-h] -i <maf_file> -c <control_file> 
                               [-s <step>] [-d <input_dir>] [-f <input_format>] 
                               [-o <output_basename>] [-X] [-D]    
 
     Example:
 
-      contig_phyloanalysis.pl [-h] -i coffea.maf -c maf_to_phylo.default.ctr
+      phylotypes_pipeline.pl [-h] -i coffea.maf -c maf_to_phylo.default.ctr
        
     Flags:
 
