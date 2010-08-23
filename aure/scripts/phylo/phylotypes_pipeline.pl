@@ -44,6 +44,8 @@ B<input_dir>                    input dir with the files to start in an step dif
 =item -f
 
 B<input_format>                 input format for files, when the pipeline start in a step different from 1
+                                (more than one format can be specified, it will match the formats, the first
+				format must to be the input format, secondary formats will be used for other tasks)
 
 =item -X
 
@@ -155,10 +157,13 @@ use Path::Class;
 
 use Bio::Seq;
 use Bio::Seq::Quality;
+use Bio::Tools::Run::Alignment::Clustalw;
+use Bio::Align::DNAStatistics;
 use Bio::SeqIO;
 use Bio::AlignIO;
 use Bio::TreeIO;
 use Math::BigFloat;
+use Statistics::Basic qw(:all);
 
 our ($opt_i, $opt_o, $opt_c, $opt_s, $opt_d, $opt_f, $opt_X, $opt_D, $opt_h);
 getopts("i:o:c:s:d:f:XDh");
@@ -204,7 +209,7 @@ foreach my $def_file (@default_filename) {
     }
 }
 
-
+my %master_files;
 my @input_files;
 
 if ($step > 1) {
@@ -225,17 +230,45 @@ if ($step > 1) {
 
 	opendir(my $idir_fh, $input_dir);
 
+	my @current_formats = split(/,/, $curr_format);
+
 	print STDERR "\nInput format: $curr_format.\n";
 	
 	print STDERR "\nLoading files into the input file variable.\n";
 
 	my @files = readdir($idir_fh);
 
+	my $prev_step = $step - 1;
+	my $step_tag = 'step'.$prev_step;
+	$master_files{$step_tag} = {};
+
 	foreach my $file (@files) {
-	    unless ($file =~ m/^\.+$/) {		
-		push @input_files, $input_dir.'/'.$file;		
+	    unless ($file =~ m/^\.+$/) {
+		my $f = 0;
+		foreach my $format (@current_formats) {
+		    $f++;
+		    if ($file =~ m/$format$/) {
+			if (exists $master_files{$step_tag}->{$format}) {
+			    push @{$master_files{$step_tag}->{$format}}, $input_dir.'/'.$file;
+			}
+			else {
+			    $master_files{$step_tag}->{$format} = [$input_dir.'/'.$file];
+			}
+
+			## Also it will use as input file the first format
+			if ($f == 1) {
+			    push @input_files, $input_dir.'/'.$file;
+			}
+		    }
+		}		
 	    }
 	}
+
+	## Now it will overwrite the input format for the first format, keeping secondary formats for
+	## other functions (it will check the only the first input format for change format purposes)
+
+	$curr_format = $current_formats[0];
+
 	my $f_count = scalar(@input_files);
 
 	if ($f_count == 0) {
@@ -305,7 +338,7 @@ else {
 ## This array always will be overwrite by the result of a step, but before do it
 ## the script will store the list into a hash as %files = ( step => { input or output => \@list_of_files ) 
 
-my %master_files;
+
 
 my @ref_input_files;
 
@@ -340,10 +373,20 @@ if ($step == 1) {
 
     print STDERR "\n  1.2) PARSING MAF FILE.\n";
 
-    my ($fasta_files_aref, $contig_href, $read_href) = extract_align_from_maf($maf, \%assem_exec, $preprocessing_dir);
+    my ($fasta_files_href, $contig_href, $read_href) = extract_align_from_maf($maf, \%assem_exec, $preprocessing_dir);
 
-    my @fasta_files = @{$fasta_files_aref};
-    my $n_fasta_files = scalar(@fasta_files);
+    my @fasta_files;
+    my $n_fasta_files = 0;
+    my %fasta_files = %{$fasta_files_href};
+    foreach my $contig_id (sort keys %fasta_files) {
+	my %filetypes = %{$fasta_files{$contig_id}};
+	push @fasta_files, $filetypes{'assembly_reads'};
+	
+	foreach my $type (keys %filetypes) {
+	    $n_fasta_files++;
+	}
+    }
+
     print STDERR "\n\n\tDone... $n_fasta_files have been created in the dir:$preprocessing_dir.\n\n";
 
     ## Add output to master file
@@ -423,14 +466,16 @@ if ($step == 2) {
 ##  To:   $boots_exec{input_format}   ##
 ########################################
 
-if ($step == 3 && $curr_format ne $boot_exec{'input_format'}) {
+if (defined $boot_exec{'executable'}) {
+
+    if ($step == 3 && $curr_format ne $boot_exec{'input_format'}) {
     
-    my @newformat_files = change_format(\@input_files, $curr_format, $boot_exec{'input_format'}, $step);
-
-    @input_files = @newformat_files;
-    $curr_format = $boot_exec{'input_format'};
+	my @newformat_files = change_format(\@input_files, $curr_format, $boot_exec{'input_format'}, $step);
+	
+	@input_files = @newformat_files;
+	$curr_format = $boot_exec{'input_format'};
+    }
 }
-
 
 ## It will get the input files without bootstraping to use 
 ## as reference.
@@ -501,14 +546,15 @@ if ($step == 3) {
 ##  To:   $dist_exec{input_format}    ##
 ########################################
 
-if ($step == 4 && $curr_format ne $dist_exec{'input_format'}) {
+if (defined $dist_exec{'executable'}) {
+    if ($step == 4 && $curr_format ne $dist_exec{'input_format'}) {
     
-    my @newformat_files = change_format(\@input_files, $curr_format, $dist_exec{'input_format'}, $step);
+	my @newformat_files = change_format(\@input_files, $curr_format, $dist_exec{'input_format'}, $step);
 
-    @input_files = @newformat_files;
-    $curr_format = $dist_exec{'input_format'};
+	@input_files = @newformat_files;
+	$curr_format = $dist_exec{'input_format'};
+    }
 }
-
 
 ############################################################
 ## STEP 4 (SEQUENCE DISTANCE MATRIX)                      ##
@@ -575,12 +621,14 @@ if ($step == 4) {
 ##  To:   $tree_exec{input_format}    ##
 ########################################
 
-if ($step == 5 && $curr_format ne $tree_exec{'input_format'}) {
+if (defined $tree_exec{'executable'}) {
+    if ($step == 5 && $curr_format ne $tree_exec{'input_format'}) {
     
-    my @newformat_files = change_format(\@input_files, $curr_format, $tree_exec{'input_format'}, $step);
+	my @newformat_files = change_format(\@input_files, $curr_format, $tree_exec{'input_format'}, $step);
 
-    @input_files = @newformat_files;
-    $curr_format = $dist_exec{'input_format'};
+	@input_files = @newformat_files;
+	$curr_format = $dist_exec{'input_format'};
+    }
 }
 
 
@@ -617,6 +665,7 @@ if ($step == 5) {
 	## Add output to master file
  
 	$master_files{'step5'}->{'output'} = \@tree_files;
+	$master_files{'step5'}->{'outfile'} = $out_files{'outfile'}; 
 	$master_files{'step5'}->{'out_format'} = $tree_exec{'output_format'};
 	$curr_format = $tree_exec{'output_format'};
 
@@ -642,12 +691,14 @@ if ($step == 5) {
 ##  To:   $modftree_exec{input_format} ##
 #########################################
 
-if ($step == 6 && $curr_format ne $modftree_exec{'input_format'}) {
+if (defined $modftree_exec{'executable'}) {
+    if ($step == 6 && $curr_format ne $modftree_exec{'input_format'}) {
     
-    my @newformat_files = change_format(\@input_files, $curr_format, $modftree_exec{'input_format'}, $step);
+	my @newformat_files = change_format(\@input_files, $curr_format, $modftree_exec{'input_format'}, $step);
 
-    @input_files = @newformat_files;
-    $curr_format = $modftree_exec{'input_format'};
+	@input_files = @newformat_files;
+	$curr_format = $modftree_exec{'input_format'};
+    }
 }
 
 
@@ -709,13 +760,16 @@ if ($step == 6) {
 ##  To:   $constree_exec{input_format} ##
 #########################################
 
-if ($step == 7 && $curr_format ne $constree_exec{'input_format'}) {
+if (defined $constree_exec{'executable'}) {
+    if ($step == 7 && $curr_format ne $constree_exec{'input_format'}) {
     
-    my @newformat_files = change_format(\@input_files, $curr_format, $constree_exec{'input_format'}, $step);
+	my @newformat_files = change_format(\@input_files, $curr_format, $constree_exec{'input_format'}, $step);
 
-    @input_files = @newformat_files;
-    $curr_format = $constree_exec{'input_format'};
+	@input_files = @newformat_files;
+	$curr_format = $constree_exec{'input_format'};
+    }
 }
+
 
 ############################################################
 ## STEP 7 (CONSENSUS TREE)                                ##
@@ -1028,6 +1082,14 @@ if ($step == 8) {
 	
 	$t++;
     }
+
+    ## One last function, if dnaml was used as tree_calc{'executable'} it will take
+    ## the ln likehood values
+
+    if (defined  $tree_exec{'executable'} &&  $tree_exec{'executable'} =~ m/dnaml/) {
+	extract_ln_likehood($master_files{'step5'}->{'outfile'}, $results_dir);
+    }
+
 }
 print STDERR "\n\n";    
 
@@ -1132,6 +1194,10 @@ sub help {
       -s <step>                   step to start the pipeline (1 by default)
       -d <input_dir>              input dir to start in an step > 1
       -f <input_format>           input format for files, when starting step > 1
+                                  (more than one format can be specified, it will
+                                   match the formats, the first format must to be
+                                   the input format, secondary formats will be used 
+                                   for other tasks)
       -X <create_control_file>    create the control file: maf_to_phylo.ctr
       -D <default_control_file>   create control file: maf_to_phylo.default.ctr
       -h <help>                   print the help
@@ -1201,6 +1267,21 @@ sub create_ctr {
 ##              If '{extract:n}' is used, it will parse the
 ##              different strains from the maf file and use
 ##              as n sequences per strain.
+
+<STRAIN_SELECTION>="method to select the different strain"
+## Requeriment: none by default
+## Example:     <STRAIN_SELECTION>="Distance:str1"
+## Note:        method used to select the sequences in the
+##              matching region of the alignment.
+##              None   => parsing order
+##              Random => use random function so every time
+##                        that the script is run, it will 
+##                        take different set of sequences 
+##                        with the specified requeriments
+##              Distance => It will calculate the distance 
+##                          between sequences and it will 
+##                          rename them according kimura 
+##                          distance to the seed
 
 <MIN_ALIGNMENT_LENGTH>="minimum alignment length"
 ## Requeriment: none, 100 by default
@@ -1598,6 +1679,23 @@ sub parse_ctr_file {
 		}
 	    }
 	
+	    if ($_ =~ m/<STRAIN_SELECTION>="(.+)"/) {
+		my $strain_select = $1;
+
+		## check that it have the right format for distance
+
+		if ($strain_select =~ m/distance:(.+)/i) {
+		    my @par = split(',', $1);
+		    foreach my $par (@par) {
+			unless ($par =~ m/.+?>.+?\*\d+/) {
+			    die("PARAMETER ERROR: The parents detailed for distance selection need to have format StrainParent>StrainChildren*Digit\n");
+			}
+		    }
+		}
+
+		$assembly_args{'strain_selection'} = $strain_select;
+	    }
+
 	    ## Overwrite the default value with the new one
 
 	    if ($_ =~ m/<MIN_ALIGNMENT_LENGTH>="(.+)"/) {
@@ -1806,12 +1904,22 @@ sub parse_ctr_file {
 		$tree_args{'options'} =~ s/M\s+Yes\s*,\s*(\d+),*\s*\d*/M Yes,$bootsrep_i,1807/;
 	    }
 	    else {
-		$tree_args{'options'} .= ",M Yes,$bootsrep_i,1807";
+		if ($tree_args{'executable'} =~ m/dnaml/) {
+		    $tree_args{'options'} .= ",M Yes,D,$bootsrep_i,1807,1";
+		}
+		else {
+		    $tree_args{'options'} .= ",M Yes,$bootsrep_i,1807";
+		}
 		print STDERR "\n\tMESSAGE: R $bootsrep option for tree step will be added according replicates option.\n";
 	    }
 	}
 	else {
-	    $tree_args{'options'} = "M Yes,$bootsrep_i,1807";
+	    if ($tree_args{'executable'} =~ m/dnaml/) {
+		$tree_args{'options'} .= "M Yes,D,$bootsrep_i,1807,1";
+	    }
+	    else {
+		$tree_args{'options'} = "M Yes,$bootsrep_i,1807";
+	    }
 	    print STDERR "\n\tMESSAGE: R $bootsrep option for tree step will be added according replicates option.\n";
 	}
     }
@@ -1888,15 +1996,19 @@ sub extract_strain_from_maf {
     return %strain_list;
 }
 
+
 =head2 extract_align_from_maf
 
-  Usage: my ($align_files_aref, $contig_href, $read_href) = extract_align_from_maf($maf_file, \%align_args, $preprocessing_dir);
+  Usage: my ($align_files_href, $contig_href, $read_href) = extract_align_from_maf($maf_file, \%align_args, $preprocessing_dir);
 
   Desc: parse the maf (mira alignment file) getting only the tags that 
         needs and create the alignment files for the strains detailed into
         the comand file.
 
-  Ret: $align_files_aref, an array ref. with a list of alignments in fasta format
+  Ret: $output_files_href, a hash reference with keys => contig_id
+                                                 value => hash reference with:
+                                                          keys => type (assembly_contig/assembly_reads)
+                                                          value => filename
        $contig_href, a hash ref with: keys   => contig_id, 
                                       values => hash ref with:
                                                 keys  => type
@@ -1912,7 +2024,7 @@ sub extract_strain_from_maf {
   Side_Effects: Die if something is wrong
                 Print parsing status messages
 
-  Example: my @align_files = extract_align_from_maf($maf_file, \%align_args, $preprocessing_dir);
+  Example: my @align_hrefs = extract_align_from_maf($maf_file, \%align_args, $preprocessing_dir);
 
 =cut
 
@@ -1952,12 +2064,13 @@ sub extract_align_from_maf {
 
     my (%contig, %read, %start, %end);
 
-    my @fasta_files;
+    my %output_files;
     my $tag;
     my $seqio;
 
     while(<$maf_fh>) {
 	chomp($_);
+	my $line = $_;
 	$l++;   
 
 	## Maf file works with tags and tabs. To catch a data type only needs to catch the tag
@@ -1966,7 +2079,7 @@ sub extract_align_from_maf {
 	## All the reads in the contig finish with //
 	## Now it will calculate the alignments
 
-	if ($_ =~ m/^\/\//) {
+	if ($line =~ m/^\/\//) {
 
 	    my $contig_length = length($contig_seq_pad);
 
@@ -2131,11 +2244,24 @@ sub extract_align_from_maf {
 			%curr_request_status = %strain_list;
 		    }
 
-		    ## It will take the sequences at random to comepare different overlapping regions
 
-		    my @shuff_rds = shuffle(@rds);
+		    ## Now it will take the selection function
+		    
+		    my @selected_reads = @{$selected_ovlp{'reads'}};
+		    if (defined $assem_exec{'strain_selection'}) {
+			if ($assem_exec{'strain_selection'} =~ m/random/i) {
+			    @selected_reads = shuffle(@{$selected_ovlp{'reads'}});
+			}
+			elsif ($assem_exec{'strain_selection'} =~ m/distance:(.+)/i) {
+			    my @parent_ids = split(',', $1);
 
-		    foreach my $sel_rd_id (@shuff_rds) {
+			    if (defined $1) {
+				@selected_reads = order_by_distance($selected_ovlp{'reads'}, \%read, \@parent_ids);
+			    }
+			}
+		    }
+
+		    foreach my $sel_rd_id (@selected_reads) {
 			
 			## It can happens that there are more than one sequence from the same strain
 			## (With the request variable at least it have selected that number, but it can have more)
@@ -2214,7 +2340,13 @@ sub extract_align_from_maf {
 			    }		    			
 			}       	    
 		    }
-		    push @fasta_files, $filename;
+		    $output_files{$contig_id} = { 'assembly_reads' => $filename };
+
+		    my $contig_filename = $preprocessing_dir . '/' . $contig_id . '.contig.fasta';	
+		    my $contig_seqio = Bio::SeqIO->new( -file => ">$contig_filename", -format => "fasta" );
+		    my $contig_seq = Bio::Seq->new( -id => $contig_id, -seq => $contig_seq_unpad);
+		    $contig_seqio->write_seq($contig_seq);
+		    $output_files{$contig_id}->{'assembly_contig'} = $contig_filename;
 		}
 		else {
 		    print STDERR "\n\t\tPROCESS MSG I: $contig_id alignment ($align_l) do not pass min alignment length ($min_align_l)."; 
@@ -2229,7 +2361,7 @@ sub extract_align_from_maf {
 	
 	## Catch the contig_id and create a new file to store the sequences
 
-	if ($_ =~ m/^CO\s+(.+?)$/) { 
+	if ($line =~ m/^CO\s+(.+?)$/) { 
 	    $contig_id = $1;
 		
 	    $contig{$contig_id} = {};
@@ -2239,7 +2371,7 @@ sub extract_align_from_maf {
 	    %end = ();
 	}
 
-	if ($_ =~ m/^CS\t(.+?)$/) { 
+	if ($line =~ m/^CS\t(.+?)$/) { 
 	    $contig_seq_pad = $1;
 	    $contig{$contig_id}->{'pad_seq'} = $contig_seq_pad;
 	    $contig_seq_unpad = $contig_seq_pad;
@@ -2247,7 +2379,7 @@ sub extract_align_from_maf {
 	    $contig{$contig_id}->{'unpad_seq'} = $contig_seq_unpad;
 	}
 
-	if ($_ =~ m/^LC\t(.+?)$/) {
+	if ($line =~ m/^LC\t(.+?)$/) {
     
 	    $contig{$contig_id}->{'contig_length'} = $1;
 	}
@@ -2255,7 +2387,7 @@ sub extract_align_from_maf {
 
 	## Catch the SNPs
 
-	if ($_ =~ m/^CT\s+(S\w+)\s+(\d+)\s+(\d+)\s+(\w+)/) { 
+	if ($line =~ m/^CT\s+(S\w+)\s+(\d+)\s+(\d+)\s+(\w+)/) { 
 	    my $snp_type = $1;
 	    my $snp_position = $2;
 	    
@@ -2276,7 +2408,7 @@ sub extract_align_from_maf {
 
 	## Catch the read_id
 
-	if ($_ =~ m/^RD\s+(.+?)$/) { 
+	if ($line =~ m/^RD\s+(.+?)$/) { 
 	    $read_id = $1;
 	    
 	    $read{$read_id} = {};
@@ -2291,7 +2423,7 @@ sub extract_align_from_maf {
 	    $n_rd++;
 	}
 
-	if ($_ =~ m/^RS\s+(.+?)$/) { 
+	if ($line =~ m/^RS\s+(.+?)$/) { 
 	    $read_seq = $1;
 	    $read{$read_id}->{'pad_seq'} = $read_seq;
 	    my $read_seq_unpad = $read_seq;
@@ -2301,14 +2433,14 @@ sub extract_align_from_maf {
 
 	## Strain tag 
 
-	if ($_ =~ m/^SN\s+(.+?)$/) { 
+	if ($line =~ m/^SN\s+(.+?)$/) { 
 	    $read{$read_id}->{'strain'} = $1;
 	}
 
 	## The assembly coordinates will be defined for the AT tag.
 	## AT contig_start contig_end read_start read_end
 
-	if ($_ =~ m/^AT\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+	if ($line =~ m/^AT\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
 	    if ($1 <= $2) {
 		$read{$read_id}->{'co_start'} = $1;
 		$read{$read_id}->{'co_end'} = $2;
@@ -2342,8 +2474,129 @@ sub extract_align_from_maf {
 	print STDERR "\tParsing line=$l for file=$maf. ($n_co contigs and $n_rd reads have been parsed).      \r";
     }
 
-    return (\@fasta_files, \%contig, \%read);
+    return (\%output_files, \%contig, \%read);
 }
+
+
+=head2 order_by_distance
+
+  Usage: my @order_seq = order_by_distance($ids_aref, $seq_href, $seed_id);
+
+  Desc: Run some blast comparissons between sequences and order them based in the distance
+        to the seed_id
+
+  Ret: An array with the sequences ordered
+
+  Args: $ids_aref, an array reference with the sequence ids
+        $seq_href, a hash reference with key=id and hash=hash ref seq data
+        $parent_ids_aref, array reference for parent selection  
+
+  Side_Effects: Die if something is wrong
+                Print parsing status messages
+
+  Example: my @order_seq = order_by_distance($ids_aref, $seq_href, $parents_aref);
+
+=cut
+
+sub order_by_distance {
+    my $ids_aref = shift
+	|| die("FUNCTION ARGUMENT ERROR: None ids_aref array reference have been supplied to order_by_distance function.\n");
+    
+    my $reads_href = shift
+	|| die("FUNCTION ARGUMENT ERROR: None read hash reference have been supplied to order_by_distance function.\n");
+
+    my $parent_ids_aref = shift
+	|| die("FUNCTION ARGUMENT ERROR: None seed_id have been supplied to order_by_distance function.\n");
+
+    my @ordered_ids = ();
+    
+    my %selection;
+    my @parent_ids = ();
+    foreach my $parent (@{$parent_ids_aref}) {
+	my @par = split('>', $parent);
+	my @chi = split('\*', $par[1]);
+	$selection{$par[0]} = { $chi[0] => $chi[1] };
+    }
+
+    ## First, put the sequences into seq objects
+
+    my @reads = ();
+    my @parents = ();
+    my %children = ();
+
+    foreach my $id (@{$ids_aref}) {
+
+	my $strain = $reads_href->{$id}->{'strain'};
+	if (defined $selection{$strain}) {
+	    push @parents, $id;
+	}
+	else {
+	    $children{$id} = 1;
+	}
+	my $rd_obj = Bio::Seq->new( -id => $id, -seq => $reads_href->{$id}->{'unpad_seq'});
+	push @reads, $rd_obj;
+    }
+
+    ## Run the alignment
+
+    my @params = ('quiet' => 1, 'matrix' => 'BLOSUM');
+    my $factory = Bio::Tools::Run::Alignment::Clustalw->new(@params);
+    my $align = $factory->align(\@reads);
+      
+    ## Calculate distances
+
+    my $stats = Bio::Align::DNAStatistics->new();
+    my $jcmatrix = $stats->distance( -align => $align, 
+				     -method => 'Kimura');
+    my %selected_ids;
+
+    ## Now it will get distances
+    foreach my $parent_id (@parents) {
+	
+	push @ordered_ids, $parent_id;
+
+	my $pstrain =  $reads_href->{$parent_id}->{'strain'};
+
+	my %selec = %{$selection{$pstrain}};
+	
+	foreach my $chi (keys %selec) {
+	    
+	    my $pass = $selec{$chi};
+	    while ( $pass > 0) {
+
+		if (scalar(keys %children) > 0) {
+
+		    my %dist = ();
+		    foreach my $children_id (keys %children) {
+			unless (exists $selected_ids{$children_id}) {
+			    my $distance_value = $jcmatrix->get_entry($parent_id, $children_id);
+			    $dist{$distance_value} = $children_id;
+			}
+		    }
+
+		    ## Now order
+		    my @ord_children = sort {$a <=> $b} keys %dist;
+
+		    if (scalar(@ord_children) > 0) {
+
+			push @ordered_ids, $dist{$ord_children[0]};
+			$selected_ids{$dist{$ord_children[0]}} = 1;
+
+			## And delete for the hash
+			delete $children{$ord_children[0]};
+		    }
+		}
+		$pass--;
+	    }
+	   
+	}
+    }
+
+    return @ordered_ids;
+}
+
+
+
 
 =head2 run_realignment
 
@@ -3709,7 +3962,77 @@ sub run_consensus_tree {
     return %outfiles;
 }
 
+=head2 extract_ln_likehood
 
+  Usage: extract_ln_likehood(\@input_files, $out_dirname);
+
+  Desc: Extract the ln likehood variable from outfile produced by dnaml
+
+  Ret: nothing, it will print the results as a file
+
+  Args: \@input_file, an array of input filenames
+        $out_dirname, a scalar with output dirname
+
+  Side_Effects: Die if something is wrong
+                Print parsing status messages
+
+  Example: extract_ln_likehood(\@input_files, $out_dirname);
+
+=cut
+
+sub extract_ln_likehood {
+
+    my $input_files_aref = shift
+	|| die("FUNCTION ARGUMENT ERROR: None input file array reference have been supplied to run_consensus_tree func.\n");
+
+    my $output_dir = shift
+	|| die("FUNCTION ARGUMENT ERROR: None output dirname have been supplied to run_consensus_tree func.\n");
+
+
+    ## it will add the result to a file
+
+    my $filename = $output_dir . '/contigs_ln_likehood.txt';
+    open my $ofh, '>', $filename;
+
+    foreach my $infile (@{$input_files_aref}) {
+    
+	my $ctg;
+	my $basename = basename($infile);
+	if ($basename =~ m/(.+?)\..+/) {
+	    $ctg = $1;
+	}
+	else {
+	    $ctg = $basename;
+	}
+
+	open my $infh, '<', $infile;
+	
+	my %first_ln;
+	my @ln;
+
+	while(<$infh>) {
+	
+	    chomp($_);
+
+	    if ($_ =~ m/^Ln\s+Likelihood\s+=\s+(.+)$/) {
+		my $ln_value = $1;
+		unless (exists $first_ln{$ctg}) {
+		    $first_ln{$ctg} = $ln_value;
+		}
+		push @ln, $ln_value;
+	    }
+	}
+
+	my $median = median(@ln);
+	my $stddv = stddev(@ln);
+	
+	if (defined $ctg && defined $first_ln{$ctg}) {
+	    print $ofh "$ctg\t$first_ln{$ctg}\t$median\t$stddv\n";
+	}
+
+	close $infh;
+    }
+}
 
 
 =head2 create_default_ctr

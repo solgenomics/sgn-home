@@ -3,7 +3,7 @@
 =head1 NAME
 
  snp_paml_pipeline.pl
- Pipeline to analyze Non-synonymous/Synonymos ratio from an assembly file in maf format (version.0.1).
+ Pipeline to analyze Non-synonymous/Synonymous ratio from an assembly file in maf format (version.0.1).
 
 =cut
 
@@ -150,6 +150,8 @@ use Bio::Seq::Quality;
 use Bio::SeqIO;
 use Bio::AlignIO;
 use Bio::TreeIO;
+use Bio::Tools::Run::Alignment::Clustalw;
+use Bio::Align::DNAStatistics;
 use Math::BigFloat;
 
 our ($opt_i, $opt_o, $opt_c, $opt_s, $opt_d, $opt_X, $opt_h);
@@ -863,6 +865,21 @@ sub create_ctr {
 ##              different strains from the maf file and use
 ##              as n sequences per strain.
 
+<STRAIN_SELECTION>="method to select the different strain"
+## Requeriment: none by default
+## Example:     <STRAIN_SELECTION>="Distance:str1"
+## Note:        method used to select the sequences in the
+##              matching region of the alignment.
+##              None   => parsing order
+##              Random => use random function so every time
+##                        that the script is run, it will 
+##                        take different set of sequences 
+##                        with the specified requeriments
+##              Distance => It will calculate the distance 
+##                          between sequences and it will 
+##                          rename them according kimura 
+##                          distance to the seed
+
 <MIN_ALIGNMENT_LENGTH>="minimum alignment length"
 ## Requeriment: none, 100 by default
 ## Example:     <MIN_ALIGNMENT_LENGTH>="50"
@@ -1068,7 +1085,23 @@ sub parse_ctr_file {
 		    $assembly_args{'strain_data'}->{$str_data[0]} = $str_data[1];
 		}
 	    }
-	
+	    if ($_ =~ m/<STRAIN_SELECTION>="(.+)"/) {
+		my $strain_select = $1;
+
+		## check that it have the right format for distance
+
+		if ($strain_select =~ m/distance:(.+)/i) {
+		    my @par = split(',', $1);
+		    foreach my $par (@par) {
+			unless ($par =~ m/.+?>.+?\*\d+/) {
+			    die("PARAMETER ERROR: The parents detailed for distance selection need to have format StrainParent>StrainChildren*Digit\n");
+			}
+		    }
+		}
+
+		$assembly_args{'strain_selection'} = $strain_select;
+	    }
+	    
 	    ## Overwrite the default value with the new one
 
 	    if ($_ =~ m/<MIN_ALIGNMENT_LENGTH>="(.+)"/) {
@@ -1276,6 +1309,7 @@ sub extract_align_from_maf {
 
     while(<$maf_fh>) {
 	chomp($_);
+	my $line = $_;
 	$l++;   
 
 	## Maf file works with tags and tabs. To catch a data type only needs to catch the tag
@@ -1284,7 +1318,7 @@ sub extract_align_from_maf {
 	## All the reads in the contig finish with //
 	## Now it will calculate the alignments
 
-	if ($_ =~ m/^\/\//) {
+	if ($line =~ m/^\/\//) {
 
 	    my $contig_length = length($contig_seq_pad);
 
@@ -1449,11 +1483,24 @@ sub extract_align_from_maf {
 			%curr_request_status = %strain_list;
 		    }
 
-		    ## It will take the sequences at random to comepare different overlapping regions
 
-		    my @shuff_rds = shuffle(@rds);
+		    ## Now it will take the selection function
+		    
+		    my @selected_reads = @{$selected_ovlp{'reads'}};
+		    if (defined $assem_exec{'strain_selection'}) {
+			if ($assem_exec{'strain_selection'} =~ m/random/i) {
+			    @selected_reads = shuffle(@{$selected_ovlp{'reads'}});
+			}
+			elsif ($assem_exec{'strain_selection'} =~ m/distance:(.+)/i) {
+			    my @parent_ids = split(',', $1);
 
-		    foreach my $sel_rd_id (@shuff_rds) {
+			    if (defined $1) {
+				@selected_reads = order_by_distance($selected_ovlp{'reads'}, \%read, \@parent_ids);
+			    }
+			}
+		    }
+
+		    foreach my $sel_rd_id (@selected_reads) {
 			
 			## It can happens that there are more than one sequence from the same strain
 			## (With the request variable at least it have selected that number, but it can have more)
@@ -1553,7 +1600,7 @@ sub extract_align_from_maf {
 	
 	## Catch the contig_id and create a new file to store the sequences
 
-	if ($_ =~ m/^CO\s+(.+?)$/) { 
+	if ($line =~ m/^CO\s+(.+?)$/) { 
 	    $contig_id = $1;
 		
 	    $contig{$contig_id} = {};
@@ -1563,7 +1610,7 @@ sub extract_align_from_maf {
 	    %end = ();
 	}
 
-	if ($_ =~ m/^CS\t(.+?)$/) { 
+	if ($line =~ m/^CS\t(.+?)$/) { 
 	    $contig_seq_pad = $1;
 	    $contig{$contig_id}->{'pad_seq'} = $contig_seq_pad;
 	    $contig_seq_unpad = $contig_seq_pad;
@@ -1571,7 +1618,7 @@ sub extract_align_from_maf {
 	    $contig{$contig_id}->{'unpad_seq'} = $contig_seq_unpad;
 	}
 
-	if ($_ =~ m/^LC\t(.+?)$/) {
+	if ($line =~ m/^LC\t(.+?)$/) {
     
 	    $contig{$contig_id}->{'contig_length'} = $1;
 	}
@@ -1579,7 +1626,7 @@ sub extract_align_from_maf {
 
 	## Catch the SNPs
 
-	if ($_ =~ m/^CT\s+(S\w+)\s+(\d+)\s+(\d+)\s+(\w+)/) { 
+	if ($line =~ m/^CT\s+(S\w+)\s+(\d+)\s+(\d+)\s+(\w+)/) { 
 	    my $snp_type = $1;
 	    my $snp_position = $2;
 	    
@@ -1600,7 +1647,7 @@ sub extract_align_from_maf {
 
 	## Catch the read_id
 
-	if ($_ =~ m/^RD\s+(.+?)$/) { 
+	if ($line =~ m/^RD\s+(.+?)$/) { 
 	    $read_id = $1;
 	    
 	    $read{$read_id} = {};
@@ -1615,7 +1662,7 @@ sub extract_align_from_maf {
 	    $n_rd++;
 	}
 
-	if ($_ =~ m/^RS\s+(.+?)$/) { 
+	if ($line =~ m/^RS\s+(.+?)$/) { 
 	    $read_seq = $1;
 	    $read{$read_id}->{'pad_seq'} = $read_seq;
 	    my $read_seq_unpad = $read_seq;
@@ -1625,14 +1672,14 @@ sub extract_align_from_maf {
 
 	## Strain tag 
 
-	if ($_ =~ m/^SN\s+(.+?)$/) { 
+	if ($line =~ m/^SN\s+(.+?)$/) { 
 	    $read{$read_id}->{'strain'} = $1;
 	}
 
 	## The assembly coordinates will be defined for the AT tag.
 	## AT contig_start contig_end read_start read_end
 
-	if ($_ =~ m/^AT\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+	if ($line =~ m/^AT\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
 	    if ($1 <= $2) {
 		$read{$read_id}->{'co_start'} = $1;
 		$read{$read_id}->{'co_end'} = $2;
@@ -1667,6 +1714,123 @@ sub extract_align_from_maf {
     }
 
     return (\%output_files, \%contig, \%read);
+}
+
+=head2 order_by_distance
+
+  Usage: my @order_seq = order_by_distance($ids_aref, $seq_href, $seed_id);
+
+  Desc: Run some blast comparissons between sequences and order them based in the distance
+        to the seed_id
+
+  Ret: An array with the sequences ordered
+
+  Args: $ids_aref, an array reference with the sequence ids
+        $seq_href, a hash reference with key=id and hash=hash ref seq data
+        $parent_ids_aref, array reference for parent selection  
+
+  Side_Effects: Die if something is wrong
+                Print parsing status messages
+
+  Example: my @order_seq = order_by_distance($ids_aref, $seq_href, $parents_aref);
+
+=cut
+
+sub order_by_distance {
+    my $ids_aref = shift
+	|| die("FUNCTION ARGUMENT ERROR: None ids_aref array reference have been supplied to order_by_distance function.\n");
+    
+    my $reads_href = shift
+	|| die("FUNCTION ARGUMENT ERROR: None read hash reference have been supplied to order_by_distance function.\n");
+
+    my $parent_ids_aref = shift
+	|| die("FUNCTION ARGUMENT ERROR: None seed_id have been supplied to order_by_distance function.\n");
+
+    my @ordered_ids = ();
+    
+    my %selection;
+    my @parent_ids = ();
+    foreach my $parent (@{$parent_ids_aref}) {
+	my @par = split('>', $parent);
+	my @chi = split('\*', $par[1]);
+	$selection{$par[0]} = { $chi[0] => $chi[1] };
+    }
+
+    ## First, put the sequences into seq objects
+
+    my @reads = ();
+    my @parents = ();
+    my %children = ();
+
+    foreach my $id (@{$ids_aref}) {
+
+	my $strain = $reads_href->{$id}->{'strain'};
+	if (defined $selection{$strain}) {
+	    push @parents, $id;
+	}
+	else {
+	    $children{$id} = 1;
+	}
+	my $rd_obj = Bio::Seq->new( -id => $id, -seq => $reads_href->{$id}->{'unpad_seq'});
+	push @reads, $rd_obj;
+    }
+
+    ## Run the alignment
+
+    my @params = ('quiet' => 1, 'matrix' => 'BLOSUM');
+    my $factory = Bio::Tools::Run::Alignment::Clustalw->new(@params);
+    my $align = $factory->align(\@reads);
+      
+    ## Calculate distances
+
+    my $stats = Bio::Align::DNAStatistics->new();
+    my $jcmatrix = $stats->distance( -align => $align, 
+				     -method => 'Kimura');
+    my %selected_ids;
+
+    ## Now it will get distances
+    foreach my $parent_id (@parents) {
+	
+	push @ordered_ids, $parent_id;
+
+	my $pstrain =  $reads_href->{$parent_id}->{'strain'};
+
+	my %selec = %{$selection{$pstrain}};
+	
+	foreach my $chi (keys %selec) {
+	    
+	    my $pass = $selec{$chi};
+	    while ( $pass > 0) {
+
+		if (scalar(keys %children) > 0) {
+
+		    my %dist = ();
+		    foreach my $children_id (keys %children) {
+			unless (exists $selected_ids{$children_id}) {
+			    my $distance_value = $jcmatrix->get_entry($parent_id, $children_id);
+			    $dist{$distance_value} = $children_id;
+			}
+		    }
+
+		    ## Now order
+		    my @ord_children = sort {$a <=> $b} keys %dist;
+
+		    if (scalar(@ord_children) > 0) {
+		    
+			push @ordered_ids, $dist{$ord_children[0]};
+			$selected_ids{$dist{$ord_children[0]}} = 1;
+
+			## And delete for the hash
+			delete $children{$ord_children[0]};
+		    }
+		}
+		$pass--;
+	    }
+	   
+	}
+    }
+
+    return @ordered_ids;
 }
 
 =head2 run_cds_prediction
@@ -2577,6 +2741,14 @@ sub run_paml_parsing {
     my $distrib_filename = $output_dir . '/snpsel_distribution.tab';
     open my $distr_fh, '>', $distrib_filename;
 
+    ## Finally another file that it will produce will be aq columnar table with -f1 contig
+    ## and -f2 to X omega values for different comparissons
+
+    my %contigs;
+    my $contig_filename = $output_dir . '/snpsel_contig.tab';
+    open my $contig_fh, '>', $contig_filename;
+
+
     foreach my $id (sort keys %input_files) {
 	
 	my %file = %{$input_files{$id}};
@@ -2656,10 +2828,19 @@ sub run_paml_parsing {
 		    
 		    print $result_fh "$id\t$seqid{$seq1}\t$seqid{$seq2}\t$omega\t$dN\t$dS\t$selection **\n";
 
-		    ## Now it will calculate the pair for the distribution
-		    
 		    my @pairs = ($seqid{$seq1}, $seqid{$seq2});
 		    my $seqpair = join(',', sort @pairs);
+
+		    ## take the data for the contigs
+
+		    if (exists $contigs{$id}) {
+			$contigs{$id}->{$seqpair} = $omega;
+		    }
+		    else {
+			$contigs{$id} = { $seqpair => $omega};
+		    }
+
+		    ## Now it will calculate the pair for the distribution
 
 		    my @omega_fractions = (99.0, 2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0);
 		    foreach my $fract (@omega_fractions) {
@@ -2707,8 +2888,34 @@ sub run_paml_parsing {
 	print $distr_fh "\n";
     }
 
+    ## And print also the contig file
+
+    ## first print headers
+
+    print $contig_fh "#ID";
+
+    foreach my $omega_seqpair (sort keys %pairs) {
+	print $contig_fh "\t#$omega_seqpair";
+    }
+    print $contig_fh "\n";
+    
+
+    foreach my $contig_id (sort keys %contigs) {
+	print $contig_fh "$contig_id";
+	my %omega_pairs = %{$contigs{$contig_id}};
+
+	foreach my $omega_seqpair (sort keys %pairs) {
+	    print $contig_fh "\t";
+	    if (defined $omega_pairs{$omega_seqpair}) {
+		print $contig_fh "$omega_pairs{$omega_seqpair}";
+	    }
+	}
+	print $contig_fh "\n";
+    }
+
+
     print STDERR "\n\n";
-    return ($result_filename, $distrib_filename);
+    return ($result_filename, $distrib_filename, $contig_filename);
 }
 
 
