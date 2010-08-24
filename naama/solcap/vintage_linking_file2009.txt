@@ -1,0 +1,168 @@
+SCT#	Year	Location	Location2	Plot	Replicate	Donor number/Variety Name:		
+SCT_0329	2009	Fremont	Ohio	8975	1	1091-Chonto 21 (mataverde (3-21-2))		
+SCT_0329	2009	Fremont	Ohio	9047	2	1091-Chonto 21 (mataverde (3-21-2))		
+SCT_0330	2009	Fremont	Ohio	8973	1	A-1770		
+SCT_0330	2009	Fremont	Ohio	9053	2	A-1770		
+SCT_0331	2009	Fremont	Ohio	8974	1	A-1771		
+SCT_0331	2009	Fremont	Ohio	9031	2	A-1771		
+SCT_0332	2009	Fremont	Ohio	8946	1	Abel		
+SCT_0332	2009	Fremont	Ohio	9056	2	Abel		
+SCT_0325	2009	Fremont	Ohio	8901	1	Ailsa Craig		
+SCT_0325	2009	Fremont	Ohio	9020	2	Ailsa Craig		
+SCT_0285	2009	Fremont	Ohio	8921	1	Aker's West Virginia		
+SCT_0285	2009	Fremont	Ohio	8989	2	Aker's West Virginia		
+SCT_0286	2009	Fremont	Ohio	8928	1	Amish Paste		
+SCT_0286	2009	Fremont	Ohio	8986	2	Amish Paste		
+SCT_0287	2009	Fremont	Ohio	8902	1	Beauty		
+SCT_0287	2009	Fremont	Ohio	8993	2	Beauty		
+SCT_0288	2009	Fremont	Ohio	8922	1	Black From Tula		
+SCT_0288	2009	Fremont	Ohio	8983	2	Black From Tula		
+SCT_0289	2009	Fremont	Ohio	8903	1	Black Plum		
+SCT_0289	2009	Fremont	Ohio	9000	2	Black Plum		
+SCT_0290	2009	Fremont	Ohio	8930	1	Brandywine (Sudduth/Quisenberry)		
+SCT_0290	2009	Fremont	Ohio	9005	2	Brandywine (Sudduth/Quisenberry)		
+SCT_0291	2009	Fremont	Ohio	8923	1	Burbank		
+SCT_0291	2009	Fremont	Ohio	8997	2	Burbank		
+SCT_0292	2009	Fremont	Ohio	8925	1	Cherokee Purple		
+SCT_0292	2009	Fremont	Ohio	8991	2	Cherokee Purple		
+SCT_0333	2009	Fremont	Ohio	8960	1	Chih-mu-tao-se		
+SCT_0333	2009	Fremont	Ohio	9036	2	Chih-mu-tao-se		
+SCT_0293	2009	Fremont	Ohio	8932	1	Costoluto Genovese		
+SCT_0293	2009	Fremont	Ohio	9006	2	Costoluto Genovese		
+SCT_0334	2009	Fremont	Ohio	8965	1	Cotaxtla I		
+SCT_0334	2009	Fremont	Ohio	9028	2	Cotaxtla I		
+SCT_0294	2009	Fremont	Ohio	8933	1	D' Olvia x Industria		
+SCT_0294	2009	Fremont	Ohio	8990	2	D' Olvia x Industria		
+SCT_0335	2009	Fremont	Ohio	8970	1	Devon Surprise		
+SCT_0335	2009	Fremont	Ohio	9050	2	Devon Surprise		 
+SCT_0295	2009	Fremont	Ohio	8904	1	Favorite		 
+SCT_0295	2009	Fremont	Ohio	8996	2	Favorite		
+SCT_0296	2009	Fremont	Ohio	8905	1	Globe		
+SCT_0296	2009	Fremont	Ohio	9004	2	Globe		
+SCT_0298	2009	Fremont	Ohio	8907	1	Grushovka		
+SCT_0298	2009	Fremont	Ohio	8999	2	Grushovka		
+SCT_0336	2009	Fremont	Ohio	8971	1	Heinz 1370		
+SCT_0336	2009	Fremont	Ohio	9061	2	Heinz 1370		
+SCT_0337	2009	Fremont	Ohio	8969	1	Hong Kong		
+SCT_0337	2009	Fremont	Ohio	9062	2	Hong Kong		
+SCT_0299	2009	Fremont	Ohio	8908	1	Howard German		
+SCT_0299	2009	Fremont	Ohio	9008	2	Howard German		
+SCT_0300	2009	Fremont	Ohio	8931	1	Juane Flammee		
+SCT_0300	2009	Fremont	Ohio	8994	2	Juane Flammee		
+SCT_0301	2009	Fremont	Ohio	9066	2	King Humbert		
+SCT_0338	2009	Fremont	Ohio	8968	1	Kiyosu No. 2		
+SCT_0338	2009	Fremont	Ohio	9057	2	Kiyosu No. 2		
+SCT_0339	2009	Fremont	Ohio	8964	1	LA0410		
+SCT_0339	2009	Fremont	Ohio	9034	2	LA0410		
+SCT_0302	2009	Fremont	Ohio	8940	1	LYC1903		
+SCT_0302	2009	Fremont	Ohio	9010	2	LYC1903		
+SCT_0303	2009	Fremont	Ohio	8909	1	Marglobe		
+SCT_0303	2009	Fremont	Ohio	8920	.	Marglobe		
+SCT_0303	2009	Fremont	Ohio	9019	.	Marglobe		
+SCT_0303	2009	Fremont	Ohio	9022	2	Marglobe		
+SCT_0326	2009	Fremont	Ohio	8910	1	Marveille des Marches		
+SCT_0326	2009	Fremont	Ohio	8985	2	Marveille des Marches		
+SCT_0304	2009	Fremont	Ohio	8911	1	Moneymaker		
+SCT_0304	2009	Fremont	Ohio	8984	2	Moneymaker		
+SCT_0305	2009	Fremont	Ohio	8929	1	Opalka		
+SCT_0305	2009	Fremont	Ohio	9012	2	Opalka		
+SCT_0306	2009	Fremont	Ohio	8934	1	Orange Strawberry		
+SCT_0306	2009	Fremont	Ohio	8987	2	Orange Strawberry		
+SCT_0307	2009	Fremont	Ohio	8926	1	Oxheart		
+SCT_0307	2009	Fremont	Ohio	8988	2	Oxheart		
+SCT_0308	2009	Fremont	Ohio	8906	1	Paragon		
+SCT_0308	2009	Fremont	Ohio	8912	2	Paragon		
+SCT_0308	2009	Fremont	Ohio	9009	3	Paragon		
+SCT_0308	2009	Fremont	Ohio	9015	4	Paragon		
+SCT_0309	2009	Fremont	Ohio	8924	1	Peron		
+SCT_0309	2009	Fremont	Ohio	9021	2	Peron		
+SCT_0340	2009	Fremont	Ohio	8976	1	Peto 460		
+SCT_0340	2009	Fremont	Ohio	9032	2	Peto 460		
+SCT_0341	2009	Fremont	Ohio	8947	1	PI 124035		
+SCT_0341	2009	Fremont	Ohio	9052	2	PI 124035		
+SCT_0342	2009	Fremont	Ohio	8948	1	PI 124037		
+SCT_0342	2009	Fremont	Ohio	9038	2	PI 124037		
+SCT_0343	2009	Fremont	Ohio	8950	1	PI 127820		
+SCT_0343	2009	Fremont	Ohio	9049	2	PI 127820		
+SCT_0344	2009	Fremont	Ohio	8951	1	PI 128586		
+SCT_0344	2009	Fremont	Ohio	9054	2	PI 128586		
+SCT_0345	2009	Fremont	Ohio	8952	1	PI 128592		
+SCT_0345	2009	Fremont	Ohio	9055	2	PI 128592		
+SCT_0346	2009	Fremont	Ohio	8953	1	PI 129026		
+SCT_0346	2009	Fremont	Ohio	9063	2	PI 129026		
+SCT_0347	2009	Fremont	Ohio	8954	1	PI 129033		
+SCT_0347	2009	Fremont	Ohio	9037	2	PI 129033		
+SCT_0348	2009	Fremont	Ohio	8955	1	PI 129084		
+SCT_0348	2009	Fremont	Ohio	9026	2	PI 129084		
+SCT_0349	2009	Fremont	Ohio	8956	1	PI 129128		
+SCT_0349	2009	Fremont	Ohio	9039	2	PI 129128		
+SCT_0350	2009	Fremont	Ohio	8957	1	PI 129142		
+SCT_0350	2009	Fremont	Ohio	9025	2	PI 129142		
+SCT_0351	2009	Fremont	Ohio	8958	1	PI 155372		
+SCT_0351	2009	Fremont	Ohio	9046	2	PI 155372		
+SCT_0352	2009	Fremont	Ohio	8961	1	PI 159009		
+SCT_0352	2009	Fremont	Ohio	9033	2	PI 159009		
+SCT_0353	2009	Fremont	Ohio	8962	1	PI 196297		
+SCT_0353	2009	Fremont	Ohio	9059	2	PI 196297		
+SCT_0354	2009	Fremont	Ohio	8980	1	PI 270408		
+SCT_0354	2009	Fremont	Ohio	9027	2	PI 270408		
+SCT_0355	2009	Fremont	Ohio	8966	1	PI 270430		
+SCT_0355	2009	Fremont	Ohio	9045	2	PI 270430		
+SCT_0356	2009	Fremont	Ohio	8967	1	PI 272703		
+SCT_0356	2009	Fremont	Ohio	9043	2	PI 272703		
+SCT_0357	2009	Fremont	Ohio	8979	1	Pomodoro Superselezione di Marmande		
+SCT_0357	2009	Fremont	Ohio	9041	2	Pomodoro Superselezione di Marmande		
+SCT_0327	2009	Fremont	Ohio	8913	1	Ponderosa		
+SCT_0327	2009	Fremont	Ohio	9003	2	Ponderosa		
+SCT_0310	2009	Fremont	Ohio	8914	1	Principe Borghese		
+SCT_0310	2009	Fremont	Ohio	8998	2	Principe Borghese		
+SCT_0358	2009	Fremont	Ohio	8959	1	Prospero		
+SCT_0358	2009	Fremont	Ohio	9030	2	Prospero		
+SCT_0311	2009	Fremont	Ohio	9067	2	Purple Calabash		
+SCT_0360	2009	Fremont	Ohio	8945	1	Rinon PI 118783		
+SCT_0360	2009	Fremont	Ohio	9044	2	Rinon PI 118783		
+SCT_0359	2009	Fremont	Ohio	8942	1	Rinon PI 98097		
+SCT_0359	2009	Fremont	Ohio	9058	2	Rinon PI 98097		
+SCT_0312	2009	Fremont	Ohio	8915	1	Roma VF		
+SCT_0312	2009	Fremont	Ohio	9016	2	Roma VF		
+SCT_0361	2009	Fremont	Ohio	8977	1	Rosa o Monserrat		
+SCT_0361	2009	Fremont	Ohio	9051	2	Rosa o Monserrat		
+SCT_0362	2009	Fremont	Ohio	8949	1	Rumi Banjan		
+SCT_0362	2009	Fremont	Ohio	9029	2	Rumi Banjan		
+SCT_0313	2009	Fremont	Ohio	8927	1	Rutgers		
+SCT_0313	2009	Fremont	Ohio	9002	2	Rutgers		
+SCT_0314	2009	Fremont	Ohio	8916	1	San Marzano		
+SCT_0314	2009	Fremont	Ohio	8992	2	San Marzano		
+SCT_0363	2009	Fremont	Ohio	8944	1	Sao Paulo		
+SCT_0363	2009	Fremont	Ohio	9024	2	Sao Paulo		
+SCT_0315	2009	Fremont	Ohio	8935	1	Sponzillo		
+SCT_0315	2009	Fremont	Ohio	9011	2	Sponzillo		
+SCT_0316	2009	Fremont	Ohio	9065	2	StuPI ce		
+SCT_0317	2009	Fremont	Ohio	8936	1	T1003		
+SCT_0317	2009	Fremont	Ohio	9007	2	T1003		
+SCT_0318	2009	Fremont	Ohio	8937	1	T1693		
+SCT_0318	2009	Fremont	Ohio	9018	2	T1693		
+SCT_0319	2009	Fremont	Ohio	8938	1	T1697		
+SCT_0319	2009	Fremont	Ohio	9013	2	T1697		
+SCT_0328	2009	Fremont	Ohio	8941	1	Tainan		
+SCT_0328	2009	Fremont	Ohio	9023	2	Tainan		
+SCT_0364	2009	Fremont	Ohio	8943	1	Tomate		
+SCT_0364	2009	Fremont	Ohio	9064	2	Tomate		
+SCT_0365	2009	Fremont	Ohio	8978	1	Tomate del lugar		
+SCT_0365	2009	Fremont	Ohio	9060	2	Tomate del lugar		
+SCT_0320	2009	Fremont	Ohio	8939	1	Tres Cantos		
+SCT_0320	2009	Fremont	Ohio	8995	2	Tres Cantos		
+SCT_0366	2009	Fremont	Ohio	8963	1	Turrialba		
+SCT_0366	2009	Fremont	Ohio	9035	2	Turrialba		
+SCT_0321	2009	Fremont	Ohio	8917	1	VFNT Cherry		
+SCT_0321	2009	Fremont	Ohio	9001	2	VFNT Cherry		
+SCT_0367	2009	Fremont	Ohio	8981	1	W-C 1050		
+SCT_0367	2009	Fremont	Ohio	9042	2	W-C 1050		
+SCT_0368	2009	Fremont	Ohio	8972	1	W-C 1537		
+SCT_0368	2009	Fremont	Ohio	9048	2	W-C 1537		
+SCT_0322	2009	Fremont	Ohio	8918	1	White Queen		
+SCT_0322	2009	Fremont	Ohio	9017	2	White Queen		
+SCT_0323	2009	Fremont	Ohio	8919	1	Yellow Pear		
+SCT_0323	2009	Fremont	Ohio	9014	2	Yellow Pear		
+SCT_0369	2009	Fremont	Ohio	8982	1	Zhongza No. 4		
+SCT_0369	2009	Fremont	Ohio	9040	2	Zhongza No. 4		

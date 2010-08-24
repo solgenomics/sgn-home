@@ -1,0 +1,478 @@
+SolCAP T-number	Donor number/Variety Name:	Accession number LA number (if available):	Accession number PI number (if available):	Synonyms:	Heirloom, LandRace, FreshMarket, Processing, Wild, other	Scientific Name:	Name of Donor:	Donor Source:	Donor Institution:	Origin Country	Origin State/Province	Adaptation (Humid/Arid)	Male	Female	Other e.g. BC, IBC	Notes:
+SCT_0001	2K1-1439				Processing	S. lycopersicum	David Francis	OARDC #OH05-9851	OSU	United States	OH	Humid				
+SCT_0002	2K1-2019				Processing	S. lycopersicum	David Francis	OARDC #OH07-9819	OSU	United States	OH	Humid				
+SCT_0003	2K1-2029				Processing	S. lycopersicum	David Francis	OARDC #OH04-9833	OSU	United States	OH	Humid				
+SCT_0004	2K1-2054				Processing	S. lycopersicum	David Francis	OARDC #OH05-9906	OSU	United States	OH	Humid				
+SCT_0005	CULBPT04-1			59301	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #CULBPT04-1	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0006	CULBPT04-2			59302	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059302	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0007	CULBPT04-3			59303	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #CULBPT04-3	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0008	CULBPT04-4			59304	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #CULBPT04-4	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0009	CULBPT04-5			59305	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #086081	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0010	CULBPT-05-10			59310	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059310	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0011	CULBPT-05-11			59311	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059311	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0012	CULBPT-05-15			59340	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059340	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0013	CULBPT-05-18			59343	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059343	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0014	CULBPT-05-20			59345	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059345	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0015	CULBPT-05-21			59321	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059321	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0016	CULBPT-05-22			59347	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059347	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0017	CULBPT-05-9			59309	Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #059309	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0018	CULBPT-A46-2				Processing	S. lycopersicum	Martha Mutschler-Chu	CORNELL #004543	Cornell	United States	NY	Arid				Cornell program, CA genetic background
+SCT_0019	E3259				Processing	S. lycopersicum	David Francis	OARDC #OH05-8520	OSU	United States	OH	Humid				
+SCT_0020	E6203	LA4024			Processing	S. lycopersicum	David Francis	OARDC #OH05-9915	OSU	United States	CA	Arid				Harris-Moran
+SCT_0021	F02-7530				Processing	S. lycopersicum	David Francis	OARDC #OH04-9819	OSU	United States	OH	Humid				
+SCT_0022	F03-6331				Processing	S. lycopersicum	David Francis	OARDC #OH04-9805	OSU	United States	OH	Humid				
+SCT_0023	F03-7463				Processing	S. lycopersicum	David Francis	OARDC #OH04-9848	OSU	United States	OH	Humid				
+SCT_0024	F06-1013-1				Processing	S. lycopersicum	David Francis	OARDC #OH08-9846	OSU	United States	OH	Humid				
+SCT_0025	F06-1014-1				Processing	S. lycopersicum	David Francis	OARDC #OH06-1014-1	OSU	United States	OH	Humid				
+SCT_0026	F06-2041				Processing	S. lycopersicum	David Francis	OARDC #OH06-2041	OSU	United States	OH	Humid				
+SCT_0027	F06-2054				Processing	S. lycopersicum	David Francis	OARDC #OH06-2054	OSU	United States	OH	Humid				
+SCT_0028	F06-2058				Processing	S. lycopersicum	David Francis	OARDC #OH06-2058	OSU	United States	OH	Humid				
+SCT_0029	FG02-188				Processing	S. lycopersicum	David Francis	OARDC #SG08-350	OSU	United States	OH	Humid				
+SCT_0030	Heinz 1706	LA4345		H1706	Processing	S. lycopersicum	TGRC	OARDC #2K6-6469	TGRC	United States	OH	Humid				
+SCT_0031	Hunt 100	LA3144		Hunt100	Processing	S. lycopersicum	TGRC	OARDC #OH02-1238	TGRC	United States	CA	Arid				
+SCT_0032	M82	LA3475			Processing	S. lycopersicum	TGRC	OARDC #OH07-9813	TGRC	United States	CA	Arid				Selection from UC82
+SCT_0033	OH03-6439				Processing	S. lycopersicum	David Francis	OARDC #OH04-9847	OSU	United States	OH	Humid	8245	01-BR-7087		
+SCT_0034	OH05-8018				Processing	S. lycopersicum	David Francis	OARDC #OH05-8018	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0035	OH05-8022				Processing	S. lycopersicum	David Francis	OARDC #OH05-8022	OSU	United States	OH	Humid	OH8245	OH9241	BC2 to OH8245	((OH9241xOH8245)OH8245)
+SCT_0036	OH05-8025				Processing	S. lycopersicum	David Francis	OARDC #OH05-8025	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0037	OH05-8027				Processing	S. lycopersicum	David Francis	OARDC #OH05-8027	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0038	OH05-8028				Processing	S. lycopersicum	David Francis	OARDC #OH05-8028	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0039	OH05-8030				Processing	S. lycopersicum	David Francis	OARDC #OH05-8030	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0040	OH05-8036				Processing	S. lycopersicum	David Francis	OARDC #OH05-8036	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0041	OH05-8040				Processing	S. lycopersicum	David Francis	OARDC #OH05-8040	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0042	OH05-8044				Processing	S. lycopersicum	David Francis	OARDC #OH05-8044	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0043	OH05-8046				Processing	S. lycopersicum	David Francis	OARDC #OH05-8046	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0044	OH05-8048				Processing	S. lycopersicum	David Francis	OARDC #OH05-8048	OSU	United States	OH	Humid	OH8245	OH9241	BC2 to OH8245	((OH9241xOH8245)OH8245)
+SCT_0045	OH05-8053				Processing	S. lycopersicum	David Francis	OARDC #OH05-8053	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0046	OH05-8059				Processing	S. lycopersicum	David Francis	OARDC #OH05-8059	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0047	OH05-8062				Processing	S. lycopersicum	David Francis	OARDC #OH05-8062	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0048	OH05-8064				Processing	S. lycopersicum	David Francis	OARDC #OH05-8064	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0049	OH05-8068				Processing	S. lycopersicum	David Francis	OARDC #OH05-8068	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0050	OH05-8069				Processing	S. lycopersicum	David Francis	OARDC #OH05-8069	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0051	OH05-8070				Processing	S. lycopersicum	David Francis	OARDC #OH05-8070	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0052	OH05-8072				Processing	S. lycopersicum	David Francis	OARDC #OH05-8072	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0053	OH05-8074				Processing	S. lycopersicum	David Francis	OARDC #OH05-8074	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0054	OH05-8078				Processing	S. lycopersicum	David Francis	OARDC #OH05-8078	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0055	OH05-8079				Processing	S. lycopersicum	David Francis	OARDC #OH05-8079	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0056	OH05-8087				Processing	S. lycopersicum	David Francis	OARDC #OH05-8087	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0057	OH05-8090				Processing	S. lycopersicum	David Francis	OARDC #OH05-8090	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0058	OH05-8095				Processing	S. lycopersicum	David Francis	OARDC #OH05-8095	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0059	OH05-8104				Processing	S. lycopersicum	David Francis	OARDC #OH05-8104	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0060	OH05-8109				Processing	S. lycopersicum	David Francis	OARDC #OH05-8109	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0061	OH05-8117				Processing	S. lycopersicum	David Francis	OARDC #OH05-8117	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0062	OH05-8124				Processing	S. lycopersicum	David Francis	OARDC #OH05-8124	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0063	OH05-8139				Processing	S. lycopersicum	David Francis	OARDC #OH05-8139	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0064	OH05-8142				Processing	S. lycopersicum	David Francis	OARDC #OH05-8142	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0065	OH05-8144				Processing	S. lycopersicum	David Francis	OARDC #OH05-8144	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0066	OH05-8151				Processing	S. lycopersicum	David Francis	OARDC #OH05-8151	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0067	OH05-8162				Processing	S. lycopersicum	David Francis	OARDC #OH05-8162	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0068	OH05-8163				Processing	S. lycopersicum	David Francis	OARDC #OH05-8163	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0069	OH05-8165				Processing	S. lycopersicum	David Francis	OARDC #OH05-8165	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0070	OH05-8171				Processing	S. lycopersicum	David Francis	OARDC #OH05-8171	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0071	OH05-8175				Processing	S. lycopersicum	David Francis	OARDC #OH05-8175	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0072	OH05-8179				Processing	S. lycopersicum	David Francis	OARDC #OH05-8179	OSU	United States	OH	Humid	OH8245	OH9241	BC2 to OH8245	((OH9241xOH8245)OH8245)
+SCT_0073	OH05-8181				Processing	S. lycopersicum	David Francis	OARDC #OH05-8181	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0074	OH05-8184				Processing	S. lycopersicum	David Francis	OARDC #OH05-8184	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0075	OH05-8185				Processing	S. lycopersicum	David Francis	OARDC #OH05-8185	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0076	OH05-8186				Processing	S. lycopersicum	David Francis	OARDC #OH05-8186	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0077	OH05-8187				Processing	S. lycopersicum	David Francis	OARDC #OH05-8187	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0078	OH05-8188				Processing	S. lycopersicum	David Francis	OARDC #OH05-8188	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0079	OH05-8192				Processing	S. lycopersicum	David Francis	OARDC #OH05-8192	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0080	OH05-8193				Processing	S. lycopersicum	David Francis	OARDC #OH05-8193	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0081	OH05-8197				Processing	S. lycopersicum	David Francis	OARDC #OH05-8197	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH9242	((OH9242xOH8245)OH9242)
+SCT_0082	OH05-8206				Processing	S. lycopersicum	David Francis	OARDC #OH05-8206	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0083	OH05-8210				Processing	S. lycopersicum	David Francis	OARDC #OH05-8210	OSU	United States	OH	Humid	OH8245	OH832	BC2 to OH8245	((OH832xOH8245)OH8245)
+SCT_0084	OH05-8214				Processing	S. lycopersicum	David Francis	OARDC #OH05-8214	OSU	United States	OH	Humid	OH8245	OH9242	BC2 to OH8245	((OH9242xOH8245)OH8245)
+SCT_0085	OH08-5201				Processing	S. lycopersicum	David Francis	OARDC #OH08-5201	OSU	United States	OH					DeRuiter AB129
+SCT_0086	OH08-5202				Processing	S. lycopersicum	David Francis	OARDC #OH08-5202	OSU	United States	OH					DeRuiter AB137
+SCT_0087	OH08-5203				Processing	S. lycopersicum	David Francis	OARDC #OH08-5203	OSU	United States	OH					DeRuiter AB131
+SCT_0088	OH08-5204				Processing	S. lycopersicum	David Francis	OARDC #OH08-5204	OSU	United States	OH					DeRuiter AB133
+SCT_0089	OH08-5205				Processing	S. lycopersicum	David Francis	OARDC #OH08-5205	OSU	United States	OH					DeRuiter AB136
+SCT_0090	OH08-5206				Processing	S. lycopersicum	David Francis	OARDC #OH08-5206	OSU	United States	OH					DeRuiter AB405
+SCT_0091	OH08-5207				Processing	S. lycopersicum	David Francis	OARDC #OH08-5207	OSU	United States	OH					DeRuiter AB747
+SCT_0092	OH08-5210				Processing	S. lycopersicum	David Francis	OARDC #OH08-5210	OSU	United States	OH					Campbells x OH M8X9036B
+SCT_0093	OH08-5211				Processing	S. lycopersicum	David Francis	OARDC #OH08-5211	OSU	United States	OH					Campbells x OH C4559
+SCT_0094	OH08-5213				Processing	S. lycopersicum	David Francis	OARDC #OH08-5213	OSU	United States	OH					Campbells x OH C4551
+SCT_0095	OH08-5215				Processing	S. lycopersicum	David Francis	OARDC #OH08-5215	OSU	United States	OH					Campbells x OH C4560
+SCT_0096	OH08-5216				Processing	S. lycopersicum	David Francis	OARDC #OH08-5216	OSU	United States	OH					Campbells x OH C4562
+SCT_0097	OH08-7438				Processing	S. lycopersicum	David Francis	OARDC #OH08-7438	OSU	United States	OH					Harris-Moran x OH 08MX1203-2
+SCT_0098	OH08-7439				Processing	S. lycopersicum	David Francis	OARDC #OH08-7439	OSU	United States	OH					Harris-Moran x OH 08MX1203-3
+SCT_0099	OH08-7454				Processing	S. lycopersicum	David Francis	OARDC #OH08-7454	OSU	United States	OH					Harris-Moran x OH 08MX1227-1
+SCT_0100	OH08-7457				Processing	S. lycopersicum	David Francis	OARDC #OH08-7457	OSU	United States	OH					Harris-Moran x OH 08MX1235-1
+SCT_0101	OH08-7458				Processing	S. lycopersicum	David Francis	OARDC #OH08-7458	OSU	United States	OH					Harris-Moran x OH 08MX1236-1
+SCT_0102	OH08-7459				Processing	S. lycopersicum	David Francis	OARDC #OH08-7459	OSU	United States	OH					Harris-Moran x OH 08MX1239-1
+SCT_0103	OH08-7460				Processing	S. lycopersicum	David Francis	OARDC #OH08-7460	OSU	United States	OH					Harris-Moran x OH 08MX1240-1
+SCT_0104	OH08-7466				Processing	S. lycopersicum	David Francis	OARDC #OH08-7466	OSU	United States	OH					Harris-Moran x OH 08MX1289-SB
+SCT_0105	OH08-7469				Processing	S. lycopersicum	David Francis	OARDC #OH08-7469	OSU	United States	OH					Harris-Moran x OH 08MX1307-SB
+SCT_0106	OH08-7470				Processing	S. lycopersicum	David Francis	OARDC #OH08-7470	OSU	United States	OH					Harris-Moran x OH 08MX1312-SB
+SCT_0107	OH2641				Processing	S. lycopersicum	David Francis	OARDC #OH04-9879	OSU	United States	OH	Humid				
+SCT_0108	OH3614				Processing	S. lycopersicum	David Francis	OARDC #OH04-9825	OSU	United States	OH	Humid				
+SCT_0109	OH5-8127				Processing	S. lycopersicum	David Francis	OARDC #OH5-8127	OSU	United States	OH	Humid				
+SCT_0110	OH5-8157				Processing	S. lycopersicum	David Francis	OARDC #OH5-8157	OSU	United States	OH	Humid				
+SCT_0111	OH5-8164				Processing	S. lycopersicum	David Francis	OARDC #OH5-8164	OSU	United States	OH	Humid				
+SCT_0112	OH7814				Processing	S. lycopersicum	David Francis	OARDC #OH04-9818	OSU	United States	OH	Humid				
+SCT_0113	OH7870				Processing	S. lycopersicum	David Francis	OARDC #OH05-9907	OSU	United States	OH	Humid				
+SCT_0114	OH7983				Processing	S. lycopersicum	David Francis	OARDC #OH04-8515	OSU	United States	OH	Humid				
+SCT_0115	OH8243				Processing	S. lycopersicum	David Francis	OARDC #OH04-9847	OSU	United States	OH	Humid				
+SCT_0116	OH8245				Processing	S. lycopersicum	David Francis	OARDC #OH05-9869	OSU	United States	OH	Humid				
+SCT_0117	OH832				Processing	S. lycopersicum	David Francis	OARDC #OH99-9080	OSU	United States	OH	Humid				
+SCT_0118	OH8446				Processing	S. lycopersicum	David Francis	OARDC #OH99-9101	OSU	United States	OH	Humid				
+SCT_0119	OH8556				Processing	S. lycopersicum	David Francis	OARDC #OH04-9834	OSU	United States	OH	Humid				
+SCT_0120	OH86120				Processing	S. lycopersicum	David Francis	OARDC #OH05-9841	OSU	United States	OH	Humid				
+SCT_0121	OH8614-1				Processing	S. lycopersicum	David Francis	OARDC #OH07-9833	OSU	United States	OH	Humid				
+SCT_0122	OH87160				Processing	S. lycopersicum	David Francis	OARDC #OH08-9842	OSU	United States	OH	Humid				
+SCT_0123	OH88119				Processing	S. lycopersicum	David Francis	OARDC #OH05-9829	OSU	United States	OH	Humid				
+SCT_0124	OH9241				Processing	S. lycopersicum	David Francis	OARDC #OH05-9856	OSU	United States	OH	Humid				
+SCT_0125	OH9242				Processing	S. lycopersicum	David Francis	OARDC #OH07-9843	OSU	United States	OH	Humid				
+SCT_0126	OH981049				Processing	S. lycopersicum	David Francis	OARDC #OH02-9922	OSU	United States	OH	Humid				
+SCT_0127	OH981067				Processing	S. lycopersicum	David Francis	OARDC #OH05-9837	OSU	United States	OH	Humid				
+SCT_0128	OH981136				Processing	S. lycopersicum	David Francis	OARDC #OH05-9875	OSU	United States	CA	Arid				
+SCT_0129	OH981205				Processing	S. lycopersicum	David Francis	OARDC #OH05-9872	OSU	United States	OH	Humid				
+SCT_0130	OH987034				Processing	S. lycopersicum	David Francis	OARDC #OH05-9879	OSU	United States	OH	Humid				
+SCT_0131	Oroma				Processing	S. lycopersicum	Jim Meyers	OregonstateU #	Oregon State U.	United States	OR					
+SCT_0132	Pearson	LA0012			Processing	S. lycopersicum		PublicTGRC #LA0012	Public, TGRC	United States	CA, UT	Arid				
+SCT_0133	Peto95-43	LA3528			Processing	S. lycopersicum		PublicTGRC #LA3528	Public, TGRC	United States		Arid				
+SCT_0134	R001				Processing	S. lycopersicum	David Francis	Ridgetown #OH08-9809	Ridgetown	CANADA	Ontario	Humid				
+SCT_0135	R9812				Processing	S. lycopersicum	David Francis	Ridgetown #OH08-9810	Ridgetown	CANADA	Ontario	Humid				
+SCT_0136	R996				Processing	S. lycopersicum	David Francis	Ridgetown #OH08-9811	Ridgetown	CANADA	Ontario	Humid				
+SCT_0137	R997				Processing	S. lycopersicum	David Francis	Ridgetown #OH08-9812	Ridgetown	CANADA	Ontario	Humid				
+SCT_0138	Saucy				Processing	S. lycopersicum	Jim Meyers	OregonstateU #	Oregon State U.	United States	OR					
+SCT_0139	Sun1642			TA491	Processing	S. lycopersicum	Ester Van der Knaap	Public #SGH08-464	Public	United States	CA	Arid				Nunhem's
+SCT_0140	UC-204B	LA4437			Processing	S. lycopersicum		Public, TGRC #ACCOPO172-2	Public, TGRC	United States	CA	Arid				
+SCT_0141	UC-82	LA1706			Processing	S. lycopersicum		Public, TGRC #LA1706	Public, TGRC	United States	CA	Arid				
+SCT_0142	Unilever265				Processing	S. lycopersicum	Public	Public #OH05-9898	Public	United States	CA	Arid				Unilever
+SCT_0143	071733-1				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0144	071820-2				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0145	091003-21				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0146	091003-29				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0147	091003-30				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0148	091003-35				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0149	091003-36				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0150	091004-15				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0151	091004-16				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0152	091004-32				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0153	091004-4				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0154	091004-7				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0155	091004-8				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0156	0.999802265162417				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0157	091109-3				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0158	091119-2				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0159	091120-2				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0160	091120-7				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0161	091135-1				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0162	091144-1				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0163	091144-2				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0164	091153-1				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0165	091166-3				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0166	091183-1				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0167	88003-59				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0168	88003-62				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0169	88003-81				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					fresh plum
+SCT_0170	88018 N				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0171	88019 N				FreshMarket	S. lycopersicum	Martha Mutschler-Chu		Cornell	United States	NY					
+SCT_0172	Campbell 28	LA3317		C28	FreshMarket	S. lycopersicum	Public		Public	United States	NJ	Humid				
+SCT_0173	Cherokee				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0174	Fla. 678				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0175	Fla. 701				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0176	Fla. 7060				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL	Humid				
+SCT_0177	Fla. 726				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0178	Fla. 7481				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0179	Fla. 7547				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL	Humid				
+SCT_0180	Fla. 7600				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL	Humid				
+SCT_0181	Fla. 7770				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0182	Fla. 7771				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL	Humid				
+SCT_0183	Fla. 7775				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL	Humid				
+SCT_0184	Fla. 7776				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0185	Fla. 7781				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0186	Fla. 7804				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0187	Fla. 7907B				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0188	Fla. 7946				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0189	Fla. 8000				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0190	Fla. 8044				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0191	Fla. 8059				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0192	Fla. 8083				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0193	Fla. 8109				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0194	Fla. 8111BH				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0195	Fla. 8124C				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0196	Fla. 8233				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL	Humid				
+SCT_0197	Fla. 8249				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0198	Fla. 8293				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0199	Fla. 8344				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0200	Fla. 8352				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0201	Fla. 8476				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0202	Fla. 8516				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0203	Fla. 8539				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0204	Fla. 8543				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0205	Fla. 8561B-6				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0206	Fla. 8599				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0207	Fla. 8608				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0208	Fla. 8624				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0209	Fla. 8626				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0210	Fla. 8629				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0211	Fla. 8646				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0212	Fla. 8653				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0213	Fla. 8735				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0214	Fla. 8737				FreshMarket	S. lycopersicum	Jay Scott		UFL	United States	FL					
+SCT_0215	Flora-Dade				FreshMarket	S. lycopersicum	Public		Public	United States	FL	Humid				
+SCT_0216	Gold Nugget				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0217	LA0797	LA0797			FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.							atv
+SCT_0218	LA1996	LA1996			FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.							aft
+SCT_0219	LA2378	LA2378	PI 290858	Purple Smudge	FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.							
+SCT_0220	LA3163	LA3163			FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.							ag
+SCT_0221	LA3736	LA3736			FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.							atv
+SCT_0222	LA4425	LA4425			FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.							Abg
+SCT_0223	Large German Cherry				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0224	Legend				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0225	Medford				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0226	NC 7 P rep-8 (2006) - 96			LB/EB Plum No 1	FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC					
+SCT_0227	NC123S				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0228	NC 13E-1(95)				FreshMarket	S. lycopersicum	David Francis		OSU	United States	NC					Bacterial canker resistant line
+SCT_0229	NC 13G				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				Brachytic, crimson large fruited line
+SCT_0230	NC140				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0231	NC161L-1W(2007)				FreshMarket	S. lycopersicon	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0232	NC1CS				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0233	NC23E-2 (93)				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0234	NC265-1(93)-3-4	LA2625			FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0235	NC2C				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0236	NC2Y				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0237	NC33EB-1				FreshMarket	S. lycopersicon	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0238	NC47NC2				FreshMarket	S. lycopersicon	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0239	NC50-7				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0240	NC714-3B(2007)				FreshMarket	S. lycopersicon	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0241	NC8276				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0242	NC8288				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0243	NC84173				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0244	NC860-1(2008)				FreshMarket	S. lycopersicon	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0245	NC99471-3				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0246	NCEBR-1				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0247	NCEBR-2				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0248	NCEBR-3				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0249	NCEBR-4				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0250	NCEBR-5	LA3845			FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				NCEBR-5 is a plum tomato but the one we have is a jointless cherry line that appears to be NC 1C.
+SCT_0251	NCEBR-6	LA3846			FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0252	NCEBR-7				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0253	NCEBR-8				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0254	NCHS-1	LA3847			FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0255	Ohio11				FreshMarket	S. lycopersicum	David Francis		OSU	United States	OH	Humid				
+SCT_0256	Ohio MR13				FreshMarket	S. lycopersicum	David Francis		OSU	United States	OH	Humid				
+SCT_0257	OR11				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0258	Oregon Spring				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0259	Oregon Star				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0260	P20-3-1				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0261	PI 564169		PI 564169	New Ida	FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	FL					
+SCT_0262	PI 647532		PI 647532	Ruffled Yellow	FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	FL					
+SCT_0263	PI 128586		PI 128586		FreshMarket	S. lycopersicum					Garden in Limache					
+SCT_0264	PI 281553		PI 281553	Furuya K-go	FreshMarket	S. lycopersicum										
+SCT_0265	PI 340906		PI 340906	Summer Cherry	FreshMarket	S. lycopersicum										
+SCT_0266	PI 470262		PI 470262	DB21	FreshMarket	S. lycopersicum				Indonesia						
+SCT_0267	PI 65023		PI 65023		FreshMarket	S. lycopersicum				Spain	Balearic Islands					
+SCT_0268	Piedmont				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0269	RioGrande	LA3343			FreshMarket	S. lycopersicum	Roger Chetelat		TGRC			Humid				
+SCT_0270	Severianin				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0271	Siletz				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0272	Summit				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	United States	NC	Humid				
+SCT_0273	T-5	LA2399			FreshMarket	S. lycopersicum	Roger Chetelat		TGRC	United States	CA	Arid				Randy Gardner pers. com, this not the same line that Randy received years ago and used in breeding
+SCT_0274	T-9	LA2590			FreshMarket	S. lycopersicum	Roger Chetelat		TGRC	United States	CA	Arid				
+SCT_0275	Tropic				FreshMarket	S. lycopersicum	Public		Public			Humid				
+SCT_0276	UC-MR20	LA2937			FreshMarket	S. lycopersicon	Roger Chetelat		TGRC	United States	CA	Humid				
+SCT_0277	UC-N28	LA2938			FreshMarket	S. lycopersicon	Roger Chetelat		TGRC	United States	CA	Humid				
+SCT_0278	UC-T338	LA2939			FreshMarket	S. lycopersicon	Roger Chetelat		TGRC	United States	CA	Humid				
+SCT_0279	UC-TR44	LA2940			FreshMarket	S. lycopersicon	Roger Chetelat		TGRC	United States	CA	Humid				
+SCT_0280	UC-TR51	LA2941			FreshMarket	S. lycopersicon	Roger Chetelat		TGRC	United States	CA	Humid				
+SCT_0281	Willamette VF				FreshMarket	S. lycopersicum	Jim Meyers		Oregon State U.	United States	OR					
+SCT_0282	Ha7981	LA4441		Hawaii 7981	Unimp.	S. lycopersicon	Public		Public	United States	Hawaii					
+SCT_0283	Ha7997	LA3202		Hawaii 7997	Unimp.	S. lycopersicum	Roger Chetelat		TGRC	United States	Hawaii					
+SCT_0284	Ha7998	LA3856		Hawaii 7998	Unimp.	S. lycopersicun	Roger Chetelat		TGRC	United States	Hawaii					
+SCT_0285	Aker's West Virginia				Vintage	S. lycopersicum	Carolyn Male									
+SCT_0286	Amish Paste				Vintage	S. lycopersicum	tomatogrowers supply			United States						
+SCT_0287	Beauty			NSL 27076	Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S BEAUTY
+SCT_0288	Black From Tula				Vintage	S. lycopersicum	Carolyn Male									
+SCT_0289	Black Plum			01S25	Vintage	S. lycopersicum	David Francis	OARDC #06-6416	OSU	Russia						
+SCT_0290	Brandywine (Sudduth/Quisenberry)				Vintage	S. lycopersicum	Carolyn Male			United States						
+SCT_0291	Burbank				Vintage	S. lycopersicum			GLVWG							
+SCT_0292	Cherokee Purple				Vintage	S. lycopersicum	Carolyn Male	OARDC #92265		United States						
+SCT_0293	Costoluto Genovese				Vintage	S. lycopersicum	Ester Van der Knaap	OARDC #Ester	OSU	Italy						
+SCT_0294	D' Olvia x Industria				Vintage	S. lycopersicum	Ester Van der Knaap	OARDC #Ester	OSU	Italy						
+SCT_0295	Favorite		PI 636262		Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S FAVORITE
+SCT_0296	Globe		PI 270186		Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S GLOBE
+SCT_0297	Gold Ball			NSL 27012	Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S GOLD BALL
+SCT_0298	Grushovka				Vintage	S. lycopersicum	David Francis	OARDC #06-6462	OSU	Russia						
+SCT_0299	Howard German			01S39	Vintage	S. lycopersicum	David Francis	OARDC #06-6455	OSU							
+SCT_0300	Juane Flammee				Vintage	S. lycopersicum		OARDC #5082		France						
+SCT_0301	King Humbert	LA0025	PI 645082		Vintage	S. lycopersicum				Italy						
+SCT_0302	LYC1903				Vintage	S. lycopersicum	Ester Van der Knaap	OARDC #Ester	OSU	Italy						
+SCT_0303	Marglobe	LA0502			Vintage	S. lycopersicum		OARDC #06-6407		United States						
+SCT_0304	Moneymaker	LA2706			Vintage	S. lycopersicum	David Francis	OARDC #06-6474	OSU	Netherlands						
+SCT_0305	Opalka				Vintage	S. lycopersicum	David Francis	OARDC #5045	OSU	Poland						
+SCT_0306	Orange Strawberry				Vintage	S. lycopersicum	Ester Van der Knaap	OARDC #Ester	OSU							
+SCT_0307	Oxheart			NSL193993	Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S OXHEART
+SCT_0308	PARAGON		PI 451990		Vintage	S. lycopersicum	David Francis	OARDC #06-6402	OSU	United States	OH					
+SCT_0309	Peron				Vintage	S. lycopersicum			GLVWG							
+SCT_0310	Principe Borghese	LA0089			Vintage	S. lycopersicum	David Francis	OARDC #06-6495	OSU							
+SCT_0311	Purple Clabash	LA2377	PI 290857		Vintage	S. lycopersicum	AMBB									
+SCT_0312	RomaVF			01S36	Vintage	S. lycopersicum	David Francis	OARDC #06-6482	OSU							
+SCT_0313	Rutgers	LA1090			Vintage	S. lycopersicum	David Francis	OARDC #06-6419	OSU	United States	NJ					
+SCT_0314	San Marzano	LA3008			Vintage	S. lycopersicum	David Francis	OARDC #06-6409	OSU	Italy						
+SCT_0315	Sponzillo				Vintage	S. lycopersicum	Ester Van der Knapp	OARDC #Ester	OSU	Italy						
+SCT_0316	Stupice		PI 250436		Vintage	S. lycopersicum	Ester Van der Knapp		OSU	Czechoslovakia						
+SCT_0317	T1003				Vintage	S. lycopersicum	Ester Van der Knapp	OARDC #Ester	OSU	Italy						
+SCT_0318	T1693				Vintage	S. lycopersicum	Ester Van der Knapp	OARDC #Ester	OSU	Italy						
+SCT_0319	T1697				Vintage	S. lycopersicum	Ester Van der Knapp	OARDC #Ester	OSU	Italy						
+SCT_0320	Tres Cantos				Vintage	S. lycopersicum	Ester Van der Knapp	OARDC #Ester	OSU	Spain						
+SCT_0321	VFNT Cherry	LA1221			Vintage	S. lycopersicum										
+SCT_0322	White Queen				Vintage	S. lycopersicum	Carolyn Male			United States						
+SCT_0323	Yellow Pear				Vintage	S. lycopersicum	David Francis	OARDC #06-6503	OSU							
+SCT_0324	Yellow Stuffer				Vintage	S. lycopersicum	David Francis	OARDC #06-6420	OSU							
+SCT_0325	Ailsa Craig	LA2838A	PI 26299560AI2SD		Vintage	S. lycopersicum	David Francis	OARDC #08-8529	OSU	England						
+SCT_0326	Marveille des Marches		PI 10983484AISD		Vintage	S. lycopersicum	Ester Van der Knaap	OARDC #08-8504	OSU	France						
+SCT_0327	Ponderosa		PI 270206		Vintage	S. lycopersicum	Ester Van der Knaap	OARDC #08-8531	OSU							
+SCT_0328	Tainan		PI 647556	AVRDC #6	Vintage	S. lycopersicum			USDA							
+SCT_0329	1091-Chonto 21 (mataverde (3-21-2))		PI 505317		Vintage	S. lycopersicum			USDA							
+SCT_0330	A-1770		PI 452026		Vintage	S. lycopersicum			USDA							
+SCT_0331	A-1771		PI 452027		Vintage	S. lycopersicum			USDA							
+SCT_0332	Abel		PI 121662		Vintage	S. lycopersicum			USDA							
+SCT_0333	Chih-mu-tao-se		PI 158760		Vintage	S. lycopersicum			USDA							
+SCT_0334	Cotaxtla I		PI 268107		Vintage	S. lycopersicum			USDA							
+SCT_0335	Devon Surprise		PI 294638		Vintage	S. lycopersicum			USDA							
+SCT_0336	Heinz 1370		PI 341134		Vintage	S. lycopersicum			USDA							
+SCT_0337	Hong Kong		PI 291337		Vintage	S. lycopersicum			USDA							
+SCT_0338	Kiyosu No. 2		PI 281555		Vintage	S. lycopersicum			USDA							
+SCT_0339	LA0410	LA0410	PI 258474		Vintage	S. lycopersicum			USDA							
+SCT_0340	Peto 460		PI 600920		Vintage	S. lycopersicum			USDA							
+SCT_0341	PI 124035		PI 124035		Vintage	S. lycopersicum			USDA							
+SCT_0342	PI 124037		PI 124037		Vintage	S. lycopersicum			USDA							
+SCT_0343	PI 127820		PI 127820		Vintage	S. lycopersicum			USDA							
+SCT_0344	PI 128586		PI 128586		Vintage	S. lycopersicum			USDA							
+SCT_0345	PI 128592		PI 128592		Vintage	S. lycopersicum			USDA							
+SCT_0346	PI 129026		PI 129026		Vintage	S. lycopersicum			USDA							
+SCT_0347	PI 129033		PI 129033		Vintage	S. lycopersicum			USDA							
+SCT_0348	PI 129084		PI 129084		Vintage	S. lycopersicum			USDA							
+SCT_0349	PI 129128		PI 129128		Vintage	S. lycopersicum			USDA							
+SCT_0350	PI 129142		PI 129142		Vintage	S. lycopersicum			USDA							
+SCT_0351	PI 155372		PI 155372		Vintage	S. lycopersicum			USDA							
+SCT_0352	PI 159009		PI 159009		Vintage	S. lycopersicum			USDA							
+SCT_0353	PI 196297		PI 196297		Vintage	S. lycopersicum			USDA							
+SCT_0354	PI 270408		PI 270408		Vintage	S. lycopersicum			USDA							
+SCT_0355	PI 270430		PI 270430		Vintage	S. lycopersicum			USDA							
+SCT_0356	PI 272703		PI 272703		Vintage	S. lycopersicum			USDA							
+SCT_0357	Pomodoro Superselezione di Marmande		PI 647486		Vintage	S. lycopersicum			USDA							
+SCT_0358	Prospero		PI 157993		Vintage	S. lycopersicum			USDA							
+SCT_0359	Rinon PI 98097		PI 98097	Rinon	Vintage	S. lycopersicum			USDA							
+SCT_0360	Rinon PI 118783		PI 118783	Rinon	Vintage	S. lycopersicum			USDA							
+SCT_0361	Rosa o Monserrat		PI 647305		Vintage	S. lycopersicum			USDA							
+SCT_0362	Rumi Banjan		PI 125831		Vintage	S. lycopersicum			USDA							
+SCT_0363	Sao Paulo		PI 117563		Vintage	S. lycopersicum			USDA							
+SCT_0364	Tomate		PI 99782		Vintage	S. lycopersicum			USDA							
+SCT_0365	Tomate del lugar		PI 647447		Vintage	S. lycopersicum			USDA							
+SCT_0366	Turrialba		PI 212062		Vintage	S. lycopersicum			USDA							
+SCT_0367	W-C 1050		PI 390510		Vintage	S. lycopersicum			USDA							
+SCT_0368	W-C 1537		PI 406952		Vintage	S. lycopersicum			USDA							
+SCT_0369	Zhongza No. 4		PI 647445		Vintage	S. lycopersicum			USDA							
+SCT_0370	LA0166	LA0166			Wild	S. cheesmaniae	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0371	LA0317	LA0317			Wild	S. galapagense	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0372	LA0373	LA0373			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	Ancash					
+SCT_0373	LA0407	LA0407			Wild	S. habrochaites	David Francis		OSU	Ecuador	Guayas					
+SCT_0374	LA0422	LA0422			Wild	S. cheesmaniae	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0375	LA0438	LA0438			Wild	S. galapagense	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0376	LA0446	LA0446			Wild	S. peruvianum	Roger Chetelat		TGRC	Peru	Arequipa					
+SCT_0377	LA0716	LA0716			Wild	S. pennellii	David Francis		OSU	Peru	Arequipa					
+SCT_0378	LA0722	LA0722			Wild	S. pimpinellifolium	Majid Foolad		Penn State U.	Peru	La Libertad					
+SCT_0379	LA1028	LA1028			Wild	S. chmielewskii	Roger Chetelat		TGRC	Peru	Apurimac					
+SCT_0380	LA1037	LA1037			Wild	S. cheesmaniae	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0381	LA1141	LA1141			Wild	S. galapagense	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0382	LA1208	LA1208			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Colombia						
+SCT_0383	LA1269	LA1269			Wild	S. pimpinellifolium	David Francis		OSU	Peru	Lima					
+SCT_0384	LA1272	LA1272			Wild	S. pennellii	Martha Mutschler-Chu		Cornell	Peru	Lima					
+SCT_0385	LA1274	LA1274			Wild	S. peruvianum	Roger Chetelat		TGRC	Peru	Lima					
+SCT_0386	LA1282	LA1282			Wild	S. pennellii	Martha Mutschler-Chu		Cornell	Peru	Lima					
+SCT_0387	LA1283	LA1283			Wild	S. corneliomulleri	Roger Chetelat		TGRC	Peru	Lima					
+SCT_0388	LA1301	LA1301			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	Ica					
+SCT_0389	LA1322	LA1322			Wild	S. neorickii	Roger Chetelat		TGRC	Peru	Cusco					
+SCT_0390	LA1331	LA1331			Wild	S. corneliomulleri	Roger Chetelat		TGRC	Peru	Ica					
+SCT_0391	LA1340	LA1340			Wild	S. pennellii	Martha Mutschler-Chu		Cornell	Peru	Lima					
+SCT_0392	LA1346	LA1346			Wild	S. arcanum	Roger Chetelat		TGRC	Peru	La Libertad					
+SCT_0393	LA1406	LA1406			Wild	S. cheesmaniae	Roger Chetelat		TGRC	Ecuador	Galapagos Islands					
+SCT_0394	LA1455	LA1455			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Nuevo Leon					
+SCT_0395	LA1457	LA1457			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Puebla					from market
+SCT_0396	LA1464	LA1464			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Honduras						10 to 15 miles back in the hills
+SCT_0397	LA1478	LA1478			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	Piura					
+SCT_0398	LA1512	LA1512			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	El Salvador						Casa de Sr. V. Gallo
+SCT_0399	LA1542	LA1542			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Costa Rica						r/73 (route 73?)
+SCT_0400	LA1545	LA1545			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Campeche					
+SCT_0401	LA1547	LA1547			Wild	S. pimpinellifolium	David Francis		OSU	Ecuador	Carchi					
+SCT_0402	LA1549	LA1549			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Pasco					Sr. Muller, Quebrada Seca, Chontabamba, Cerro de Pasco, into Chanchamayo Valley
+SCT_0403	LA1569	LA1569			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Vera Cruz					coffee experiment station
+SCT_0404	LA1578	LA1578			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	La Libertad					
+SCT_0405	LA1582	LA1582			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	Lambayeque					
+SCT_0406	LA1589	LA1589			Wild	S. pimpinellifolium	David Francis		OSU	Peru	La Libertad					
+SCT_0407	LA1617	LA1617			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	Tumbes					
+SCT_0408	LA1620	LA1620			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Brazil	Bahia					
+SCT_0409	LA1621	LA1621			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Hidalgo					1/2 km S of the bridge over Rio Venados on Route 105
+SCT_0410	LA1623	LA1623			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Yucatan					
+SCT_0411	LA1632	LA1632			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Madre de Dios					
+SCT_0412	LA1654	LA1654			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	San Martin					Mercado de abastos
+SCT_0413	LA1656	LA1656			Wild	S. pennellii	Martha Mutschler-Chu		TGRC	Peru	Ica					
+SCT_0414	LA1668	LA1668			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Guerrero					market
+SCT_0415	LA1701	LA1701			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	La Libertad					
+SCT_0416	LA1703	LA1703			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Mexico	Tamaulipas					
+SCT_0417	LA1712	LA1712			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Costa Rica						
+SCT_0418	LA1732	LA1732			Wild	S. pennellii	Roger Chetelat		Cornell	Peru	Huancavelica					
+SCT_0419	LA1777	LA1777			Wild	S. habrochaites	Roger Chetelat		TGRC	Peru	Ancash					
+SCT_0420	LA1809	LA1809			Wild	S. pennellii	Martha Mutschler-Chu		Cornell	Peru	Piura					
+SCT_0421	LA1912	LA1912			Wild	S. pennellii	Martha Mutschler-Chu		Cornell							
+SCT_0422	LA1926	LA1926			Wild	S. pennellii	Martha Mutschler-Chu		Cornell							
+SCT_0423	LA1946	LA1946			Wild	S. pennellii	Martha Mutschler-Chu		Cornell	Peru	Arequipa					
+SCT_0424	LA1953	LA1953			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Arequipa					
+SCT_0425	LA1963	LA1963			Wild	S. chilense	Jim Meyers		Oregon State U.	Peru	Tacna					
+SCT_0426	LA1973	LA1973			Wild	S. corneliomulleri	Roger Chetelat		TGRC	Peru	Arequipa					
+SCT_0427	LA2076	LA2076	PI 387854		Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Bolivia						
+SCT_0428	LA2077	LA2077	PI 387855		Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Bolivia	La Paz					
+SCT_0429	LA2078	LA2078			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Brazil	Rio Grande de Sol					
+SCT_0430	LA2093	LA2093			Wild	S. pimpinellifolium	Majid Foolad		Penn State U.	Ecuador	El Oro					
+SCT_0431	LA2099	LA2099			Wild	S. habrochaites	Roger Chetelat		TGRC	Ecuador	Loja					
+SCT_0432	LA2126	LA2126			Wild	S. lycopersicum var. cerasiforme			*	Ecuador	Zamora-Chinchipe					
+SCT_0433	LA2131	LA2131			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Ecuador	Zamora-Chinchipe					
+SCT_0434	LA2135	LA2135			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Ecuador	Santiago-Morona					
+SCT_0435	LA2137	LA2137			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Ecuador	Santiago-Morona					
+SCT_0436	LA2163	LA2163			Wild	S. arcanum	Roger Chetelat		TGRC	Peru	Cajamarca					
+SCT_0437	LA2181	LA2181			Wild	S. pimpinellifolium	Roger Chetelat		TGRC	Peru	Cajamarca					
+SCT_0438	LA2184	LA2184			Wild	S. pimpinellifolium	David Francis		OSU	Peru	Amazonas					
+SCT_0439	LA2185	LA2185			Wild	S. arcanum	Roger Chetelat		TGRC	Peru	Amazonas					
+SCT_0440	LA2190	LA2190			Wild	S. neorickii	Roger Chetelat		TGRC	Peru	Amazonas					
+SCT_0441	LA2308	LA2308			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	San Martin					29 km from Tarapoto, en route to Juanjua at a chacra on E side of camino
+SCT_0442	LA2312	LA2312			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Amazonas					29 km S of Balsapata, Upper S end of Jumbilla
+SCT_0443	LA2393	LA2393			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Costa Rica	Guanacaste					
+SCT_0444	LA2411	LA2411			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Puno					
+SCT_0445	LA2560	LA2560			Wild	S. pennellii	Martha Mutschler-Chu		Cornell	Peru	Ancash					
+SCT_0446	LA2561	LA2561			Wild	S. huaylasense	Roger Chetelat		TGRC	Peru	Ancash					
+SCT_0447	LA2626	LA2626			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Cusco					Urubamba drainage
+SCT_0448	LA2632	LA2632			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Cusco					Urubamba drainage
+SCT_0449	LA2633	LA2633			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Cusco					Urubamba drainage
+SCT_0450	LA2660	LA2660			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Bolivia	Beni					
+SCT_0451	LA2663	LA2663			Wild	S. chmielewskii	Roger Chetelat		TGRC	Peru	Cusco					
+SCT_0452	LA2664	LA2664			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Puno					Beyond San Juan del Oro
+SCT_0453	LA2675	LA2675			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Puno					30 km from Ollachea Sangaban
+SCT_0454	LA2744	LA2744			Wild	S. peruvianum	Roger Chetelat		TGRC	Chile	Tarapaca					
+SCT_0455	LA2788	LA2788			Wild	S. juglandifolium	Roger Chetelat		TGRC	Colombia	Antioquia					
+SCT_0456	LA2792	LA2792			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Colombia	Antioquia					
+SCT_0457	LA2880	LA2880			Wild	S. chilense	Roger Chetelat		TGRC	Chile	Antofagasta					
+SCT_0458	LA2930	LA2930			Wild	S. chilense	Roger Chetelat		TGRC	Chile	Antofagasta					
+SCT_0459	LA2932	LA2932			Wild	S. chilense	Roger Chetelat		TGRC	Chile	Antofagasta					
+SCT_0460	LA2951	LA2951			Wild	S. lycopersicoides	Roger Chetelat		TGRC	Chile	Tarapaca					
+SCT_0461	LA3136	LA3136			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Cuba	Holguin					
+SCT_0462	LA3137	LA3137			Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Cuba	Holguin					
+SCT_0463	LA3650	LA3650			Wild	S. ochranthum	Roger Chetelat		TGRC	Peru	Apurimac					
+SCT_0464	LA3795	LA3795			Wild	S. peruvianum	Roger Chetelat		TGRC	Peru	Ancash					
+SCT_0465	LA4331	LA4331			Wild	S. sitiens	Roger Chetelat		TGRC	Chile	Antofagasta					
+SCT_0466	PI 378997	LA1290	PI 378997		Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Junin					
+SCT_0467	PI 379003	LA1314	PI 379003		Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Peru	Cusco					On the South side of Rio Apurimac from PI chari
+SCT_0468	PI 379051	LA1338	PI 379051		Wild	S. lycopersicum var. cerasiforme	Jim Meyers		Oregon State U.	Ecuador	Napo					
+SCT_0469	PI 390513		PI 390513		Wild	S. habrochaites	Dilip Panthee		NCSU	Ecuador	Loja					
+SCT_0470	PI 406759		PI 406759		Wild	S. lycopersicum var. cerasiforme	Dilip Panthee		NCSU	Costa Rica						
+SCT_0471	PI 114490		PI 114490		Wild	S. lycopersicum var. cerasiforme	David Francis		OSU							
+SCT_0472	PI 128216		PI 128216		Wild	S. pimpinellifolium	David Francis		OSU	Bolivia						
+SCT_0473	PI 128650		PI 128650		Wild	S. peruvianum	Dilip Panthee		NCSU	Chile	Tarapaca					
+SCT_0474	PI 365914		PI 365914		Wild	S. pimpinellifolium	John Stommel		USDA	Ecuador						
+SCT_0475	Micro Tom	LA3911			Other	S. lycopersicum	David Francis			United States	FL					Novelty
+SCT_0476	LA1927	LA1927			Wild	S. habrochaites	Roger Chetelat		TGRC	Peru	Ayacucho					
+SCT_0477	LA2126A	LA2126A			Wild	S. lycopersicum var. cerasiforme			*	Ecuador	Zamora-Chinchipe					
