@@ -1,0 +1,190 @@
+-population- download 'this as text file' 'csv file' 
+
+-statistical calculations - different options based on the experiment
+
+ 
+-for quantitative traits: search for accessions within a range of values ("fruit size > 4" ) 
+add more search options
+
+-Trait search : combine the 'trait search' and 'ontology search' 
+expand from bi-parental populations to association
+most data from SolCAP is big unstructured populations 
+   
+----
+loading SolCAP accessions: 
+
+-find matching accessions in SGN (vintage file) look in the 'Linking file' spreadsheet
+ 
+- Map the accessions in the data sheets based on SCT# 
+
+- inflorescence structure - do we store in the ontology when the trait was scored ('2nd and 3rd truss'	) 
+
+-------------
+
+SNP database 
+
+-snp as a marker type 
+
+CAPs -  2 primers
+dCAPS - 3 primers 
+ASPE - 5 primers
+infinum -3 
+golden gate - 3 
+TaqMan - 3
+
+fragment length :
+	 SSR, indels: PCR-> agarose, polyacrylamid, capillary 
+
+----
+For David: 
+
+-send the new tomato phenotyping file with the SP ids  -OK
+-load sp into the database
+-load tomato files (vintage, processing, fresh market) 
+
+-work with Lukas on the SNP design! !
+
+
+----------------------
+SNP database 
+-------------
+--add sgn account for SolCAP
+
+
+1.
+add new sgn.snp table 
+
+look in lib/CXGN/Marker/SNP/Schema/Snp.pm
+
+snp_id serial PRIMARY KEY,
+reference_nucleotide varchar(4),
+snp nucleotide varchar(4) IS NOT NULL,
+confirmed boolean DEFAULT 0,
+sequence_left_id integer REFERENCES sgn.sequence(sequence_id),
+sequence_right_id integer REFERENCES sgn.sequence(sequence_id),
+reference_stock_id integer NOT NULL REFERENCES public.stock(stock_id),
+snp_stock_id integer NOT NULL REFERENCES public.stock(stock_id), 
+metadata_id integer REFERENCES metadata.md_metadata(metadata_id)
+
+
+these will be stored in metadata
+-------
+sp_person_id integer REFERENCES sgn_people.sp_person(sp_person_id), 
+--(SolCAP)
+create_date timestamp with time zone DEFAULT now()
+--------
+
+
+--table snp_file
+sgn_file_id serial PRIMARY KEY, 
+snp_id integer NOT NULL REFERENCES sgn.snp(snp_id),
+file_id integer NOT NULL REFERENCES meatadata.md_file(file_id)
+
+snp name  - is it a marker name ? 
+the
+
+
+-revisit this snp table DDL-
+-----------------------------------
+if we need to store some snp properties, like (mqs? figure out what this is- from the Davis SNP data )
+it should go to a snpprop table
+
+------------ 
+*write a template spreadsheet and send to David**
+
+
+2.
+public.stock- populate with sgn.accession
+                         (sgn.individual
+			 sgn.population_
+(public.stock_relationship : store relationships between individuals and populations and individuals/populations and accessions)
+			 
+sgn.pcr_experiment - add stock_id FK to stock
+
+---
+3. load the pcr sequence types in cvterm
+
+forward primer 
+reverse primer
+dCAPS primer
+ASPE
+
+
+4.
+linking table called pcr_experiment_sequence 
+
+pcr_experiment_sequence_id
+pcr_experiment_id
+sequence_id
+type_id REFERENCES public.cvterm(cvterm_id)
+
+5.
+copying the pcr_experimet.primer_id columns to pcr_experiment_seqience
+
+6.
+refactor the code that uses pcr_experiment.primer_id_fwd/rev/pd (dCAPs?)
+
+
+---- 
+
+
+
+7. The loading script is already written by Homa
+look in sgn-tools/scripts/snp/load_snps.pl
+
+and the search in cxgn/sgn/cgi-bin/search/markers/snp_search.pl
+
+
+----------------
+SNP tool implementation 
+* aure has pipelines for snp analysis
+A tool for predicting the protein and telling the user the nature of the amino acid change (synonymous/non-synonymous) 
+
+
+
+
+-------------
+------------
+#################
+#Storing solcap phenotype data
+####################
+
+1. Data file : coopGuide (-Vintage-07-15-2010.xls) 
+Look at sheet 'Tomato Germplast Passport' (converted into text file 'solcap_germplast.txt') it has all the metadata about tomato accessions.
+-Loading script: Phenome/bin/loading_scripts/solcap/load_solcap_tomato_acc.pl
+
+* This script loads the accessions in the stock table, and defines the relationship with the 'tomato cultivars' population in the stock_relationship table.
+The metadata about the accessions is stored in stockprop.
+
+----
+
+2. Accessions were assayed in plots. Plot numbers are then used in the phenotyping files.
+Since each phenotype is stored separately in nd_experiment, loading the plot numbers in the ND schema would require storing the number multiple times in the nd_experimentprop table. Since plots should be easily accessed for statistical analysis, we've decided (Naama and Rob) to store these in the stock table, and have the accession as the parent in stock_relationship.
+
+-Loading script: load_vintage_plots_2009.pl
+-Data sheet : 'Linking file' Converted into a text file vintage_linking_file2009.txt
+
+
+
+----The following goes into the Natural Diversity module. Need to load first the sql from the GMOD trunk
+
+3. Load the geolocation data. See 'Field Passport Data'
+*writing a loading script for this*
+
+The geolocation from here will be used for each 'experiment' (e.g. phenotype measurements ) 
+then load the project metadata into the project table. Each 'experiment' will be linked with a project (nd_experiment_project)
+
+
+
+4. Load the data.
+Phenotyping results are stored in several spreadheets
+ 
+  1) 'Tomato Data Entry' has most of the phenotypes. Here the row labels are SCT# and plot# is in the next column. 
+    * NOTE- date fields need to be calculated in days based on planting dates ! 
+    **Note- need to find a solution for the mixed plots (e.g. plot #s with xxxx.1 and .2)  
+
+  2) TA-Color phenptypes from Tomato Analyzer color analysis
+  3) Longitudinal_shape_individual - phenotypes from TA
+  4) Latitudinal_data_individual  - phenotypes from TA
+* Row labels in TA data are plot #s
+
