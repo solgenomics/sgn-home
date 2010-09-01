@@ -1,0 +1,5 @@
+#data file for the solcap vintage 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap vintage tomatoes 2009, Fremont, OH	solcap vintage tomatoes. OSU-OARDC North Central Agricultural Research Station, 1165 CR 43 Fremont, OH 43420	OSU-OARDC Fremont, OH	41.4888888888889	-83.1222222222222	WGS84	191	2009/04/15	2009/06/04	2009/08/26	2009/09/23	2009	OSU-OARDC North Central Agricultural Research Station, 1165 CR 43 Fremont, OH 43420
+
+
