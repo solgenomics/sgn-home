@@ -161,7 +161,7 @@ The metadata about the accessions is stored in stockprop.
 2. Accessions were assayed in plots. Plot numbers are then used in the phenotyping files.
 Since each phenotype is stored separately in nd_experiment, loading the plot numbers in the ND schema would require storing the number multiple times in the nd_experimentprop table. Since plots should be easily accessed for statistical analysis, we've decided (Naama and Rob) to store these in the stock table, and have the accession as the parent in stock_relationship.
 
--Loading script: load_vintage_plots_2009.pl
+-Loading script: load_vintage_plots2009.pl -D cxgn -H localhost -i ~/cxgn/sgn-home/naama/solcap/vintage_linking_file2009.txt
 -Data sheet : 'Linking file' Converted into a text file vintage_linking_file2009.txt
 
 
@@ -169,7 +169,7 @@ Since each phenotype is stored separately in nd_experiment, loading the plot num
 ----The following goes into the Natural Diversity module. Need to load first the sql from the GMOD trunk
 
 3. Load the geolocation data. See 'Field Passport Data'
-*writing a loading script for this*
+* load_geolocation_project.pl - the data is hardcoded in the script. This needs to move to a text file. 
 
 The geolocation from here will be used for each 'experiment' (e.g. phenotype measurements ) 
 then load the project metadata into the project table. Each 'experiment' will be linked with a project (nd_experiment_project)
@@ -182,9 +182,24 @@ Phenotyping results are stored in several spreadheets
   1) 'Tomato Data Entry' has most of the phenotypes. Here the row labels are SCT# and plot# is in the next column. 
     * NOTE- date fields need to be calculated in days based on planting dates ! 
     **Note- need to find a solution for the mixed plots (e.g. plot #s with xxxx.1 and .2)  
+    
+    loading script: Phenome/bin/loading_scripts/solcap/load_solcap_data_entry.pl
+    data file: sgn-home/naama/solcap/load_solcap_data_entry.txt
 
+    
   2) TA-Color phenptypes from Tomato Analyzer color analysis
   3) Longitudinal_shape_individual - phenotypes from TA
   4) Latitudinal_data_individual  - phenotypes from TA
 * Row labels in TA data are plot #s
+
+use script
+
+load_solcap_TA_phenotype.pl 
+
+with the relevant data sheets in sgn-home/naama/solcap/
+ta_color_vintage_2009
+ta_longitudinal_vintage_2009
+ta_latitudinal_vintage_2009
+
+
 
