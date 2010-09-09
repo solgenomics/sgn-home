@@ -165,11 +165,12 @@ Since each phenotype is stored separately in nd_experiment, loading the plot num
 -Data sheet : 'Linking file' Converted into a text file vintage_linking_file2009.txt
 
 
-
 ----The following goes into the Natural Diversity module. Need to load first the sql from the GMOD trunk
 
 3. Load the geolocation data. See 'Field Passport Data'
-* load_geolocation_project.pl - the data is hardcoded in the script. This needs to move to a text file. 
+* load_geolocation_project.pl - 
+the data is stored in a file (see  /home/naama/cxgn/sgn-home/naama/solcap/vintage2009metadata.txt)
+
 
 The geolocation from here will be used for each 'experiment' (e.g. phenotype measurements ) 
 then load the project metadata into the project table. Each 'experiment' will be linked with a project (nd_experiment_project)
@@ -184,9 +185,18 @@ Phenotyping results are stored in several spreadheets
     **Note- need to find a solution for the mixed plots (e.g. plot #s with xxxx.1 and .2)  
     
     loading script: Phenome/bin/loading_scripts/solcap/load_solcap_data_entry.pl
-    data file: sgn-home/naama/solcap/load_solcap_data_entry.txt
+    data file: sgn-home/naama/solcap/solcap_data_entry_vintage_2009.txt
 
-    
+-- TA data:
+loading script: load_solcap_TA_phenotypes.pl
+##################
+ 
+* need to adjust row labels to be unique!!!
+ plot#_fruit#
+
+
+############
+
   2) TA-Color phenptypes from Tomato Analyzer color analysis
   3) Longitudinal_shape_individual - phenotypes from TA
   4) Latitudinal_data_individual  - phenotypes from TA
