@@ -200,7 +200,7 @@ loading script: load_solcap_TA_phenotypes.pl
   2) TA-Color phenptypes from Tomato Analyzer color analysis
   3) Longitudinal_shape_individual - phenotypes from TA
   4) Latitudinal_data_individual  - phenotypes from TA
-* Row labels in TA data are plot #s
+* Row labels in TA data are plot#_fruit# (this needed tweaking , since the original solcap data files have just the plot # for row labels)
 
 use script
 
