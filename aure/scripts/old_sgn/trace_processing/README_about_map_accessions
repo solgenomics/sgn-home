@@ -1,0 +1,133 @@
+MAP ACCESSIONS PIPELINE
+
+*  Description:
+	Sometimes you can find sequences in the SGN without public.dbxref.accession associated to them. This pipeline describe the process to map this sequences. To do it we use the SGN_map_gb_accession_in_db.pl script. It compare the sgn.clone.clone_name field with some fields of a GenBank tab file (obteined with the trace procesing script SGN_PI_GBseq.pl). It produce a file with the accession, version and est_id associated to them. To load this file in the database you can use the SGN-accessions_mapped-db-load.pl script.
+
+*  Authors:
+	Aureliano Bombarely Gomez (ab782@cornell.edu)
+
+*  Version:
+	Version 1.0 => (01-07-08)
+        Last update => (16-07-08)
+
+*  Process schema:
+
+     +-----------------------+
+     |	GenBank files (.gb)  |
+     +-----------------------+
+                 ||
+	         ||
+           SGN_PI_GBseq.pl
+                 ||
+                 ||
+                 \/
+     #########################    ################
+     #                       #    #              # 
+     # GenBank in tab format #    # SGN Database #<==========-
+     #			     #_  _#              #           \\
+     ######################### \/ ################            ||
+                              \  /                            ||
+                               ||                             ||
+                               ||                             ||
+			       ||                             ||
+                               ||                             ||
+		  SGN_map_gb_accession_in_db.pl	              ||
+			       ||                             ||
+                               ||                             ||
+                               ||               SGN_accessions_mapped-db-load.pl
+                               ||                             ||
+                               \/                             ||
+                +-----------------------------+               ||
+                |			      |               //
+		|  db_mapping_"basename".tab  |===============-
+		|			      |
+                +-----------------------------+
+
+
+1) FIRST STEP: Map GenBank accession in the database.
+
+	The script that we can use is SGN_map_gb_accession_in_db.pl. The input file that it use is GenBank file in tab format with the follow fields: 
+
+ 	- locus
+	- accession
+	- version 
+        - primary_id
+	- description 
+	- seq
+        - qscore_def 
+        - mol_type 
+        - organism 
+        - cell_line
+        - cell_type 
+        - clone 
+        - clone_lib 
+        - cultivar
+        - dbxref 
+        - dev_stage 
+        - ecotype 
+        - environmental_sample
+        - lab_host
+        - note
+        - PCR_primers 
+        - plasmid 
+        - tissue_lib
+        - tissue_type 
+        - author
+           
+ (You can use the SGN_PI_GBseq.pl to obtain this file from GenBank plain text files). This script load the sgn.clone.clone_name and the sgn.est.est_id in two parallel arrays (so means, that $array1[0] <---> $array2[0], $array1[1] <---> $arra2[1] ...). and the input.locus, input.accession, input.version and input.clone in four parallel arrays. After that compare the elements of the @sgn_clone_name with the elements of @locus, @accession, @(accession+version) and @clone. In the last case also can compare a partial name (remove non alphanumeric character and compare the all the characters of the shorter name with the begin or the end of the longer name).
+
+    Examples:
+     
+     ---------------------------------------------------------------------------------------------------------------   
+     | sgn.clone.clone_name  |  locus  | accession | accession+version | complete_clone | partial_clone |  MATCH   | 
+     ---------------------------------------------------------------------------------------------------------------
+     | KL4B.100E02R_051019T7 | DV16264 |  DV16264  |      DV16264.1    |  KL4B_100E02R  |  KL4B100E02R  | partial  |
+     | DV19875		     | DV19875 |  DV19875  |      DV19875.1    |  MT23.A05F     |  MT23A05F     | loc+acc  |
+     | TOB4CAL               | TOB4CAL |  DV32178  |      DV32178.2    |  none          |  none         | loc      |
+     | TT01-E01              | CV89321 |  CV89321  |      CV89321.1    |  ntTT01-E01    |  ntTT01E01    | partial  |
+     | TT01-E01              | CV89321 |  CV89321  |      CV89321.1    |  TT01-E01.abi  |  TT01E01abi   | partial  |
+     | TT01-E01              | CV89321 |  CV89321  |      CV89321.1    |  ntTT01-E01.abi|  ntTT01E01abi | NO MATCH |
+     ---------------------------------------------------------------------------------------------------------------
+      NO MATCH: partial sgn.clone.clone_name => TT01E01 ne partial input.clone (ntTT01E(01abi) or (ntTT0)1E01abi)
+
+   The NO MATCH is not a common case but we could fix the problem remove (nt) or (.abi) before run the script in the genbank file. Sometimes we can find the clone field empty and the clone name inside the description field. For this cases is better update the clone field before run the script. 
+   To do it:
+
+        0- Enter in the database.
+          
+	1- Create temp table:
+
+	CREATE TEMP TABLE temp_table (locus varchar(250), accession varchar(250), version varchar(250), description text, seq text, qscore_def text, mol_type varchar(250), organism varchar(250), cell_line varchar(250), cell_type varchar(250), clone varchar(250), clone_lib varchar(250), cultivar varchar(250), dbxref varchar(250), dev_stage varchar(250), ecotype varchar(250), environmental_sample varchar(250), lab_host varchar(250),note text, PCR_primers text, plasmid varchar(250), tissue_lib varchar(250), tissue_type varchar(250), author text, UNIQUE (accession, version));
+
+        2- Load the genbank file in the temp table (complete file path):
+
+	COPY temp_table FROM 'complete file path'; 
+
+        3- Change the clone, this change from one case to another, but is useful expressions like substring.
+
+        UPDATE temp_table SET clone = substring(description from 1 for 9) WHERE clone IS NULL;
+
+        or
+
+        UPDATE temp_table SET clone = substring(clone from 3 for 11) WHERE clone LIKE '%ntTT%;
+
+        4- Create a new file and change the premissions for sql can write it
+
+        5- Copy the table in the new empty file.
+
+        COPY temp_table TO 'complete new file path'; 
+
+
+2) SECOND STEP: Load the map file in the database.
+
+	To do it, we can use the SGN_accessions_mapped-db-load.pl. The input file is the three column (accesion, version, est_id) output file (db_mapping_"basename".tab) that produce the script SGN_map_gb_accessions_in_db.pl. It works in a smilar way that SGN_seq-db_load.pl do:
+
+	- load the file
+        - create a master table (with other fields that needs)
+        - add id control fields of the values that exists in the database (for example dbxref_id)
+        - select the values that the control field id is null (they are new) 
+	- copy them in a file 
+	- copy this file to the sgn.table (in this case public.dbxref and sgn.est_dbxref tables).
+ 	- check the number of new entries are the same than the entries of the file.
+
+	After the copy, write a report and give to user the option of commit the data or rollback. 
