@@ -1,0 +1,358 @@
+TRACE PROCESSING PIPELINE:
+
+########################
+* GENERAL DESCRIPTION:
+########################
+
+	This pipeline describe the process to get the sequences and the data 
+associated to them in different formats, process the sequences (remove 
+contaminants, poliA tails...) and load in the SGN databases.
+
+
+############
+* AUTHORS:
+############
+
+  Aureliano Bombarely Gomez 
+  (ab782@cornell.edu)
+
+
+############
+* VERSION:
+############
+
+  Version 1.0 => (01-07-08)
+  Last update => (16-07-08)
+
+
+#################
+* INTRODUCTION:
+#################
+
+	This pipeline get, process, manage and load the sequences and the 
+data asociated to them in the SGN databases. 
+	
+	The schema of the process: 
+
+################################################################################
+#  		                  SEQUENCES                                    #
+#----------------------+------------------------+------------------------------#
+# Chromatograms (.abi) | Fasta (or/and Quality files) |  GenBank format (.gb)  #################################################################################
+	           ||                      ||                             ||
+	           ||		           ||			          ||
+ sgnpl_chromatogram_processing.pl    change_format_fasta_to_tab.pl        ||
+		   ||			   ||			          ||
+		   \/		           \/                             ||
+        +-----------------------------------+                             ||
+        | Sequences in fasta format         |                             ||
+	| Sequences and qual in tab format  | sgnpl_genbank_format_processing.pl
+	+-----------------------------------+                             ||
+			      ||					  ||
+			      ||                                          ||
+	             sgnpl_create_library_file.pl                         ||
+			      ||                                          ||
+			      \/                                          \/
+        +----------------------------------------------------------------------+
+        |                 Sequences in fasta format                            |
+	|----------------------------------------------------------------------|
+	|       Sequences, quality values and library names in tab format      |
+	|                         Library data in tab format                   |
+	+----------------------------------------------------------------------+
+                              ||
+			      ||
+			      ||                               /-------------\ 
+			      ||           remove poliA       /    adaptors   \
+   sgnpl_sequence_clean_processing.pl * <------------------> {   contaminants  }
+                              ||          remove N in ends    \    vectors    /
+                              ||                               \-------------/
+                              ||
+                              \/
+        +----------------------------------------------------------------------+
+        |                 Sequences in fasta format                            |
+	|----------------------------------------------------------------------|
+	|       Sequences, quality values and library names in tab format      |
+	|                         Library data in tab format                   |
+	|       Cleanning sequence coordenates and cleanning tags tab file     |
+	+----------------------------------------------------------------------+
+                              ||
+			      ||
+			      ||                               /-------------\ 
+			      ||                              /    protein    \
+		  sgnpl_chimera_screen.pl* <---------------> {     dataset     }
+                              ||                              \ (fasta format)/
+                              ||                               \-------------/
+                              ||
+                              \/
+        +----------------------------------------------------------------------+
+        |                 Sequences in fasta format                            |
+	|----------------------------------------------------------------------|
+	|       Sequences, quality values and library names in tab format      |
+	|                 Library data in tab format                           |
+	|       Cleanning sequence coordenates and cleanning tags tab file     |
+	|	           Possible chimera sequences in tab format            |
+	+----------------------------------------------------------------------+
+                              ||
+			      ||
+                              ||                      
+                              ||		 
+	              load_estseq_into_sgndb.pl 
+                              ||                      #########################
+			      ||                      #                       #
+                              ||		      #     SGN-DATABASES     #
+                              \/                      #                       #
+		+---------------------------+         #      sgn.library      #
+		|                           |         #	     sgn.clone        #
+		|         Load Files        |>=>=>=>=>#      sgn.seqread      #
+		|			    |         #      sgn.est          #
+		+---------------------------+         #      sgn.qc_report    #
+                                                      #                       #
+					              # GB { sgn.est_dbxref } #
+						      # GB { public.dbxref  } #
+						      #                       #
+						      #########################
+
+
+
+##############
+* UTILITIES:
+##############
+
+  1) How many sequences, or accessions have an organism? 
+  
+    Run sgndb_report_trace_processing_by_organism.pl. 
+
+    This script give a table with the organisms (another option is specify them
+with the -o argument) and the counts of library_id, clone_id, read_id, est_id, 
+qc_id, est_dbxref_id and dbxref_id (accessions) asociated th them. Also you can
+get for all the organism (-A) or get only the id's where sgn.est.flags and 
+sgn.est.status = 0.   
+
+  2) How can I check errors, problems, data fields absent in the trace 
+     processing tables?
+
+    Run sgndb_check_trace_processing_tables.pl 
+
+    This script check different errors (or facts that are usefull to know if 
+you are checking the trace processing tables counts). For example check if a 
+clone_id haven't associated any est_id, or if a est_id haven't sequence but 
+have flags and status equal to 0 (an error).
+
+
+#############
+* PIPELINE:
+#############
+
+  0) SOURCES:
+
+	   a]- A folder with the chromatograms of a sequencing project.
+
+ 	   b]- A fasta file with the sequences. Sometimes you can have the 
+               quality values in fasta format too.
+	
+	   c]- A folder with a GenBank files with sequences and data associated
+               to these sequences like library, cultivar, tissue type, author...
+
+
+  1) FIRST STEP: Process the files to fasta file and tab file.
+
+	The databases are constituted by tables. One of the ways to introduce 
+     new data into the tables in the database is to copy the data from a file 
+     in tabular format (.txt, .csv ...). The first step of this pipeline 
+     consist in to process the source dataset and obtain files in tab format 
+     that can copy to the database. Some programs like seqclean, blast... use 
+     the sequences in fasta format, so we will need the sequences in fasta 
+     format.
+
+ 	There are four scripts to do it. The use of one or another depends of 
+     the source:
+
+	a]-> Chromatograms => 
+	       sgnpl_chromatogram_processing.pl to process them.
+               sgnpl_create_library_file.pl to associate library data.
+
+        b]-> Sequences (and quality data) in fasta format => 
+               change_format_fasta_to_tab.pl
+               sgnpl_create_library_file.pl
+
+        c]-> Sequences and data associated them in GenBank format => 
+             sgnpl_genbank_format_processing.pl to get the different data
+	       for the GenBank file (plain text file), load in a database, 
+               process them and produce tab files (one of them with the 
+               sequences and another data, and other with the library data 
+               associated with the sequences).
+	       The library file is processed and the libraries with less than 
+               one cutoff value are cluster in a virtual
+	       library. Also it produce a fasta file with the sequence.
+	       
+	Each script have its own perldoc or help. 
+        See it for more details about its use.
+
+   2) SECOND STEP: Clean the sequences.
+
+  The cleaning process remove vectors, adaptors, contaminants, abundant N
+fragments in the ends and assign cleaning tags if the sequences have global 
+problems like is short (less than 100 bp), have a high percentage of N (more 
+than 3%), all the sequence match with a vector or contaminant... The cleaning 
+process use a scrit called sgnpl_sequence_clean_processing.pl. This script use 
+a program called seqclean (http://compbio.dfci.harvard.edu/tgi/software/). The 
+script use this program as many times as the dataset needs to obtain 0 trim 
+sequences in the output. So means, that the seqclean program can not clean more
+ the dataset. After that the script get all the cleaning coordenates file of 
+each cleanning running and calculate a the cleanning coordenates for the global
+ process. 
+
+         [Fasta file] ---------------> [Global cleaning coordenates file]
+
+  This program use two kind of dataset to compare and remove sequences parts:
+
+	-v => vector or adapter datasets, which can determine the trimming of 
+              the analyzed sequences even when only very short terminal matches
+              (down to 12 base pair) are found.
+
+	-s => extensive contaminants datasets, where the alignments between 
+              these contaminants and the analyzed sequences are only 
+              considered if the are longer than 60 base pair with at least 94% 
+              identity.
+
+	You can find these datasets in: 
+
+		/data/shared/blast/databases/current/screening
+
+	Inside these directories we recomend the use of:
+	
+	-v => 	vector/Univec (this dataset incluid common adaptors)
+		adaptor/(especific adaptor for libraries)
+
+	-s => 	contaminants/ColiBank95,lib
+		contaminants/sol-plast-mit-ncds.fasta	
+
+	(Carefull, If you want remove mitocondrial or plastid sequences... 
+	there are genes in these sequences that you can find in mRNA or DNA 
+        genomic populations... check that these only are non codificant 
+	sequences). 
+
+
+   3) THIRD STEP: Search the possibles chimera sequences.
+
+        During the creation of a cDNA library could happen that two sequences 
+      of different mRNA, join together in the same cDNA. These kind of 
+      sequences haven't biological meaning. They are called chimera sequences. 
+
+        
+        |====|====================|=====|aaaaaaaaaa    
+                  mRNA A
+
+        |====|===========-----------------|----|aaaaaaaaaaa
+                  chimera mRNA A and B
+
+        |--|------------------|----|aaaaaaaaaaaa
+               mRNA B
+
+         
+	To find these sequences we can use the sgnpl_chimera_screen.pl script. 
+      This script divide the sequnences in two parts (5' and 3') and do a blast
+      of them against protein dataset. Compare the results with a permuted 
+      selfblast results of the protein dataset and annotate the sequences that 
+      have different (and not similar, like the same proteins with differents 
+      locus) blast result for these 5' and 3' parts. Finally this script give 
+      an output tab file with the sequences id and the blast result for the 5' 
+      and 3' ends.
+
+	This script use a protein dataset and if is possible the permuted 
+      selfblast results of this protein dataset or the  or the selfblast 
+      results in m8 format.
+
+	You can fin the protein datasets in:
+
+	      /data/shared/blast/databases/current/
+
+	You can find more information about the use of this script in the 
+      perldoc or -h of it.
+
+   
+   4) FORTH STEP: Load the sequences and the sequences associated data in the 
+      database.
+
+	The last step in the trace_processing pipeline is load the data in the 
+      database. To do it, we can use the SGN_seq-db-load.pl script. This script
+      works in the following way: 
+
+	1- Copy the files (sequences data, cleaning coordeantes data, chimera 
+           screen data and library data ) 
+           in a tem tables.
+
+	2- Make a master table with all the temp tables.
+
+        3- Add new fields to master table like status or flags that depends of 
+           the values of temp table fields.
+
+	4- Add new control fields with the id's of the sgn fields where this 
+           script is going to add the data.
+
+	5- Select master_table.field data for the concrete sgn.table in a temp 
+           table where the sgn table id is null.
+
+	6- Copy this temp table in a file.
+
+	7- Copy the file in the sgn.table.
+
+        8- Check that the number of new entries are the same than the data 
+           selected of the master table.
+
+        9- Copy the new sgn.table.id's to the master table (or the old if 
+           they aren't null).
+
+	The input files that it needs:
+
+		a) Sequence and associated sequence datas file. It could have 
+                   three different origins: 
+			- GenBank files.
+ 			- Chromatograms processed by phred. 
+			- Sequences (and quality data) in fasta format. 
+
+		   These origins define the number of columns that the files 
+                   could have. The origin must specify by the argument -f.
+
+		b) Cleaning coordenates file (optional).
+
+		c) Chimera screen results file (optional).
+
+		d) Library data file associated to the sequences file. 
+
+	Finally this script give the option of commit (or rollback) the data 
+        load. Print in the screen the report of the load, but also you can 
+        check the load data files before commit them.
+
+	
+#########
+* FAQS:
+#########
+  
+       => load_estseq_into_sgndb.pl:
+
+	1- Message: Sorry, the number of clones added to sgn.clone table 
+                    (ddddd) is not the same than the new clones in the xxxx 
+                    file. Check it before rerun this script.
+	   
+           Problem: When the script count the number of different clone_name 
+                    in the clone.tab file (preload_file in the output folder, 
+                    usually dbload_files) is different of the count of new data
+                    in the sgn.clone column. It happens because you can find the
+                    same clone name in differents libraries (for example 
+                    virtual library that comes from core_nucleotide GenBank 
+                    dataset and xxxx library that comes from EST GenBank 
+                    dataset).
+
+	   Solution: - Load the clone.tab file in a database.
+		     - Count the libraries for each clone_name.
+		     - Get the clone_names with more than one library.
+                     - Load the GenBank tab file in a database.
+		     - Select the clone_names with more than one library, 
+                       if they have the same sequence, take one and remove the
+                       rest (is better if you remove the virtual library 
+                       entries because have less information). If they have 
+                       different sequences, change the clone name (for example 
+                       take clone_name = accession for virtual library and 
+                       leave the clone name for the rest, or add a library 
+                       name prefix).
+                     - Copy the GenBank data in the GenBank tab file.	
