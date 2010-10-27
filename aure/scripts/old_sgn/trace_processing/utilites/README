@@ -1,0 +1,12 @@
+This dir contains scripts with additional functionalities.
+
+ + change_format_fasta_to_tab.pl, a simple script to change fasta format 
+   to tabular format.
+
+ + seq_coordinates_processing.pl, a script to combine coordinates from different
+   files, for example from lucy and seqclean outputs.
+
+ + trim_sequences_from_lucy.pl, script to trim sequences from a fasta file 
+   using a lucy program output.
+
+ For more information use perldoc over these scripts.
