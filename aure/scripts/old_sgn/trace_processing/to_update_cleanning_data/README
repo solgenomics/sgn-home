@@ -1,0 +1,103 @@
+UPDATE CLEANING DATA PIPELINE
+
+* Description:
+	The sequences cleaning use different datasets to find vector, adaptors,
+ lab host contaminants, michocondrials or plastids non codificant sequences... 
+These datasets can be change (the users can add more information or remove 
+wrong data), and could be useful a pipeline that update these data for the 
+sequences. This pipeline use three scripts, one to get the sequences from the 
+database, other to clean the sequences (the same that use the trace processing 
+pipeline) and another that store the old cleaning data in a file and update the
+ database with the new cleaning data.
+
+* Author:
+ 	Aureliano Bombarely Gomez (ab782@cornell.edu)
+	
+
+* Version:
+	Version 1.0 => (16-07-08).
+	Last update => (17-07-08).
+
+* Process schema:
+
+      ################                           +--------------------------+
+      #              #                           |                          |
+      # SGN Database #<===========+  +==========>| Old cleaning coordenates |
+      #              #            \\//           |      (in tab file)       |
+      ################             ||            |                          |  
+             ||                    ||            +--------------------------+
+	     ||                    ||
+    get_estseq_from_sgndb.pl       ||
+             ||                    ||
+             ||                    ||
+             \/                    ||
+      +--------------+             ||
+      |              |             ||
+      | sequences in |             ||
+      | fasta format |  load_update_cleancoord_into_sgndb.pl
+      |              |             ||
+      +--------------+             ||
+             ||                    ||
+	     ||                    ||
+ sgnpl_sequence_clean_processing.pl||
+    sgnpl_chimera_screen.pl        ||
+             ||                    ||
+             ||                    ||
+             \/                    ||
+       +-------------+             ||
+       |             |             ||
+       |  cleaning   |            //
+       | coordenates |============+
+       |             |
+       +-------------+
+                      
+1) FIRST STEP: Get the sequences from the database.
+
+   The script that we can use to get the sequences is SGN_get_seq-from-db.pl. 
+This script has different option to get the sequences (with or without qscore 
+values, get the clean sequences, get the sequence with flags=0 or/and status=0
+...). 
+
+   The rigth option for this pipeline is get the sequences without qscore 
+values and get the crude sequences (without the aplication of the cleaning 
+coordenates or the flags/status).
+
+Usage: 
+  perl get_estseq_from_sgndb.pl -H <dbhost> -D <dbname> 
+                                -b <basename_for_out_file> 
+                                [-o <organism_name> or -l <library_name>]
+
+   After the use of this script, it is convenient the application of sequences 
+analysis scripts, like fastaFileCheck. The crude sequences haven't limits in 
+the size range (the curated, cleaned sequences should not have sequences sizes 
+with less than 100 nt).
+
+2) SECOND STEP: The cleaning.
+
+   The script used for the cleaning in this pipeline is the same than the 
+script used in the trace processing pipeline. sgnpl_sequence_clean_processing.pl
+ is a script that use the program seqclean to remove the contaminant sequences 
+(vector, adaptor, lab host...), poliA tails and the sequences with less than 
+100 nt. 
+   See the help, perldoc of this script or the README for the trace processing 
+for more details.
+
+   Another script that could be used for the cleaning is the 
+sgnpl_chimera_screen.pl, to find possible chimera mRNAs. See the help, perldoc 
+of this script or the README for the trace processing for more details.
+
+3) THIRD STEP: Update the data in the database.
+
+   The script that we can use to update the cleaning coordenates 
+(sgn.qc_report.hqi_start, sgn.qc_report.hqi_length) and the cleaning tags 
+(sgn.est.status, sgn.est.tags) is SGN_update_cleancoord-in-db.pl. This script 
+get this data from the database (sgn.est.est_id, sgn.est.status, sgn.est.flags,
+ sgn.qc_report.qc_id, sgn.qc_report.hqi_start, sgn.qc_report.hqi_length) for 
+the organism specified in the scripts arguments and store in a tab file. 
+After load the new cleaning data in a master table, get the new data using 
+individual searchs and update the sgn.est and sgn.qc_report with these data. 
+Finally write in the screen a report of how many sgn.est and sgn.qc_entries 
+have updated. 
+
+   This script use as input the out tab files that make 
+sgnpl_sequence_clean_processing.pl and sgnpl_chimera_screen.pl scripts. 
