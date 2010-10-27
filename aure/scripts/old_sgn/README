@@ -1,0 +1,22 @@
+ This dir contains the old pipelines used by SGN to process, assembly and 
+annotate EST sequences.
+
+
+#######################
+* GENERAL OVERVIEW:
+#######################
+
+  The global process is composed by three pipelines:
+
+  1) trace_processing, to process the EST sequences (extract sequences from
+     chromatograms or genbank files, remove adaptors or vectors, screening for
+     contaminanats or chimeras...).
+
+  2) unigene, to assembly EST sequences and load into the SGN database.
+
+  3) protein, to predict cds and protein sequences from unigene and load 
+     into SGN database.
+
+  Each pipeline has one or more perl scripts. These perl scripts use some
+external programs like SeqClean, Lucy, CAP3 or EstScan. See REAME file 
+for each pipeline for more details.
