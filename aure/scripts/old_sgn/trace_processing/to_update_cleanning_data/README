@@ -1,6 +1,9 @@
 UPDATE CLEANING DATA PIPELINE
 
-* Description:
+########################
+* GENERAL DESCRIPTION:
+########################
+
 	The sequences cleaning use different datasets to find vector, adaptors,
  lab host contaminants, michocondrials or plastids non codificant sequences... 
 These datasets can be change (the users can add more information or remove 
@@ -10,15 +13,26 @@ database, other to clean the sequences (the same that use the trace processing
 pipeline) and another that store the old cleaning data in a file and update the
  database with the new cleaning data.
 
-* Author:
- 	Aureliano Bombarely Gomez (ab782@cornell.edu)
+
+###########
+* AUTHOR:
+###########
+ 	
+  Aureliano Bombarely Gomez 
+  (ab782@cornell.edu)
+
 	
+############
+* VERSION:
+############
 
-* Version:
-	Version 1.0 => (16-07-08).
-	Last update => (17-07-08).
+  Version 1.0 => (16-07-08).
+  Last update => (17-07-08).
 
-* Process schema:
+
+###########
+* PROCESS:
+###########
 
       ################                           +--------------------------+
       #              #                           |                          |
@@ -50,6 +64,7 @@ pipeline) and another that store the old cleaning data in a file and update the
        | coordenates |============+
        |             |
        +-------------+
+
                       
 1) FIRST STEP: Get the sequences from the database.
 
@@ -72,6 +87,7 @@ analysis scripts, like fastaFileCheck. The crude sequences haven't limits in
 the size range (the curated, cleaned sequences should not have sequences sizes 
 with less than 100 nt).
 
+
 2) SECOND STEP: The cleaning.
 
    The script used for the cleaning in this pipeline is the same than the 
@@ -85,6 +101,7 @@ for more details.
    Another script that could be used for the cleaning is the 
 sgnpl_chimera_screen.pl, to find possible chimera mRNAs. See the help, perldoc 
 of this script or the README for the trace processing for more details.
+
 
 3) THIRD STEP: Update the data in the database.
 
