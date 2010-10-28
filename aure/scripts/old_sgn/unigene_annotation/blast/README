@@ -1,0 +1,67 @@
+UNIGENE ANNOTATION PIPELINE: BLAST
+
+
+########################
+* GENERAL DESCRIPTION:
+########################
+
+  This is an old pipeline to annotate unigene sequences based in the homology 
+of the unigene sequences with known sequences from other databases such as 
+GenBank, TAIR or Swissprot.
+
+
+############
+* AUTHORS:
+############
+
+ Lukas Mueller
+ Aureliano Bombarely
+
+
+############
+* VERSION:
+############
+
+ Version 1.0: 2008-2009
+
+
+##############
+* EXECUTION:
+##############
+
+This pipeline has two parts:
+
+ 1) Run a Blast using blastall with the following arguments:
+     -p blastx 
+     -d <blast_database>
+     -e 1e-10
+     -m 8
+     -a <threads_n>
+
+  2) Load the blast results into the database. The script used is: 
+     load_blastresults_into_sgndb.pl. Use perldoc for more information about
+     the use of this script.
+ 
+     Before run the script it is necessary get the deflines of the used 
+     database. For example, for genbank dataset:
+
+     $ fastacmd -D 1 -d /data/shared/blast/databases/current/genbank/nr | 
+       \ sed -n '/^>/{s/[[:space:]]+/\t/; p;}' | 
+       sort | 
+       gzip -c > 
+       nr-deflines.gz
+
+     Usage: 
+  
+      load_blastresults_into_sgndb [-h] -H <dbhost> -D <dbname> -U <dbuser> 
+                                   -b <blast_result_file_m8> 
+                                   -a <defline_file> 
+                                   -d <external_dbname> 
+                                   [-e <e_value_filter>] 
+                                   [-s <score_filter>] 
+                                   [-i <identity_filter>] 
+				   [-l <length_filter>] 
+                                   [-n <hits_filter>] 
+                                   [-T]
+
+    Currently a max. of 50 are loaded for each unigene sequence (-n 50).
