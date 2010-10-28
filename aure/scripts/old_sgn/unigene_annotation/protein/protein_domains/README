@@ -1,0 +1,38 @@
+UNIGENE ANNOTATION PIPELINE: PROTEIN: PROTEIN DOMAIN ANALYSIS
+
+
+########################
+* GENERAL DESCRIPTION:
+########################
+
+  This is an old pipeline to analyze the protein domains using InterproScan.
+
+############
+* AUTHORS:
+############
+
+ Lukas Mueller
+ Aureliano Bombarely
+
+
+############
+* VERSION:
+############
+
+ Version 1.0: 2008-2009
+
+
+##############
+* EXECUTION:
+##############
+
+  To analyze the protein domains SGN uses InterProScan through CBSU 
+Computational Biology Service Unit at Cornell University 
+(http://cbsu.tc.cornell.edu/Default.aspx).
+
+  The script used to load these results into the database is 
+load_domainmatch_into_sgndb.pl.
+
+  Usage:
+
+  load_domainmatch_into_sgndb.pl -H <dbhost> -D <dbname> -i <input_file> [-N] 
