@@ -1,17 +1,294 @@
-
-New pipeline to cluster sequences: (5/2008) 
-
-1. Dump sequences from database using query-unigene-input.pl.
-
-2. Run a selfblast in m8 format on the input sequences. Use -p blastn -e 1e-10 -F F
-
-3. use precluster.pl -l 30 -p 90
-
-4. run cluster_cap3
-
-5. run unigene_fasta.pl
-
-6. Database loading with nunigene-db-load.
+UNIGENE PIPELINE
 
 
-Lukas & Aure, 5/2008.
+########################
+* GENERAL DESCRIPTION:
+########################
+
+  This is an old pipeline to assembly EST using CAP3 assembler and load into 
+SGN database. It has the following steps:
+
+ 1) Precluster the sequences using a perl script and a sequence selfblast. 
+ 2) Run cap3 over each precluster. 
+ 3) Collect all the seuquences from .ace files. 
+ 4) Create a file with the contigs membership. 
+ 5) Load the sequence into the SGN database.
+
+
+############
+* AUTHORS:
+############
+
+ Lukas Mueller
+ Aureliano Bombarely
+
+
+############
+* VERSION:
+############
+
+ Version 1.0: 2008-2009
+
+
+############
+* PROCESS:
+############
+
+ +---------------+        +-------------------+                  +------------+
+ |               | blastn |                   | preclustering.pl |            |
+ | Processed EST |=======>| selfblast m8 file |=================>| clusterdir |
+ |               |        |                   |                  |            |
+ +---------------+        +-------------------+                  +------------+
+                                                                       ||
+                                                                       ||
+                                                                cluster_cap3.pl
+                                                                       ||
+                                                                       ||
+                                                                       \/
+                           +----------------- +                  +------------+
+                           |                  | unigene_fasta.pl |            |
+                           | fasta sequences  |<=================| ace files  |
+                           |                  |                  |            |
+     nunigene-db-load.pl   +------------------+                  +------------+
+           ++==============+                                           ||
+           ||              +------------------+                        ||
+           ||              |                  |  acefile_membership.pl ||
+           \/              | member tab file  |<=======================++
+     +----------+          |                  |
+     |          |          +------------------+
+     |  SGN db  |
+     |          |
+     +----------+
+
+
+#############
+* PIPELINE: 
+#############
+
+0) SOURCE:
+
+  This pipeline use as source .fasta and .qual files, usually from EST datasets
+from SGN database. 
+  
+  To get EST sequences from SGN database: get_estseq_from_sgndb.pl. 
+  (use perldoc for more information about the use of this script) 
+
+
+1) PRECLUSTERING:
+
+   The preclustering is the process that cluster the sequences into groups 
+(clusters) but without calculate the consensus sequence. The parameters to 
+cluster this sequences are:
+
+	-l (minimum match length).
+
+	-p (minimum identity percentage).
+
+  These parameters could be used to cluster the sequences into families. The 
+current values (from 01-03-2008) are -l 30 and -p 90 but you should bear in 
+mind what kind of sequences dataset you want cluster (for example it could be 
+lower if you want cluster sequences of different organism of different families)
+. 
+
+ The process could be summarized in the follow points:
+
+ I- Sequences dataset selfblast (you can use blastall or qsblast.pl script) 
+    with the parameters -i and -d <sequences dataset> (you must format the 
+    sequences before using formatdb)
+
+    Usage: formatdb -i <dataset> -p F
+           blastall -d <dataset> -i <dataset> -o ds.selfblast.m8 -m 8 -e 1e-10
+
+ II- precluster.pl script to cluster the sequences using the selfblast results.
+     The current parameters to do the precluster are: -l 30 and -p 90 
+
+     Usage: precluster.pl -l <minimum match length> 
+                          -p <minimum percentage length> 
+                          -o <output folder> 
+                          <sequence dataset in fasta format> 
+                          <quality values in fasta format> 
+                          <selfblast results>
+
+ III- preclustering counts.
+     
+     + To count clusters: 
+       cut -f1 <output_folder>/summary.txt | sort -u | wc -l
+     
+     + To count all the sequences used in the clustering: 
+       cut -f3 <output_folder>/summary.txt | sort -u | wc -l
+
+     + To count sequences into the clusters:
+       cut -f2 <output_folder>/summary.txt | grep 'C' | wc -l
+
+     + To count singlets sequences:
+       cut -f2 <output_folder>/summary.txt | grep 'S' | wc -l
+
+
+2) ASSEMBLY:
+
+   The assembly process use the program CAP3 (http://seq.cs.iastate.edu/). If 
+a preclustering step was run before, this program will be executed over each of
+the cluster produced by the preclustering step.
+    
+    There are two scripts to run this program over each cluster: 
+    - cluster_cap3.pl.
+    - cluster_cap3_without_cluster_job.pl
+
+    Both scripts work in the same way, but cluster_cap3.pl is designed to be 
+used with computer cluster.
+
+     Arguments used by default for the assemblies:
+     -e 5000 (clearance between no. of diff N > 10)
+     -p 90 (overlap percent identity cutoff N > 65)
+     -d 10000 (max qscore sum at differences N > 20)
+     -b 60 ( base quality cutoff for differences N > 15)
+
+     Usage: 
+     cluster_cap3.pl <precluster_folder> 
+
+
+3) UNIGENE DATA COLLECTING:
+
+   To collect all the sequences of the assembly produced by CAP3, a perl script
+ is used: unigene_fasta.pl. This script will produce two files. unigene.fasta
+and unigene.qual.
+
+    Usage:
+    unigene_fasta.pl <precluster_folder> 
+
+    To collect the assembly coordinates for each sequence member, 
+acefile_membership.pl script will be used.
+ 
+    Usage: 
+    acefile_membership.pl <precluster_folder> > <output_filename> 
+
+    Both scripts will produce the input files used to load the unigene build
+into SGN database.
+
+
+4) UNIGENE DATABASE LOADING:
+
+   To load the unigene build into the database are necessary the follow 
+datas/files:
+
+	1- Curated sequences used in the unigene build (with id's SGN-E#######).
+	2- Unigene sequences and unigene quality values in fasta format 
+	   (generated by the unigene_fasta.pl script).
+	3- Acefile_membership file with the mapping between clusters, contigs 
+	   and curated sequences id's (generated by acefile_membership.pl).
+	4- Group_id for the organism that you are using in the unigene build.
+
+   To know which group_id have an organism:
+
+   i) Enter into the database where you want load the unigene build (it must 
+      be the same where you get the curated sequences).
+      
+      $ psql -h <dbhost> -U  <db_usr> <dbname> 
+
+   ii) Search the organism groups and check if the group_id contains all the 
+       members (or the member) of your unigene build:
+
+       <dbname>=# SELECT sgn.organism.organism_name, sgn.group_linkage.group_id 
+                  FROM sgn.group_linkage JOIN sgn.organism 
+		  ON sgn.group_linkage.member_id=sgn.organism.organism_id 
+		  WHERE sgn.organism.organism_name ILIKE '%<organism name>%' 
+		  AND sgn.group_linkage.member_type=16; 
+
+       <dbname>=# SELECT sgn.group_linkage.group_id, sgn.organism.organism_name
+                  FROM sgn.group_linkage JOIN sgn.organism 
+		  ON sgn.group_linkage.member_id=sgn.organism.organism_id 
+		  WHERE sgn.group_linkage.group_id= <group_id>;
+
+    iii) To insert a new group into the database:
+
+         1- Access to the database where you want load the unigene build (it 
+	 must be the same where you get the curated sequences).
+
+	 $ psql -h <dbhost> -U postgres <dbname> 
+
+	 2- Iniciate a transaction:
+
+	 BEGIN; 
+
+	 3- Insert a new group into the sgn.group table:
+
+	 INSERT INTO sgn.groups (type, comment) VALUES (1, 
+	 '<organism_name or group name>'); 
+
+	 example: 
+	 INSERT INTO sgn.groups (type, comment) VALUES (1, 
+	 'Nicotiana species'); 
+
+	 4- Get the new group_id value:
+
+	 SELECT sgn.groups.group_id FROM sgn.groups WHERE comment 
+	 ILIKE '%<organism_name or group name>%'; 
+
+	 example: 
+	 SELECT sgn.groups.group_id FROM sgn.groups WHERE comment ILIKE 
+	 'Nicotiana species'; 
+
+	 5- Get the organism_id for each organism name of the unigene build.
+	 
+	 SELECT sgn.organism.organism_id FROM sgn.organism WHERE organism_name 
+	 ILIKE '%<organism_name_1>%';
+	 SELECT sgn.organism.organism_id FROM sgn.organism WHERE organism_name 
+	 ILIKE '%<organism_name_2>%' 
+
+	 example: 
+	 SELECT sgn.organism.organism_id FROM sgn.organism WHERE organism_name 
+	 ILIKE 'Nicotiana sylvestris';
+	 SELECT sgn.organism.organism_id FROM sgn.organism WHERE organism_name 
+	 ILIKE 'Nicotiana tabacum'; 
+
+	 6- Insert new group linkage (one per organism of the unigene build):
+
+	 INSERT INTO sgn.group_linkage (group_id, member_id, member_type) 
+	 VALUES (<group_id>, <organism_id>, 16); 
+
+	 example:
+	 INSERT INTO sgn.group_linkage (group_id, member_id, member_type) 
+	 VALUES (34819, 60, 16);
+	 INSERT INTO sgn.group_linkage (group_id, member_id, member_type) 
+	 VALUES (34836, 24, 16); 
+	 
+	 7- Finalize the transaction, commit if it is ok OR rollback if there 
+	 is something wrong.
+
+	 COMMIT;
+ 	 or
+	 ROLLBACK; 
+
+    iv) The script used to load the unigene build into the database is 
+        nunigene-db-load.pl.
+
+	Usage:
+	nunigene-db-load.pl -H <dbhost> -D <dbname> -a <acefile_membership> 
+	-e <curated_sequences_dataset_in_fasta_format> 
+ 	-i <output_file> -o <organism_group_id> -U <unigene sequence file> 
+	-Q <unigene quality values file> 
+
+	After the load, it is recommended check the load and change some 
+	values into the database:
+
+	Change the sgn.unigene_build.build_nr to the right value.
+	Change the sgn.unigene_build.status to the right value 
+	('C' for current, 'P' for previous or 'D' for deprecated).
+	Change in the previous unigene build with the same organism group id 
+	the status (from 'C' to 'P' and from 'P' to 'D');
+	Change latest_build_id and the superseding_build_id for all the unigene
+	build with the same organism group of the last unigene load. Update to 
+	this unigene_build_id;
+	Change in the previous unigene build with the same organism_group_id 
+	the next_build_id to the new unigene_build_id;
+
+	Example of resetting sequences (after a failed load):
+
+	<dbname>=#begin;
+	<dbname>=# select setval('sgn_bt.unigene_unigene_id_seq', 400909);
+	<dbname>=# select max(consensi_id) from unigene_consensi;
+	<dbname>=# select setval('sgn_bt.unigene_consensi_consensi_id_seq', 
+	           229075);
+	<dbname>=# select max(unigene_member_id) from unigene_member;
+	<dbname>=# select setval('sgn_bt.unigene_member_unigene_member_id_seq',
+	           12312312);
