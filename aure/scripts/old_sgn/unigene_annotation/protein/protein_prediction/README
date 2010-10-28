@@ -1,0 +1,101 @@
+UNIGENE ANNOTATION PIPELINE: PROTEIN: PROTEIN PREDICTION
+
+
+########################
+* GENERAL DESCRIPTION:
+########################
+
+  This is an old pipeline to predict protein squences using two different 
+approaches, get the longest 6 frame for all the ORF or use EstScan program. 
+
+
+############
+* AUTHORS:
+############
+
+ Lukas Mueller
+ Aureliano Bombarely
+
+
+############
+* VERSION:
+############
+
+ Version 1.0: 2008-2009
+
+
+##############
+* EXECUTION:
+##############
+
+1-A) ESTSCAN: 
+   
+    The script used is cds_prediction_by_estscan.pl to analyze the unigene
+  sequences, and cds_protein_translation.pl to translate the cds output to
+  protein (this script use the -r argument to remove the lower case letters 
+  from the sequences. The estscan output annotate the nucleotide removed with 
+  lowercase letters).
+
+    More information about estscan can be found in: 
+  http://estscan.sourceforge.net/
+
+  Usage:
+
+  cds_prediction_by_estscan.pl <unigene_dataset_in_fasta_format> 
+                               <estscan_executable_dir> 
+                               <estscan_matrix> 
+                               > <output_file>
+  Example:
+  cds_prediction_by_estscan.pl nb_unigene_dump_2008_05_05.fasta 
+                               sgn-tools/estscan-3.0.2/ 
+                               Tomato_mrna_nuclearsmat 
+                               > nb_unigene_cds.by_estscan_2008_08_05.fasta 
+
+  Usage:
+ 
+  cds_protein_translation.pl <cds_file_in_fasta_format> -r
+
+  Example:
+  cds_protein_translation.pl nb_unigene_cds.by_estscan_2008_08_05.fasta -r 
+
+
+1-B) LONGEST6FRAME:
+
+   The script used is cds_prediction_by_longest6frame.pl. This script produce 
+two output files: cds and protein sequences in fasta file.
+
+   Usage:
+   
+   cds_prediction_by_longest6frame.pl <unigene_dataset_in_fasta_format> 
+
+   Example:
+   cds_prediction_by_longest6frame.pl nb_unigene_dump_2008_08_05.fasta 
+
+
+2) SEQUENCE LOADING SCRIPTS
+
+   The script used to load the protein prediction into the database is 
+load_proteinseq_into_sgndb.pl. This script use the argument -e to load the 
+'estscan' prediction cds and the argument -l to load the 'longest6frame' 
+prediction cds. You can test the load using the argument -T.
+
+   Usage:
+
+   load_proteinseq_into_sgndb.pl -H <dbhost> -D <dbname> -c <cds_file> 
+                                 -p <protein_file> (-e || -l) [-T] 
+
+
+  When more than one method is used to predict the protein sequence, a 
+preferred tag can be added over the protein sequence to represent the best 
+prediction. set_preferred_proteins.pl is a perl script that compare different
+proteins and set the preferred tag for the longest.
+
+  To get protein sequences from the database, the script used is 
+get_proteinseq_from_sgndb.pl.
+
+  Usage:
+
+  get_proteinseq_from_sgndb.pl -H <dbhost> -D <dbname> -b <basename> 
+                               [-o <organism_name> OR -u <unigene_build_id>] 
+                               -p <protein prediction method> 
+                               [-C OR/AND -P] [-M] [-h]
