@@ -1,0 +1,30 @@
+UNIGENE ANNOTATION PIPELINE
+
+
+########################
+* GENERAL DESCRIPTION:
+########################
+
+  This is an old pipeline to annotate unigene sequences and load these 
+annotations into SGN database. It can be divided into two subsections:
+
+ 1) blast annotations, based in the homology of the unigene sequences with
+    known sequences from other databases such as GenBank, TAIR or Swissprot.
+
+ 2) protein analysis, cds and protein sequence prediction and protein domain
+    analysis using InterProScan.
+
+
+############
+* AUTHORS:
+############
+
+ Lukas Mueller
+ Aureliano Bombarely
+
+
+############
+* VERSION:
+############
+
+ Version 1.0: 2008-2009
