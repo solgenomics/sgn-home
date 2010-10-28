@@ -1,0 +1,24 @@
+UNIGENE ANNOTATION PIPELINE: PROTEIN
+
+
+########################
+* GENERAL DESCRIPTION:
+########################
+
+  This is an old pipeline to predict cds and protein sequences and to analyze
+protein domain using InterProScan.
+
+
+############
+* AUTHORS:
+############
+
+ Lukas Mueller
+ Aureliano Bombarely
+
+
+############
+* VERSION:
+############
+
+ Version 1.0: 2008-2009

@@ -1,12 +1,12 @@
 #!/usr/bin/perl
 =head1 NAME
 
-SGN_translate_cds.pl.
-A script to process information from GenBank files (version.2.0.).
+cds_protein_translation.pl.
+A script to translate cds to proteins (version.2.0.).
 
 =head1 SYPNOSIS
   
-SGN_translate_cds.pl <input fasta file> [-r] [-p <non_iupac_perc>]
+cds_protein_translation.pl <input fasta file> [-r] [-p <non_iupac_perc>]
 
 =head1 DESCRIPTION
 
@@ -47,7 +47,7 @@ print this help
 
 =head1 METHODS
  
-SGN_translate_cds.pl.pl
+cds_protein_translation.pl
 
 
 =cut
@@ -222,10 +222,10 @@ sub help {
       -p option with p = 15
 
     Usage: 
-	  SGN_translate_cds.pl <input fasta file> [-r] [-p <non_iupac_perc>]
+	  cds_protein_translation.pl <input fasta file> [-r] [-p <non_iupac_perc>]
     
     Example:
-      SGN_PI_for_GBseq.pl /home/aure/ipomoea_batatas/ib_unigene_estscan.cds.fasta -r
+      cds_protein_translation.pl /home/aure/ipomoea_batatas/ib_unigene_estscan.cds.fasta -r
 
     Flags:
       -r remove the lower case letters

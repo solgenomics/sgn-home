@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 use strict;
 
 usage() unless (@ARGV);
@@ -6,11 +7,11 @@ usage() unless (@ARGV);
 my $input_fasta = shift;
 fatal("Input file not found") unless -f $input_fasta;
 
-my $estpath = shift || "/data/local/website/cxgn/core/sgn-tools/estscan-3.0.2";
+my $estpath = shift;
 fatal("Estscan program directory not found") unless -d $estpath;
 
-my $matrixfile = shift || $estpath . "/Arabidopsis_thaliana.smat";
-fatal("Arabidopsis matrix file not found") unless -f $matrixfile;
+my $matrixfile = shift;
+fatal("Protein matrix file not found") unless -f $matrixfile;
 
 system "$estpath/estscan -M $matrixfile $input_fasta";
 
