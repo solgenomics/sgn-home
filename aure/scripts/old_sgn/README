@@ -12,10 +12,15 @@ annotate EST sequences.
      chromatograms or genbank files, remove adaptors or vectors, screening for
      contaminanats or chimeras...).
 
-  2) unigene, to assembly EST sequences and load into the SGN database.
+  2) unigene_assembly, to assembly EST sequences and load into the SGN database.
 
-  3) protein, to predict cds and protein sequences from unigene and load 
-     into SGN database.
+  3) unigene_annotation, with different subpipelines:
+     - protein, to predict cds and protein sequences using EstScan or a
+       perl script. Also load the results for a protein domain analysis
+       using InterProScan.
+     - blast, to load into the database annotations based in blast results 
+       with different databases like GenBank nr or TAIR.
+      
 
   Each pipeline has one or more perl scripts. These perl scripts use some
 external programs like SeqClean, Lucy, CAP3 or EstScan. See REAME file 
