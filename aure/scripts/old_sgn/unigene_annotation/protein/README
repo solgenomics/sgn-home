@@ -5,8 +5,14 @@ UNIGENE ANNOTATION PIPELINE: PROTEIN
 * GENERAL DESCRIPTION:
 ########################
 
-  This is an old pipeline to predict cds and protein sequences and to analyze
-protein domain using InterProScan.
+  This is an old pipeline to analyze the sequences produced by unigene assembly
+pipeline based in protein predicted sequence. It has three subpipelines:
+
+ 1) protein_prediction, protein prediction using two different approaches, 
+    get the longest 6 frame for all the ORF or use EstScan program. 
+
+ 2) protein_domain, protein domain analysis suing two different tools, 
+    InterproScan and signalP.
 
 
 ############
