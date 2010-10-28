@@ -26,7 +26,8 @@ UNIGENE ANNOTATION PIPELINE: PROTEIN: PROTEIN DOMAIN ANALYSIS
 * EXECUTION:
 ##############
 
-  To analyze the protein domains SGN uses InterProScan through CBSU 
+  To analyze the protein domains SGN uses InterProScan 
+(ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/README.html) through CBSU 
 Computational Biology Service Unit at Cornell University 
 (http://cbsu.tc.cornell.edu/Default.aspx).
 
