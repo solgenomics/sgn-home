@@ -1,0 +1,79 @@
+PhyGomic
+
+#########################
+# * GENERAL DESCRIPTION #
+#########################
+
+ PhyGomic is a pipeline designed for the phylogenomic analysis of thousand of
+sequences using two different approaches.
+
+ + Phylogenetic Tree Topology Clustering Analysis (PTT analysis).
+ 
+ + Omega (dN/dS ratio) or Genetic Selection Analysis (GS analysis).
+
+
+#############################
+# * PIPELINE REPRESENTATION #
+#############################
+
+        +------------------------------------+
+        |                                    |
+        |     Different Species/Strains      |
+        |   Non Redundant Sequence Dataset   |
+        |                                    |
+        +------------------------------------+
+                      ||
+                      || CLUSTERING METHODS:
+		      || + Too similar: Seq. assembly
+		      || + Too different: Seq. homology searches
+                      ||
+                      \/
+        +------------------------------------+
+	|                                    |
+        |          Sequence Clusters         |
+	|                                    |
+	+------------------------------------+
+                      ||
+		      || ALIGN SEQUENCES
+                      ||
+		      \/
+       +-------------------------------------+
+       |                                     |
+       |          Sequence Aligments         |
+       |                                     |
+       +-------------------------------------+
+               ||                   ||
+	       ||   PHYLOGENETIC    ||
+	       ||     SOFTWARE      || 
+               \/                   \/
+       +----------------+   +----------------+
+       |                |   |                |  		      
+       |    Sequence    |   |    Sequence    |  
+       | Clusters Trees |   | Clusters dN/dS |
+       |                |   |                |
+       +----------------+   +----------------+
+               ||                   ||
+               ||   PTT             ||    GS
+               || Analysis          || Analysis
+               \/                   \/
+       +----------------+   +----------------+
+       |                |   |                |
+       |    Topology    |   |  dn/dS Values  |
+       |    Clusters    |   |    Clusters    |
+       |                |   |                |
+       +----------------+   +----------------+ 
+
+
+#############
+# * VERSION #
+#############
+
+ Version 0.1: 11-2010
+
+
+#############
+# * AUTHORS #
+#############
+
+ Aureliano Bombarely
+ (ab782@cornell.edu)
