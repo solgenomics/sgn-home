@@ -10,16 +10,21 @@
 
 =head1 SYPNOSIS
 
- change_seqif.pl -f <fasta_input_file> -r <rootname> -s <sequence_number>
+ change_seqif.pl -i <fasta_input_file> -f <format> -r <rootname> 
+                 -s <sequence_number>
 
 =head2 I<Flags:>
 
 =over
 
 
+=item -i
+
+B<input_file>           input sequence file (mandatory)
+
 =item -f
 
-B<fasta_file>           fasta file (mandatory)
+B<file_format>          file format (fasta by default)
 
 =item -s
 
@@ -65,9 +70,9 @@ use Bio::SeqIO;
 use Math::BigFloat;
 
 
-our ($opt_f, $opt_s, $opt_r, $opt_h);
-getopts("f:s:r:h");
-if (!$opt_f && !$opt_s && !$opt_r && !$opt_h) {
+our ($opt_i, $opt_f, $opt_s, $opt_r, $opt_h);
+getopts("i:f:s:r:h");
+if (!$opt_i && !$opt_f && !$opt_s && !$opt_r && !$opt_h) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
@@ -78,8 +83,10 @@ if ($opt_h) {
 
 ## Check arguments
 
-my $fastafile = $opt_f || 
-    die("DATA ARGUMENT ERROR: -f <fasta_file> WAS NOT SUPPLIED.\n");
+my $fastafile = $opt_i || 
+    die("DATA ARGUMENT ERROR: -i <input_file> WAS NOT SUPPLIED.\n");
+
+my $format = $opt_f || 'fasta';
 
 my $sequence_number = $opt_s ||
     die("DATA ARGUMENT ERROR: -s <sequence_number> WAS NOT SUPPLIED");
@@ -95,8 +102,8 @@ my $equiv_filename = $fastafile . '.seqidreplaced.equiv.tab';
 
 my $l = length($sequence_number);
 
-my $seqin = Bio::SeqIO->new( -format => 'fasta', -file => "$fastafile");
-my $seqout = Bio::SeqIO->new( -format => 'fasta', -file => ">$seqout_filename");
+my $seqin = Bio::SeqIO->new( -format => $format, -file => "$fastafile");
+my $seqout = Bio::SeqIO->new( -format => $format, -file => ">$seqout_filename");
 
 open my $equiv_io, '>', $equiv_filename;
 
@@ -113,7 +120,17 @@ while( my $seq = $seqin->next_seq()) {
     my $format = '%0' . $l . "s";
     my $new_seqid = $rootname . '_' . sprintf($format, $n);
     print $equiv_io "$seq_id\t$new_seqid\n";
-    my $new_seq = Bio::Seq->new( -id => $new_seqid, -seq => $seq->seq());
+
+    ## It can be processing Bio::Seq::PrimaryQual objects
+
+    my $new_seq = '';
+    if (ref($seq) eq 'Bio::Seq::PrimaryQual') {
+	$new_seq = Bio::Seq::PrimaryQual->new( -id   => $new_seqid, 
+					       -qual => $seq->qual());
+    }
+    else {
+	$new_seq = Bio::Seq->new( -id => $new_seqid, -seq => $seq->seq());
+    }
     $seqout->write_seq($new_seq);
 } 
 print STDERR "\n\nDone.\n\n";
@@ -143,7 +160,8 @@ sub help {
     
     Usage:
         
-      change_seqif.pl -f <fastafile> -r <rootname> -s <sequence_number>
+      change_seqif.pl -i <input_file> [-f <file_format>] -r <rootname> 
+                      -s <sequence_number>
 
     Example:
 	
@@ -151,7 +169,8 @@ sub help {
       
     Flags:
 
-      -f <fasta_file>           fasta file (mandatory)
+      -i <input_file>           input file (mandatory)
+      -f <file_format>          file format ('fasta' by default)
       -s <sequence_number>      sequence number (mandatory)
       -r <rootname>             rootname for the new sequences
       -h <help>                 print the help
