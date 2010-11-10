@@ -17,7 +17,9 @@ use Bio::Tools::Run::Alignment::MAFFT;
 use Bio::Tools::Run::Alignment::Muscle;
 use Bio::Tools::Run::Alignment::TCoffee;
 
+use Bio::AlignIO;
 use Bio::Align::DNAStatistics;
+use Bio::Matrix::IO;
 
 ###############
 ### PERLDOC ###
@@ -1370,6 +1372,12 @@ sub parse_strainfile {
     return %strains;
 }
 
+
+
+######################
+## OUTPUT FUNCTIONS ##
+######################
+
 =head2 print_parsing_status
 
   Usage: print_parsing_status($progress, $total, $message);
@@ -1409,6 +1417,318 @@ sub print_parsing_status {
     my $perc_formated = $perc_obj->bfround(-2);
 
     print STDERR "\t$message $perc_formated %\r";
+}
+
+=head2 out_clusterfile
+
+  Usage: my %files = $phygecluster->out_clusterfile(\%args);
+
+  Desc: Print into one or more files the clusters members
+
+  Ret: A hash with key=cluster_id and value=filename. When more than one
+       cluster is printed in a single file the hash will be key=multiple
+       and value=filename
+
+  Args: A hash reference with the following options:
+         rootname     => $basename ('clustercomp' by default),
+         distribution => $distribution (two options: single or multiple)
+
+  Side_Effects: None
+
+  Example: my %files = $phygecluster->out_clusterfile({ 
+                                                       distribution => single});
+
+=cut
+
+sub out_clusterfile {
+    my $self = shift;
+    my $argshref = shift;
+
+    ## Check variables and complete with default arguments
+
+    my $def_argshref = { rootname     => 'clustercomp', 
+			 distribution => 'multiple',
+    };
+
+    if (defined $argshref) {
+	unless (ref($argshref) eq 'HASH') {
+	    croak("ARG.ERROR: $argshref isn't a hashref in out_clusterfile");
+	}
+	else {
+	    foreach my $key (keys %{$argshref}) {
+		unless (exists $def_argshref->{$key}) {
+		    croak("ARG.ERROR: $key isn't a valid arg. out_clusterfile");
+		}
+	    }
+	    foreach my $defkey (keys %{$def_argshref}) {
+		unless (exists $argshref->{$defkey}) {
+		    $argshref->{$defkey} = $def_argshref->{$defkey}
+		}
+	    }
+	}
+    }
+    else {
+	$argshref = $def_argshref;
+    }
+
+    ## Define the output hash
+
+    my %outfiles = ();
+
+    ## Get the clusters
+
+    my %clusters = %{$self->get_clusters()};
+
+    ## Print according the distribution. It it is multiple it will create
+    ## one file for all the clusters, if not it will create one file per
+    ## cluster.
+
+    if ($argshref->{'distribution'} eq 'multiple') {
+	my $outname1 = $argshref->{'rootname'} . '.multiplecluster.txt';
+	open my $outfh1, '>', $outname1;
+	$outfiles{'multiple'} = $outname1;
+	
+	foreach my $cluster_id (sort keys %clusters) {
+	    my @members = $clusters{$cluster_id}->get_members();
+	    foreach my $member (sort @members) {
+		my $member_id = $member->display_id();
+		print $outfh1 "$cluster_id\t$member_id\n";
+	    }
+	}	
+	close $outfh1;	
+    }
+    else {
+	foreach my $cluster_id (sort keys %clusters) {
+	    my $outname2 = $argshref->{'rootname'} . '.' . $cluster_id  .'.txt';
+	    open my $outfh2, '>', $outname2;
+	    $outfiles{$cluster_id} = $outname2;
+	    
+	    my @members = $clusters{$cluster_id}->get_members();
+	    foreach my $member (sort @members) {
+		my $member_id = $member->display_id();
+		print $outfh2 "$cluster_id\t$member_id\n";
+	    }
+	    close $outfh2;
+	}
+    }
+    
+    return %outfiles;
+}
+
+=head2 out_alignfile
+    
+  Usage: my %files = $phygecluster->out_alignfile(\%args);
+
+  Desc: Print into one or more files the alignment of the cluster members
+
+  Ret: A hash with key=cluster_id and value=filename. When more than one
+       cluster is printed in a single file the hash will be key=multiple
+    and value=filename
+
+  Args: A hash reference with the following options:
+         rootname     => $basename ('alignment' by default),
+         distribution => $distribution (two options: single or multiple),
+         format       => $format (bl2seq, clustalw, emboss, fasta, maf, mase,
+                                  mega, meme, metafasta, msf, nexus, pfam, 
+                                  phylip, po, prodom, psi, selex, stockholm,
+                                  XMFA, arp)
+                         (see bioperl Bio::AlignIO for more details)
+                         ('clustalw' by default)
+         extension    => $fileextension ('aln' by default)
+
+  Side_Effects: None
+
+  Example: my %files = $phygecluster->out_alignfile();
+
+=cut
+
+sub out_alignfile {
+    my $self = shift;
+    my $argshref = shift;
+    
+    ## Check variables and complete with default arguments
+    
+    my $def_argshref = { rootname     => 'alignment', 
+			 distribution => 'multiple',
+			 format       => 'clustalw',
+                         extension    => 'aln',
+    };
+
+    if (defined $argshref) {
+	unless (ref($argshref) eq 'HASH') {
+	    croak("ARG.ERROR: $argshref isn't a hashref in out_alignfile");
+	}
+	else {
+	    foreach my $key (keys %{$argshref}) {
+		unless (exists $def_argshref->{$key}) {
+		    croak("ARG.ERROR: $key isn't a valid arg. out_alignfile");
+		}
+	    }
+	    foreach my $defkey (keys %{$def_argshref}) {
+		unless (exists $argshref->{$defkey}) {
+		    $argshref->{$defkey} = $def_argshref->{$defkey}
+		}
+	    }
+	}
+    }
+    else {
+	$argshref = $def_argshref;
+    }
+
+    ## Define the output hash
+
+    my %outfiles = ();
+
+    ## Get the clusters
+
+    my %clusters = %{$self->get_clusters()};
+
+    ## Print according the distribution. It it is multiple it will create
+    ## one file for all the clusters, if not it will create one file per
+    ## cluster.
+
+    if ($argshref->{'distribution'} eq 'multiple') {
+	my $outname1 = $argshref->{'rootname'} . 
+                       '.multiplealignments.' . 
+                       $argshref->{'extension'};
+	$outfiles{'multiple'} = $outname1;
+	
+        my $alignio1 = Bio::AlignIO->new( -format => $argshref->{'format'},
+                                          -file   => ">$outname1",
+                                        );
+
+	foreach my $cluster_id (sort keys %clusters) {
+	    my $align = $clusters{$cluster_id}->alignment();
+            if (defined $align) {
+                $alignio1->write_aln($align);
+            }
+	}	
+    }
+    else {
+	foreach my $cluster_id (sort keys %clusters) {
+	    my $outname2 = $argshref->{'rootname'} . '.' . 
+                           $cluster_id  . '.' .
+                           $argshref->{'extension'};
+	    $outfiles{$cluster_id} = $outname2;
+	    
+	    my $alignio2 = Bio::AlignIO->new( -format => $argshref->{'format'},
+                                              -file   => ">$outname2",
+                                            );
+
+            my $align = $clusters{$cluster_id}->alignment();
+            if (defined $align) {
+                $alignio2->write_aln($align);
+            }
+	}
+    }
+
+    return %outfiles;
+}
+
+=head2 out_distancefile
+    
+  Usage: my %files = $phygecluster->out_distancefile(\%args);
+
+  Desc: Print into one or more files the distance of the cluster members
+
+  Ret: A hash with key=cluster_id and value=filename. When more than one
+       cluster is printed in a single file the hash will be key=multiple
+       and value=filename
+
+  Args: A hash reference with the following options:
+         rootname     => $basename ('distance' by default),
+         distribution => $distribution (two options: single or multiple),
+         format       => $format (mlagan, phylip)
+                         (see bioperl Bio::MatrixIO for more details)
+                         ('phylip' by default)
+         extension    => $fileextension ('txt' by default)
+
+  Side_Effects: None
+
+  Example: my %files = $phygecluster->out_distancefile();
+
+=cut
+
+sub out_distancefile {
+    my $self = shift;
+    my $argshref = shift;
+    
+    ## Check variables and complete with default arguments
+    
+    my $def_argshref = { rootname     => 'distance', 
+			 distribution => 'multiple',
+			 format       => 'phylip',
+			 extension    => 'txt',
+    };
+
+    if (defined $argshref) {
+	unless (ref($argshref) eq 'HASH') {
+	    croak("ARG.ERROR: $argshref isn't a hashref in out_alignfile");
+	}
+	else {
+	    foreach my $key (keys %{$argshref}) {
+		unless (exists $def_argshref->{$key}) {
+		    croak("ARG.ERROR: $key isn't a valid arg. out_alignfile");
+		}
+	    }
+	    foreach my $defkey (keys %{$def_argshref}) {
+		unless (exists $argshref->{$defkey}) {
+		    $argshref->{$defkey} = $def_argshref->{$defkey}
+		}
+	    }
+	}
+    }
+    else {
+	$argshref = $def_argshref;
+    }
+
+    ## Define the output hash
+
+    my %outfiles = ();
+
+    ## Get the clusters
+
+    my %distances = %{$self->get_distances()};
+
+    ## Print according the distribution. It it is multiple it will create
+    ## one file for all the clusters, if not it will create one file per
+    ## cluster.
+
+    if ($argshref->{'distribution'} eq 'multiple') {
+	my $outname1 = $argshref->{'rootname'} . 
+                       '.multipledistances.' . 
+                       $argshref->{'extension'};
+	$outfiles{'multiple'} = $outname1;
+	
+        my $matrixio1 = Bio::Matrix::IO->new( -format => $argshref->{'format'},
+                                              -file   => ">$outname1",
+                                        );
+
+	foreach my $cluster_id (sort keys %distances) {
+            if (defined $distances{$cluster_id}) {
+                $matrixio1->write_matrix($distances{$cluster_id});
+            }
+	}	
+    }
+    else {
+	foreach my $cluster_id (sort keys %distances) {
+	    my $outname2 = $argshref->{'rootname'} . '.' . 
+                           $cluster_id  . '.' .
+                           $argshref->{'extension'};
+	    $outfiles{$cluster_id} = $outname2;
+	    
+	    if (defined $distances{$cluster_id}) {
+		my $matrixio2 = Bio::Matrix::IO->new( 
+		    -format => $argshref->{'format'},
+		    -file   => ">$outname2",
+		);
+
+                $matrixio2->write_matrix($distances{$cluster_id});
+	    }
+	}
+    }
+
+    return %outfiles;
 }
 
 
@@ -1909,7 +2229,7 @@ sub prune_by_strains {
 	}
 	else {
 	    unless (ref($args_href->{$constr}) eq $valid_constr{$constr}) {
-		croak("ERROR: value $constr isnt $valid_constr{$constr} ref.");
+		croak("ERROR: Value $constr isnt $valid_constr{$constr} ref.");
 	    }
 	}
     }

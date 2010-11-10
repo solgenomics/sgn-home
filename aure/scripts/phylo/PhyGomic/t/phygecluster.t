@@ -38,7 +38,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 123;
+use Test::More tests => 136;
 use Test::Exception;
 
 use FindBin;
@@ -1235,6 +1235,53 @@ is($clt_mindist4_ac, 0,
 is($clt_mindist4_ad, 0,
     "Testing prune_by_strains min_distance2, checking all min_distance a-d")
     or diag("Looks like this has failed");
+
+## Finally check the croak for prune_by_strains function, TEST 124 to 130
+
+throws_ok { $phygecluster3->prune_by_strains() } qr/ARG. ERROR: None hash./, 
+    'TESTING DIE ERROR when none argument is used with prune_by_strains';
+
+throws_ok { $phygecluster3->prune_by_strains('fake') } qr/ARG. ERROR: fake/, 
+    'TESTING DIE ERROR when argument used with prune_by_align is not hashref';
+
+throws_ok { $phygecluster3->prune_by_strains({}) } qr/ARG. ERROR: No comp/,
+    'TESTING DIE ERROR when no composition argument was used';
+
+my $fprune_href1 = { composition => {}, fake => 1};
+throws_ok { $phygecluster3->prune_by_strains($fprune_href1) } qr/ERROR: Const/,
+    'TESTING DIE ERROR when constraint used is not valid';
+
+my $fprune_href2 = { composition => 'fake'};
+throws_ok { $phygecluster3->prune_by_strains($fprune_href2) } qr/ERROR: Value/,
+    'TESTING DIE ERROR when value used is not valid';
+
+my $phygecluster3_f1 = $phygecluster3->clone();
+$phygecluster3_f1->set_strains({});
+
+my $prunehref3 = { composition => { 'Nsy' => 1, 'Nto' => 1 }};
+throws_ok { $phygecluster3_f1->prune_by_strains($prunehref3) } qr/ERROR: No st/,
+    'TESTING DIE ERROR when none strains were loaded into the object';
+
+my $phygecluster3_f2 = $phygecluster3->clone();
+$phygecluster3_f2->set_distances({});
+
+throws_ok { $phygecluster3_f2->prune_by_strains($prunehref3) } qr/ERROR: No di/,
+    'TESTING DIE ERROR when none distances were loaded into the object';
+
+
+## Checking the outputs croak functions, TEST 131 to 136
+
+my @outfunctions = ('out_clusterfile', 'out_alignfile', 'out_distancefile');
+
+foreach my $outfunc (@outfunctions) {
+    throws_ok { $phygecluster3->$outfunc('fake') } qr/ARG.ERROR: fake/,
+    "TESTING DIE ERROR when a non hash ref. arg is used with $outfunc";
+    
+    throws_ok { $phygecluster3->$outfunc({'fk' => 1 }) } qr/ARG.ERROR: fk/,
+    "TESTING DIE ERROR when a non valid key is used in args. with $outfunc";
+}
+
+
 ####
 1; #
 ####
