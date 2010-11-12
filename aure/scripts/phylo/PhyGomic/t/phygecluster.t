@@ -17,8 +17,7 @@
        + testfiles/selfblast.test.m8
        + testfiles/seq.test.fasta
        + testfiles/strains.test.tab
-
-
+       + testfiles/assembly_out.test.ace
 
 =head1 DESCRIPTION
 
@@ -38,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 136;
+use Test::More tests => 143;
 use Test::Exception;
 
 use FindBin;
@@ -235,6 +234,7 @@ throws_ok { $phygecluster0->set_strains("Fake") } qr/ARGUMENT ERROR: Fake/,
 my $blastfile = "$FindBin::Bin/testfiles/selfblast.test.m8";
 my $seqfile = "$FindBin::Bin/testfiles/seq.test.fasta";
 my $strainfile = "$FindBin::Bin/testfiles/strains.test.tab";
+my $acefile = "$FindBin::Bin/testfiles/assembly_out.test.ace";
 
 ## First get the data from the files
 
@@ -269,7 +269,10 @@ is(join(',', sort(keys %clusters4)), join(',', sort(@expected_cluster_names)),
 
 my @obtained_members = ();
 foreach my $cluster_id (keys %clusters4) {
-    push @obtained_members, @{$clusters4{$cluster_id}};
+    my @members4 =  $clusters4{$cluster_id}->get_members();
+    foreach my $member_obj4 (@members4) {
+	push @obtained_members, $member_obj4->display_id();
+    }
 }
 
 is(join(',', sort(@obtained_members)), join(',', sort(@seqs)), 
@@ -286,21 +289,32 @@ my %clusters4fast = PhyGeCluster::fastparse_blastfile(
 
 my $diff1 = scalar(keys %clusters4fast);
 
-foreach my $cl4fast (sort keys %clusters4fast) {
-    if (exists $clusters4{$cl4fast}) {
-	my $reg_members4 = join(',', sort @{$clusters4{$cl4fast}});
-	my $fast_members4 = join(',', sort @{$clusters4fast{$cl4fast}});
+foreach my $cl4f (sort keys %clusters4fast) {
+    if (exists $clusters4{$cl4f}) {
+	my @memb_ids4r = ();
+	my @memb_obj4r = $clusters4{$cl4f}->get_members();
+	foreach my $member4r (@memb_obj4r) {
+	    push @memb_ids4r, $member4r->display_id();
+	}
+	my $reg_members4 = join(',', sort @memb_ids4r);
+
+	my @memb_ids4f = ();
+	my @memb_obj4f = $clusters4fast{$cl4f}->get_members();
+	foreach my $member4f (@memb_obj4f) {
+	    push @memb_ids4f, $member4f->display_id();
+	}
+	my $fast_members4 = join(',', sort @memb_ids4f);
 
 	if($reg_members4 eq $fast_members4) {
 	    $diff1--;
 	}
 	else {
-	    print STDERR "Diff cluster: $cl4fast\tR=$reg_members4 ";
+	    print STDERR "Diff cluster: $cl4f\tR=$reg_members4 ";
 	    print STDERR "vs F=$fast_members4\n";
 	}
     }
     else {
-	print STDERR "Cluster $cl4fast do not exists in regular method\n";
+	print STDERR "Cluster $cl4f do not exists in regular method\n";
     }
 }
 is($diff1, 0,
@@ -334,7 +348,10 @@ is(join(',', sort(keys %clusters5)), join(',', sort(@expected_cluster_names5)),
 
 my @obtained_members5 = ();
 foreach my $cluster_id (keys %clusters5) {
-    push @obtained_members5, @{$clusters5{$cluster_id}};
+    my @memb_objs5 = $clusters5{$cluster_id}->get_members();
+    foreach my $memb_obj5 (@memb_objs5) {
+	push @obtained_members5, $memb_obj5->display_id();
+    }
 }
 
 is(join(',', sort(@obtained_members5)), join(',', sort(@seqs)), 
@@ -357,21 +374,33 @@ my %clusters5fast = PhyGeCluster::fastparse_blastfile(
 
 my $diff2 = scalar(keys %clusters5fast);
 
-foreach my $cl5fast (sort keys %clusters5fast) {
-    if (exists $clusters5{$cl5fast}) {
-	my $reg_members5 = join(',', sort @{$clusters5{$cl5fast}});
-	my $fast_members5 = join(',', sort @{$clusters5fast{$cl5fast}});
+foreach my $cl5f (sort keys %clusters5fast) {
+    if (exists $clusters5{$cl5f}) {
+
+	my @memb_ids5r = ();
+	my @memb_obj5r = $clusters5{$cl5f}->get_members();
+	foreach my $member5r (@memb_obj5r) {
+	    push @memb_ids5r, $member5r->display_id();
+	}
+	my $reg_members5 = join(',', sort @memb_ids5r);
+
+	my @memb_ids5f = ();
+	my @memb_obj5f = $clusters5fast{$cl5f}->get_members();
+	foreach my $member5f (@memb_obj5f) {
+	    push @memb_ids5f, $member5f->display_id();
+	}
+	my $fast_members5 = join(',', sort @memb_ids5f);
 
 	if($reg_members5 eq $fast_members5) {
 	    $diff2--;
 	}
 	else {
-	    print STDERR "Diff cluster: $cl5fast\tR=$reg_members5 ";
+	    print STDERR "Diff cluster: $cl5f\tR=$reg_members5 ";
 	    print STDERR "vs F=$fast_members5\n";
 	}
     }
     else {
-	print STDERR "Cluster $cl5fast do not exists in regular method\n";
+	print STDERR "Cluster $cl5f do not exists in regular method\n";
     }
 }
 is($diff2, 0,
@@ -489,25 +518,77 @@ throws_ok { PhyGeCluster::parse_strainfile({t => 1}) } qr/ARG. ERROR: 'str/,
     'TESTING DIE ERROR when href arg. does not contain strainfile key';
 
 
+## Test parsing_acefile()
+
+my %clusters6 = PhyGeCluster::parse_acefile({ acefile => $acefile});
+
+## So it will create them and compare with the obtained number
+
+my $cl6_number = scalar(keys %clusters6);;
+my $cl6_count = 1;
+my @expected_cluster_names6 = ();
+while ($cl6_count < $cl6_number+1) {
+    push @expected_cluster_names6, 'Nic_selected_c' . $cl6_count;
+    $cl6_count++;
+}
+
+is(join(',', sort(keys %clusters6)), join(',', sort(@expected_cluster_names6)), 
+   "Test parse_acefile; Checking cluster_id list ($cl6_number clusters)")
+    or diag("Looks like this has failed");
+
+my @obtained_members6 = ();
+foreach my $cluster_id (keys %clusters6) {
+    my @members6 = $clusters6{$cluster_id}->get_members();
+    foreach my $seqobj6 (@members6) {
+	push @obtained_members6, $seqobj6->display_id();
+    }
+}
+
+## Get the expected members parsing the file, TEST 58 to 62
+
+my @exp_seq6 = ();
+open my $acefh, '<', $acefile;
+while(<$acefh>) {
+    chomp($_);
+    if ($_ =~ m/^AF\s+(.+?)\s+(\w)\s+(-?\d+)/) {
+	push @exp_seq6, $1;
+    }
+}
+close $acefh;
+
+is(join(',', sort(@obtained_members6)), join(',', sort(@exp_seq6)), 
+   "Test parse_acefile; Checking member_id list ($seq_n members)")
+    or diag("Looks like this has failed");
+
+throws_ok { PhyGeCluster::parse_acefile() } qr/ARG. ERROR: No arg/, 
+    'TESTING DIE ERROR when none arg. is supplied to parse_acefile function';
+
+throws_ok { PhyGeCluster::parse_acefile('Fake') } qr/ARG. ERROR: Fake/, 
+    'TESTING DIE ERROR when arg. supplied is not a hash reference';
+
+throws_ok { PhyGeCluster::parse_acefile({t => 1}) } qr/ARG. ERROR: 'ace/, 
+    'TESTING DIE ERROR when href arg. does not contain acefile key';
+
+
 #######################
 ## LOADING FUNCTIONS ##
 #######################
 
-## Testing load_seqfile, TEST 58 to 61
+## Testing load_seqfile, TEST 63 to 66
 
 my $phygecluster3 = PhyGeCluster->new({ blastfile => $blastfile, 
 					fastblast_parser => 1,  });
 $phygecluster3->load_seqfile({ sequencefile => $seqfile });
 
-my %clusters6 = %{$phygecluster3->get_clusters()};
+my %clusters7 = %{$phygecluster3->get_clusters()};
 
 my $wrong_sequences = 0;
-foreach my $cluster_name6 (keys %clusters6) {
-    my $cluster_obj6 = $clusters6{$cluster_name6};
-    my @members6 = $cluster_obj6->get_members();
+foreach my $cluster_name7 (keys %clusters7) {
+    my $cluster_obj7 = $clusters7{$cluster_name7};
+    my @members7 = $cluster_obj7->get_members();
     
-    foreach my $member6 (@members6) {
-	if ($member6->seq() ne $input_seqs{$member6->display_id()}->seq()) {
+    foreach my $member7 (@members7) {
+	if ($member7->seq() ne $input_seqs{$member7->display_id()}->seq()) {
 	    $wrong_sequences++;
 	}
     }
@@ -526,7 +607,7 @@ throws_ok { $phygecluster3->load_seqfile({t => 1}) } qr/ARG. ERROR: 'se/,
     'TESTING DIE ERROR when href arg. does not contain seqfile key';
 
 
-## Testing load_strainfile, TEST 62 to 66
+## Testing load_strainfile, TEST 67 to 71
 
 $phygecluster3->load_strainfile({ strainfile => $strainfile });
 my %get_strains2 = %{$phygecluster3->get_strains()};
@@ -560,7 +641,7 @@ throws_ok { $phygecluster3->load_strainfile({t => 1}) } qr/ARG. ERROR: 'str/,
     'TESTING DIE ERROR when href arg. does not contain strainfile key';
 
 
-## Testing clone function ## TEST 67 to 70
+## Testing clone function ## TEST 72 to 75
 
 my $phygecluster_cloned = $phygecluster3->clone();
 
@@ -581,6 +662,25 @@ is(scalar(keys %{$phygecluster_cloned->get_strains()}),
    scalar(keys %{$phygecluster3->get_strains()}),
    "Testing clone(), same strains number than original")
     or diag("Looks like this has failed");
+
+
+## Testing the creation of an object using acefile instead blastfile
+
+my $phygecluster_ace = PhyGeCluster->new(
+    { 
+	acefile    => $acefile,
+	strainfile => $strainfile,
+    }
+    );
+
+my %clusters_ace = %{$phygecluster_ace->get_clusters()};
+is(scalar(keys %clusters_ace), scalar(keys %clusters6),
+    "Testing new for acefile argument, checking cluster number")
+    or diag("Looks like this has failed");
+
+throws_ok { PhyGeCluster->new({ acefile => 1, blastfile => 1}) } qr/ARGUMENT /, 
+    'TESTING DIE ERROR when none arg. is supplied to load_strainfile function';
+
 
 
 ##########################
@@ -681,11 +781,11 @@ my $singlets_aligns_count = 0;
 my $contigs_aligns_count = 0;
 my $diff_objects_count = 0;
 
-my %clusters7 = %{$phygecluster3->get_clusters()};
-foreach my $cl_id (keys %clusters7) {
-    my @membs = $clusters7{$cl_id}->get_members();
+my %clusters8 = %{$phygecluster3->get_clusters()};
+foreach my $cl_id (keys %clusters8) {
+    my @membs = $clusters8{$cl_id}->get_members();
     my $memb_n = scalar(@membs);
-    my $align = $clusters7{$cl_id}->alignment();
+    my $align = $clusters8{$cl_id}->alignment();
 
     if ($memb_n == 0) {
 	if (defined $align) {

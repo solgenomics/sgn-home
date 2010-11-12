@@ -7,6 +7,9 @@ use autodie;
 
 use Carp qw| croak cluck |;
 use Math::BigFloat;
+
+use Bio::Seq::Meta;
+use Bio::LocatableSeq;
 use Bio::SeqIO;
 use Bio::SearchIO;
 use Bio::Cluster::SequenceFamily;
@@ -135,7 +138,7 @@ sub new {
 
     my $self = bless( {}, $class );                         
     
-    my %cluster_objs = ();
+    my %clusters = ();
     my %strains = ();
     my %dist = ();
 
@@ -154,9 +157,12 @@ sub new {
 	    $err .= "fastblast_parser arg. can not be used without blastfile.";
 	    croak($err);	    
 	}
-	if (defined $args_href->{'strainfile'}) {
-	    $err .= "strainfile arg. can not be used without blastfile arg.";
-	    croak($err);	    
+	unless(defined $args_href->{'acefile'}) {
+	    if (defined $args_href->{'strainfile'}) {
+		$err .= "strainfile arg. can not be used without blastfile";
+		$err .= " or acefile argument.";
+		croak($err);	    
+	    }
 	}
 	if (defined $args_href->{'sequencefile'}) {
 	    $err .= "sequencefile arg. can not be used without blastfile arg.";
@@ -164,6 +170,10 @@ sub new {
 	}
     }
     else {
+	if (defined $args_href->{'acefile'}) {
+	    $err .= "acefile arg. can not be used with blastfile arg.";
+	    croak($err);
+	}
 	unless (defined $args_href->{'sequencefile'})  {
 	    if (defined $args_href->{'run_alignments'}) {
 		$err .= "run_alignments arg. can not be used without ";
@@ -182,65 +192,37 @@ sub new {
 	}
     }
 
-
-
     if (defined $args_href->{'blastfile'}) {
 
-	## Get the cluster information
-
-	my %clusters = ();
+	## Get the cluster information from blast file
+	
 	if (defined $args_href->{'fastblast_parser'}) {
-	   %clusters = fastparse_blastfile($args_href);
+	    %clusters = fastparse_blastfile($args_href);
 	}
 	else {
 	    %clusters = parse_blastfile($args_href);
 	}
+    }	
 
-	## Parse the seqfile if exists
-
-	my %seqmembers = ();
-	if (defined $args_href->{'sequencefile'}) {
-	    %seqmembers = parse_seqfile($args_href);
-	}
-
-	## Parse the strain file if exists
-
-	my %seqstrains = ();
-	if (defined $args_href->{'strainfile'}) {
-	    %seqstrains = parse_strainfile($args_href);
-	}
-    
-	## Now it will convert the seqid in the cluster hash into
-	## Bio::Seq objects, and it will create the Bio::Cluster::SequenceFamily
+    if (defined $args_href->{'acefile'}) {
 	
-	foreach my $cluster_id (keys %clusters) {
-	    
-	    my @memberseq = ();
-	    my @member_ids = @{$clusters{$cluster_id}};
-	    
-	    foreach my $member_id (@member_ids) {
-		if (exists $seqmembers{$member_id}) {
-		    push @memberseq, $seqmembers{$member_id};
-		}
-		else {
-		    my $seq = Bio::Seq->new( -id => $member_id );
-		    push @memberseq, $seq;
-		}
-	    }
+	%clusters = parse_acefile($args_href);	
+    }	
 
-	    my $seqcluster = Bio::Cluster::SequenceFamily->new(
-		-family_id => $cluster_id,
-		-members   => \@memberseq, 
-		);
+    $self->set_clusters(\%clusters);
 
-	    $cluster_objs{$cluster_id} = $seqcluster;
-	}
+    ## Parse the seqfile if exists
+
+    if (defined $args_href->{'sequencefile'}) {
+	$self->load_seqfile($args_href);	
     }
-    
-    ## Finally it will set the clusters in the object
-    ## (if none blastfile was supplied, it will be an empty object)
 
-    $self->set_clusters(\%cluster_objs);
+    ## Parse the strain file if exists
+
+    if (defined $args_href->{'strainfile'}) {
+	%strains = parse_strainfile($args_href);
+    }
+
     $self->set_strains(\%strains);
 
     ## This will use the run_alignment and run_distance function
@@ -346,8 +328,8 @@ sub clone {
 
   Desc: Get a cluster data from PhyGeCluster object
 
-  Ret: A hash refence with key=clustername and value=Bio::Cluster
-       object
+  Ret: A hash refence with key=clustername and 
+       value=Bio::Cluster::SequenceFamily object
  
   Args: None
  
@@ -757,8 +739,8 @@ sub load_strainfile {
   Desc: Parse the blast file using bioperl Bio::SearchIO
         Cluster the sequences based in clustervalues. 
 
-  Ret: %cluster, a hash with keys=cluster_name and value=array_ref with
-       sequences ids.
+  Ret: %cluster, a hash with keys=cluster_name and 
+       value=Bio::Cluster::SequenceFamily object
 
   Args: A hash reference with the following keys: blastfile, blastformat,
         sequencefile, clustervalues and rootname.
@@ -990,6 +972,22 @@ sub parse_blastfile {
     else {
 	croak("ARG. ERROR: No argument was used for parse_blast function\n");
     }
+    foreach my $cl_id (keys %clusters) {
+
+	my @seqs = ();
+	foreach my $seq_id (@{$clusters{$cl_id}}) {
+	    my $seq = Bio::Seq->new(
+		-id => $seq_id,
+		);
+	    push @seqs, $seq;
+	}
+	
+	my $seqfam = Bio::Cluster::SequenceFamily->new(
+	    -family_id => $cl_id,
+	    -members   => \@seqs,
+	    );
+	$clusters{$cl_id} = $seqfam;
+    } 
     return %clusters;
 }
 
@@ -1001,8 +999,8 @@ sub parse_blastfile {
   Desc: Parse the blast file using its own script
         Cluster the sequences based in clustervalues
 
-  Ret: %cluster, a hash with keys=cluster_name and value=array_ref with
-       sequences ids.
+  Ret: %cluster, a hash with keys=cluster_name and 
+       value=Bio::Cluster::SequenceFamily object
 
   Args: A hash reference with the following keys: blastfile, blastformat,
         sequencefile, clustervalues and rootname.
@@ -1238,6 +1236,27 @@ sub fastparse_blastfile {
     else {
 	croak("ARG. ERROR: No argument was used for parse_blast function\n");
     }
+
+    ## Finally it will convert all the cluster data into key=cluster_id and
+    ## value=Bio::Cluster::SequenceFamily object
+
+    foreach my $cl_id (keys %clusters) {
+
+	my @seqs = ();
+	foreach my $seq_id (@{$clusters{$cl_id}}) {
+	    my $seq = Bio::Seq->new(
+		-id => $seq_id,
+		);
+	    push @seqs, $seq;
+	}
+	
+	my $seqfam = Bio::Cluster::SequenceFamily->new(
+	    -family_id => $cl_id,
+	    -members   => \@seqs,
+	    );
+	$clusters{$cl_id} = $seqfam;
+    }
+
     return %clusters;
 }
 
@@ -1372,7 +1391,262 @@ sub parse_strainfile {
     return %strains;
 }
 
+=head2 parse_acefile
 
+  Usage: my %clusters = parse_acefile($arguments_href);
+
+  Desc: Parse partially an assembly file for .ace format and return a
+        hash with keys=contig_id and value=Bio::Cluster::SequenceFamily object
+
+  Ret: A hash with keys=contig_id and value=Bio::Cluster::SequenceFamily
+
+  Args: A hash reference with the following keys: acefile, debug
+
+  Side_Effects: Die if the argument used is not a hash.
+                Die if the if do not exists $args{'acefile'}
+                Print status messages with $arg_href->{'report_status'}
+
+  Example: my %clusters = parse_acefile($arguments_href);
+
+=cut
+
+sub parse_acefile {
+    my $arg_href = shift;
+    
+    ## Check variables
+
+    if (defined $arg_href) {
+	if (ref($arg_href) ne 'HASH') {
+	    croak("ARG. ERROR: $arg_href isn't a hash ref. for parse_acefile");
+	}
+    }
+    else {
+	croak("ARG. ERROR: No argument was used for parse_acefile function");
+    }
+
+    ## Define the variables
+
+    my %clusters = ();
+
+    my $acefile = $arg_href->{'acefile'} ||
+	croak("ARG. ERROR: 'acefile' isn't defined for $arg_href.\n");
+    
+    my $L = `cut -f1 $acefile | wc -l`;
+    chomp($L);
+    my $l = 0;
+    
+    
+    ## Define the catching variables
+    
+    my $curr_cr = '';
+    my $contig_id = '';
+    my $read_id = '';
+    my %contigs = ();
+    my %reads = ();
+
+    ## Counting vars:
+
+    my ($contigs_n, $reads_n) = (0, 0);
+
+    ## Open the file
+
+    open my $ifh, '<', $acefile;
+   
+    while(<$ifh>) {
+	chomp($_);
+	$l++;
+
+	if (exists $arg_href->{'report_status'}) {
+	    my $contig_c = scalar(keys %contigs);
+	    print_parsing_status($contig_c, $contigs_n, 
+				 "Percentage of ace file parsed:");
+	}
+	
+	if ($_ =~ m/^([A-Z][A-Z]) /) {
+	    $curr_cr = $1;
+	}
+	elsif ($_ =~ m/^$/) {
+	    $curr_cr = '';
+	}
+	
+	if ($curr_cr eq 'AS') {
+	    if ($_ =~ m/^AS\s+(\d+)\s+(\d+)/) {
+		$contigs_n = $1;
+		$reads_n = $2;
+	    }
+	}
+	if ($curr_cr eq 'CO') {
+	    if ($_ =~ m/^CO\s+(.+?)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\w)/) {
+		$contig_id = $1;
+
+		$contigs{$contig_id} = { 'bases_num'    => $2, 
+					 'reads_num'    => $3,
+					 'base_segm'    => $4,
+					 'complemenent' => $5,
+					 'seq'          => '',
+					 'rd_members'   => {},
+		};  
+	    }
+	    else {
+		$contigs{$contig_id}->{'seq'} .= $_;
+	    }
+	}
+	if ($curr_cr eq 'AF') {
+	    if ($_ =~ m/^AF\s+(.+?)\s+(\w)\s+(-?\d+)/) {
+		$read_id = $1;
+		$reads{$read_id} = { 'complemenent'        => $2,
+				     'pad_start_consensus' => $3,
+				     'pad_bases_num'       => '',
+				     'seq'                 => '',
+				     'qual_clip_start'     => '',
+				     'qual_clip_end'       => '',
+				     'align_clip_start'    => '',
+				     'align_clip_end'      => '',
+		};
+		unless (exists $contigs{$contig_id}->{rd_members}->{$read_id}) {
+		    $contigs{$contig_id}->{rd_members}->{$read_id} = 1;
+		}
+	    }  	    
+	}
+	if ($curr_cr eq 'RD') {
+	    if ($_ =~ m/^RD\s+(.+?)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+		$read_id = $1;
+		if (exists $reads{$read_id}) {
+		    $reads{$read_id}->{'pad_bases_num'} = $2;
+		}
+		else {
+		    $reads{$read_id} = { 'complemenent'        => '',
+					 'pad_start_consensus' => '',
+					 'pad_bases_num'       => $2,
+					 'seq'                 => '',
+					 'qual_clip_start'     => '',
+					 'qual_clip_end'       => '',
+					 'align_clip_start'    => '',
+					 'align_clip_end'      => '',
+		    };
+		}
+		unless (exists $contigs{$contig_id}->{rd_members}->{$read_id}) {
+		    $contigs{$contig_id}->{rd_members}->{$read_id} = 1;
+		}
+	    }
+	    else {
+		$reads{$read_id}->{'seq'} .= $_;
+	    }
+	}
+	if ($curr_cr eq 'QA') {
+	    if ($_ =~ m/^QA\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+
+		$reads{$read_id}->{'qual_clip_start'} = $1;
+		$reads{$read_id}->{'qual_clip_end'} = $2;
+		$reads{$read_id}->{'align_clip_start'} = $3;
+		$reads{$read_id}->{'align_clip_end'} = $4;
+
+		my $seqobj = Bio::Seq->new( -id  => $read_id,
+					    -seq => $reads{$read_id}->{'seq'},
+		    );
+
+		## To get the trim sequence, remenber that .ace files are
+		## 1-based and bioperl is 1-based. The end position will
+		## be length+1 (for example 1nt length will be 1-2)
+
+		my $st = $reads{$read_id}->{'align_clip_start'};
+		my $en = $reads{$read_id}->{'align_clip_end'};
+		my $cs = $reads{$read_id}->{'pad_start_consensus'};
+		my $le = $en - $st;
+		my $ce = $en + $cs;
+
+		my $init_gaps = '';
+		my $final_gaps = '';
+		if ($reads{$read_id}->{'pad_start_consensus'} =~ m/^-(\d+)/) {
+		    $st = $1 + 2;
+		    $reads{$read_id}->{'pad_start_consensus'} = 1;
+		}
+		else {
+		
+		    ## It will add as many gaps signs before the sequence as 
+		    ## pad_start_consensus - 1.
+		    if ($cs > 1) {
+			foreach my $i (1 .. $cs + $st - 2) {
+			    $init_gaps .= '-';
+			}
+		    }
+		}
+		my $co_en = $contigs{$contig_id}->{'bases_num'} + 1;
+		if ($co_en > $ce) {
+		    foreach my $y (1 .. $co_en - $ce) {
+			$final_gaps .= '-';
+		    }
+		}
+		
+		$reads{$read_id}->{'trimseq'} = $init_gaps . 
+		                                $seqobj->subseq($st, $en) .
+						$final_gaps;
+	        $reads{$read_id}->{'trimseq'} =~ s/\*/-/g;
+		my $unpadseq = $reads{$read_id}->{'trimseq'};
+		$unpadseq =~ s/-//g;
+		$reads{$read_id}->{'unpadseq'} = $unpadseq
+	    }
+	}
+    }
+
+    ## Now it will build the clusters with the sequences.
+
+    foreach my $ctg_id (keys %contigs) {
+	my %contig_data = %{$contigs{$ctg_id}};
+	my %members = %{$contig_data{'rd_members'}};
+
+	## First, create the array with Bio::Seq::Meta objects with all
+	## the sequence members.
+
+	my @align_objs = ();
+	my @member_objs = ();
+	foreach my $memb_id (keys %members) {
+	    my %rd = %{$reads{$memb_id}};
+	    my $strand = 1;
+	    if ($rd{'complemenent'} eq 'C') {
+		$strand = -1;
+	    }
+	    
+	    my $seq = Bio::Seq->new( -id => $memb_id, -seq => $rd{'unpadseq'} );
+	    push @member_objs, $seq;
+
+	    my $metaseq = Bio::LocatableSeq->new( 
+		-id     => $memb_id,
+		-start  => $rd{'pad_start_consensus'},
+		-end    => $rd{'pad_start_consensus'}+length($rd{'unpadseq'})-1,
+		-strand => $strand,
+		-seq    => $rd{'trimseq'},
+		-verbose => 0,
+		);
+	    push @align_objs, $metaseq;
+	}
+
+	## Second, create the Bio::Align object.
+
+	my $cons_seq = Bio::Seq::Meta->new( 
+	    -id  => $ctg_id,
+	    -seq => $contigs{$ctg_id}->{'seq'},
+	    );
+
+	my $align = Bio::SimpleAlign->new( -id        => $ctg_id, 
+					   -source    => '.ace, assembly file',
+					   -seqs      => \@align_objs,
+					   -consensus_meta => $cons_seq, 
+	    );
+
+	## Create a Bio::Cluster::SequenceFamily object and load the 
+	## alignment
+
+	my $seqfam = Bio::Cluster::SequenceFamily->new(
+	    -family_id => $ctg_id, 
+	    -members   => \@member_objs,	    
+	    );
+	$seqfam->alignment($align),
+	
+	$clusters{$ctg_id} = $seqfam;
+    }
+    return %clusters;
+}
 
 ######################
 ## OUTPUT FUNCTIONS ##
@@ -1548,10 +1822,10 @@ sub out_alignfile {
     
     ## Check variables and complete with default arguments
     
-    my $def_argshref = { rootname     => 'alignment', 
-			 distribution => 'multiple',
-			 format       => 'clustalw',
-                         extension    => 'aln',
+    my $def_argshref = { 'rootname'     => 'alignment', 
+			 'distribution' => 'multiple',			 
+			 'format'       => 'clustalw',
+                         'extension'    => 'aln',
     };
 
     if (defined $argshref) {
@@ -1598,6 +1872,7 @@ sub out_alignfile {
                                         );
 
 	foreach my $cluster_id (sort keys %clusters) {
+    
 	    my $align = $clusters{$cluster_id}->alignment();
             if (defined $align) {
                 $alignio1->write_aln($align);
