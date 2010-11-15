@@ -19,6 +19,7 @@ use Bio::Tools::Run::Alignment::Kalign;
 use Bio::Tools::Run::Alignment::MAFFT;
 use Bio::Tools::Run::Alignment::Muscle;
 use Bio::Tools::Run::Alignment::TCoffee;
+use Bio::Tools::Run::StandAloneBlast;
 
 use Bio::AlignIO;
 use Bio::Align::DNAStatistics;
@@ -284,21 +285,25 @@ sub clone {
 
 	my $new_align = '';
 	if (defined $old_align) {
+	   
 	    $new_align = $old_align->select(1, $old_align->num_sequences());
 
 	    ## Select does not copy metadata, so it will transfer manually
-	    $new_align->description($old_align->description());
-	    $new_align->score($old_align->score());
-	    $new_align->percentage_identity($old_align->percentage_identity());
-	    $new_align->source($old_align->source());
+	    my @transfers = ('description', 'score', 'percentage_identity', 
+			     'source');
+
+	    foreach my $transf_var (@transfers) {
+		if (defined $old_align->$transf_var) {
+		    $new_align->$transf_var($old_align->$transf_var());
+		}
+	    }
 	}
 
 	my $new_seqfam = Bio::Cluster::SequenceFamily->new(
 	    -family_id => $cluster_id,
 	    -members   => \@members,
-	    -alignment => $new_align,
 	    );
-	
+	$new_seqfam->alignment($new_align);
 	$new_clusters{$cluster_id} = $new_seqfam;
     }
     
@@ -991,7 +996,6 @@ sub parse_blastfile {
     return %clusters;
 }
 
-
 =head2 fastparse_blastfile
 
   Usage: my %clusters = fastparse_blastfile($arguments_href);
@@ -1565,7 +1569,7 @@ sub parse_acefile {
 		
 		    ## It will add as many gaps signs before the sequence as 
 		    ## pad_start_consensus - 1.
-		    if ($cs > 1) {
+		    if ($cs >= 0) {
 			foreach my $i (1 .. $cs + $st - 2) {
 			    $init_gaps .= '-';
 			}
@@ -2060,6 +2064,247 @@ sub cluster_sizes {
     return %cluster_sizes;
 }
 
+=head2 homologous_search
+
+  Usage: phygecluster->homologous_search();
+
+  Desc: Search homologous sequences to a cluster consensus using 
+        Bio::Tools::Run::StandAloneBlast. It will add the best match according
+        the highest score by default but different conditions can be used in the
+        same way that in the parse_blastfile function.
+
+  Ret: none (load the member in the phygecluster object)
+
+  Args: $args_href, a hash reference with:
+        -blast => $array_reference with the same keys that available arguments 
+                   in a blast (for example -d <database> -e <evalue>...). The
+                   input sequences will be the cluster consensus sequence.
+        -strain => $strain, for the homologous sequences.
+        -filter => $hash_reference with the following permited keys: evalue, 
+                   expect, frac_identical, frac_conserved, gaps, hsp_length,
+                   num_conserved, num_identical, score, bits, percent_identity
+                   and a array reference with condition and value
+
+  Side_Effects: Died if some of the parameters are wrong.
+                
+  Example:  phygecluster->homologous_search({ -blast  => [ -d => $database ],
+                                              -strain => 'Sly',
+                                              -filter => { 
+                                                           hsp_length => 
+                                                                   ['>', 100],
+                                                         }, 
+                                            })
+
+=cut
+
+sub homologous_search {
+    my $self = shift;
+    my $args_href = shift ||
+	croak("ARG. ERROR: None args. were suplied to homologous_search()");
+
+    ## Check the arguments and create the factory object
+
+    my @blast_param = ();
+    my $blastdb_file;
+
+    unless (ref($args_href) eq 'HASH') {
+	croak("ARG. ERROR: Arg=$args_href homologous_search() isn't hashref.");
+    }
+    else {
+	unless (defined $args_href->{'blast'}) {
+	    croak("ARG. ERROR: No blast arg. was used for search_homologous()");
+	}
+	else {
+	    my $blast_args = $args_href->{'blast'};
+	    unless (ref($blast_args) eq 'ARRAY') {
+		croak("ARG. ERROR: blast arg.($blast_args) isnt an array ref.");
+	    }
+	    else {
+		@blast_param = @{$blast_args};
+		my $enable_db = 0;
+		foreach my $param (@blast_param) {
+		    if ($param =~ m/^\-d(atabase)?$/) {
+			$enable_db = 1;			
+		    }
+		    elsif ($enable_db == 1) {
+			$blastdb_file = $param;
+			$enable_db = 0;
+		    }
+		}
+		unless (defined $blastdb_file) {
+		    croak("ARG. ERROR: No blast database was used as argument");
+		}
+	    }
+	    if (defined $args_href->{'filter'}) {
+		unless (ref($args_href->{'filter'}) eq 'HASH') {
+		    croak("ARG. ERROR: filter arg. isn't a hash ref.")
+		}
+	    }
+	}
+    }
+
+    ## Define cluster homologous hash
+
+    my %clusters_hmg = ();
+
+    ## Create the tool factory
+
+    my $factory = Bio::Tools::Run::StandAloneBlast->new(@blast_param);
+    
+    ## Now it will get the consensus sequence from the clusters and run the
+    ## blast
+
+    my %clusters = %{$self->get_clusters()};
+    foreach my $cl_id (keys %clusters) {
+	my $seqfam = $clusters{$cl_id};
+	my $align = $seqfam->alignment();
+
+
+	if (defined $align) {
+
+	    ## It will get the consensus sequence stored as consensus_meta
+	    ## if not, it will calculate its own consensus using 
+	    ## consensus_string function.
+
+	    my $consenseq = ''; 
+	    if (defined $align->consensus_meta()) {
+		$consenseq = $align->consensus_meta();
+	    }
+	    else {
+		$consenseq = Bio::Seq->new( 
+		    -id  => $cl_id,
+		    -seq => $align->consensus_string(),
+		    );
+	    }
+	    
+	    ## Now it will run the blast per sequence and filter it
+
+	    my $blast_report = $factory->blastall($consenseq);
+	    
+	    while( my $result = $blast_report->next_result() ) {
+		
+		my $q_name = $result->query_name();		
+
+		while( my $hit = $result->next_hit() ) {
+
+		    my $s_name = $hit->name();
+
+		    while( my $hsp = $hit->next_hsp() ) {
+		    
+			## By default it will take the best match, usually
+			## the first one.
+
+			unless (defined $args_href->{'filter'}) {
+			    unless (defined $clusters_hmg{$cl_id}) {
+				$clusters_hmg{$cl_id} = { $s_name => 1 };
+			    }
+			}
+			else {
+			    
+			    ## It should use the filter values in the same
+			    ## way that in the parse_blastfile function
+
+			    my %filters = %{$args_href->{'filter'}};
+			    my $conditions_n = scalar(keys %filters);
+			    foreach my $function (keys %filters) {
+				
+				unless (ref($filters{$function}) eq 'ARRAY') {
+				    my $er = "ARG. ERROR: Value used in filter";
+				    $er .= " $filters{$function} is not an ";
+				    $er .= "array reference";
+				    croak($er);
+				}
+				
+				my $cond = $filters{$function}->[0];
+				my $val = $filters{$function}->[1];
+			    
+				unless ($val =~ m/^\d+$/) {
+				    my $er3 = "WRONG filtervalues val=";
+				    $er3 .= "$function only int. are ";
+				    $er3 .= "permited for search_homologous()";
+				    croak($er3);
+				}
+				    
+				if ($cond =~ m/^<$/) {
+				    if ($hsp->$function < $val) {
+					$conditions_n--;
+				    }
+				} 
+				elsif ($cond =~ m/^<=$/) {
+				    if ($hsp->$function <= $val) {
+					$conditions_n--;
+				    }
+				}
+				elsif ($cond =~ m/^==$/) {
+				    if ($hsp->$function == $val) {
+					$conditions_n--;
+				    }
+				}
+				elsif ($cond =~ m/^>=$/) {
+				    if ($hsp->$function >= $val) {
+					$conditions_n--;
+				    }
+				}
+				elsif ($cond =~ m/^>$/) {
+				    if ($hsp->$function > $val) {
+					$conditions_n--;
+				    }
+				}
+				else {
+				    my $er4 = "WRONG filtervalues val=";
+				    $er4 .= "$function, it is not a ";
+				    $er4 .= "permited condition ('<','<=',";
+				    $er4 .= "'==','>=' or '>')\n";
+				    croak($er4);
+				}
+			    }    
+			    
+			    ## It will add a new relation only if all the
+			    ## conditions have been satisfied
+			    if ($conditions_n == 0) {
+				unless (exists $clusters_hmg{$cl_id}) {
+				    $clusters_hmg{$cl_id} = {$s_name => 1};
+				}
+				else {
+				    my %members = %{$clusters_hmg{$cl_id}};
+				    unless (defined $members{$s_name}) {
+					$clusters_hmg{$cl_id}->{$s_name} = 1;
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    ## Now all the relations should be contained in the cluster_hmlg hash.
+    ## so now it will load them into the family objects. Before do that, it will
+    ## get all the sequences from the database file to load them as seq objects.
+
+    my %blastseqs = parse_seqfile({ sequencefile => $blastdb_file });
+    my $strain_href = $self->get_strains();
+
+    foreach my $cl_id2 (keys %clusters) {
+	my $seqfam2 = $clusters{$cl_id2};
+	
+	if (defined $clusters_hmg{$cl_id2}) {
+	    my @newmemb = keys %{$clusters_hmg{$cl_id2}};
+	    foreach my $memb_id (@newmemb) {
+		my $seq = $blastseqs{$memb_id};
+		$seqfam2->add_members([$seq]);
+
+		## Also it will add a strain if is defined strain argument
+
+		if (defined $args_href->{'strain'}) {
+		    $strain_href->{$memb_id} = $args_href->{'strain'};
+		}
+	    }
+	}
+    }
+}
+
 
 =head2 run_alignments
 
@@ -2077,8 +2322,8 @@ sub cluster_sizes {
   Side_Effects: Died if some of the parameters are wrong.
                 It does not run alignments over singlets (cluster with 1 member)
 
-  Example:  phygecluster->run_alignments({ program => $prog, 
-                                        parameters => $parameters_href});
+  Example:  phygecluster->run_alignments({ program    => $prog, 
+                                           parameters => $parameters_href});
 
 =cut
 
@@ -2716,7 +2961,7 @@ sub prune_by_strains {
 		foreach my $alignmember ( $align->each_seq() ) {
 		    my $member_id = $alignmember->display_id();
 		    unless (exists $selected_mb{$member_id}) {
-			$align->remove_seq($member_id);
+			$align->remove_seq($alignmember);
 		    }
 		}
 	    }

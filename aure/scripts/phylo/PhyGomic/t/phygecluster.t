@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 143;
+use Test::More tests => 157;
 use Test::Exception;
 
 use FindBin;
@@ -235,6 +235,7 @@ my $blastfile = "$FindBin::Bin/testfiles/selfblast.test.m8";
 my $seqfile = "$FindBin::Bin/testfiles/seq.test.fasta";
 my $strainfile = "$FindBin::Bin/testfiles/strains.test.tab";
 my $acefile = "$FindBin::Bin/testfiles/assembly_out.test.ace";
+my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
 
 ## First get the data from the files
 
@@ -663,8 +664,8 @@ is(scalar(keys %{$phygecluster_cloned->get_strains()}),
    "Testing clone(), same strains number than original")
     or diag("Looks like this has failed");
 
-
-## Testing the creation of an object using acefile instead blastfile
+## Testing the creation of an object using acefile instead blastfile, TEST 76
+## and 77
 
 my $phygecluster_ace = PhyGeCluster->new(
     { 
@@ -673,13 +674,152 @@ my $phygecluster_ace = PhyGeCluster->new(
     }
     );
 
-my %clusters_ace = %{$phygecluster_ace->get_clusters()};
-is(scalar(keys %clusters_ace), scalar(keys %clusters6),
+my %clusters_ace1 = %{$phygecluster_ace->get_clusters()};
+is(scalar(keys %clusters_ace1), scalar(keys %clusters6),
     "Testing new for acefile argument, checking cluster number")
     or diag("Looks like this has failed");
 
 throws_ok { PhyGeCluster->new({ acefile => 1, blastfile => 1}) } qr/ARGUMENT /, 
     'TESTING DIE ERROR when none arg. is supplied to load_strainfile function';
+
+## testing adding a reference using blast (search_homolog function), 
+## TEST 78 to 81
+
+## It will clone the object before test the homologous_search function
+
+my $phygecluster_ace2 = $phygecluster_ace->clone();
+$phygecluster_ace2->homologous_search({ 
+    blast  => [ -p => 'tblastx', -d => $blastdbfile, -e => '1e-10', -a => 2],
+    strain => 'Sly',
+				     });
+
+my %clusters_ace2 = %{$phygecluster_ace2->get_clusters()};
+my %strains_ace2 = %{$phygecluster_ace2->get_strains()};
+
+## Now it will compare that it has at least one Sly strain for each cluster.
+
+my $strain_hmlg_count = 0;
+my $more_than_one_hmlg = 0;
+foreach my $cl_aceid (keys %clusters_ace1) {
+    my %acememb_1 = ();
+    my @members1 = $clusters_ace1{$cl_aceid}->get_members();
+    foreach my $memb1 (@members1) {
+	my $id1 = $memb1->display_id();
+	$acememb_1{$id1} = $memb1;
+    }
+    my $diff_strain_count = 0;
+    my @members2 = $clusters_ace2{$cl_aceid}->get_members();
+    foreach my $memb2 (@members2) {
+	my $id2 = $memb2->display_id();
+
+	unless (defined $acememb_1{$id2}) {
+	    if ($strains_ace2{$id2} eq 'Sly') {
+		$strain_hmlg_count++;
+		$diff_strain_count++;
+	    }
+	}
+    }
+    if ($diff_strain_count > 1) {
+	$more_than_one_hmlg++;
+    }
+}
+
+is($strain_hmlg_count <=> 0, 1,
+    "Testing homologous_search, checking strains homologous count")
+    or diag("Looks like this has failed");
+
+is($more_than_one_hmlg <=> 0, 0,
+    "Testing homologous_search, checking more than one homologous per cluster")
+    or diag("Looks like this has failed");
+
+## Testing homologous_search with constrains using filter
+
+my $phygecluster_ace3 = $phygecluster_ace->clone();
+$phygecluster_ace3->homologous_search({ 
+    blast  => [ -p => 'tblastx', -d => $blastdbfile, -e => '1e-10', -a => 2],
+    strain => 'Sly',
+    filter => { percent_identity    => ['>', 60],
+		hsp_length          => ['>', 50],
+    }
+				      });
+
+my %clusters_ace3 = %{$phygecluster_ace3->get_clusters()};
+my %strains_ace3 = %{$phygecluster_ace3->get_strains()};
+
+## Now it will compare that it has at least one Sly strain for each cluster.
+
+my $strain_hmlg_count2 = 0;
+my $more_than_one_hmlg2 = 0;
+foreach my $cl_aceid2 (keys %clusters_ace1) {
+    my %acememb_1 = ();
+    my @members1 = $clusters_ace1{$cl_aceid2}->get_members();
+    foreach my $memb1 (@members1) {
+	my $id1 = $memb1->display_id();
+	$acememb_1{$id1} = $memb1;
+    }
+    my $diff_strain_count2 = 0;
+    my @members3 = $clusters_ace3{$cl_aceid2}->get_members();
+    foreach my $memb3 (@members3) {
+	my $id3 = $memb3->display_id();
+
+	unless (defined $acememb_1{$id3}) {
+	    if ($strains_ace3{$id3} eq 'Sly') {
+		$strain_hmlg_count2++;
+		$diff_strain_count2++;
+	    }
+	}
+    }
+    if ($diff_strain_count2 > 1) {
+	$more_than_one_hmlg2++;
+    }
+}
+
+is($strain_hmlg_count2 <=> 0, 1,
+    "Testing homologous_search (using filter), checking strains homologous")
+    or diag("Looks like this has failed");
+
+is($more_than_one_hmlg2 <=> 0, 1,
+    "Testing homologous_search (using filter), checking more than hmlg/cluster")
+    or diag("Looks like this has failed");
+
+## Check the die functions for homologous_search, TEST 82 to 90
+
+throws_ok { $phygecluster_ace3->homologous_search() } qr/ARG. ERROR: None/, 
+    'TESTING DIE ERROR when no arguments were supplied to homologous_search';
+
+throws_ok { $phygecluster_ace3->homologous_search('fa') } qr/ARG. ERROR: Arg=/, 
+    'TESTING DIE ERROR when args. supplied to homologous_search arent hashref';
+
+throws_ok { $phygecluster_ace3->homologous_search({}) } qr/ARG. ERROR: No bl/, 
+    'TESTING DIE ERROR when no blast args were supplied to homologous_search';
+
+my $fhrf1 = { blast => 'fake'};
+throws_ok { $phygecluster_ace3->homologous_search($fhrf1) } qr/ARG. ERROR: bl/, 
+    'TESTING DIE ERROR when no blast args were supplied to homologous_search';
+
+my $fhrf2 = { blast => [ -p => 'blastn']};
+throws_ok { $phygecluster_ace3->homologous_search($fhrf2) } qr/ARG. ERROR: No/, 
+    'TESTING DIE ERROR when no blast db were supplied to homologous_search';
+
+my $fhrf3 = { blast  => [ -p => 'blastn', -d => $blastdbfile], 
+	      filter => 'fake' };
+throws_ok { $phygecluster_ace3->homologous_search($fhrf3) } qr/ARG. ERROR: fi/, 
+    'TESTING DIE ERROR when filter arg. supplied homologous_search isnot hash';
+
+my $fhrf4 = { blast  => [ -p => 'blastn', -d => $blastdbfile], 
+	      filter => { gaps => 'fake'} };
+throws_ok { $phygecluster_ace3->homologous_search($fhrf4) } qr/ARG. ERROR: Va/, 
+    'TESTING DIE ERROR when filter arg. supplied homologous_search isnot hash';
+
+my $fhrf5 = { blast  => [ -p => 'blastn', -d => $blastdbfile], 
+	      filter => { gaps => ['>', 'fake']} };
+throws_ok { $phygecluster_ace3->homologous_search($fhrf5) } qr/WRONG filterva/, 
+    'TESTING DIE ERROR when filter arg. supplied homologous_search isnot int.';
+
+my $fhrf6 = { blast  => [ -p => 'blastn', -d => $blastdbfile], 
+	      filter => { gaps => ['??', 1]} };
+throws_ok { $phygecluster_ace3->homologous_search($fhrf6) } qr/WRONG filterva/, 
+    'TESTING DIE ERROR when filter arg. supplied homologous_search isnot perm.';
 
 
 
@@ -687,7 +827,7 @@ throws_ok { PhyGeCluster->new({ acefile => 1, blastfile => 1}) } qr/ARGUMENT /,
 ## ANALYTICAL FUNCTIONS ##
 ##########################
 
-## Checking cluster_sizes function, TEST 71 to 76
+## Checking cluster_sizes function, TEST 91 to 96
 
 my $phygecluster4 = PhyGeCluster->new(
      { 
@@ -739,7 +879,7 @@ is($phygecluster3->cluster_sizes(1000000), 0,
 
 ## Checking run_alignments
 ## The program used will be clustalw.
-## Testing died functions, TEST 77 to 82
+## Testing died functions, TEST 97 to 102
 
 throws_ok { $phygecluster3->run_alignments() } qr/ARG. ERROR: None/, 
     'TESTING DIE ERROR when none args. were supplied to run_alignments';
@@ -772,7 +912,7 @@ $phygecluster3->run_alignments(
     );
 
 ## It will check that all the singlets have not any Bio::SimpleAlign object
-## and the clusters have one. TEST 83 to 85
+## and the clusters have one. TEST 103 to 105
 
 my $singlets_aligns_expected = 0;
 my $contigs_aligns_expected = 41;
@@ -817,9 +957,29 @@ is($diff_objects_count, $diff_objects_expected,
    "Testing run_alignment, checking absent of other objects")
     or diag("Looks like this has failed");
 
+## Check that the phygecluster_cloned has at least one align object, TEST 106
+
+my $phygecluster_cloned2 = $phygecluster3->clone();
+my $cloned_alignments = 0;
+my %cloned_clusters = %{$phygecluster_cloned2->get_clusters()};
+foreach my $cl_cluster_id (keys %cloned_clusters) {
+    my $cloned_seqfam = $cloned_clusters{$cl_cluster_id};
+    my $cloned_align = $cloned_seqfam->alignment();
+    if (defined $cloned_align) {
+	if(ref($cloned_align) eq 'Bio::SimpleAlign') {
+	    $cloned_alignments++;
+	}
+    }
+}
+
+is($cloned_alignments <=> 0, 1,
+   "Testing clone(), checking that exists more than one Bio::SimpleAlign obj.")
+    or diag("Looks like this has failed");
+
+
 
 ## testing run_distances() function, and check that the identity of the objects 
-## is Bio::Matrix::PhylipDist, TEST 86 to 88
+## is Bio::Matrix::PhylipDist, TEST 107 to 109
 
 $phygecluster3->run_distances();
 my %dist_jc = %{$phygecluster3->get_distances()};
@@ -863,7 +1023,7 @@ is($diff_dist_count, 1,
 ## Checking prune functions ##
 ##############################
 
-## Checking prune_by_align, TEST 89 to 91
+## Checking prune_by_align, TEST 110 to 112
 
 my $cluster_count1 = scalar(keys( %{$phygecluster3->get_clusters}));
 
@@ -900,7 +1060,7 @@ is($wrong_rm_sequences, 0,
     "Testing prune_by_align, counting wrong removed clusters")
     or diag("Looks like this has failed");
 
-## Checking croak functions for prune_by_align, TEST 92 to 99
+## Checking croak functions for prune_by_align, TEST 113 to 120
 
 throws_ok { $phygecluster3->prune_by_align() } qr/ARG. ERROR: None args./, 
     'TESTING DIE ERROR when none argument is used with prune_by_align';
@@ -936,7 +1096,7 @@ throws_ok { $phygecluster3->prune_by_align({score => ['*',1]}) } qr/ERROR:/,
 
 my %srcclusters = %{$phygecluster3->get_clusters()};
 
-## 1) Get three members at random, TEST 100 to 105
+## 1) Get three members at random, TEST 121 to 126
 
 my $phygecluster_cl2 = $phygecluster3->clone();
 my $prune_args1 = { 
@@ -1005,7 +1165,7 @@ is($clt_diffstr, 0,
     or diag("Looks like this has failed");
 
 
-## 2) Get three members for two min_distance constraints, TEST 106 to 113
+## 2) Get three members for two min_distance constraints, TEST 127 to 134
 
 my $phygecluster_cl3 = $phygecluster3->clone();
 my $prune_args3 = { 
@@ -1148,7 +1308,7 @@ is($clt_mindist3_ac, 0,
     or diag("Looks like this has failed");
 
 
-## 3) Get five members for six min_distance constraints, TEST  to 
+## 3) Get five members for six min_distance constraints, TEST 135 to 144 
 
 my $phygecluster_cl4 = $phygecluster3->clone();
 my $prune_args4 = { 
@@ -1336,7 +1496,7 @@ is($clt_mindist4_ad, 0,
     "Testing prune_by_strains min_distance2, checking all min_distance a-d")
     or diag("Looks like this has failed");
 
-## Finally check the croak for prune_by_strains function, TEST 124 to 130
+## Finally check the croak for prune_by_strains function, TEST 145 to 151
 
 throws_ok { $phygecluster3->prune_by_strains() } qr/ARG. ERROR: None hash./, 
     'TESTING DIE ERROR when none argument is used with prune_by_strains';
@@ -1369,7 +1529,7 @@ throws_ok { $phygecluster3_f2->prune_by_strains($prunehref3) } qr/ERROR: No di/,
     'TESTING DIE ERROR when none distances were loaded into the object';
 
 
-## Checking the outputs croak functions, TEST 131 to 136
+## Checking the outputs croak functions, TEST 152 to 157
 
 my @outfunctions = ('out_clusterfile', 'out_alignfile', 'out_distancefile');
 
