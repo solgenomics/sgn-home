@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 157;
+use Test::More tests => 172;
 use Test::Exception;
 
 use FindBin;
@@ -732,6 +732,8 @@ is($more_than_one_hmlg <=> 0, 0,
     "Testing homologous_search, checking more than one homologous per cluster")
     or diag("Looks like this has failed");
 
+
+
 ## Testing homologous_search with constrains using filter
 
 my $phygecluster_ace3 = $phygecluster_ace->clone();
@@ -903,7 +905,7 @@ throws_ok { $phygecluster3->run_alignments($run_href3) } qr/ARG. ERROR: 'par/,
     'TESTING DIE ERROR when parameters supplied to run_alignments is not valid';
 
 
-my @parameters1 = ('quiet' => 1, 'matrix' => 'BLOSUM');
+my @parameters1 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
 $phygecluster3->run_alignments(
     {
 	program    => 'clustalw',
@@ -1529,9 +1531,13 @@ throws_ok { $phygecluster3_f2->prune_by_strains($prunehref3) } qr/ERROR: No di/,
     'TESTING DIE ERROR when none distances were loaded into the object';
 
 
-## Checking the outputs croak functions, TEST 152 to 157
+## Checking the outputs croak functions, TEST 152 to 159
 
-my @outfunctions = ('out_clusterfile', 'out_alignfile', 'out_distancefile');
+my @outfunctions = ('out_clusterfile', 
+		    'out_alignfile', 
+		    'out_distancefile',
+		    'out_bootstrapfile'
+    );
 
 foreach my $outfunc (@outfunctions) {
     throws_ok { $phygecluster3->$outfunc('fake') } qr/ARG.ERROR: fake/,
@@ -1541,6 +1547,91 @@ foreach my $outfunc (@outfunctions) {
     "TESTING DIE ERROR when a non valid key is used in args. with $outfunc";
 }
 
+
+#############################
+## BOOTSTRAPPING FUNCTIONS ##
+#############################
+
+## First test if get/set_bootstrapping died when should do it. TEST 160 to 163
+
+throws_ok { $phygecluster3->set_bootstrapping() } qr/ARGUMENT ERROR: No arg/,
+    "TESTING DIE ERROR when no argument is supplied with set_bootstrapping()";
+
+throws_ok { $phygecluster3->set_bootstrapping('fake') } qr/ARGUMENT ERROR: fak/,
+    "TESTING DIE ERROR when arg. supplied is not hash ref. set_bootstrapping()";
+
+throws_ok { $phygecluster3->set_bootstrapping({ 1 => 't'}) } qr/VAL. ERROR: va/,
+    "TESTING DIE ERROR when values for href. arent aref. set_bootstrapping()";
+
+throws_ok { $phygecluster3->set_bootstrapping({1 =>['t']}) } qr/VAL. ERROR: t/,
+    "TESTING DIE ERROR when values for aref. arent Bio::SimpleAlign. objects";
+
+
+## Now it will test run_bootstrapping. TEST 164 to 166
+
+$phygecluster3->run_bootstrapping(
+    { 
+	datatype   => 'Molecular sequences', 
+	replicates => 100,
+	quiet      => 'yes',
+    }
+    );
+
+my %bootstr = %{$phygecluster3->get_bootstrapping()};
+
+is(scalar(keys %bootstr) <=> 0, 1,
+    "Testing run_bootstrapping, checking cluster count with boots > 0")
+    or diag("Looks like this has failed");
+
+my $wrong_boots_objs = 0;
+my $wrong_boots_num = 0;
+
+foreach my $bo_clid (keys %bootstr) {
+    my @bo_aligns = @{$bootstr{$bo_clid}};
+    
+    if (scalar(@bo_aligns) != 100) {
+	$wrong_boots_num++;
+    }
+    foreach my $bo_align (@bo_aligns) {
+	unless (ref($bo_align) eq 'Bio::SimpleAlign') {
+	    $wrong_boots_objs++;
+	}
+    }
+}
+
+is($wrong_boots_num, 0, 
+    "Testing run_bootstrapping, checking number of align for cluster (100)")
+    or diag("Looks like this has failed");
+
+is($wrong_boots_objs, 0, 
+    "Testing run_bootstrapping, checking align objects are Bio::SimpleAlign.")
+    or diag("Looks like this has failed");
+
+## Testing die options for run_bootstrapping
+
+throws_ok { $phygecluster3->run_bootstrapping() } qr/ARG. ERROR: No args./,
+    "TESTING DIE ERROR when no argument is supplied with run_bootstrapping()";
+
+throws_ok { $phygecluster3->run_bootstrapping('fk') } qr/ARG. ERROR: Arg/,
+    "TESTING DIE ERROR when arg. supplied to run_bootstrapping() isnt hashref";
+
+throws_ok { $phygecluster3->run_bootstrapping({'fk'=>1}) } qr/ARG. ERROR: fk/,
+    "TESTING DIE ERROR when arg. supplied to run_bootstrapping() isnt permited";
+
+my $fk_hr1 = { datatype => 'fk'};
+
+throws_ok { $phygecluster3->run_bootstrapping($fk_hr1) } qr/ARG. ERROR: fk/,
+    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt permited value";
+
+my $fk_hr2 = { datatype => 'Sequence', replicates => 'A lots'};
+
+throws_ok { $phygecluster3->run_bootstrapping($fk_hr2) } qr/ARG. ERROR: A lot/,
+    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt an integer";
+
+my $fk_hr3 = { datatype => 'fk', quiet => 1};
+
+throws_ok { $phygecluster3->run_bootstrapping($fk_hr3) } qr/ARG. ERROR: 1/,
+    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt yes|no";
 
 ####
 1; #
