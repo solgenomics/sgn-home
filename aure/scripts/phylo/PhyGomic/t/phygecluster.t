@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 173;
+use Test::More tests => 175;
 use Test::Exception;
 
 use FindBin;
@@ -1706,6 +1706,18 @@ is($wrong_ovvalues, 0,
     "Testing calculate_overlaps, checking know values for cluster_1 and _2")
     or diag("Looks like this has failed");
 
+my %best_overlaps = $phygecluster3->best_overlaps();
+
+my $best_ovcluster1 = join(',', sort @{$best_overlaps{'cluster_1'}});
+my $best_ovcluster2 = join(',', sort @{$best_overlaps{'cluster_2'}});
+
+is($best_ovcluster1, 'Nsy_05034,Sly_01101',
+   "Testing best_overlaps, checking best overlap for cluster_1")
+    or diag("Looks like this has failed");
+
+is($best_ovcluster2, 'Nta_08736,Sly_01219',
+   "Testing best_overlaps, checking best overlap for cluster_2")
+    or diag("Looks like this has failed");
 
 ####
 1; #

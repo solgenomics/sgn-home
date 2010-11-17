@@ -2448,6 +2448,50 @@ sub calculate_overlaps {
 }
 
 
+=head2 best_overlaps
+
+  Usage: my %best_overlaps = $phygecluster->best_overlaps();
+
+  Desc: Get the pair of sequences with a longest overlap in an alignment.
+
+  Ret: %hash = ( $cluster_id => [$member_id1, $member_id2] );   
+
+  Args: None.
+
+  Side_Effects: Return overlaps only for clusters with alignments
+
+  Example: my %overlaps = $phygecluster->best_overlaps();
+           
+
+=cut
+
+sub best_overlaps {
+    my $self = shift;
+
+    my %best_overlaps = ();
+    my %overlaps = $self->calculate_overlaps();
+
+    foreach my $cluster_id (keys %overlaps) {
+
+	## Define a hash with key=length and value=pair, It will order the
+	## hash and get the longer
+	my %ovlength = ();
+
+	my $mtx = $overlaps{$cluster_id};
+	my @rownames = $mtx->row_names();
+	my @colnames = $mtx->column_names();
+	foreach my $row (@rownames) {
+	    foreach my $col (@colnames) {
+		my $entry = $mtx->get_entry($row, $col);
+		$ovlength{$entry->{length}} = [$row, $col];
+	    }
+	}
+	my @ovlength_desc = sort { $b <=> $a } keys %ovlength;
+	$best_overlaps{$cluster_id} = $ovlength{$ovlength_desc[0]};
+    }
+    return %best_overlaps;
+}
+
 =head2 homologous_search
 
   Usage: phygecluster->homologous_search();
