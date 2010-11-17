@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 172;
+use Test::More tests => 173;
 use Test::Exception;
 
 use FindBin;
@@ -1632,6 +1632,80 @@ my $fk_hr3 = { datatype => 'fk', quiet => 1};
 
 throws_ok { $phygecluster3->run_bootstrapping($fk_hr3) } qr/ARG. ERROR: 1/,
     "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt yes|no";
+
+
+##################################
+## TESTING OVERLAPPING REGIONS ###
+##################################
+
+my %overlaps = $phygecluster3->calculate_overlaps();
+
+## Define some expected values (counted by other methods), TEST 173
+
+my %ov_expval = ( 
+    'cluster_1' => { 
+	'Sly_01101' => {
+	    'Sly_01101' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nsy_31457' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	    'Nsy_05034' => {'start' => 1195, 'end' => 2400, 'length'=> 1205 },
+	    'Nto_10658' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
+	},
+	'Nsy_31457' => {
+	    'Sly_01101' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	    'Nsy_31457' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nsy_05034' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	    'Nto_10658' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	},
+	'Nsy_05034' => {
+	    'Sly_01101' => {'start' => 1195, 'end' => 2400, 'length'=> 1205 },
+	    'Nsy_31457' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	    'Nsy_05034' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nto_10658' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
+	},
+	'Nto_10658' => {
+	    'Sly_01101' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
+	    'Nsy_31457' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	    'Nsy_05034' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
+	    'Nto_10658' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	},	
+    },
+    'cluster_2' => {
+	'Sly_01219' => {
+	    'Sly_01219' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nta_08736' => {'start' => 136,  'end' => 1011, 'length'=> 875  },
+	},
+	'Nta_08736' => {
+	    'Sly_01219' => {'start' => 136,  'end' => 1011, 'length'=> 875  },
+	    'Nta_08736' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	},
+    }
+    );
+
+my $wrong_ovvalues = 0;
+foreach my $clid_o (keys %overlaps) {
+    my $mtx = $overlaps{$clid_o};
+    my @rownames = $mtx->row_names();
+    my @colnames = $mtx->column_names();
+    foreach my $row (@rownames) {
+	foreach my $col (@colnames) {
+	    my $entry = $mtx->get_entry($row, $col);
+	    my @vars = ('start', 'end', 'length');
+	    foreach my $v (@vars) {
+		if (defined $ov_expval{$clid_o}) {
+		    my %ovlp = %{$ov_expval{$clid_o}};
+		    if ($ovlp{$row}->{$col}->{$v} ne $entry->{$v}) {
+			$wrong_ovvalues++;
+		    }
+		}
+	    }
+	}
+    }
+}
+
+is($wrong_ovvalues, 0, 
+    "Testing calculate_overlaps, checking know values for cluster_1 and _2")
+    or diag("Looks like this has failed");
+
 
 ####
 1; #

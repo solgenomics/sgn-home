@@ -27,6 +27,7 @@ use Bio::Align::DNAStatistics;
 use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
 
 use Bio::Matrix::IO;
+use Bio::Matrix::Generic;
 
 ###############
 ### PERLDOC ###
@@ -35,7 +36,7 @@ use Bio::Matrix::IO;
 =head1 NAME
 
 PhyGeCluster.pm
-a class to cluster sequences based in blast results
+A class to cluster sequences and analyze clusters.
 
 =cut
 
@@ -62,22 +63,51 @@ $VERSION = eval $VERSION;
   $phygecluster->set_clusters(\%clusters);
   my $clusters_href = $phygecluster->get_clusters();
 
-  ## Load sequences into the object
+  $phygecluster->set_strains(\%clusters);
+  my $strains_href = $phygecluster->get_strains();
+
+  $phygecluster->set_distances(\%clusters);
+  my $distances_href = $phygecluster->get_distances();
+
+  $phygecluster->set_bootstrapping(\%clusters);
+  my $distances_href = $phygecluster->get_bootstrapping();
+
+  ## Load new sequences into the object
 
   $phygecluster->load_seqfile($seqfile);
 
-  ## Load strains
+  ## Load new strains
 
   $phygecluster->load_strainfile($strainfile); 
 
-
- 
-
   ## Calculate the alignment
 
-  my $phygecluster_aligned = $phygecluster->align_members();
+  $phygecluster->run_alignment();
+
+  ## Calculate distances
+
+  $phygecluster->run_distances();
+
+  ## Create bootstraing of the alignments
+
+  $phygecluster->run_bootstrapping({ datatype => 'Sequences', quiet => 'yes' });
+
+  ## Select by cluster sizes
+
+  my %cluster_sizes = phygecluster->cluster_sizes();
+  my %singlets = phygecluster->cluster_sizes(1,1);
+
+  ## Prune by alignments features
+
+  $phygecluster->prune_by_align({num_sequences => ['<',4],length => ['<',100]});
+
+  ## Prune by strains composition
+
+  $phygecluster->prune_by_strains({ composition => {'A' => 1,'B' => 1,'C' => 1},
+                                    min_distance => [['A','B'],['A','C']] });
 
 
+  ## Slice by overlapping region
 
 =head1 DESCRIPTION
 
@@ -121,6 +151,7 @@ The following class methods are implemented:
          + strainfile, $filename, a scalar
          + run_alignments, a hash reference argument (see run_alignments())  
          + run_distances, a hash reference argument (see run_distances())
+         + run_bootstrapping, a hash reference arg. (see run_bootstrapping())
 
   Side_Effects: Die if the argument used is not a hash or there are argument
                 incompatibility (such as use fastblast_parser without blastfile)
@@ -2277,6 +2308,145 @@ sub cluster_sizes {
 
     return %cluster_sizes;
 }
+
+
+=head2 calculate_overlaps
+
+  Usage: my %overlaps = $phygecluster->calculate_overlaps();
+
+  Desc: Calculate the overlap positions for each pair of sequences in an 
+        alignment and return a hash with key=cluster_id and 
+        value=Bio::Matrix::Generic with member_ids as columns and row names.
+        The matrix will have as element { start => $val1, end => $val2, 
+        length => $val3}
+
+  Ret: %hash = ( $cluster_id => Bio::Matrix::Generic object );   
+
+  Args: None.
+
+  Side_Effects: Return overlaps only for clusters with alignments
+
+  Example: my %overlaps = phygecluster->calculate_overlaps();
+           
+
+=cut
+
+sub calculate_overlaps {
+    my $self = shift;
+
+    my %overlaps = ();
+    my %clusters = %{$self->get_clusters()};
+
+    foreach my $cluster_id (keys %clusters) {
+	my $align = $clusters{$cluster_id}->alignment();
+
+	if (defined $align) {
+	    
+	    ## Get the member ids to create the empty matrix, and get also
+	    ## the start and the end of each sequence.
+	    
+	    my %post = ();
+	    my @member_ids = ();
+	    foreach my $seq ($align->each_seq()) {
+		my $id = $seq->display_id();
+		push @member_ids, $id;
+
+		my $seqstr = $seq->seq();
+		my @nts = split(//, $seqstr);
+		my ($pos, $start, $end) = (0, 0, 0);
+		foreach my $nt (@nts) {
+		    $pos++;
+		    if ($nt !~ m/(-|\*|\.)/) {  ## If it is not a gap
+			if ($start == 0) {
+			    $start = $pos;
+			}
+			$end = 0;
+		    }
+		    else {
+			if ($start > 0 && $end == 0) {
+			    $end = $pos - 1;
+			}
+		    }
+		}
+		if ($end == 0) {
+		    $end = $pos;
+		}
+		$post{$id} = [$start, $end, $end-$start];
+	    }
+
+	    ## Create the matrix with the member ids.
+	    my $matrix = Bio::Matrix::Generic->new( 
+		-rownames          => \@member_ids,
+		-colnames          => \@member_ids, 
+		-matrix_id         => $cluster_id,
+		-matrix_init_value => { start => 0, end => 0, length => 0 },
+		);
+
+	    ## Now it will compare pairs of sequences to get the 
+	    ## overlapping region. There are four posibilities:
+	    ## 1) As <= Bs; As < Be; Ae > Bs; --> Overlap St=Bs;En=Ae
+	    ## 2) As >= Bs; As < Be; Ae > Bs; --> Overlap St=As;En=Be
+	    ## 3) As < Bs; As < Be; Ae < Bs; No overlap.
+	    ## 4) As > Bs; As > Be; Ae > Bs; No overlap.
+	    ## Note: As=SeqA_start, Ae=SeqA_end, Bs=SeqB_start and Be=SeqB_end
+
+	    foreach my $id_a (@member_ids) {
+		my $as = $post{$id_a}->[0];
+		my $ae = $post{$id_a}->[1];
+		my @row_values = ();
+		foreach my $id_b (@member_ids) {
+		    my $bs = $post{$id_b}->[0];
+		    my $be = $post{$id_b}->[1];
+		    
+		    my ($start, $end) = (0, 0);
+		    if ($as <= $bs && $as < $be && $ae > $bs) {
+			$start = $bs;
+			$end = $ae;
+			if ($ae > $be) {
+			    $end = $be;
+			}
+		    }
+		    elsif ($as >= $bs && $as < $be && $ae > $bs) {
+			$start = $as;
+			$end = $be;
+			if ($ae < $be) {
+			    $end = $ae;
+			}
+		    }
+
+		    ## Any other posibility will be a non-overlapping. It will
+		    ## add to the matrix the overlapping regions. The diagonal
+		    ## always will have start,end and length = 0.
+		    
+		    if ($id_a ne $id_b) {
+			if ($start > 0 && $end > 0) {
+			    my $val = { start  => $start, 
+					end    => $end, 
+					length => $end-$start };
+		
+			    push @row_values, $val;
+			}
+			else {
+			    push @row_values, { start  => 0, 
+						end    => 0, 
+						length => 0 };
+			}
+		    }
+		    else {
+			push @row_values, { start  => 0, 
+					    end    => 0, 
+					    length => 0 };
+		    }
+		}
+		## Now it will add this row_values to the matrix
+		$matrix->row($id_a, \@row_values);
+	    }
+	    $overlaps{$cluster_id} = $matrix;
+	}    
+    }
+    return %overlaps;
+}
+
 
 =head2 homologous_search
 
