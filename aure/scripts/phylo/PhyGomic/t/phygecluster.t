@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 175;
+use Test::More tests => 192;
 use Test::Exception;
 
 use FindBin;
@@ -1640,7 +1640,7 @@ throws_ok { $phygecluster3->run_bootstrapping($fk_hr3) } qr/ARG. ERROR: 1/,
 
 my %overlaps = $phygecluster3->calculate_overlaps();
 
-## Define some expected values (counted by other methods), TEST 173
+## Define some expected values (counted by other methods), TEST 173 to 175
 
 my %ov_expval = ( 
     'cluster_1' => { 
@@ -1718,6 +1718,153 @@ is($best_ovcluster1, 'Nsy_05034,Sly_01101',
 is($best_ovcluster2, 'Nta_08736,Sly_01219',
    "Testing best_overlaps, checking best overlap for cluster_2")
     or diag("Looks like this has failed");
+
+
+#######################
+## prune_by_overlaps ## 
+#######################
+
+## TEST 176 to 186
+
+my $phygecluster_c3 = $phygecluster3->clone();
+my ($rm_ovcl1href, $rm_ovmb1href) = $phygecluster_c3->prune_by_overlaps(
+    { 
+	random => 3, 
+	trim   => 1 
+    }
+    );
+
+my %orig_cluster1 = %{$phygecluster3->get_clusters()};
+my %rmovl_cluster1 = %{$phygecluster_c3->get_clusters()};
+my $wrong_memb_count = 0;
+my $wrong_length_dif = 0;
+
+foreach my $ov_clid1 (keys %rmovl_cluster1) {
+    my $ov_memb_count = scalar($rmovl_cluster1{$ov_clid1}->get_members());
+    if ($ov_memb_count != 3) {
+	$wrong_memb_count++;
+    }
+    my $ov_align1 = $rmovl_cluster1{$ov_clid1}->alignment();
+    my $or_align1 = $orig_cluster1{$ov_clid1}->alignment();
+    if ($ov_align1->length() >= $or_align1->length() ) {
+	$wrong_length_dif++;
+    }
+}
+
+is($wrong_memb_count, 0, 
+    "Testing prune_by_overlaps(random,trim), checking clusters with 3 members")
+    or diag("Looks like this has failed");
+
+is($wrong_length_dif, 0, 
+    "Testing prune_by_overlaps(random,trim), checking alignment length")
+    or diag("Looks like this has failed");
+
+is(scalar(keys %rmovl_cluster1) <=> 0, 1,
+    "Testing prune_by_overlaps(random), checking selected cluster count")
+    or diag("Looks like this has failed");
+
+is(scalar(keys %{$rm_ovcl1href}) <=> 0, 1,
+    "Testing prune_by_overlaps(random), checking removed cluster count")
+    or diag("Looks like this has failed");
+
+is(scalar(keys %{$rm_ovmb1href}) <=> 0, 1,
+    "Testing prune_by_overlaps(random), checking removed member count")
+    or diag("Looks like this has failed");
+
+
+
+my $phygecluster_c4 = $phygecluster3->clone();
+my %comp = ( 'Nsy' => 1, 'Nto' => 1, 'Nta' => 2, 'Sly' => 1 );
+my ($rm_ovcl2href, $rm_ovmb2href) = $phygecluster_c4->prune_by_overlaps(
+    { 
+	composition => \%comp,
+	trim   => 1 
+    }
+    );
+
+my %rmovl_cluster2 = %{$phygecluster_c4->get_clusters()};
+my %ov_str = %{$phygecluster_c4->get_strains()};
+my $wrong_memb_count2 = 0;
+my $wrong_length_dif2 = 0;
+my $wrong_strains_select2 = 0;
+
+my %test = $phygecluster_c4->out_alignfile();
+
+foreach my $ov_clid2 (keys %rmovl_cluster2) {
+    my %eachcomp = %comp;
+    my @ob_members2 = $rmovl_cluster2{$ov_clid2}->get_members();
+    my $ov_memb_count2 = scalar(@ob_members2);
+    if ($ov_memb_count2 != 5) {
+	$wrong_memb_count2++;
+    }
+    
+    foreach my $ov_memb (@ob_members2) {
+	my $ov_memb_id = $ov_memb->display_id();
+	$eachcomp{$ov_str{$ov_memb_id}}--;
+    }
+    foreach my $cond (keys %eachcomp) {
+	$wrong_strains_select2 += $eachcomp{$cond};
+    }
+
+    my $ov_align2 = $rmovl_cluster2{$ov_clid2}->alignment();
+    my $or_align2 = $orig_cluster1{$ov_clid2}->alignment();
+    if ($ov_align2->length() >= $or_align2->length() ) {
+	$wrong_length_dif2++;
+    }
+}
+
+is($wrong_memb_count2, 0, 
+    "Testing prune_by_overlaps(comp,trim), checking clusters with 5 members")
+    or diag("Looks like this has failed");
+
+is($wrong_strains_select2, 0, 
+    "Testing prune_by_overlaps(comp,trim), checking composition for each clst")
+    or diag("Looks like this has failed");
+
+is($wrong_length_dif2, 0, 
+    "Testing prune_by_overlaps(composition,trim), checking alignment length")
+    or diag("Looks like this has failed");
+
+is(scalar(keys %rmovl_cluster2) <=> 0, 1,
+    "Testing prune_by_overlaps(comp,trim), checking selected cluster count")
+    or diag("Looks like this has failed");
+
+is(scalar(keys %{$rm_ovcl2href}) <=> 0, 1,
+    "Testing prune_by_overlaps(composition), checking removed cluster count")
+    or diag("Looks like this has failed");
+
+is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
+    "Testing prune_by_overlaps(composition), checking removed member count")
+    or diag("Looks like this has failed");
+
+## Test the croak functions for prune_by_overlapings, TEST 187 to 192
+
+throws_ok { $phygecluster_c3->prune_by_overlaps() } qr/ARG. ERROR: No hash/,
+    "TESTING DIE ERROR when none arg. is supplied to prune_by_overlaps";
+
+throws_ok { $phygecluster_c3->prune_by_overlaps('fake') } qr/ARG. ERROR: fake/,
+    "TESTING DIE ERROR when arg. supplied to prune_by_overlaps isnt a HASHREF";
+
+my $ovhrf1 = { composition => 'fake' };
+
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf1) } qr/ARG. ERROR: comp/,
+    "TESTING DIE ERROR when comp. supplied to prune_by_overlaps isnt a HASHREF";
+
+my $ovhrf2 = { composition => { test => 1 }, random => 1 };
+
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf2)} qr/ERROR: 'random' &/,
+    "TESTING DIE ERROR when comp. and random are supplied to prune_by_overlaps";
+
+my $ovhrf3 = { random => 'fake' };
+
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf3) } qr/ARG. ERROR: 'ra/,
+    "TESTING DIE ERROR when random supplied to prune_by_overlaps isnt an INT";
+
+my $ovhrf4 = { random => 1, trim => 'fake' };
+
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ARG. ERROR: 'tr/,
+    "TESTING DIE ERROR when trim supplied to prune_by_overlaps isnt 0 or 1";
+
 
 ####
 1; #

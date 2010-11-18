@@ -107,7 +107,12 @@ $VERSION = eval $VERSION;
                                     min_distance => [['A','B'],['A','C']] });
 
 
-  ## Slice by overlapping region
+  ## Prune and slice by overlapping region
+
+  $phygecluster->prune_by_overlappings(
+                 { composition => {'A' => 1,'B' => 1,'C'=> 2},
+                   trim        => 1,
+  );
 
 =head1 DESCRIPTION
 
@@ -3560,6 +3565,361 @@ sub prune_by_strains {
 
     return (\%rm_clusters, \%rm_members);
 }
+
+=head2 prune_by_overlaps
+
+  Usage: my ($rm_clusters_href, $rm_members_href)
+             = $phygecluster->prune_by_overlaps($args_href)
+
+  Desc: Remove sequence members and clusters that have not some conditions
+        derived from the overlaps count by strains. It takes the best overlap
+        and from here add new sequence from the alignment and calculate the
+        overlap length and get the best. It repeats this process until get all
+        the composition conditions or spend all the possible conbinations 
+        without results.
+
+  Ret: A two hash references with:
+       1) the sequencefamilies objects removed from the object 
+          (key=cluster_id and value=Bio::Cluster::SequenceFamily object)
+       2) the clusters with the list of members removed (array references)
+          (also modify the PhyGeCluster, Bio::Cluster::SequenceFamily and 
+          Bio::SimpleAlign objects)
+
+  Args: A hash reference with:
+        composition  => $href with key=strain, value=count.
+        random       => $int, an integer to get this number of sequences
+        trim         => $enable (1) or $disable (0)... disable by default.
+        (to cut the alignment and get the region defined by the overlap)
+        
+  Side_Effects: Died if some of the parameters are wrong.
+              
+  Example:  
+
+=cut
+
+sub prune_by_overlaps {
+    my $self = shift;
+    my $args_href = shift ||
+	croak("ARG. ERROR: No hash ref. argument was used prune_by_overlaps");
+
+    ## Check the arguments
+   
+    unless(ref($args_href) eq 'HASH') {
+	croak("ARG. ERROR: $args_href isnt an hash ref. for prune_by_overlaps");
+    }
+    
+    my $random = 0;
+    if (defined $args_href->{'composition'}) {
+	unless (ref($args_href->{'composition'}) eq 'HASH') {
+	    my $err = "ARG. ERROR: composition arg. used for prune_by_overlaps";
+	    $err .= " is not a hash reference";
+	    croak($err);
+	}
+	else {
+	    if(defined $args_href->{'random'}) {
+		croak("ERROR: 'random' & 'composition' args are incompatible");
+	    }
+	}
+    }
+    elsif (defined $args_href->{'random'}) {
+	if ($args_href->{'random'} !~ m/^\d+$/) {
+	    croak("ARG. ERROR: 'random' arg. only can be an integer.");
+	}
+	$random = $args_href->{'random'};
+    }
+    my $trim = 0;
+    if (defined $args_href->{'trim'}) {
+	if ($args_href->{'trim'} !~ m/^[0|1]$/) {
+	    croak("ARG. ERROR: 'trim' arg. only can be an 1 (en.) or 0 (dis.)");
+	}
+	else {
+	    $trim = $args_href->{'trim'};
+	}
+    }
+
+    ## Define the removed hashes rmcls (removed cluster) and rmmem (removed
+    ## members).
+
+    my %rmcls = ();
+    my %rmmem = ();
+
+    ## After check the variables it will get clusters and overlaps
+
+    my $cls_href = $self->get_clusters();
+    my %ovl = $self->calculate_overlaps();
+    my %str = %{$self->get_strains()};
+
+    foreach my $clid (keys %{$cls_href}) {
+	if (defined $ovl{$clid}) {
+	
+	    ## Get the rand variable from random. It should be regenerate
+	    ## each cluster_id
+
+	    my $rand = $random;
+	    my %comp = (); 
+	    if (defined $args_href->{'composition'}) {
+		%comp = %{$args_href->{'composition'}};
+	    }
+	    my $mtx = $ovl{$clid};
+	    
+	    ## Transform the matrix in a hash with key=pair and value=length
+	    
+	    my %le_pair = ();
+	    my %members = ();
+	    my @rownames = $mtx->row_names();
+	    my @colnames = $mtx->column_names();
+	    foreach my $row (@rownames) {
+		foreach my $col (@colnames) {
+		    if ($row ne $col) {               ## Skip the selfpairs
+			my $entry = $mtx->get_entry($row, $col);
+			my $pair = join(';', sort(($row, $col)));
+			unless (defined $le_pair{$pair}) {
+			    $le_pair{$pair} = $entry->{length};
+			}
+		    }
+		}
+	    }
+
+	    ## Now it will get the overlap seed (best overlap with an strain
+	    ## detailed in the composition... or simply the best overlap if
+	    ## is not defined 'composition' argument.
+
+	    my %seed = ();
+	    foreach my $op (sort {$le_pair{$b} <=> $le_pair{$a}} keys %le_pair){
+				
+		my @pars = split(/;/, $op);
+
+		if (scalar(keys %comp) > 0) { ## That means that exists comp
+		    
+		    my $str_match = 0;  ## Create strain match variable
+		    foreach my $par (@pars) {
+			if (exists $comp{$str{$par}}) {
+			    $str_match++;
+			}
+		    }
+		    if ($str_match == 2 && scalar(keys %seed) == 0) {
+	
+			## Reduce the composition requs. and create the seed
+			foreach my $elem (@pars) {
+			    $comp{$str{$elem}}--;
+			    $members{$elem} = 1;
+			    $seed{$elem} = 1;
+			}
+			
+			delete($le_pair{$op});
+		    }
+		}
+		else {
+		    if (scalar(keys %seed) == 0) {
+  			
+                        ## Reduce the random requs.
+			foreach my $elem (@pars) {
+			    $rand--;
+			    $members{$elem} = 1;
+			    $seed{$elem} = 1;
+			}
+			delete($le_pair{$op});
+		    }
+		}
+	    }
+	
+	    ## Once the seed is defined it will create an array with
+	    ## the pairs of the seed.
+
+	    my %seedp = ();
+	    foreach my $row2 (@rownames) {
+		if (defined $seed{$row2}) {
+		    foreach my $col2 (@colnames) {
+			## Skip the other seeds, and add the new member
+			unless (defined $seed{$col2}) {
+			    my $entry2 = $mtx->get_entry($row2, $col2);
+			    unless (defined $seedp{$col2}) {
+				$seedp{$col2} = $entry2->{length};
+			    }
+			}
+		    }
+		}
+	    }
+	    
+	    ## It will take the new members order by distance
+
+	    foreach my $newel (sort {$seedp{$b} <=> $seedp{$a}} keys %seedp) {
+		
+		if (scalar(keys %comp) > 0) {
+		    my $currcomp = $comp{$str{$newel}};
+		    if (defined $currcomp && $currcomp > 0 ) {
+			$comp{$str{$newel}}--;
+			$members{$newel} = 1;
+			delete($seedp{$newel});
+		    }
+		}
+		else {
+		    if ($rand > 0) {
+			$members{$newel} = 1;
+			$rand--;
+			delete($seedp{$newel});
+		    }
+		}
+	    }
+
+	    ## Finally, see if it has all the conditions... if not it will
+	    ## remove the complete cluster. Othercase it will remove from
+	    ## Bio::Cluster::SequenceFamily and Bio::SimpleAlign object
+	    ## the members don't defined in member hash.
+
+	    if (scalar(keys %comp) > 0) {
+		my $all_cond = 0;
+		foreach my $cond (keys %comp) {    ## If there are some that
+		    $all_cond += $comp{$cond};     ## are not 0, it will incr.
+		}
+		if ($all_cond > 0) {  ## Remove the cluster
+		    my $rmseqfam = delete($cls_href->{$clid});
+		    $rmcls{$clid} = $rmseqfam;
+		}
+		else {  ## Remove only the elements
+		    my @rmmemb = ();
+		    my $seqfam = $cls_href->{$clid};
+		    
+		    ## 1) Remove from the alignment
+		    my $align = $seqfam->alignment();
+		    foreach my $alseq ( $align->each_seq()) {
+			my $alid = $alseq->display_id();
+			unless (exists $members{$alid}) {
+			    $align->remove_seq($alseq);
+			}
+		    }
+		    
+		    ## 1b) If trim option is enabled, it should
+		    ##     get the common overlap region and trim the seqs
+
+		    if ($trim == 1) {
+			my $max_st = 0;
+			my $min_en = $align->length();
+			foreach my $rw3 (@rownames) {
+			    if (defined $members{$rw3}) {
+				foreach my $cl3 (@colnames) { 
+				    if (defined $members{$cl3}) {
+					my $entr3 = $mtx->get_entry($rw3, $cl3);
+					if ($entr3->{length} > 0) {
+					    if ($entr3->{start} >= $max_st) {
+						$max_st = $entr3->{start};
+					    }
+					    if ($entr3->{end} <= $min_en) {
+						$min_en = $entr3->{end};
+					    }
+					}
+				    }
+				}
+			    }
+			}
+			if ($max_st < $min_en) {
+			    my $trim_align = $align->slice($max_st, $min_en);
+			    $seqfam->alignment($trim_align);
+			}
+		    }
+
+		    ## 2) Remove from SequenceFamily
+		    my @members = $seqfam->get_members();
+		    my @select_members = ();
+		    foreach my $membseq (@members) {
+			my $membid = $membseq->display_id();
+			if (exists $members{$membid}) {
+			    push @select_members, $membseq;
+			}
+			else {
+			    push @rmmemb, $membseq;
+			}
+		    }
+		    $seqfam->remove_members();
+		    $seqfam->add_members(\@select_members);
+		    
+		    ## And finally add to the hash 
+		    $rmmem{$clid} = \@rmmemb;
+		}
+	    }
+	    else {
+		if ($rand == 0) {    ## All the conditions were satisfied
+		
+		    my @rmmemb = ();
+		    my $seqfam = $cls_href->{$clid};
+		    
+		    ## 1) Remove from the alignment
+		    my $align = $seqfam->alignment();
+		    foreach my $alseq ( $align->each_seq()) {
+			my $alid = $alseq->display_id();
+			unless (exists $members{$alid}) {
+			    $align->remove_seq($alseq);
+			}
+		    }
+		    
+		    ## 1b) If trim option is enabled, it should
+		    ##     get the common overlap region and trim the seqs
+
+		    if ($trim == 1) {
+			my $max_st = 0;
+			my $min_en = $align->length();
+			foreach my $rw3 (@rownames) {
+			    if (defined $members{$rw3}) {
+				foreach my $cl3 (@colnames) { 
+				    if (defined $members{$cl3}) {
+					my $entr3 = $mtx->get_entry($rw3, $cl3);
+					if ($entr3->{length} > 0) {
+					    if ($entr3->{start} >= $max_st) {
+						$max_st = $entr3->{start};
+					    }
+					    if ($entr3->{end} <= $min_en) {
+						$min_en = $entr3->{end};
+					    }
+					}
+				    }
+				}
+			    }
+			}
+			if ($max_st < $min_en) {
+			    my $trim_align = $align->slice($max_st, $min_en);
+			    $seqfam->alignment($trim_align);
+			}
+		    }
+		    
+		    ## 2) Remove from SequenceFamily
+		    my @members = $seqfam->get_members();
+		    my @select_members = ();
+		    foreach my $membseq (@members) {
+			my $membid = $membseq->display_id();
+			if (exists $members{$membid}) {
+			    push @select_members, $membseq;
+			}
+			else {
+			    push @rmmemb, $membseq;
+			}
+		    }
+		    $seqfam->remove_members();
+		    $seqfam->add_members(\@select_members);
+		    
+		    ## And finally add to the hash 
+		    $rmmem{$clid} = \@rmmemb;		
+		}
+		else {               ## Remove the complete cluster
+		    
+		    my $rmseqfam = delete($cls_href->{$clid});
+		    $rmcls{$clid} = $rmseqfam;		
+		}
+	    }
+
+
+	}
+	else {
+	    
+	    ## Just remove the cluster because it doesn't have any alignment
+
+	    my $rmseqfam = delete($cls_href->{$clid});
+	    $rmcls{$clid} = $rmseqfam;
+	}
+    }
+    return (\%rmcls, \%rmmem);
+}
+
+
 
 
 ####
