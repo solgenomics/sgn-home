@@ -691,8 +691,8 @@ sub set_distances {
 
   Desc: Get distance data from PhyGeCluster object
 
-  Ret: A hash refence with key=cluster_id and 
-       value=array reference of Bio::SimpleAlign objects (bootstrapping)
+  Ret: A hash reference: 
+       my $href = { $cluster_id => PhyGeBoots object }
  
   Args: None
  
@@ -717,8 +717,8 @@ sub get_bootstrapping {
 
   Ret: None
  
-  Args: A hash reference with key=cluster_id and 
-        value=array reference of Bio::SimpleAlign objects
+  Args: A hash reference: 
+        my $href = { $cluster_id => PhyGeBoots object }
  
   Side_Effects: Die if the argument is not a hash reference, if the values for
                 this hash reference are not array reference and if the members
