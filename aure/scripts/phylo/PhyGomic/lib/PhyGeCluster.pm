@@ -2831,6 +2831,11 @@ sub homologous_search {
 }
 
 
+################################
+## PROGRAMS RUNNING FUNCTIONS ##
+################################
+
+
 =head2 run_alignments
 
   Usage: phygecluster->run_alignments({ program => $prog, 
@@ -3223,7 +3228,168 @@ sub run_bootstrapping {
     $self->set_bootstrapping(\%bootstr);
 }
 
+=head2 run_njtrees
 
+  Usage: $phygecluster->run_njtrees($arg_href);
+
+  Desc: Calculates every tree for the distances contained into the SeqGeCluster
+        object and load it into Bio::Cluster::SequenceFamily object
+
+  Ret: None (it loads the tree into Bio::Cluster::SequenceFamily object)
+
+  Args: $args_href, a hash reference with the following options:
+        type => NJ|UPGMA, outgroup => int, lowtri => 1|0, uptri => 1|0, 
+        subrep => 1|0 or/and jumble => int
+        (for more information: 
+         http://evolution.genetics.washington.edu/phylip/doc/seqboot.html)
+ 
+
+  Side_Effects: Died if the arguments are wrong.
+                
+  Example: $phygecluster->run_njtrees($arg_href);
+
+=cut
+
+sub run_njtrees {
+    my $self = shift;
+    my $args_href = shift;
+
+    my %perm_args = ( type     => '(NJ|UPGMA)', 
+		      outgroup => '\d+', 
+		      lowtri   => '[1|0]', 
+		      uptri    => '[1|0]', 
+		      subrep   => '[1|0]', 
+		      jumble   => '\d+', 
+		      quiet    => '[1|0]',
+	);
+
+    if (defined $args_href) {
+	unless (ref($args_href) eq 'HASH') {
+	    croak("ARG. ERROR: Arg. supplied to run_njtrees() arent hashref");
+	}
+
+	foreach my $arg (keys %{$args_href}) {
+	    unless (exists $perm_args{$arg}) {
+		croak("ARG. ERROR: $arg isnt permited arg. for run_njtrees()");
+	    }
+	    else {
+		my $val = $args_href->{$arg};
+		my $regexp = '^' . $perm_args{$arg} . '$';
+		if ($val !~ m/$regexp/i) {
+		    croak("ARG. ERROR: $arg has a non-permited value ($val)")
+		}
+	    }
+	}
+    }
+
+    my @args = ();
+    foreach my $key (keys %{$args_href}) {
+	push @args, ($key, $args_href->{$key});
+    }
+
+    ## Get the distances and the clusters from the object
+
+    my %dists = %{$self->get_distances()};
+    my %clusters = %{$self->get_clusters()};
+
+    ## After check, create the array and the factory
+    
+    my $factory = Bio::Tools::Run::Phylo::Phylip::Neighbor->new(@args);
+    
+    ## And now it will run one tree per distance and set tree in seqfam object
+
+    foreach my $cluster_id (keys %dists) {
+	my $distobj = $dists{$cluster_id};
+	my $seqfam = $clusters{$cluster_id};
+
+	my ($tree) = $factory->run($distobj);
+	if (defined $tree) {
+	    $seqfam->tree($tree);
+	}
+    }
+}
+
+
+=head2 run_mltrees
+
+  Usage: $phygecluster->run_mltrees($arg_href);
+
+  Desc: Calculates every tree for the distances contained into the SeqGeCluster
+        object and load it into Bio::Cluster::SequenceFamily object using 
+        phyml program
+
+  Ret: None
+
+  Args: $args_href, a hash reference with the following options:
+        phyml_arg => {}, $hash ref with phyml arguments
+        (for more information: 
+         http://www.atgc-montpellier.fr/phyml/usersguide.php)
+ 
+
+  Side_Effects: Died if the arguments are wrong.
+                
+  Example: $phygecluster->run_mltrees($arg_href);
+
+=cut
+
+sub run_mltrees {
+    my $self = shift;
+    my $args_href = shift;
+
+    my %perm_args = ( 
+	phyml_arg      => 'HASH',
+	);
+
+    if (defined $args_href) {
+	unless (ref($args_href) eq 'HASH') {
+	    croak("ARG. ERROR: Arg. supplied to run_mltrees() arent hashref");
+	}
+
+	foreach my $arg (keys %{$args_href}) {
+	    unless (exists $perm_args{$arg}) {
+		croak("ARG. ERROR: $arg isnt permited arg. for run_mltrees()");
+	    }
+	    else {
+		my $val = $args_href->{$arg};
+		my $regexp = '^' . $perm_args{$arg};
+		if ($val !~ m/$regexp/i) {
+		    croak("ARG. ERROR: $arg has a non-permited value ($val)")
+		}
+	    }
+	}
+    }
+
+    ## Default parameters:
+
+    my %phyargs = ();
+    if (defined $args_href->{phyml_args}) {
+	%phyargs = %{$args_href->{phyml_args}};
+    }
+    else {
+	%phyargs = (
+	    -data_type       => 'nt',
+	    );
+    }
+
+    ## And now it will run one tree per alignment
+    ## Factory only can deal with one tree per run... so it is necessary
+    ## redo de factory as many times as trees to create.
+
+    my %clusters = %{$self->get_clusters()};
+    foreach my $cluster_id (keys %clusters) {
+	my $seqfam = $clusters{$cluster_id};
+	my $align = $seqfam->alignment;
+	
+	if (defined $align) {
+	    my $factory = Bio::Tools::Run::Phylo::Phyml->new(%phyargs);
+	    my $tree = $factory->run($align);
+	    
+	    if (defined $tree) {
+		$seqfam->tree($tree);
+	    }
+	}
+    }
+}
 
 
 

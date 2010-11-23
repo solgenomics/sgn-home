@@ -1806,8 +1806,6 @@ my $wrong_memb_count2 = 0;
 my $wrong_length_dif2 = 0;
 my $wrong_strains_select2 = 0;
 
-my %test = $phygecluster_c4->out_alignfile();
-
 foreach my $ov_clid2 (keys %rmovl_cluster2) {
     my %eachcomp = %comp;
     my @ob_members2 = $rmovl_cluster2{$ov_clid2}->get_members();
@@ -1882,6 +1880,96 @@ my $ovhrf4 = { random => 1, trim => 'fake' };
 
 throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ARG. ERROR: 'tr/,
     "TESTING DIE ERROR when trim supplied to prune_by_overlaps isnt 0 or 1";
+
+
+##########################
+## TREE TOOLS FUNCTIONS ##
+##########################
+
+## First create a clone, TEST 190 and 191
+
+my $phygecl_tr1 = $phygecluster3->clone();
+$phygecl_tr1->run_njtrees({ quiet => 1 });
+
+my %clusters_tr1 = %{$phygecl_tr1->get_clusters()};
+
+my $wrong_treeobj1 = 0;
+my @njtrees = (); 
+
+foreach my $clid_tr1 (keys %clusters_tr1) {
+    my $seqfam = $clusters_tr1{$clid_tr1};
+    my $tree = $seqfam->tree();
+    if (defined $tree) {
+	unless (ref($tree) eq 'Bio::Tree::Tree') {
+	    $wrong_treeobj1++;
+	}
+	else {
+	    push @njtrees, $tree;
+	}
+    }    
+}
+
+is($wrong_treeobj1, 0, 
+    "Testing run_njtrees, checking object identity") 
+    or diag("Looks like this has failed");
+
+is(scalar(@njtrees) <=> 0, 1, 
+    "Testing run_njtrees, checking number of trees different of 0")
+    or diag("Looks like this has failed");
+
+## Test the croak, TEST 192 to 194
+
+throws_ok { $phygecl_tr1->run_njtrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
+    'TESTING DIE ERROR for run_njtrees() arg. supplied isnt a HASHREF';
+
+throws_ok { $phygecl_tr1->run_njtrees({ fk => 1}) } qr/ARG. ERROR: fk/, 
+    'TESTING DIE ERROR for run_njtrees() when arg supplied is not permited';
+
+throws_ok { $phygecl_tr1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
+    'TESTING DIE ERROR for run_njtrees() when value used is not permited';
+
+## First create a clone, TEST 195 and 196
+
+my $phygecl_tr2 = $phygecluster3->clone();
+$phygecl_tr2->run_mltrees();
+
+my %clusters_tr2 = %{$phygecl_tr2->get_clusters()};
+
+my $wrong_treeobj2 = 0;
+my @mltrees = (); 
+
+
+foreach my $clid_tr2 (keys %clusters_tr2) {
+    my $seqfam = $clusters_tr2{$clid_tr2};
+    my $tree = $seqfam->tree();
+    if (defined $tree) {
+	unless (ref($tree) eq 'Bio::Tree::Tree') {
+	    $wrong_treeobj2++;
+	}
+	else {
+	    push @mltrees, $tree;
+	}
+    }    
+}
+
+is($wrong_treeobj2, 0, 
+    "Testing run_mltrees, checking object identity") 
+    or diag("Looks like this has failed");
+
+is(scalar(@mltrees) <=> 0, 1, 
+    "Testing run_mltrees, checking number of trees different of 0")
+    or diag("Looks like this has failed");
+
+## Test the croak, TEST 197 to 199
+
+throws_ok { $phygecl_tr2->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
+    'TESTING DIE ERROR for run_mltrees() arg. supplied isnt a HASHREF';
+
+throws_ok { $phygecl_tr2->run_mltrees({ fk => 1}) } qr/ARG. ERROR: fk/, 
+    'TESTING DIE ERROR for run_mltrees() when arg supplied is not permited';
+
+throws_ok { $phygecl_tr2->run_mltrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
+    'TESTING DIE ERROR for run_mltrees() when value used is not permited';
 
 
 ####
