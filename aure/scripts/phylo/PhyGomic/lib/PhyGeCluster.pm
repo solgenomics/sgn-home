@@ -6,7 +6,12 @@ use warnings;
 use autodie;
 
 use Carp qw| croak cluck |;
+use Try::Tiny;
 use Math::BigFloat;
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use PhyGeBoots;  ## A PhyGomic module.
 
 use Bio::Seq::Meta;
 use Bio::LocatableSeq;
@@ -738,21 +743,10 @@ sub set_bootstrapping {
 	}
 	else {
 	    foreach my $cl_id (keys %{$bootstrap_href}) {
-		unless (ref($bootstrap_href->{$cl_id}) eq 'ARRAY') {
-		    my $err = "VAL. ERROR: value for $cl_id is not an array ";
-		    $err .= "reference for set_bootstrapping() function.";
+		unless (ref($bootstrap_href->{$cl_id}) eq 'PhyGeBoots') {
+		    my $err = "VAL. ERROR: value for $cl_id isnt a PhyGeBoots ";
+		    $err .= "object for set_bootstrapping() function.";
 		    croak($err);
-		}
-		else {
-		    my @aligns = @{$bootstrap_href->{$cl_id}};
-		    foreach my $align (@aligns) {
-			unless (ref($align) eq 'Bio::SimpleAlign') {
-			    my $err1 = "VAL. ERROR: $align for $cl_id in ";
-			    $err1 .= "set_bootstrapping function is not a ";
-			    $err1 .= "Bio::SimpleAlign object.";
-			    croak($err1);
-			}
-		    }
 		}
 	    }
 	    $self->{bootstrapping} = $bootstrap_href;
@@ -2055,12 +2049,18 @@ sub out_alignfile {
   Args: A hash reference with the following options:
          rootname     => $basename ('alignment' by default),
          distribution => $distribution (two options: single or multiple),
-         format       => $format (bl2seq, clustalw, emboss, fasta, maf, mase,
-                                  mega, meme, metafasta, msf, nexus, pfam, 
-                                  phylip, po, prodom, psi, selex, stockholm,
-                                  XMFA, arp)
+         type         => $type (bootstrapping has four different datatypes
+                         alignment, distances, trees and consensus).
+                         (consensus by default)
+         format       => $format (depending for the type:
+                         * Alignment => bl2seq, clustalw, emboss, fasta, maf, 
+                                        mase, mega, meme, metafasta, msf, 
+                                        nexus, pfam, phylip, po, prodom, psi, 
+                                        selex, stockholm, XMFA, arp)
                          (see bioperl Bio::AlignIO for more details)
                          ('clustalw' by default)
+                         * Distances => phylip,
+                         * Trees and consensus => newick, nexus
          extension    => $fileextension ('aln' by default)
 
   Side_Effects: None
@@ -2075,7 +2075,8 @@ sub out_bootstrapfile {
     
     ## Check variables and complete with default arguments
     
-    my $def_argshref = { 'rootname'     => 'bootstrap', 
+    my $def_argshref = { 'rootname'     => 'bootstrap',
+			 'type'         => 'consensus',
 			 'distribution' => 'single',			 
 			 'format'       => 'clustalw',
                          'extension'    => 'aln',
@@ -2102,6 +2103,10 @@ sub out_bootstrapfile {
 	$argshref = $def_argshref;
     }
 
+    ## Catch the type
+
+    my $type = $argshref->{'type'};
+
     ## Define the output hash
 
     my %outfiles = ();
@@ -2116,20 +2121,64 @@ sub out_bootstrapfile {
 
     if ($argshref->{'distribution'} eq 'multiple') {
 	my $outname1 = $argshref->{'rootname'} . 
-                       '.multiplealignments.' . 
+                       '.multiple_bootstrapping.' . 
                        $argshref->{'extension'};
 	$outfiles{'multiple'} = $outname1;
 	
-        my $alignio1 = Bio::AlignIO->new( -format => $argshref->{'format'},
-                                          -file   => ">$outname1",
-                                        );
+	my ($alignio, $distsio, $treeio, $consensusio) = ('', '', '', '');
+
+	if ($type eq 'alignment') {
+	    $alignio = Bio::AlignIO->new( -format => $argshref->{'format'},
+					  -file   => ">$outname1",
+		);
+	}
+	elsif ($type eq 'distances') {
+	    $distsio = Bio::Matrix::IO->new( -format => 'phylip',
+					     -file   => ">$outname1",
+		); 
+	}
+	elsif ($type eq 'trees') {
+	    $treeio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
+					-file   => ">$outname1",
+		);
+	}
+	elsif ($type eq 'consensus') {
+	    $consensusio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
+					     -file   => ">$outname1",
+		);
+	}
+	else {
+	    croak("ERROR: Type not permited for out_bootstrapfile function");
+	}
+
 
 	foreach my $cluster_id (sort keys %bootstrap) {
-    
-	    my @aligns = @{$bootstrap{$cluster_id}}; 
-            foreach my $align (@aligns) {
-                $alignio1->write_aln($align);
-            }
+	    my $phygeboots = $bootstrap{$cluster_id};
+	    my @aligns = @{$phygeboots->get_aligns()};
+	    my @dists = @{$phygeboots->get_dists()};
+	    my @trees = @{$phygeboots->get_trees()};
+	    my $consensus = $phygeboots->get_consensus();
+
+	    if ($type eq 'alignment') {
+		foreach my $align (@aligns) {
+		    $alignio->write_aln($align);
+		}
+	    }
+	    elsif ($type eq 'distances') {
+		foreach my $dists (@dists) {
+		    $distsio->write_matrix($dists);
+		}
+	    }
+	    elsif ($type eq 'trees') {
+		foreach my $tree (@trees) {
+		    $treeio->write_tree($tree);
+		}
+	    }
+	    elsif ($type eq 'consensus') {
+		if (defined $consensus) {
+		    $consensusio->write_tree($consensus);
+		}
+	    }
 	}	
     }
     else {
@@ -2137,16 +2186,59 @@ sub out_bootstrapfile {
 	    my $outname2 = $argshref->{'rootname'} . '.' . 
                            $cluster_id  . '.' .
                            $argshref->{'extension'};
-	    $outfiles{$cluster_id} = $outname2;
+	    my $phygeboots = $bootstrap{$cluster_id};
 	    
-	    my $alignio2 = Bio::AlignIO->new( -format => $argshref->{'format'},
-                                              -file   => ">$outname2",
-                                            );
+	   my ($alignio, $distsio, $treeio, $consenio) = ('', '', '', '');
 
-            my @aligns = @{$bootstrap{$cluster_id}}; 
-            foreach my $align (@aligns) {
-                $alignio2->write_aln($align);
-            }
+	    if ($type eq 'alignment') {
+		$alignio = Bio::AlignIO->new( -format => $argshref->{'format'},
+					      -file   => ">$outname2",
+		    );
+	    }
+	    elsif ($type eq 'distances') {
+		$distsio = Bio::Matrix::IO->new( -format => 'phylip',
+						 -file   => ">$outname2",
+		    ); 
+	    }
+	    elsif ($type eq 'trees') {
+		$treeio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
+					    -file   => ">$outname2",
+		    );
+	    }
+	    elsif ($type eq 'consensus') {
+		$consenio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
+					      -file   => ">$outname2",
+		    );
+	    }
+	    else {
+		croak("ERROR: Type not permited for out_bootstrapfile funct.");
+	    }
+
+	    my @aligns = @{$phygeboots->get_aligns()};
+	    my @dists = @{$phygeboots->get_dists()};
+	    my @trees = @{$phygeboots->get_trees()};
+	    my $consensus = $phygeboots->get_consensus();
+
+	    if ($type eq 'alignment') {
+		foreach my $align (@aligns) {
+		    $alignio->write_aln($align);
+		}
+	    }
+	    elsif ($type eq 'distances') {
+		foreach my $dists (@dists) {
+		    $distsio->write_matrix($dists);
+		}
+	    }
+	    elsif ($type eq 'trees') {
+		foreach my $tree (@trees) {
+		    $treeio->write_tree($tree);
+		}
+	    }
+	    elsif ($type eq 'consensus') {
+		if (defined $consensus) {
+		    $consenio->write_tree($consensus);
+		}
+	    }
 	}
     }
 
@@ -2850,8 +2942,10 @@ sub run_alignments {
   Ret: none (it loads %distances, a hash with keys=cluster_id and 
        value=Bio::Matrix::PhylipDis object into the phyGeCluster object)
 
-  Args: $method, a scalar to pass to the Bio::Align::DNAStatistics->distance()
+  Args: A hash reference with following keys:
+        method, a scalar to pass to the Bio::Align::DNAStatistics->distance()
         function (JukesCantor,Uncorrected,F81,Kimura,Tamura or TajimaNei).
+        quiet
 
   Side_Effects: Died if the methos used is not in the list of available
                 method for Bio::Align::DNAStatistics object.
@@ -2865,8 +2959,20 @@ sub run_alignments {
 
 sub run_distances {
     my $self = shift;
-    my $method = shift || 'JukesCantor';
-
+    my $arghref = shift;
+    
+    my $method = '';
+    my $quiet = 0;
+    if (defined $arghref) {
+	unless (ref($arghref) eq 'HASH') {
+	    croak("ERROR: Arg. supplied to run_distances is not a hash ref.")
+	}
+	$method = $arghref->{'method'} || 'JukesCantor';
+	$quiet = $arghref->{'quiet'} || 0;
+	unless ($quiet =~ m/^[1|0]$/) {
+	    croak("ERROR: quiet only can take 0 or 1 values");
+	}
+    }
     
     ## Create the Bio::Align::DNAStatistics object
 
@@ -2944,11 +3050,32 @@ sub run_distances {
 	    }
 
 	    if ($skip_distance == 0) {
-
-		my $distmatrix = $align_stats->distance( -align  => $alignobj,
-		                                         -method => $method,
-		                                       );
-		$dist{$cluster_id} = $distmatrix;
+		my $distmatrix = '';
+		try {
+		    if ($quiet == 1) {
+			local $SIG{__WARN__} = sub {};
+			$distmatrix = $align_stats->distance( 
+			    -align  => $alignobj,
+			    -method => $method,
+			    );
+		    }
+		    else {
+			$distmatrix = $align_stats->distance( 
+			    -align  => $alignobj,
+			    -method => $method,
+			    );
+		    }
+		}
+		finally {
+		    if (@_) {
+			unless ($quiet == 0) {
+			    print STDERR "ERROR for run_distances.\n@_\n";
+			}
+		    }
+		    else {
+			$dist{$cluster_id} = $distmatrix;
+		    }
+		};
 	    }
 	}
     }
@@ -2962,118 +3089,132 @@ sub run_distances {
 
   Desc: Calculates the bootstrapping for a phygecluster object. It stores
         the bootstrapping alignments into the object, as a hash, key=cluster_id
-        and value=array reference of alignments
+        and value=array reference of alignments. It use PhyGeBoots object.
 
-  Ret: none (it loads %bootstrap as keys=cluster_id and value=array reference
-      of alignments).
+  Ret: none (it loads %bootstrap as keys=cluster_id and value=PhyGeBoots object)
 
   Args: $args_href, a hash reference with the following options:
-        datatype, permute, blocksize, replicates, readweights, readcat & quiet.
+         + run_bootstrap => a hash ref. with args. (datatype, permute, 
+                            blocksize, replicates, readweights, readcat & quiet)
+         + run_distances => a hash ref. with args. (method => (JukesCantor,
+                            Uncorrected,F81,Kimura,Tamura or TajimaNei))
+         + run_njtrees   => a hash ref. with args. (type => NJ|UPGMA, 
+                            outgroup => int, lowtri => 1|0, uptri => 1|0,
+                            subrep => 1|0 or/and jumble => int)
+         + run_mltrees   => a hash ref. with args. (phyml_arg => {}, $hash ref 
+                            with phyml arguments               
+         + run_consensus => a hash ref. with args. (type => '\w+', rooted => 
+                            '\d+', outgroup => '\d+', quiet => '[1|0]',)
+
         (for more information: 
-         http://evolution.genetics.washington.edu/phylip/doc/seqboot.html)
- 
+         http://evolution.genetics.washington.edu/phylip/doc/seqboot.html
+         http://www.atgc-montpellier.fr/phyml/usersguide.php )
 
   Side_Effects: Died if the arguments are wrong.
                 Skip the clusters that do not have any alignment
                 
 
   Example: $phygecluster->run_bootstrapping(
-                                             { 
-                                               datatype   => 'sequences',
-                                               replicates => 1000,
-                                             }
-                                           );
+                        { 
+                          run_bootstrap => { 
+                             datatype   => 'Sequence',
+                             replicates => 1000,
+                             quiet      => 1,
+                          },
+                          run_distances => {
+                             method => 'Kimura',
+                          },
+                          run_njtrees   => {
+                             type  => 'NJ',
+                             quiet => 1,
+                          },
+                          run_consensus => {
+                             quiet => 1,
+                          }
+                        }
+			);
 
 =cut
 
 sub run_bootstrapping {
     my $self = shift;
-    my $args_href = shift ||
-	croak("ARG. ERROR: No args. were supplied to run_bootstrapping()");
+    my $args_href = shift;
     
     ## Bootstrap tool uses the arguments as a array, so the argument checking
     ## also will change them to this format
 
-    my %perm_args = (
-	'datatype' => {
-	    'Molecular sequences'               => 1, 
-	    'Discrete morphological characters' => 1, 
-	    'Restriction sites'                 => 1, 
-	    'Gene frequencies'                  => 1,
-	    'Sequence'                          => 1, 
-	    'Morph'                             => 1,
-	    'Rest.'                             => 1, 
-            'Gene Freqs'                        => 1,
-	}, 
-	'permute'     => 'yes|no',
-	'blocksize'   => 'int', 
-	'replicates'  => 'int', 
-	'readweights' => 'yes|no', 
-	'readcat'     => 'yes|no', 
-	'quiet'       => 'yes|no',
+    my %default_args = (
+	replace_no_atcg => 0,
+	run_bootstrap => { 
+	    datatype   => 'Sequence',
+	    replicates => 1000,
+	    quiet      => 1,
+	},
+	run_distances => {
+	    method => 'JukesCantor',
+	},
+	run_njtrees   => {
+	    type => 'NJ',
+	    quiet => 1,
+	},
+	run_mltrees   => {
+	},
+	run_consensus => {
+	    quiet => 1,
+	},
 	);
 
-    ## Checking args.
+    ## Checking args.  
 
-    my @bootstrargs = ();
-    unless (ref($args_href) eq 'HASH') {
-	croak("ARG. ERROR: Arg. supplied to run_bootstrapping() arent hashref");
-    }
-    else {
-	foreach my $argkey (keys %{$args_href}) {
-	    my $val = $args_href->{$argkey};
-	    unless (exists $perm_args{$argkey}) {
-		my $err = "ARG. ERROR: $argkey is not a permited arg. for ";
-		$err .= "run_bootstrapping() function";
-		croak($err);
-	    }
-	    else {
-		if (ref($perm_args{$argkey}) eq 'HASH') {
-		    my %perm_dt = %{$perm_args{$argkey}};
-		    
-		    unless (exists $perm_dt{$val}) {
-			my $err1 = "ARG. ERROR: $val is not a permited value ";
-			$err1 .= "for arg=$argkey with run_bootstrapping()";
-			croak($err1);
+    if (defined $args_href) {
+	unless (ref($args_href) eq 'HASH') {
+	    my $err = "ARG. ERROR: Arg. supplied to run_bootstrapping() arent ";
+	    $err .= "an hashref";
+	    croak($err);
+	}
+	else {
+	    foreach my $argkey (keys %{$args_href}) {
+		my $val = $args_href->{$argkey};
+		unless ($argkey eq 'replace_no_atcg') {
+		    unless (exists $default_args{$argkey}) {
+			my $err = "ARG. ERROR: $argkey is not a permited arg. ";
+			$err .= "for run_bootstrapping() function";
+			croak($err);
+		    }
+		    unless (ref($val) eq 'HASH') {
+			my $err = "ARG. ERROR: $val for $argkey argument isnt ";
+			$err .= "an hash ref for run_bootstrapping() function";
+			croak($err);
 		    }
 		}
-		else {
-		    if ($perm_args{$argkey} eq 'int') {
-			unless ($val =~ m/^\d+$/) {
-			    my $err2 = "ARG. ERROR: $val for $argkey is not ";
-			    $err2 .= "an integer for run_bootstrapping()";
-			    croak($err2);
-			}
-		    }
-		    else {
-			unless ($val =~ m/^(yes|no)$/) {
-			    my $err3 = "ARG. ERROR: $val for $argkey do not ";
-			    $err3 .= "have yes|no val. for run_bootstrapping()";
-			    croak($err3);
-			}
-		    }
-		}
-		push @bootstrargs, ($argkey, $val);
 	    }
 	}
     }
+    else {
+	## Remove the default redundancy (run_mltree)
+	delete($default_args{run_mltree});
+	$args_href = \%default_args;
+    }
 
-    ## Now it will get all the run_bootstrapping factory
-
-    my $fact_boots = Bio::Tools::Run::Phylo::Phylip::SeqBoot->new(@bootstrargs);
-
+    ## Now it will run all the bootstrapping process for each cluster
     ## Define the hash to store the alignments
 
     my %bootstr = ();
-    
-    ## Get the alignments for each cluster and run bootstrapping
 
     my %clusters = %{$self->get_clusters()};
     foreach my $cluster_id (keys %clusters) {
-	my $align = $clusters{$cluster_id}->alignment();
+	
+	my $seqfam = $clusters{$cluster_id};
+	my $align = $seqfam->alignment();
+	
+	## Make sense run the bootstrapping only for clusters with alignments
 	if (defined $align) {
-	    my $bootsalign_aref = $fact_boots->run($align); 
-	    $bootstr{$cluster_id} = $bootsalign_aref;
+	    my %args = %{$args_href};
+	    $args{seqfam} = $seqfam;
+	    my $memb_n = $align->num_sequences();
+	    my $phygeboots = PhyGeBoots->new(\%args);
+	    my $trees_n = scalar( $phygeboots->get_trees());
+	    $bootstr{$cluster_id} = $phygeboots;
 	}
     }
     

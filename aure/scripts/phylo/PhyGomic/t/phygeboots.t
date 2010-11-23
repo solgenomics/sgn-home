@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 65;
+use Test::More tests => 66;
 use Test::Exception;
 
 use FindBin;
@@ -74,9 +74,9 @@ my $fkhref0_1 = { seqfam => 'test', run_distances => {} };
 throws_ok { PhyGeBoots->new($fkhref0_1) } qr/on: run_distances/, 
     'TESTING DIE ERROR for new() when run_distances is used without run_boots.';
 
-my $fkhref0_2 = { seqfam => 'test', run_bootstrap => {}, run_trees => {} };
-throws_ok { PhyGeBoots->new($fkhref0_2) } qr/on: run_trees/, 
-    'TESTING DIE ERROR for new() when run_trees is used without run_distances';
+my $fkhref0_2 = { seqfam => 'test', run_bootstrap => {}, run_njtrees => {} };
+throws_ok { PhyGeBoots->new($fkhref0_2) } qr/on: run_njtrees/, 
+    'TESTING DIE ERROR for new() when run_njtrees is used without run_distanc.';
 
 my $fkhref0_3 = { seqfam        => 'test', 
 		  run_bootstrap => {}, 
@@ -255,13 +255,13 @@ my $phygeb1 = PhyGeBoots->new({ seqfam => $seqfam1 });
 my @aligns1 = $phygeb1->run_bootstrap(
     { 
 	datatype   => 'Sequence', 
-	replicates => 100, 
-	quiet      => 'yes',
+	replicates => 500, 
+	quiet      => 1,
     }
     );
 
-is(scalar(@aligns1), 100, 
-    "Testing run_bootstrap, checking number of replicates (100)")
+is(scalar(@aligns1), 500, 
+    "Testing run_bootstrap, checking number of replicates (500)")
     or diag("Looks like this has failed");
 
 my $wrong_align_objs1 = 0;
@@ -297,15 +297,15 @@ throws_ok { $phygeb1->run_bootstrap(['fk']) } qr/ARG. ERROR: Arg. supplied/,
 throws_ok { $phygeb1->run_bootstrap({ fk => 1}) } qr/ARG. ERROR: fk/, 
     'TESTING DIE ERROR for run_bootstrap() arg. supplied isnt permited';
 
-throws_ok { $phygeb1->run_bootstrap({ quiet => 0}) } qr/ARG. ERROR: 0/, 
+throws_ok { $phygeb1->run_bootstrap({ quiet => 2}) } qr/ARG. ERROR: 2/, 
     'TESTING DIE ERROR for run_bootstrap() when arg. supplied has wrong value';
 
 ## 2) test run_distances, TEST 43 to 45
 
 my @dists1 = $phygeb1->run_distances();
 
-is(scalar(@dists1), 100, 
-    "Testing run_distances, checking number of replicates (100)")
+is(scalar(@dists1), 500, 
+    "Testing run_distances, checking number of replicates (500)")
     or diag("Looks like this has failed");
 
 my $wrong_dists_objs1 = 0;
@@ -346,8 +346,8 @@ throws_ok { $phygeb1->run_distances({method =>'fk'}) } qr/ARG. ERROR: fk/,
 
 my @njtrees1 = $phygeb1->run_njtrees({ type => 'NJ', quiet => 1 });
 
-is(scalar(@njtrees1), 100, 
-    "Testing run_njtrees, checking number of replicates (100)")
+is(scalar(@njtrees1), 500, 
+    "Testing run_njtrees, checking number of replicates (500)")
     or diag("Looks like this has failed");
 
 my $wrong_trees_objs1 = 0;
@@ -388,8 +388,8 @@ throws_ok { $phygeb1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/,
 
 my @mltrees1 = $phygeb1->run_mltrees();
 
-is(scalar(@mltrees1), 100, 
-    "Testing run_mltrees, checking number of replicates (100)")
+is(scalar(@mltrees1), 500, 
+    "Testing run_mltrees, checking number of replicates (500)")
     or diag("Looks like this has failed");
 
 my $wrong_trees_objs2 = 0;
@@ -426,7 +426,7 @@ throws_ok { $phygeb1->run_mltrees({phyml_arg =>'fk'}) } qr/ARG. ERROR: phy/,
     'TESTING DIE ERROR for run_mltrees() when value used is not permited';
 
 
-## 5) Testing run_consensus, TEST 61 to 65
+## 5) Testing run_consensus, TEST 61 to 66
 
 my $consensus1 = $phygeb1->run_consensus({ quiet => 1});
 
@@ -436,6 +436,22 @@ is(ref($consensus1), 'Bio::Tree::Tree',
 
 is(scalar($consensus1->get_leaf_nodes()), $member_n1, 
     "Testing run_consensus, checking number of leaf nodes")
+    or diag("Looks like this has failed");
+
+my $consensus2 = $phygeb1->run_consensus({ quiet => 1, normalized => 1});
+
+my $wrong_norm = 0;
+my @nodes = $consensus2->get_nodes();
+foreach my $node (@nodes) {
+    if (defined $node->branch_length()) {
+	if ($node->branch_length() > 100) {
+	    $wrong_norm++;
+	}
+    }
+}
+
+is($wrong_norm, 0, 
+    "Testing run_consensus (normalized), cehccking that branches < 100")
     or diag("Looks like this has failed");
 
 throws_ok { $phygeb1->run_consensus(['fk']) } qr/ARG. ERROR: Arg. supplied/, 

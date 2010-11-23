@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 192;
+use Test::More tests => 189;
 use Test::Exception;
 
 use FindBin;
@@ -983,7 +983,7 @@ is($cloned_alignments <=> 0, 1,
 ## testing run_distances() function, and check that the identity of the objects 
 ## is Bio::Matrix::PhylipDist, TEST 107 to 109
 
-$phygecluster3->run_distances();
+$phygecluster3->run_distances({ quiet => 1 });
 my %dist_jc = %{$phygecluster3->get_distances()};
 
 my $wrongobjs = 0;
@@ -995,14 +995,14 @@ foreach my $cl_id8 (keys %dist_jc) {
     }
 }
 
-throws_ok { $phygecluster3->run_distances('fake') } qr/ERROR METHOD: fake/, 
+throws_ok { $phygecluster3->run_distances({ method => 'fake'}) } qr/ERROR MET/, 
     'TESTING DIE ERROR when a non available method is used with run_distance';
 
 is($wrongobjs, 0, 
     "Testing run_distance() with default method, checking wrong objects")
     or diag("Looks like this has failed");
 
-$phygecluster3->run_distances('Kimura');
+$phygecluster3->run_distances({ method => 'Kimura'});
 my %dist_kim = %{$phygecluster3->get_distances()};
 
 ## Kimura method should give a different number of distance matrix than 
@@ -1552,32 +1552,52 @@ foreach my $outfunc (@outfunctions) {
 ## BOOTSTRAPPING FUNCTIONS ##
 #############################
 
-## First test if get/set_bootstrapping died when should do it. TEST 160 to 163
+## First test if get/set_bootstrapping died when should do it. TEST 160 to 162
 
-throws_ok { $phygecluster3->set_bootstrapping() } qr/ARGUMENT ERROR: No arg/,
-    "TESTING DIE ERROR when no argument is supplied with set_bootstrapping()";
 
-throws_ok { $phygecluster3->set_bootstrapping('fake') } qr/ARGUMENT ERROR: fak/,
+throws_ok { $phygecluster3->set_bootstrapping() } qr/ARGUMENT ERROR: No/,
+    "TESTING DIE ERROR when no argument was supplied to set_bootstrapping()";
+
+throws_ok { $phygecluster3->set_bootstrapping('fake') } qr/ARGUMENT ERROR: fa/,
     "TESTING DIE ERROR when arg. supplied is not hash ref. set_bootstrapping()";
 
 throws_ok { $phygecluster3->set_bootstrapping({ 1 => 't'}) } qr/VAL. ERROR: va/,
-    "TESTING DIE ERROR when values for href. arent aref. set_bootstrapping()";
-
-throws_ok { $phygecluster3->set_bootstrapping({1 =>['t']}) } qr/VAL. ERROR: t/,
-    "TESTING DIE ERROR when values for aref. arent Bio::SimpleAlign. objects";
+    "TESTING DIE ERROR when href. values arent PhyGeBoots set_bootstrapping";
 
 
-## Now it will test run_bootstrapping. TEST 164 to 166
+## Now it will test run_bootstrapping. TEST 163 to 166
+## Bootstrapping function take some time with big clusters with more than 4 
+## members. To simply that it will get a phygecluster object with member smaller
+## than 5 members and bigger than 3.
 
-$phygecluster3->run_bootstrapping(
-    { 
-	datatype   => 'Molecular sequences', 
-	replicates => 100,
-	quiet      => 'yes',
-    }
-    );
+my $phygecl_b = $phygecluster3->clone();
+$phygecl_b->prune_by_align( { num_sequences => ['>',5], length => ['<',100] } );
+$phygecl_b->prune_by_align( { num_sequences => ['<',3], length => ['<',100] } );
 
-my %bootstr = %{$phygecluster3->get_bootstrapping()};
+$phygecl_b->run_bootstrapping(
+    {
+      run_bootstrap => { 
+	  datatype   => 'Sequence',
+	  replicates => 100,
+	  quiet      => 1,
+      },
+      run_distances => {
+	  method => 'JukesCantor',
+      },
+      run_njtrees   => {
+	  type => 'NJ',
+	  quiet => 1,
+      },
+      run_mltrees   => {
+      },
+      run_consensus => {
+	  quiet => 1,
+      },
+    } 
+    );   
+
+
+my %bootstr = %{$phygecl_b->get_bootstrapping()};
 
 is(scalar(keys %bootstr) <=> 0, 1,
     "Testing run_bootstrapping, checking cluster count with boots > 0")
@@ -1585,9 +1605,12 @@ is(scalar(keys %bootstr) <=> 0, 1,
 
 my $wrong_boots_objs = 0;
 my $wrong_boots_num = 0;
+my $wrong_boots_consensus = 0;
 
 foreach my $bo_clid (keys %bootstr) {
-    my @bo_aligns = @{$bootstr{$bo_clid}};
+    my $phygeb = $bootstr{$bo_clid};
+    my @bo_aligns = $phygeb->get_aligns();
+    my $bo_consens = $phygeb->get_consensus();
     
     if (scalar(@bo_aligns) != 100) {
 	$wrong_boots_num++;
@@ -1596,6 +1619,9 @@ foreach my $bo_clid (keys %bootstr) {
 	unless (ref($bo_align) eq 'Bio::SimpleAlign') {
 	    $wrong_boots_objs++;
 	}
+    }
+    unless (ref($bo_consens) eq 'Bio::Tree::Tree') {
+	$wrong_boots_consensus++;
     }
 }
 
@@ -1607,10 +1633,12 @@ is($wrong_boots_objs, 0,
     "Testing run_bootstrapping, checking align objects are Bio::SimpleAlign.")
     or diag("Looks like this has failed");
 
-## Testing die options for run_bootstrapping
+is($wrong_boots_consensus, 0, 
+    "Testing run_bootstrapping, checking consen objects are Bio::Tree::Tree")
+    or diag("Looks like this has failed");
 
-throws_ok { $phygecluster3->run_bootstrapping() } qr/ARG. ERROR: No args./,
-    "TESTING DIE ERROR when no argument is supplied with run_bootstrapping()";
+## Testing die options for run_bootstrapping, TEST 167 to 169
+
 
 throws_ok { $phygecluster3->run_bootstrapping('fk') } qr/ARG. ERROR: Arg/,
     "TESTING DIE ERROR when arg. supplied to run_bootstrapping() isnt hashref";
@@ -1618,20 +1646,10 @@ throws_ok { $phygecluster3->run_bootstrapping('fk') } qr/ARG. ERROR: Arg/,
 throws_ok { $phygecluster3->run_bootstrapping({'fk'=>1}) } qr/ARG. ERROR: fk/,
     "TESTING DIE ERROR when arg. supplied to run_bootstrapping() isnt permited";
 
-my $fk_hr1 = { datatype => 'fk'};
+my $fk_hr1 = { run_bootstrap => 'fk'};
 
 throws_ok { $phygecluster3->run_bootstrapping($fk_hr1) } qr/ARG. ERROR: fk/,
-    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt permited value";
-
-my $fk_hr2 = { datatype => 'Sequence', replicates => 'A lots'};
-
-throws_ok { $phygecluster3->run_bootstrapping($fk_hr2) } qr/ARG. ERROR: A lot/,
-    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt an integer";
-
-my $fk_hr3 = { datatype => 'fk', quiet => 1};
-
-throws_ok { $phygecluster3->run_bootstrapping($fk_hr3) } qr/ARG. ERROR: 1/,
-    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt yes|no";
+    "TESTING DIE ERROR when arg. supplied to run_bootst.() isnt hashref";
 
 
 ##################################
@@ -1640,7 +1658,7 @@ throws_ok { $phygecluster3->run_bootstrapping($fk_hr3) } qr/ARG. ERROR: 1/,
 
 my %overlaps = $phygecluster3->calculate_overlaps();
 
-## Define some expected values (counted by other methods), TEST 173 to 175
+## Define some expected values (counted by other methods), TEST 170 to 172
 
 my %ov_expval = ( 
     'cluster_1' => { 
@@ -1724,7 +1742,7 @@ is($best_ovcluster2, 'Nta_08736,Sly_01219',
 ## prune_by_overlaps ## 
 #######################
 
-## TEST 176 to 186
+## TEST 173 to 183
 
 my $phygecluster_c3 = $phygecluster3->clone();
 my ($rm_ovcl1href, $rm_ovmb1href) = $phygecluster_c3->prune_by_overlaps(
@@ -1837,7 +1855,7 @@ is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
     "Testing prune_by_overlaps(composition), checking removed member count")
     or diag("Looks like this has failed");
 
-## Test the croak functions for prune_by_overlapings, TEST 187 to 192
+## Test the croak functions for prune_by_overlapings, TEST 185 to 189
 
 throws_ok { $phygecluster_c3->prune_by_overlaps() } qr/ARG. ERROR: No hash/,
     "TESTING DIE ERROR when none arg. is supplied to prune_by_overlaps";

@@ -6,6 +6,7 @@ use warnings;
 use autodie;
 
 use Carp qw| croak cluck |;
+use Try::Tiny;
 use Math::BigFloat;
 
 use Bio::Seq::Meta;
@@ -110,10 +111,12 @@ The following class methods are implemented:
   Ret: a PhyGeBoots.pm object
 
   Args: A hash reference with the following key-value pairs: 
-         + seqfam => a Bio::Cluster::SequenceFamily object, 
+         + seqfam => a Bio::Cluster::SequenceFamily object,
+         + replace_no_atcg => whatever (replace the non ATCG nucleotides)
          + run_bootstrap => a hash ref. with args. (see run_bootstrap function)
          + run_distances => a hash ref. with args. (see run_distances function)
-         + run_trees     => a hash ref. with args. (see run_trees function)
+         + run_njtrees   => a hash ref. with args. (see run_njtrees function)
+         + run_mltrees   => a hash ref. with args. (see run_mltrees function)
          + run_consensus => a hash ref. with args. (see run_consensus function)
 
   Side_Effects: Die if the argument used is not a hash or there are argument
@@ -161,18 +164,23 @@ sub new {
 	    $err .= "run_bootstrap";
 	    croak($err);	    
 	}
+	if (defined $args_href->{'run_mltrees'}) {
+	    $err .= "run_mltrees arg. can not be used without ";
+	    $err .= "run_bootstrap";
+	    croak($err);	    
+	}
     }
     unless (defined $args_href->{'run_distances'}) {
-	if (defined $args_href->{'run_trees'}) {
-	    $err .= "run_trees arg. can not be used without ";
+	if (defined $args_href->{'run_njtrees'}) {
+	    $err .= "run_njtrees arg. can not be used without ";
 	    $err .= "run_distances";
 	    croak($err);	    
 	}
     }
-    unless (defined $args_href->{'run_trees'}) {
+    unless ($args_href->{'run_njtrees'} || $args_href->{'run_mltrees'}) {
 	if (defined $args_href->{'run_consensus'}) {
 	    $err .= "run_consensus arg. can not be used without ";
-	    $err .= "run_trees";
+	    $err .= "run_njtrees or run_mltrees";
 	    croak($err);	    
 	}
     }
@@ -182,35 +190,45 @@ sub new {
     if (defined $seqfam) {
 	$self->set_seqfam($seqfam);
 
+	if (defined $args_href->{'replace_no_atcg'}) {
+	    if ( $args_href->{'replace_no_atcg'} =~ m/^1$/) {
+		$self->replace_no_atcg();
+	    }
+	    delete($args_href->{'replace_no_atcg'});
+	}
+
 	if (defined $args_href->{'run_bootstrap'}) {
 	    @aligns = $self->run_bootstrap($args_href->{'run_bootstrap'});
-	    $self->set_aligns(\@aligns);
 	
 	    if (defined $args_href->{'run_distances'}) {
 		@dists = $self->run_distances($args_href->{'run_distances'});
-		$self->set_dists(\@dists);
 	    
-		if (defined $args_href->{'run_trees'}) {
-		    @trees = $self->run_trees($args_href->{'run_trees'});
-		    $self->set_trees(\@trees);
+		if (defined $args_href->{'run_njtrees'}) {
+		    @trees = $self->run_njtrees($args_href->{'run_njtrees'});
 		
 		    if (defined $args_href->{'run_consensus'}) {
 			my $cons_href = $args_href->{'run_consensus'};
 			$consensus = $self->run_consensus($cons_href);
-			$self->set_consensus($consensus);		    
 		    }
 		}
-	    } 
+	    }
+	    elsif (defined $args_href->{'run_mltrees'}) {
+		@trees = $self->run_mltrees($args_href->{'run_mltrees'});
+		
+		if (defined $args_href->{'run_consensus'}) {
+		    my $cons_href = $args_href->{'run_consensus'};
+		    $consensus = $self->run_consensus($cons_href);	    
+		}
+	    }
 	}
     }
-    else {  ## create an empty object.
 	
-	$self->set_seqfam($seqfam);
-	$self->set_aligns(\@aligns);
-	$self->set_dists(\@dists);
-	$self->set_trees(\@trees);
-	$self->set_consensus($consensus);
-    }
+    $self->set_seqfam($seqfam);
+    $self->set_aligns(\@aligns);
+    $self->set_dists(\@dists);
+    $self->set_trees(\@trees);
+    $self->set_consensus($consensus);
+    
     return $self;
 }
 
@@ -494,12 +512,18 @@ sub get_consensus {
 
 sub set_consensus {
     my $self = shift;
-    my $cons = shift ||
+    my $cons = shift;
+	
+    unless (defined $cons) {
 	croak("ARG. ERROR: No arg was supplied to set_consensus function");
-
-    my $obj = 'Bio::Tree::Tree';
-    unless (ref($cons) eq $obj) {
-	croak("ARG. ERROR: Arg=$cons supplied to set_consensus isnt $obj");
+    }
+    else {
+	if ($cons =~ m/\w+/) {
+	    my $obj = 'Bio::Tree::Tree';
+	    unless (ref($cons) eq $obj) {
+		croak("ARG. ERROR: Arg=$cons supplied set_consensus isnt $obj");
+	    }
+	}
     }
     $self->{consensus} = $cons;
 }
@@ -573,6 +597,16 @@ sub run_bootstrap {
     }
     else {
 	foreach my $argkey (keys %{$args_href}) {
+
+	    if (exists $args_href->{quiet}) {
+		if ($args_href->{quiet} =~ m/^0$/) {
+		    $args_href->{quiet} = 'no';
+		}
+		elsif ($args_href->{quiet} =~ m/^1$/) {
+		    $args_href->{quiet} = 'yes';
+		}
+	    }
+
 	    my $val = $args_href->{$argkey};
 	    unless (exists $perm_args{$argkey}) {
 		my $err = "ARG. ERROR: $argkey is not a permited arg. for ";
@@ -687,20 +721,43 @@ sub run_distances {
 	    croak("ARG. ERROR: $method isnt permited method for run_distances");
 	}
     }
-
     my @dists = ();
 
     ## Create the factory to calculate the distances
+    ## Run distance over some alignment dataset can fail. To 
 
     my $factory = Bio::Align::DNAStatistics->new();
 
     my @aligns = $self->get_aligns();
+    my $c = 0;
     foreach my $align (@aligns) {
+	$c++;
+	my $dists = '';
 
-	my $dists = $factory->distance( -align => $align, -method => $method );
-	push @dists, $dists;
+	## distance produce a lot of warning and also, depending of the method
+	## can fail. In this case this function will silent the warnings and
+	## catch the errors for the function
+
+	try {
+	    local $SIG{__WARN__} = sub {};
+	    $dists = $factory->distance( -align   => $align, 
+					 -method  => $method,
+					 -verbose => 0,
+		); 
+	}
+	finally {
+	    if (@_) {
+		unless (defined $args_href->{quiet}) {
+		    print STDERR "ERROR for run_distances for align $c:\n@_\n";
+		}
+	    }
+	    else {
+		if (defined $dists && ref($dists) =~ m/Bio::Matrix/) {
+		    push @dists, $dists;
+		}
+	    }
+	};
     }
-    
     $self->set_dists(\@dists);
     return @dists;
 }
@@ -779,7 +836,9 @@ sub run_njtrees {
     foreach my $dist (@dists) {
 
 	my ($tree) = $factory->run($dist);
-	push @trees, $tree;
+	if (defined $tree) {
+	    push @trees, $tree;
+	}
     }
     
     $self->set_trees(\@trees);
@@ -878,14 +937,17 @@ sub run_mltrees {
   Ret: One Bio::Tree::Tree object
 
   Args: $args_href, a hash reference with the following options:
-        
- 
+        type       => '\w+', 
+        rooted     => '\d+', 
+        outgroup   => '\d+', 
+        quiet      => '[1|0]',
+        normalized => '[1|0]' ## To calculate percentages for each node        
 
   Side_Effects: Died if the arguments are wrong.
                 Return undef if there are no tree inside the PhyGeBoots obj.
                 Set trees inside PhyGeBoots object.
                 
-  Example: 
+  Example: my $consensus1 = $phygeb1->run_consensus({ quiet => 1});
 
 =cut
 
@@ -898,8 +960,10 @@ sub run_consensus {
 	 rooted   => '\d+',
 	 outgroup => '\d+', 
 	 quiet    => '[1|0]',
+	 normalized => '[1|0]'
 	 );
 
+    my $norm = 0;
     if (defined $args_href) {
 	unless (ref($args_href) eq 'HASH') {
 	    croak("ARG. ERROR: Arg. supplied to run_consensus() arent hashref");
@@ -914,6 +978,10 @@ sub run_consensus {
 		my $regexp = '^' . $perm_args{$arg} . '$';
 		if ($val !~ m/$regexp/i) {
 		    croak("ARG. ERROR: $arg has a non-permited value ($val)")
+		}
+		if ($arg eq 'normalized' && $val == 1) {
+		    $norm = 1;
+		    delete($args_href->{'normalized'});
 		}
 	    }
 	}
@@ -933,16 +1001,101 @@ sub run_consensus {
     ## And now it will run one tree per distance
 
     my @trees = $self->get_trees();
+    my $tree_n = scalar(@trees);
 
     if (scalar(@trees) > 0) {
 	$consensus = $factory->run(\@trees);
+	if ($norm == 1) {
+	    my @nodes = $consensus->get_nodes();
+	    foreach my $node (@nodes) {
+		my $br_length = $node->branch_length();
+		if (defined $br_length) {
+		    $node->branch_length($br_length * 100 / $tree_n);
+		}
+	    }
+	}
     }
 
-    $self->set_consensus($consensus);
+    if (defined $consensus) {
+	$self->set_consensus($consensus);
+    }
     return $consensus;
 }
 
+#####################
+## MIXED FUNCTIONS ##
+#####################
 
+=head2 replace_no_atgc
+
+  Usage: $phygeboots->replace_no_atcg(\%equiv);
+
+  Desc: replace the no ATCG nucleotide for the nucleotides define for the
+        user for the sequences and the sequence alignments in the Sequence
+        Family object.
+
+  Ret: None
+
+  Args: A hash reference with key=non_ATCG nucleotide and value=ATGC
+       
+  Side_Effects: Replace by default: 
+                 R => A; 
+                 Y => T; 
+                 S => C; 
+                 W => A; 
+                 K => T; 
+                 M => A;
+                 B => T;
+                 D => A;
+                 H => A;
+                 V => A;
+                 N => A;
+                
+  Example: $phygeboots->replace_no_atcg()
+
+=cut
+
+sub replace_no_atcg {
+    my $self = shift;
+    my $nt_equiv = shift;
+
+    my %def = ( 'R' => 'A',
+		'Y' => 'T', 
+		'S' => 'C', 
+		'W' => 'A', 
+		'K' => 'T', 
+		'M' => 'A',
+		'B' => 'T',
+		'D' => 'A',
+		'H' => 'A',
+		'V' => 'A',
+		'N' => 'A' );
+    
+    unless (defined $nt_equiv) {
+	$nt_equiv = \%def;
+    }
+
+    my $seqfam = $self->get_seqfam();
+    if (defined $seqfam) {
+	my $align = $seqfam->alignment;
+	if (defined $align) {
+	    foreach my $seqobj ($align->each_seq) {
+		my $newseq = '';
+		my $seq = $seqobj->seq();
+		my @seqnt = split(//, $seq);
+		foreach my $nt (@seqnt) {
+		    if (exists $nt_equiv->{$nt}) {
+			$newseq .= $nt_equiv->{$nt};
+		    }
+		    else {
+			$newseq .= $nt;
+		    }
+		}
+		$seqobj->seq($newseq);
+	    }
+	}
+    }
+}
 
 ####
 1; #
