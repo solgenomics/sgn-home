@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 189;
+use Test::More tests => 199;
 use Test::Exception;
 
 use FindBin;
@@ -974,6 +974,7 @@ foreach my $cl_cluster_id (keys %cloned_clusters) {
     }
 }
 
+
 is($cloned_alignments <=> 0, 1,
    "Testing clone(), checking that exists more than one Bio::SimpleAlign obj.")
     or diag("Looks like this has failed");
@@ -982,6 +983,7 @@ is($cloned_alignments <=> 0, 1,
 
 ## testing run_distances() function, and check that the identity of the objects 
 ## is Bio::Matrix::PhylipDist, TEST 107 to 109
+
 
 $phygecluster3->run_distances({ quiet => 1 });
 my %dist_jc = %{$phygecluster3->get_distances()};
@@ -1021,6 +1023,7 @@ is($diff_dist_count, 1,
     or diag("Looks like this has failed");
 
 
+
 ##############################
 ## Checking prune functions ##
 ##############################
@@ -1041,7 +1044,7 @@ my $cluster_count2 = scalar(keys( %{$phygecluster_cl1->get_clusters}));
 my $rm_count1 = scalar(keys %rmclusters1);
 
 
-is($cluster_count2 > 0, 1,
+is($cluster_count2 <=> 0, 1,
     "Testing prune_by_align, counting removed clusters is not zero")
     or diag("Looks like this has failed");
 
@@ -1146,7 +1149,7 @@ foreach my $fam_id (sort keys %selclusters2) {
 	$clt_diff3mb++;
     }
     foreach my $member2 (@memb2list) {
-	my $member_id2 = $member2->display_id();
+	my $member_id2 = $member2->display_id();	
 	my $member2str = $strains2{$member_id2};
 	$comp2{$member2str}--;
     }

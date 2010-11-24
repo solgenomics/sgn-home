@@ -660,7 +660,40 @@ sub run_bootstrap {
 	my $align = $seqfam->alignment();
 	if (defined $align) {
 	    
+	    ## First, replace the ids for index to skipm the id trim for
+	    ## phylip program
+
+	    my %seqids = ();
+	    my $i = 1;
+	    foreach my $seqobj ($align->each_seq()) {
+		$seqids{$i} = $seqobj->display_id();
+		$align->remove_seq($seqobj);
+		$seqobj->display_id($i);
+		$align->add_seq($seqobj);
+		$i++;
+	    }
+
+	    ## Second, run the bootstrapping
+
 	    @boots_aligns = @{$fact_boots->run($align)};
+
+	    ## Third, foreach align in the bootstrapping and the original
+	    ## alignment, replace the ids
+
+	    foreach my $bootalign (@boots_aligns) {
+		foreach my $seqobj2 ($bootalign->each_seq()) {
+		    my $id2 = $seqobj2->display_id();
+		    $bootalign->remove_seq($seqobj2);
+		    $seqobj2->display_id($seqids{$id2});
+		    $bootalign->add_seq($seqobj2);
+		}
+	    }
+	    foreach my $seqobj3 ($align->each_seq()) {
+		my $id3 = $seqobj3->display_id();
+		$align->remove_seq($seqobj3);
+		$seqobj3->display_id($seqids{$id3});
+		$align->add_seq($seqobj3);
+	    }
 	}
     }
 
@@ -734,6 +767,19 @@ sub run_distances {
 	$c++;
 	my $dists = '';
 
+	## Some tools trim the sequence id, so it is better to replace
+	## them for some index and rereplace after run the alignment
+
+	my %seqids = ();
+	my $i = 1;
+	foreach my $seqobj ($align->each_seq()) {
+	    $seqids{$i} = $seqobj->display_id();
+	    $align->remove_seq($seqobj);
+	    $seqobj->display_id($i);
+	    $align->add_seq($seqobj);
+	    $i++;
+	}
+
 	## distance produce a lot of warning and also, depending of the method
 	## can fail. In this case this function will silent the warnings and
 	## catch the errors for the function
@@ -746,16 +792,40 @@ sub run_distances {
 		); 
 	}
 	finally {
-	    if (@_) {
-		unless (defined $args_href->{quiet}) {
-		    print STDERR "ERROR for run_distances for align $c:\n@_\n";
-		}
-	    }
-	    else {
-		if (defined $dists && ref($dists) =~ m/Bio::Matrix/) {
-		    push @dists, $dists;
-		}
-	    }
+	     foreach my $seqobj2 ($align->each_seq()) {
+		 my $id2 = $seqobj2->display_id();
+		 $align->remove_seq($seqobj2);
+		 $seqobj2->display_id($seqids{$id2});
+		 $align->add_seq($seqobj2);
+	     }
+	     
+	     if (@_) {
+		 unless (defined $args_href->{quiet}) {
+		     print STDERR "ERROR for run_distances for align $c:\n@_\n";
+		 }
+	     }
+	     else {
+		 if (defined $dists && ref($dists) =~ m/Bio::Matrix/) {
+
+		     my @oldnames = ();
+
+		     foreach my $name (@{$dists->names()}) {
+			 push @oldnames, $seqids{$name};
+			 
+			 my $vals_href = $dists->_matrix()->{$name};
+			 foreach my $key2 (keys %{$vals_href}) {
+			     $vals_href->{$seqids{$key2}} = 
+				 delete($vals_href->{$key2});
+			 }
+			 
+			 $dists->_matrix()->{$seqids{$name}} =
+			     delete($dists->_matrix()->{$name});
+		     }
+		     $dists->names(\@oldnames);
+		     
+		     push @dists, $dists;
+		 }
+	     }
 	};
     }
     $self->set_dists(\@dists);
@@ -835,10 +905,54 @@ sub run_njtrees {
     my @dists = $self->get_dists();
     foreach my $dist (@dists) {
 
+	## It will replace the ids before run the trees for an index
+
+	my %equivnames = ();
+	my %revnames = ();
+	my @newnames_list = ();
+	my @oldnames_list = ();
+	my $i = 1;
+
+	## First, create the equiv. hash
+
+	foreach my $name (@{$dist->names()}) {
+	    $equivnames{$i} = $name;
+	    $revnames{$name} = $i;
+	    push @newnames_list, $i;
+	    push @oldnames_list, $name;
+	    $i++;
+	}	    
+
+	## Second, replace in the matrix (names and indexes) the names per i's
+
+	my $mtx_href = $dist->_matrix();
+	foreach my $i_name (keys %{$mtx_href}) {
+	    my $j_href = $mtx_href->{$i_name};
+	    
+	    foreach my $j_name (keys %{$j_href}) {
+		$j_href->{$revnames{$j_name}} = delete($j_href->{$j_name});
+	    }
+	    $mtx_href->{$revnames{$i_name}} = delete($mtx_href->{$i_name});
+	}
+ 	
+	$dist->names(\@newnames_list);
+
+	## Now it will run the tree
+
 	my ($tree) = $factory->run($dist);
 	if (defined $tree) {
-	    push @trees, $tree;
+
+	    ## Third, replace in the tree the nodes names for the righ ones
+
+	    my @nodes = $tree->get_nodes();
+	    foreach my $node (@nodes) {
+		my $old_node_id = $node->id();
+		$node->id($equivnames{$old_node_id});
+	    }
+
+	    push @trees, $tree;	
 	}
+	
     }
     
     $self->set_trees(\@trees);
@@ -1001,10 +1115,52 @@ sub run_consensus {
     ## And now it will run one tree per distance
 
     my @trees = $self->get_trees();
+
+    ## It will replace the nodes names for index to be able to run consense
+    ## in phyplip program
+
+    my %equiv = ();
+    my %reveq = ();
+    my $i = 1;
+    foreach my $tree (@trees) {
+	my @nodes = $tree->get_nodes();
+	foreach my $node (@nodes) {
+	    my $node_id = $node->id();
+	    if (defined $node_id) {
+		unless (exists $reveq{$node_id}) {
+		    $equiv{$i} = $node_id;
+		    $reveq{$node_id} = $i;
+		    $i++;
+		}
+	    }
+	}
+    }
+
+    foreach my $tree (@trees) {
+	my @nodes = $tree->get_nodes();
+	foreach my $node (@nodes) {
+	    my $node_id = $node->id(); 
+	    if (defined $node_id) {
+		$node->id($reveq{$node_id});
+	    }
+	}
+    }
+
     my $tree_n = scalar(@trees);
 
     if (scalar(@trees) > 0) {
 	$consensus = $factory->run(\@trees);
+
+	## Get the right ids
+
+	my @consnodes = $consensus->get_nodes();
+	foreach my $consnode (@consnodes) {
+	    my $consnode_id = $consnode->id();
+	    if (defined $consnode_id) {
+		$consnode->id($equiv{$consnode_id});
+	    }
+	}
+
 	if ($norm == 1) {
 	    my @nodes = $consensus->get_nodes();
 	    foreach my $node (@nodes) {

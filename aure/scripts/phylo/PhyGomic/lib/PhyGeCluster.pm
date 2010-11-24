@@ -2078,7 +2078,7 @@ sub out_bootstrapfile {
     my $def_argshref = { 'rootname'     => 'bootstrap',
 			 'type'         => 'consensus',
 			 'distribution' => 'single',			 
-			 'format'       => 'clustalw',
+			 'format'       => 'newick',
                          'extension'    => 'aln',
     };
 
@@ -2151,7 +2151,6 @@ sub out_bootstrapfile {
 	    croak("ERROR: Type not permited for out_bootstrapfile function");
 	}
 
-
 	foreach my $cluster_id (sort keys %bootstrap) {
 	    my $phygeboots = $bootstrap{$cluster_id};
 	    my @aligns = @{$phygeboots->get_aligns()};
@@ -2214,9 +2213,9 @@ sub out_bootstrapfile {
 		croak("ERROR: Type not permited for out_bootstrapfile funct.");
 	    }
 
-	    my @aligns = @{$phygeboots->get_aligns()};
-	    my @dists = @{$phygeboots->get_dists()};
-	    my @trees = @{$phygeboots->get_trees()};
+	    my @aligns = $phygeboots->get_aligns();
+	    my @dists = $phygeboots->get_dists();
+	    my @trees = $phygeboots->get_trees();
 	    my $consensus = $phygeboots->get_consensus();
 
 	    if ($type eq 'alignment') {
@@ -2925,11 +2924,46 @@ sub run_alignments {
 	    ## Only make sense if the cluster has more than one member
 
 	    if (scalar(@seq_members) > 1) {
+
+		## Some tools trim the sequence id, so it is better to replace
+		## them for some index and rereplace after run the alignment
+
+		my %seqids = ();
+		my $i = 1;
+		foreach my $seq (@seq_members) {
+		    my $id = $seq->display_id();
+		    $seqids{$i} = $id;
+		    $seq->display_id($i);
+		    $i++;
+		}
 	
 		my $alignobj = $factory->align(\@seq_members);
 
+		## Come back to old ids. It require to change the name
+		## in the object and reset the sequence object in the alignment
+		## object with the new names... to let the object get all the
+		## variables thta it need it
+
+		## Remove members from Bio::Cluster::SequenceFamily to add
+		## the seqs with the right id (align creates a new seq objects) 
+
+		$clusters{$cluster_id}->remove_members();
+		foreach my $seq2 (@seq_members) {
+		    $seq2->display_id($seqids{$seq2->display_id()});
+		    $clusters{$cluster_id}->add_members([$seq2]);
+		}
+
+		foreach my $seqobj ($alignobj->each_seq()) {
+		    my $index = $seqobj->display_id();
+		    $alignobj->remove_seq($seqobj);
+		    $seqobj->display_id($seqids{$index});
+		    $alignobj->add_seq($seqobj);
+		    
+		}
+
 		## Also it will set the alinments into the SequenceFamily 
 		## object
+		
 
 		$clusters{$cluster_id}->alignment($alignobj);
 	    }
@@ -3015,9 +3049,13 @@ sub run_distances {
     foreach my $cluster_id (keys %clusters) {
 
 	my $alignobj = $clusters{$cluster_id}->alignment();
+	my @members = $clusters{$cluster_id}->get_members();
+	foreach my $member (@members) {
+	    my $memb_id = $member->id();
+	}
 	
 	if (defined $alignobj) {
-
+	   
 	    ## Some alignments can have a problem because there are non-ATGC
 	    ## nt that produce can produce gaps in the alignment and the number
 	    ## of those gaps are bigger than the sequence length. For those
@@ -3055,6 +3093,20 @@ sub run_distances {
 	    }
 
 	    if ($skip_distance == 0) {
+
+		## Some tools trim the sequence id, so it is better to replace
+		## them for some index and rereplace after run the alignment
+
+		my %seqids = ();
+		my $i = 1;
+		foreach my $seqobj ($alignobj->each_seq()) {
+		    $seqids{$i} = $seqobj->display_id();
+		    $alignobj->remove_seq($seqobj);
+		    $seqobj->display_id($i);
+		    $alignobj->add_seq($seqobj);
+		    $i++;
+		}
+
 		my $distmatrix = '';
 		try {
 		    if ($quiet == 1) {
@@ -3072,16 +3124,47 @@ sub run_distances {
 		    }
 		}
 		finally {
+
+		    ## After run distance (independently if it success or not)
+		    ## it needs to change the seq from the aligns		
+
+		    foreach my $seqobj2 ($alignobj->each_seq()) {
+			my $id2 = $seqobj2->display_id();
+			$alignobj->remove_seq($seqobj2);
+			$seqobj2->display_id($seqids{$id2});
+			$alignobj->add_seq($seqobj2);
+		    }
+
 		    if (@_) {
 			unless ($quiet == 0) {
 			    print STDERR "ERROR for run_distances.\n@_\n";
 			}
 		    }
 		    else {
+
+			## Before set the matrix it will replace the 
+			## matrix headers, in names and in the matrix too
+			
+			my @oldnames = ();
+
+			foreach my $name (@{$distmatrix->names()}) {
+			    push @oldnames, $seqids{$name};
+
+			    my $vals_href = $distmatrix->_matrix()->{$name};
+			    foreach my $key2 (keys %{$vals_href}) {
+				$vals_href->{$seqids{$key2}} = 
+				    delete($vals_href->{$key2});
+			    }
+
+			    $distmatrix->_matrix()->{$seqids{$name}} =
+				delete($distmatrix->_matrix()->{$name});
+			}
+			$distmatrix->names(\@oldnames);
+
 			$dist{$cluster_id} = $distmatrix;
 		    }
-		};
-	    }
+		};		
+	    }	    
 	}
     }
     $self->set_distances(\%dist);
@@ -3300,12 +3383,70 @@ sub run_njtrees {
 
     foreach my $cluster_id (keys %dists) {
 	my $distobj = $dists{$cluster_id};
+
+	## It will replace the ids before run the trees for an index
+
+	my %equivnames = ();
+	my %revnames = ();
+	my @newnames_list = ();
+	my @oldnames_list = ();
+	my $i = 1;
+
+	## First, create the equiv. hash
+
+	foreach my $name (@{$distobj->names()}) {
+	    $equivnames{$i} = $name;
+	    $revnames{$name} = $i;
+	    push @newnames_list, $i;
+	    push @oldnames_list, $name;
+	    $i++;
+	}	    
+
+	## Second, replace in the matrix (names and indexes) the names per i's
+
+	my $mtx_href = $distobj->_matrix();
+	foreach my $i_name (keys %{$mtx_href}) {
+	    my $j_href = $mtx_href->{$i_name};
+	    
+	    foreach my $j_name (keys %{$j_href}) {
+		$j_href->{$revnames{$j_name}} = delete($j_href->{$j_name});
+	    }
+	    $mtx_href->{$revnames{$i_name}} = delete($mtx_href->{$i_name});
+	}
+ 	
+	$distobj->names(\@newnames_list);
+
+	## Now it will run the tree
+
 	my $seqfam = $clusters{$cluster_id};
 
 	my ($tree) = $factory->run($distobj);
 	if (defined $tree) {
+	    
+	    ## Third, replace in the tree the nodes names for the righ ones
+
+	    my @nodes = $tree->get_nodes();
+	    foreach my $node (@nodes) {
+		my $old_node_id = $node->id();
+		$node->id($equivnames{$old_node_id});
+	    }
+	    
 	    $seqfam->tree($tree);
 	}
+
+	## Forth, replace the matrix names by the originals.
+	
+	my $mtx_href2 = $distobj->_matrix();
+	foreach my $x_name (keys %{$mtx_href2}) {
+	    my $y_href = $mtx_href2->{$x_name};
+	    
+	    foreach my $y_name (keys %{$y_href}) {
+		$y_href->{$equivnames{$y_name}} = delete($y_href->{$y_name});
+	    }
+	    $mtx_href2->{$equivnames{$x_name}} = delete($mtx_href2->{$x_name});
+	}
+ 	
+	$distobj->names(\@oldnames_list);
     }
 }
 
@@ -3801,7 +3942,6 @@ sub prune_by_strains {
 			    my $seq_id = shift(@{$strmemb{$cmp_strain}});
 			    if ($cmp{$cmp_strain} > 0) {
 				unless (exists $selected_mb{$seq_id}) {
-				    
 				    $selected_mb{$seq_id} = 1;
 				    $cmp{$cmp_strain}--;		
 				}
