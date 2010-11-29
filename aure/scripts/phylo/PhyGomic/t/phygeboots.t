@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 66;
+use Test::More tests => 71;
 use Test::Exception;
 
 use FindBin;
@@ -78,7 +78,7 @@ my $fkhref0_2 = { seqfam => 'test', run_bootstrap => {}, run_njtrees => {} };
 throws_ok { PhyGeBoots->new($fkhref0_2) } qr/on: run_njtrees/, 
     'TESTING DIE ERROR for new() when run_njtrees is used without run_distanc.';
 
-my $fkhref0_3 = { seqfam        => 'test', 
+my $fkhref0_3 = { seqfam        => 'test',
 		  run_bootstrap => {}, 
 		  run_distances => {},
 		  run_consensus => {},
@@ -95,6 +95,7 @@ my %seqtest = (
     'seqid2' => 'ACTCCCTTCGTT',
     'seqid3' => 'ACACCCTGGGTT',
     );
+
 
 my @seqs = ();
 foreach my $testid (keys %seqtest) {
@@ -129,7 +130,36 @@ throws_ok { $phygeb0->set_seqfam() } qr/ARG. ERROR: No arg./,
 throws_ok { $phygeb0->set_seqfam('fake') } qr/ARG. ERROR: Arg=fake/, 
     'TESTING DIE ERROR for set_seqfam() when arg supplied is not the right obj';
 
-## 2) Bio::SimpleAlign object, TEST 18 to 22
+## 2) Strains, TEST 18 to 20
+
+my %strains = (
+    'seqid1' => 'strain1', 
+    'seqid2' => 'strain1',
+    'seqid3' => 'strain2',
+    );
+
+$phygeb0->set_strains(\%strains);
+my %strains0 = $phygeb0->get_strains();
+
+my $wrong_strains = 0;
+foreach my $seqst (keys %strains0) {
+    if ($strains0{$seqst} ne $strains{$seqst}) {
+	$wrong_strains++;
+    }
+}
+
+is($wrong_strains, 0, 
+    "Testing get/set_strains, checking strain identity for each member")
+    or diag("Looks like this has failed");
+
+throws_ok { $phygeb0->set_strains() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR for set_strains() when no arg. is supplied';
+
+throws_ok { $phygeb0->set_strains('fake') } qr/ARG. ERROR: When arg/, 
+    'TESTING DIE ERROR for set_strains() when arg supplied is not HAHSREF';
+
+
+## 3) Bio::SimpleAlign object, TEST 21 to 25
 
 my $align0 = Bio::SimpleAlign->new( -seqs => \@seqs );
 
@@ -154,7 +184,7 @@ throws_ok { $phygeb0->set_aligns(['fake']) } qr/ARG. ERROR: Element=fake/,
     'TESTING DIE ERROR for set_aligns() when arg. supplied doesnt have the obj';
 
 
-## 3) Bio::Matrix::PhylipDist object, TEST 23 to 27
+## 4) Bio::Matrix::PhylipDist object, TEST 26 to 30
 
 my $dist_mtx0 = Bio::Matrix::Generic->new();
 
@@ -179,7 +209,7 @@ throws_ok { $phygeb0->set_dists(['fake']) } qr/ARG. ERROR: Element=fake/,
     'TESTING DIE ERROR for set_dists() when arg. supplied doesnt have the obj';
 
 
-## 4) Bio::Tree::Tree object, TEST 28 to 32
+## 5) Bio::Tree::Tree object, TEST 31 to 35
 
 my $tree0 = Bio::Tree::Tree->new();
 
@@ -204,7 +234,7 @@ throws_ok { $phygeb0->set_trees(['fake']) } qr/ARG. ERROR: Element=fake/,
     'TESTING DIE ERROR for set_trees() when arg. supplied doesnt have the obj';
 
 
-## 5) For consensus it also can use a Bio::Tree::Tree object, TEST 33 to 35
+## 6) For consensus it also can use a Bio::Tree::Tree object, TEST 36 to 38
 
 my $cons0 = Bio::Tree::Tree->new();
 
@@ -237,21 +267,43 @@ my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
 
 my $phygecluster = PhyGeCluster->new(
     { 
-	acefile    => $acefile, 
-	strainfile => $strainfile,
+	acefile          => $acefile,
+	strainfile       => $strainfile,
+    }
+    );
+$phygecluster->homologous_search(
+    { blast  => [ -p => 'blastn', -d => $blastdbfile, -e => '1e-10', -a => 2],
+      strain => 'Sly',
+      filter => {
+	  hsp_length =>	['>', 100],
+      }
     }
     );
 
-my %clusters = %{$phygecluster->get_clusters()};
-my %cl_sizes = $phygecluster->cluster_sizes(3,6);
-my @ord_clusters = sort { $cl_sizes{$b} <=> $cl_sizes{$a} } keys %cl_sizes;
+## Get a seqfam with Sly strain
 
-my $seqfam1 = $clusters{$ord_clusters[0]};
+my %clusters = %{$phygecluster->get_clusters()};
+my $seqfam1 = '';
+
+foreach my $cl (keys %clusters) {
+    my @members = ();
+    my $seqfam_scr = $clusters{$cl};
+    foreach my $member ($seqfam_scr->get_members) {
+	push @members, $member->id();
+    }
+    my $member_line = join(',', @members);
+    if ($member_line =~ m/Sly/ && scalar(@members) == 4) {
+	$seqfam1 = $seqfam_scr;
+    }
+}
+
 my $member_n1 = scalar($seqfam1->get_members());
 
-## 1) Create a new object with this seqfam and run_bootstrap, TEST 36 to 38
+## 1) Create a new object with this seqfam and run_bootstrap, TEST 39 to 41
 
-my $phygeb1 = PhyGeBoots->new({ seqfam => $seqfam1 });
+my %strains_cl = %{$phygecluster->get_strains()};
+
+my $phygeb1 = PhyGeBoots->new({ seqfam => $seqfam1, strains => \%strains_cl });
 my @aligns1 = $phygeb1->run_bootstrap(
     { 
 	datatype   => 'Sequence', 
@@ -286,7 +338,7 @@ is($wrong_memb_count1, 0,
     "testing run_bootstrap, checking number of members per alignment")
     or diag("Looks like this has failed");
 
-## Test the right croak for run_bootstrap function, TEST 39 to 42
+## Test the right croak for run_bootstrap function, TEST 42 to 45
 
 throws_ok { $phygeb1->run_bootstrap() } qr/ARG. ERROR: No args./, 
     'TESTING DIE ERROR for run_bootstrap() when no arg. is supplied';
@@ -300,7 +352,7 @@ throws_ok { $phygeb1->run_bootstrap({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygeb1->run_bootstrap({ quiet => 2}) } qr/ARG. ERROR: 2/, 
     'TESTING DIE ERROR for run_bootstrap() when arg. supplied has wrong value';
 
-## 2) test run_distances, TEST 43 to 45
+## 2) test run_distances, TEST 46 to 48
 
 my @dists1 = $phygeb1->run_distances();
 
@@ -330,7 +382,7 @@ is($wrong_memb_count2, 0,
     "testing run_distances, checking number of rows per matrix")
     or diag("Looks like this has failed");
 
-## And check the croaks, TEST 46 to 48
+## And check the croaks, TEST 49 to 51
 
 throws_ok { $phygeb1->run_distances(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_distances() arg. supplied isnt a HASHREF';
@@ -342,7 +394,7 @@ throws_ok { $phygeb1->run_distances({method =>'fk'}) } qr/ARG. ERROR: fk/,
     'TESTING DIE ERROR for run_distances() when method supplied isnt permited';
 
 
-## 3) test run_njtrees, TEST 49 to 51
+## 3) test run_njtrees, TEST 52 to 54
 
 my @njtrees1 = $phygeb1->run_njtrees({ type => 'NJ', quiet => 1 });
 
@@ -372,7 +424,7 @@ is($wrong_memb_count3, 0,
     "testing run_njtrees, checking number of rows per matrix")
     or diag("Looks like this has failed");
 
-## And check the croaks, TEST 52 to 54
+## And check the croaks, TEST 55 to 57
 
 throws_ok { $phygeb1->run_njtrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_njtrees() arg. supplied isnt a HASHREF';
@@ -384,7 +436,7 @@ throws_ok { $phygeb1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/,
     'TESTING DIE ERROR for run_njtrees() when value used is not permited';
 
 
-## 4) test run_mltrees, TEST 55 to 57
+## 4) test run_mltrees, TEST 58 to 60
 
 my @mltrees1 = $phygeb1->run_mltrees();
 
@@ -414,7 +466,7 @@ is($wrong_memb_count4, 0,
     "testing run_mltrees, checking number of rows per matrix")
     or diag("Looks like this has failed");
 
-## And check the croaks, TEST 58 to 60
+## And check the croaks, TEST 61 to 63
 
 throws_ok { $phygeb1->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_mltrees() arg. supplied isnt a HASHREF';
@@ -426,7 +478,7 @@ throws_ok { $phygeb1->run_mltrees({phyml_arg =>'fk'}) } qr/ARG. ERROR: phy/,
     'TESTING DIE ERROR for run_mltrees() when value used is not permited';
 
 
-## 5) Testing run_consensus, TEST 61 to 66
+## 5) Testing run_consensus, TEST 64 to 69
 
 my $consensus1 = $phygeb1->run_consensus({ quiet => 1});
 
@@ -451,7 +503,7 @@ foreach my $node (@nodes) {
 }
 
 is($wrong_norm, 0, 
-    "Testing run_consensus (normalized), cehccking that branches < 100")
+    "Testing run_consensus (normalized), checking that branches < 100")
     or diag("Looks like this has failed");
 
 throws_ok { $phygeb1->run_consensus(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
@@ -462,6 +514,42 @@ throws_ok { $phygeb1->run_consensus({ fk => 1}) } qr/ARG. ERROR: fk/,
 
 throws_ok { $phygeb1->run_consensus({ quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_consensus() when value used is not permited';
+
+## 6) Testing consensus with outgroup
+
+my $consensus3 = $phygeb1->run_consensus({ quiet          => 1, 
+					   normalized     => 1, 
+					   root_by_strain => 'Sly',
+					 });
+
+my $nodes_n = $consensus3->number_nodes();
+
+is($nodes_n, 7, 
+    "Testing run_consensus, checking number of nodes")
+    or diag("Looks like this has failed");
+
+my $rootstrain = '';
+my %strains2 = $phygeb1->get_strains();
+
+if (defined $consensus3->get_root_node()) {
+    my $root = $consensus3->get_root_node();
+    my @desc_nodes = $root->each_Descendent();
+
+    ## Should be two descendent, the node for the rest of the tree and the
+    ## outgroup
+
+    foreach my $desc_node (@desc_nodes) {
+	my $desc_id = $desc_node->id();
+	if ($desc_id =~ m/'(.+)'/) {
+	    $rootstrain = $strains2{$1};
+	}
+    }
+}
+
+
+is($rootstrain, 'Sly', 
+    "Testing run_consensus, checking strain of the root")
+    or diag("Looks like this has failed");
 
 
 ####

@@ -689,7 +689,7 @@ throws_ok { PhyGeCluster->new({ acefile => 1, blastfile => 1}) } qr/ARGUMENT /,
 
 my $phygecluster_ace2 = $phygecluster_ace->clone();
 $phygecluster_ace2->homologous_search({ 
-    blast  => [ -p => 'tblastx', -d => $blastdbfile, -e => '1e-10', -a => 2],
+    blast  => [ -p => 'blastn', -d => $blastdbfile, -e => '1e-20', -a => 2],
     strain => 'Sly',
 				     });
 
@@ -738,7 +738,7 @@ is($more_than_one_hmlg <=> 0, 0,
 
 my $phygecluster_ace3 = $phygecluster_ace->clone();
 $phygecluster_ace3->homologous_search({ 
-    blast  => [ -p => 'tblastx', -d => $blastdbfile, -e => '1e-10', -a => 2],
+    blast  => [ -p => 'blastn', -d => $blastdbfile, -e => '1e-20', -a => 2],
     strain => 'Sly',
     filter => { percent_identity    => ['>', 60],
 		hsp_length          => ['>', 50],

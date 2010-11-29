@@ -44,7 +44,8 @@ $VERSION = eval $VERSION;
 
   ## To get each cluster from a blast file
 
-  my $phygeboots = PhyGeBoots->new({ seqfam        => $seqfam_obj, 
+  my $phygeboots = PhyGeBoots->new({ seqfam        => $seqfam_obj,
+                                     strains       => $hash_ref,
                                      run_bootstrap => $args_href1,
                                      run_distances => $args_href2,
                                      run_njtrees   => $args_href3,
@@ -56,6 +57,9 @@ $VERSION = eval $VERSION;
 
   my $seqfam = $phygeboots->get_seqfam();
   $phygeboots->set_seqfam($seqfam);
+
+  my %strains = $phygeboots->get_strains();
+  $phygeboots->set_strains(\%strains);
 
   my @bootsaligns = @{$phygeboots->get_aligns()};
   $phygeboots->set_aligns(\@bootsaligns);
@@ -112,6 +116,7 @@ The following class methods are implemented:
 
   Args: A hash reference with the following key-value pairs: 
          + seqfam => a Bio::Cluster::SequenceFamily object,
+         + strains => a hash ref. with key=members and value=strains
          + replace_no_atcg => whatever (replace the non ATCG nucleotides)
          + run_bootstrap => a hash ref. with args. (see run_bootstrap function)
          + run_distances => a hash ref. with args. (see run_distances function)
@@ -134,6 +139,7 @@ sub new {
     my $self = bless( {}, $class );                         
     
     my $seqfam = '';
+    my %strains = ();
     my @aligns = ();
     my @dists = ();
     my @trees = ();
@@ -157,6 +163,10 @@ sub new {
     }
     else {
 	$seqfam = $args_href->{'seqfam'};
+
+	if (defined $args_href->{'strains'}) {
+	    %strains = %{$args_href->{'strains'}};
+	}
     }
     unless (defined $args_href->{'run_bootstrap'}) {
 	if (defined $args_href->{'run_distances'}) {
@@ -189,6 +199,10 @@ sub new {
 
     if (defined $seqfam) {
 	$self->set_seqfam($seqfam);
+
+	if (defined $args_href->{'strains'}) {
+	    $self->set_strains($args_href->{'strains'});
+	}
 
 	if (defined $args_href->{'replace_no_atcg'}) {
 	    if ( $args_href->{'replace_no_atcg'} =~ m/^1$/) {
@@ -224,6 +238,7 @@ sub new {
     }
 	
     $self->set_seqfam($seqfam);
+    $self->set_strains(\%strains);
     $self->set_aligns(\@aligns);
     $self->set_dists(\@dists);
     $self->set_trees(\@trees);
@@ -294,6 +309,58 @@ sub set_seqfam {
     }
 }
 
+=head2 get_strains
+
+  Usage: my %strains = $phygeboots->get_strains(); 
+
+  Desc: Get a hash with the members and the strains
+
+  Ret: a hash with keys=member_id and value=strain
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my %strains = $phygeboots->get_strains();
+
+=cut
+
+sub get_strains {
+    my $self = shift;
+
+    return %{$self->{strains}};
+}
+
+=head2 set_strains
+
+  Usage: $phygeboots->set_strains($strains_href);
+
+  Desc: Set strain information into PhyGeBoots object
+
+  Ret: None
+
+  Args: a hash reference with key=member_id and value=strain
+
+  Side_Effects: Die if no argument is used.
+
+  Example: $phygeboots->set_seqfam($seqfam);
+
+=cut
+
+sub set_strains {
+    my $self = shift;
+    my $strain_href = shift;
+   
+    unless (defined $strain_href) {
+	croak("ARG. ERROR: No arg. was used for set_strains function");
+    }
+    else {
+	unless (ref($strain_href) eq 'HASH') {
+	    croak("ARG. ERROR: When arg is not a hash ref. for set_strains");
+	}
+	$self->{strains} = $strain_href;    
+    }
+}
 
 =head2 get_aligns
 
@@ -1031,8 +1098,11 @@ sub run_mltrees {
     ## redo de factory as many times as trees to create.
 
     my @aligns = $self->get_aligns();
+
     foreach my $align (@aligns) {
+
 	my $factory = Bio::Tools::Run::Phylo::Phyml->new(%phyargs);
+
 	my $tree = $factory->run($align);
 	push @trees, $tree;
     }
@@ -1055,7 +1125,8 @@ sub run_mltrees {
         rooted     => '\d+', 
         outgroup   => '\d+', 
         quiet      => '[1|0]',
-        normalized => '[1|0]' ## To calculate percentages for each node        
+        normalized => '[1|0]' ## To calculate percentages for each node  
+        root_by_strain => '\w+' ## To root the tree      
 
   Side_Effects: Died if the arguments are wrong.
                 Return undef if there are no tree inside the PhyGeBoots obj.
@@ -1070,11 +1141,12 @@ sub run_consensus {
     my $args_href = shift;
 
      my %perm_args = (
-	 type     => '\w+',
-	 rooted   => '\d+',
-	 outgroup => '\d+', 
-	 quiet    => '[1|0]',
-	 normalized => '[1|0]'
+	 type           => '\w+',
+	 rooted         => '\d+',
+	 outgroup       => '\d+', 
+	 quiet          => '[1|0]',
+	 normalized     => '[1|0]',
+	 root_by_strain => '\w+',
 	 );
 
     my $norm = 0;
@@ -1101,6 +1173,20 @@ sub run_consensus {
 	}
     }
 
+    ## Also it will take the root based in strains, it will remove strains 
+    ## before pass to the factory object
+    
+    my %strains = $self->get_strains();
+    my $test = scalar(keys %strains);
+
+    my $str_root = '';
+    my $root_id = '';
+
+    if (defined $args_href->{'root_by_strain'}) {
+	$str_root = delete($args_href->{'root_by_strain'});
+    }
+
+
     my @args = ();
     foreach my $key (keys %{$args_href}) {
 	push @args, ($key, $args_href->{$key});
@@ -1123,7 +1209,7 @@ sub run_consensus {
     my %reveq = ();
     my $i = 1;
     foreach my $tree (@trees) {
-	my @nodes = $tree->get_nodes();
+	my @nodes = $tree->get_leaf_nodes();
 	foreach my $node (@nodes) {
 	    my $node_id = $node->id();
 	    if (defined $node_id) {
@@ -1136,12 +1222,35 @@ sub run_consensus {
 	}
     }
 
+    my %nodes_order = ();    
     foreach my $tree (@trees) {
-	my @nodes = $tree->get_nodes();
+	my @nodes = $tree->get_leaf_nodes();
+
+	my $n = 1;  ## define de nodes order
+
 	foreach my $node (@nodes) {
-	    my $node_id = $node->id(); 
+	    my $node_id = $node->id();	    
 	    if (defined $node_id) {
 		$node->id($reveq{$node_id});
+		
+		## Node ids have 'original_name', so it will remove that
+		## Also it will add the order in the tree, toset later as 
+		## outgroup
+
+		if ($node_id =~ m/'(.+)'/) {
+		    my $orig_id = $1;
+		    $nodes_order{$orig_id} = $n;
+		    $n++;
+		   
+		    ## To get the root_id
+		    if (defined $strains{$orig_id}) {
+			if (defined $str_root) {
+			    if ($strains{$orig_id} eq $str_root) {
+				$root_id = $orig_id;
+			    }
+			}
+		    }
+		}
 	    }
 	}
     }
@@ -1149,11 +1258,18 @@ sub run_consensus {
     my $tree_n = scalar(@trees);
 
     if (scalar(@trees) > 0) {
+
+	## Set outgroup if exists
+	
+	if ($root_id =~ m/\w+/) {
+	    $factory->outgroup($nodes_order{$root_id});
+	}
+
 	$consensus = $factory->run(\@trees);
 
 	## Get the right ids
 
-	my @consnodes = $consensus->get_nodes();
+	my @consnodes = $consensus->get_leaf_nodes();
 	foreach my $consnode (@consnodes) {
 	    my $consnode_id = $consnode->id();
 	    if (defined $consnode_id) {
@@ -1171,6 +1287,19 @@ sub run_consensus {
 	    }
 	}
     }
+
+    ## Finally it will set back the tree ids
+
+    foreach my $tree (@trees) {
+	my @nodes = $tree->get_leaf_nodes();
+	foreach my $node (@nodes) {
+	    my $node_id = $node->id(); 
+	    if (defined $node_id) {
+		$node->id($equiv{$node_id});		
+	    }
+	}
+    }
+
 
     if (defined $consensus) {
 	$self->set_consensus($consensus);

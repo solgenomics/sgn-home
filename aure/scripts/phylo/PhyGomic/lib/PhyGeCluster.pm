@@ -87,7 +87,7 @@ $VERSION = eval $VERSION;
 
   ## Calculate the alignment
 
-  $phygecluster->run_alignment();
+  $phygecluster->run_alignments();
 
   ## Calculate distances
 
@@ -2720,7 +2720,7 @@ sub homologous_search {
 
 			unless (defined $args_href->{'filter'}) {
 			    unless (defined $clusters_hmg{$cl_id}) {
-				$clusters_hmg{$cl_id} = { $s_name => 1 };
+				$clusters_hmg{$cl_id} = { $s_name => $hsp };
 			    }
 			}
 			else {
@@ -2787,12 +2787,12 @@ sub homologous_search {
 			    ## conditions have been satisfied
 			    if ($conditions_n == 0) {
 				unless (exists $clusters_hmg{$cl_id}) {
-				    $clusters_hmg{$cl_id} = {$s_name => 1};
+				    $clusters_hmg{$cl_id} = {$s_name => $hsp};
 				}
 				else {
 				    my %members = %{$clusters_hmg{$cl_id}};
 				    unless (defined $members{$s_name}) {
-					$clusters_hmg{$cl_id}->{$s_name} = 1;
+					$clusters_hmg{$cl_id}->{$s_name} = $hsp;
 				    }
 				}
 			    }
@@ -2812,12 +2812,96 @@ sub homologous_search {
 
     foreach my $cl_id2 (keys %clusters) {
 	my $seqfam2 = $clusters{$cl_id2};
+	my $align2 = $seqfam2->alignment();
+
+	my $consenseq = ''; 
+	if (defined $align2->consensus_meta()) {
+	    $consenseq = $align2->consensus_meta();
+	}
+	else {
+	    $consenseq = Bio::Seq->new( 
+		-id  => $cl_id2,
+		-seq => $align2->consensus_string(),
+		);
+	}
 	
 	if (defined $clusters_hmg{$cl_id2}) {
 	    my @newmemb = keys %{$clusters_hmg{$cl_id2}};
 	    foreach my $memb_id (@newmemb) {
+		
+		## Add a new sequence to the cluster
+
 		my $seq = $blastseqs{$memb_id};
 		$seqfam2->add_members([$seq]);
+
+		## Get the data from the blast to add a new seq in the align.
+
+		my $hsp2 = $clusters_hmg{$cl_id2}->{$memb_id};
+		my $hit_str = $hsp2->hit_string();
+		my $query_str = $hsp2->query_string();
+		my $qst_blast = $hsp2->start('query');
+		my $qen_blast = $hsp2->end('query');
+		my $hst_blast = $hsp2->start('hit');
+		my $hen_blast = $hsp2->end('hit');
+		my $qlen_blast = $hsp2->length('query');
+		my $hlen_blast = $hsp2->length('hit');
+		my $orig_query_en = $consenseq->length();
+		my $cons_string = $consenseq->seq();
+
+		## The sequence that it needs to add to the alignment
+		##
+		## qqqqqqqqqq1===============2qqqqqqqqqq     query
+		##     hhhhhh3===============4hhhhhhhhhhhhh  hit
+		##
+		## Where query is the consensus for the original align.
+                ## 1) Get hit for 3 to 4 (using hit_string function it get the
+	        ##    string trimmed)
+                
+		my $trimseq = '';
+		if ($hst_blast > $hen_blast) {
+		    my @subseq = split(//, $hit_str);
+		    $trimseq = join('', reverse(@subseq));
+		}
+		else {
+		    $trimseq = $hit_str;		    
+		}
+		
+		## Count how many gaps has the sequence to set the right end
+		my $trimseqnogaps = $trimseq;
+		$trimseqnogaps =~ s/[-|\*|_]//g;
+		my $nogapslength = length($trimseqnogaps);
+
+		## 2) Create a gap seq as long as 'q' pre 1
+
+		my $seq_down = '';
+		while ($qst_blast > 1) {
+		    $seq_down .= '-';
+		    $qst_blast--; 
+		}
+
+		## 3) Create a gap seq as long as 'q' post 2
+
+		my $seq_up = '';
+		my $curr_length = length($seq_down .  $trimseq);
+		while ($curr_length < $orig_query_en) {
+		    $seq_up .= '-';
+		    $curr_length++; 
+		}
+		
+		## 4) Build the seq as $seq_up + $trimseq + $downseq
+		my $alignseq = $seq_down . $trimseq . $seq_up;
+
+		my $locseq = Bio::LocatableSeq->new( 
+		    -seq   => $alignseq,
+		    -id    => $memb_id,
+		    -start => $hsp2->start('query'),
+		    -end   => $hsp2->start('query') + $nogapslength - 1,
+		    );
+
+		my $align2 = $seqfam2->alignment();
+		my $alignlength = $align2->length();
+		
+		$align2->add_seq( -SEQ => $locseq, -ORDER => 1);
 
 		## Also it will add a strain if is defined strain argument
 
@@ -3290,6 +3374,8 @@ sub run_bootstrapping {
     my %bootstr = ();
 
     my %clusters = %{$self->get_clusters()};
+    my $strains_href = $self->get_strains();
+
     foreach my $cluster_id (keys %clusters) {
 	
 	my $seqfam = $clusters{$cluster_id};
@@ -3299,6 +3385,7 @@ sub run_bootstrapping {
 	if (defined $align) {
 	    my %args = %{$args_href};
 	    $args{seqfam} = $seqfam;
+	    $args{strains} = $strains_href;
 	    my $memb_n = $align->num_sequences();
 	    my $phygeboots = PhyGeBoots->new(\%args);
 	    my $trees_n = scalar( $phygeboots->get_trees());
