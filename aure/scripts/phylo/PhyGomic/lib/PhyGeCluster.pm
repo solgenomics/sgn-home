@@ -34,6 +34,8 @@ use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
 use Bio::Matrix::IO;
 use Bio::Matrix::Generic;
 
+use Bio::TreeIO;
+
 ###############
 ### PERLDOC ###
 ###############
@@ -2350,6 +2352,120 @@ sub out_distancefile {
 
     return %outfiles;
 }
+
+
+=head2 out_treefile
+    
+  Usage: my %files = $phygecluster->out_treefile(\%args);
+
+  Desc: Print into one or more files the tree of the cluster members
+
+  Ret: A hash with key=cluster_id and value=filename. When more than one
+       cluster is printed in a single file the hash will be key=multiple
+       and value=filename
+
+  Args: A hash reference with the following options:
+         rootname     => $basename ('tree' by default),
+         distribution => $distribution (two options: single or multiple),
+         format       => $format (newick,nexus,nhx,svggraph,tabtree,lintree)
+                         (see bioperl Bio::TreeIO for more details)
+                         ('newick' by default)
+         extension    => $fileextension ('txt' by default)
+
+  Side_Effects: None
+
+  Example: my %files = $phygecluster->out_treefile();
+
+=cut
+
+sub out_treefile {
+    my $self = shift;
+    my $argshref = shift;
+    
+    ## Check variables and complete with default arguments
+    
+    my $def_argshref = { rootname     => 'tree', 
+			 distribution => 'multiple',
+			 format       => 'newick',
+			 extension    => 'txt',
+    };
+
+    if (defined $argshref) {
+	unless (ref($argshref) eq 'HASH') {
+	    croak("ARG.ERROR: $argshref isn't a hashref in out_alignfile");
+	}
+	else {
+	    foreach my $key (keys %{$argshref}) {
+		unless (exists $def_argshref->{$key}) {
+		    croak("ARG.ERROR: $key isn't a valid arg. out_alignfile");
+		}
+	    }
+	    foreach my $defkey (keys %{$def_argshref}) {
+		unless (exists $argshref->{$defkey}) {
+		    $argshref->{$defkey} = $def_argshref->{$defkey}
+		}
+	    }
+	}
+    }
+    else {
+	$argshref = $def_argshref;
+    }
+
+    ## Define the output hash
+
+    my %outfiles = ();
+
+    ## Get the clusters
+
+    my %seqfams = %{$self->get_clusters()};
+
+    ## Print according the distribution. It it is multiple it will create
+    ## one file for all the clusters, if not it will create one file per
+    ## cluster.
+
+    if ($argshref->{'distribution'} eq 'multiple') {
+	my $outname1 = $argshref->{'rootname'} . 
+                       '.multipletrees.' . 
+                       $argshref->{'extension'};
+	$outfiles{'multiple'} = $outname1;
+	
+        my $treeio1 = Bio::TreeIO->new( -format => $argshref->{'format'},
+                                        -file   => ">$outname1",
+                                        );
+
+	foreach my $cluster_id (sort keys %seqfams) {
+            if (defined $seqfams{$cluster_id}) {
+                my $tree = $seqfams{$cluster_id}->tree();
+                if (defined $tree) {
+                    $treeio1->write_tree($tree);
+                }
+            }
+	}	
+    }
+    else {
+	foreach my $cluster_id (sort keys %seqfams) {
+	    my $outname2 = $argshref->{'rootname'} . '.' . 
+                           $cluster_id  . '.' .
+                           $argshref->{'extension'};
+	    $outfiles{$cluster_id} = $outname2;
+	    
+	    if (defined $seqfams{$cluster_id}) {
+                my $tree = $seqfams{$cluster_id}->tree();
+                if (defined $tree) {
+                    my $treeio1 = Bio::TreeIO->new( 
+                                        -format => $argshref->{'format'},
+                                        -file   => ">$outname2",
+                                        );
+
+                    $treeio1->write_tree($tree);
+                }
+	    }
+	}
+    }
+
+    return %outfiles;
+}
+
 
 
 ##########################

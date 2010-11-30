@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 199;
+use Test::More tests => 201;
 use Test::Exception;
 
 use FindBin;
@@ -1534,12 +1534,13 @@ throws_ok { $phygecluster3_f2->prune_by_strains($prunehref3) } qr/ERROR: No di/,
     'TESTING DIE ERROR when none distances were loaded into the object';
 
 
-## Checking the outputs croak functions, TEST 152 to 159
+## Checking the outputs croak functions, TEST 152 to 161
 
 my @outfunctions = ('out_clusterfile', 
 		    'out_alignfile', 
 		    'out_distancefile',
-		    'out_bootstrapfile'
+		    'out_bootstrapfile',
+		    'out_treefile',
     );
 
 foreach my $outfunc (@outfunctions) {
@@ -1555,7 +1556,7 @@ foreach my $outfunc (@outfunctions) {
 ## BOOTSTRAPPING FUNCTIONS ##
 #############################
 
-## First test if get/set_bootstrapping died when should do it. TEST 160 to 162
+## First test if get/set_bootstrapping died when should do it. TEST 162 to 164
 
 
 throws_ok { $phygecluster3->set_bootstrapping() } qr/ARGUMENT ERROR: No/,
@@ -1568,7 +1569,7 @@ throws_ok { $phygecluster3->set_bootstrapping({ 1 => 't'}) } qr/VAL. ERROR: va/,
     "TESTING DIE ERROR when href. values arent PhyGeBoots set_bootstrapping";
 
 
-## Now it will test run_bootstrapping. TEST 163 to 166
+## Now it will test run_bootstrapping. TEST 165 to 168
 ## Bootstrapping function take some time with big clusters with more than 4 
 ## members. To simply that it will get a phygecluster object with member smaller
 ## than 5 members and bigger than 3.
@@ -1640,7 +1641,7 @@ is($wrong_boots_consensus, 0,
     "Testing run_bootstrapping, checking consen objects are Bio::Tree::Tree")
     or diag("Looks like this has failed");
 
-## Testing die options for run_bootstrapping, TEST 167 to 169
+## Testing die options for run_bootstrapping, TEST 169 to 171
 
 
 throws_ok { $phygecluster3->run_bootstrapping('fk') } qr/ARG. ERROR: Arg/,
@@ -1661,7 +1662,7 @@ throws_ok { $phygecluster3->run_bootstrapping($fk_hr1) } qr/ARG. ERROR: fk/,
 
 my %overlaps = $phygecluster3->calculate_overlaps();
 
-## Define some expected values (counted by other methods), TEST 170 to 172
+## Define some expected values (counted by other methods), TEST 172 to 174
 
 my %ov_expval = ( 
     'cluster_1' => { 
@@ -1745,7 +1746,7 @@ is($best_ovcluster2, 'Nta_08736,Sly_01219',
 ## prune_by_overlaps ## 
 #######################
 
-## TEST 173 to 183
+## TEST 175 to 185
 
 my $phygecluster_c3 = $phygecluster3->clone();
 my ($rm_ovcl1href, $rm_ovmb1href) = $phygecluster_c3->prune_by_overlaps(
@@ -1856,7 +1857,7 @@ is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
     "Testing prune_by_overlaps(composition), checking removed member count")
     or diag("Looks like this has failed");
 
-## Test the croak functions for prune_by_overlapings, TEST 185 to 189
+## Test the croak functions for prune_by_overlapings, TEST 187 to 191
 
 throws_ok { $phygecluster_c3->prune_by_overlaps() } qr/ARG. ERROR: No hash/,
     "TESTING DIE ERROR when none arg. is supplied to prune_by_overlaps";
@@ -1889,7 +1890,7 @@ throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ARG. ERROR: 'tr/,
 ## TREE TOOLS FUNCTIONS ##
 ##########################
 
-## First create a clone, TEST 190 and 191
+## First create a clone, TEST 192 and 193
 
 my $phygecl_tr1 = $phygecluster3->clone();
 $phygecl_tr1->run_njtrees({ quiet => 1 });
@@ -1920,7 +1921,7 @@ is(scalar(@njtrees) <=> 0, 1,
     "Testing run_njtrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 192 to 194
+## Test the croak, TEST 194 to 196
 
 throws_ok { $phygecl_tr1->run_njtrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_njtrees() arg. supplied isnt a HASHREF';
@@ -1931,7 +1932,7 @@ throws_ok { $phygecl_tr1->run_njtrees({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygecl_tr1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_njtrees() when value used is not permited';
 
-## First create a clone, TEST 195 and 196
+## First create a clone, TEST 197 and 198
 
 my $phygecl_tr2 = $phygecluster3->clone();
 $phygecl_tr2->run_mltrees();
@@ -1963,7 +1964,7 @@ is(scalar(@mltrees) <=> 0, 1,
     "Testing run_mltrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 197 to 199
+## Test the croak, TEST 199 to 201
 
 throws_ok { $phygecl_tr2->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_mltrees() arg. supplied isnt a HASHREF';
@@ -1973,6 +1974,7 @@ throws_ok { $phygecl_tr2->run_mltrees({ fk => 1}) } qr/ARG. ERROR: fk/,
 
 throws_ok { $phygecl_tr2->run_mltrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_mltrees() when value used is not permited';
+
 
 
 ####
