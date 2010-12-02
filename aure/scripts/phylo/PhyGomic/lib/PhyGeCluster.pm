@@ -3030,6 +3030,209 @@ sub homologous_search {
 }
 
 
+=head2 reroot_trees
+
+  Usage: $phygecluster->reroot_trees($args_href);
+
+  Desc: Reroot the trees of the phygecluster object
+
+  Ret: None.
+
+  Args: A hash reference with the following options:
+        midpoint   => 1,
+        strainref  => $strainname,
+        longestref => 1,
+
+  Side_Effects: Die if hash argument is wrong or if more than one is used.
+                A tag 'reroot_as_' + argument is added to the tree.
+                Skip the trees without strains detailed in the option.
+
+  Example: $phygecluster->reroot_trees($args_href);
+           
+
+=cut
+
+sub reroot_trees {
+    my $self = shift;
+    my $arg_href = shift ||
+	croak("ARG. ERROR: No argument was supplied to reroot_trees().");
+
+    ## Check arguments.
+
+    unless (ref($arg_href) eq 'HASH') {
+	croak("ARG. ERROR: $arg_href supplied to reroot_trees is not HASHREF");
+    }
+    else {
+	my %perm_args = ( midpoint   => '1', 
+			  strainref  => '\w+', 
+			  longestref => '1',
+	    );
+	foreach my $argname (keys %{$arg_href}) {
+	    unless (exists $perm_args{$argname}) {
+		croak("ARG. ERROR: $argname isnt valid arg for reroot_trees()");
+	    }
+	    else {
+		my $val = $arg_href->{$argname};
+		my $permval = $perm_args{$argname};
+		unless ($val =~ m/$permval/) {
+		    croak("ERROR: $argname value isnt valid for reroot_trees");
+		}
+	    }
+	}
+	if (scalar(keys %{$arg_href}) > 1) {
+	    croak("ARG. ERROR: Only one argument can be used for reroot_trees");
+	}
+    }
+
+    ## Get trees, raw sequences and strains
+
+    my %seqfams = %{$self->get_clusters()};
+    my %strains = %{$self->get_strains()};
+
+    foreach my $cluster_id (keys %seqfams) {
+	my $tree = $seqfams{$cluster_id}->tree();
+
+	if (defined $tree) {
+	    
+	    if (exists $arg_href->{midpoint}) {
+		my $midpoint_node = _set_midpoint_root($tree);
+	    }
+	}
+    }
+}
+
+=head2 _set_midpoint_root
+
+  Usage: $midpoint_node = _set_midpoint_root($tree);
+
+  Desc: Calculate the midpoint node for a tree (Bio::Tree::TreeFunctionsI 
+        calculate the midpoint for a node but not for the complete tree)
+
+  Ret: Midpoint node (a Bio::Tree::Node object).
+
+  Args: A tree object (Bio::Tree::Tree)
+
+  Side_Effects: Die if no tree object is supplied.
+                Return undef if iot can not set the midpoint as a root
+
+  Example: $midpoint_node = _set_midpoint_root($tree);
+           
+
+=cut
+
+sub _set_midpoint_root {
+    my $tree = shift ||
+	croak("ERROR: No tree argument was used for _set_midpoint_root()");
+
+    unless (ref($tree) eq "Bio::Tree::Tree") {
+	croak("ERROR: $tree isnt a Bio::Tree::Tree obj for _set_midpoint_root");
+    }
+
+    ## First get all the lineages distances for all the leaves
+
+    my %distances = ();
+    my %nodespair = ();
+    my @leaves = $tree->get_leaf_nodes();
+    foreach my $lnode1 (@leaves) {
+	my $lnode_id1 = $lnode1->id();
+
+	foreach my $lnode2 (@leaves) {
+	    my $lnode_id2 = $lnode2->id();
+
+	    ## Get the distance only if they are different
+
+	    if ($lnode_id1 ne $lnode_id2) {
+		
+		my $distance = $tree->distance([$lnode1, $lnode2]);
+		## create an array with the names and sort before use as keys
+		my $idpair = join('-', sort ($lnode_id1, $lnode_id2) );
+
+		unless (exists $distances{$idpair}) {
+		    $distances{$idpair} = $distance;
+		    $nodespair{$idpair} = [$lnode1, $lnode2];
+		}
+	    }
+	}
+    }
+
+    ## Now it will order by branch length (from longer to shorter)
+
+    my @farnodes = sort {$distances{$b} <=> $distances{$a}} keys %distances;
+
+    ## Take the two longest lineages
+
+    my $test = join(',', @farnodes);
+
+    my $farpair_aref = $nodespair{$farnodes[0]}; 
+
+    ## It will calculate the middle point
+
+    my $midbranch = $distances{$farnodes[0]} / 2;
+
+    ## Get the nodes between this two leaves, to do that it will take
+    ## all the ancestors from this leaves to the top.
+    
+    my $low_com_anc = $tree->get_lca(@{$farpair_aref});
+
+    my @ancestors1 = ($farpair_aref->[0]);
+    my $lineancestor1 = $farpair_aref->[0]->ancestor();
+    if (defined $lineancestor1 && $lineancestor1 ne $low_com_anc) {
+	push @ancestors1, $lineancestor1;
+	while ($lineancestor1 ne $low_com_anc) {
+	    $lineancestor1 = $lineancestor1->ancestor();
+	    push @ancestors1, $lineancestor1;
+	}
+    }
+
+    my @ancestors2 = ($farpair_aref->[1]);
+    my $lineancestor2 = $farpair_aref->[1]->ancestor();
+    if (defined $lineancestor2 && $lineancestor2 ne $low_com_anc) {
+	push @ancestors2, $lineancestor2;
+	while ($lineancestor2 ne $low_com_anc) {
+		$lineancestor2 = $lineancestor2->ancestor();
+		push @ancestors2, $lineancestor2;
+	}
+    }
+
+    ## Join both arrays (using reverse for the second ton put for far to close)
+    my @betw_nodes = (@ancestors1, reverse(@ancestors2));
+
+    ## Now it will get sustract each ancestor distance for each lineage
+
+    my $new_node_branch = '';
+    my $ancestor;
+    foreach my $bet_node (@betw_nodes) {
+       
+	my $linbranch = $bet_node->branch_length();
+	
+	if (defined $linbranch) {
+	    if ($midbranch > $linbranch) {
+		$midbranch -= $linbranch;
+	    }
+	    else {
+		unless (defined $ancestor) {
+		    my $linpart1 = $linbranch - $midbranch;
+		    $new_node_branch = $linbranch - $linpart1;
+		    $ancestor = $bet_node;
+		}
+	    }
+	}
+    }
+
+    ## Finally it will create a node in the ancestor node with this length
+
+    my $newnode;
+    if (defined $ancestor) {
+	$newnode = $ancestor->create_node_on_branch( 
+	    -POSITION => $new_node_branch, 
+	    -FORCE => 1,
+	    );	
+	$tree->reroot($newnode);
+    }
+    return $newnode;
+}
+
+
 ################################
 ## PROGRAMS RUNNING FUNCTIONS ##
 ################################

@@ -37,11 +37,15 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 201;
+use Test::More tests => 204;
 use Test::Exception;
+
+use IO::Scalar;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
+
+
 
 ## TEST 1,2,3
 
@@ -1974,6 +1978,67 @@ throws_ok { $phygecl_tr2->run_mltrees({ fk => 1}) } qr/ARG. ERROR: fk/,
 
 throws_ok { $phygecl_tr2->run_mltrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_mltrees() when value used is not permited';
+
+
+#################################
+## TESTING REROOTING FUNCTIONS ##
+#################################
+
+## Create a couple of tree controls
+
+my $unr_trees = "(Nsy_31457:-0.12679,(Nsy_05034:0.07559,Nto_10658:-0.06807):0.13956,Sly_01101:0.13035);\n(Nta_04827:0.01792,((Nto_28516:-0.09929,Nsy_00405:0.27489):0.07271,Sly_11902:0.05405):0.00558,Nta_09581:0.03861);\n(Nto_01097:-0.09116,(Nta_16648:-0.08506,(Sly_13144:0.23984,Nto_30209:-0.21699):0.22017):0.20143,Nsy_01476:0.12760);";
+
+my $UTFH = IO::Scalar->new(\$unr_trees);
+my $utreeio = Bio::TreeIO->new( -format => 'newick', -fh => $UTFH );
+
+my %mid_trees = (
+    '((Nsy_05034:0.07559,Nto_10658:-0.06807):0.09716,(Nsy_31457:-0.12679,Sly_01101:0.13035):0.0424);' => 1, 
+    '(Nsy_00405:0.200825,(Nto_28516:-0.09929,(Sly_11902:0.05405,(Nta_04827:0.01792,Nta_09581:0.03861):0.00558):0.07271):0.074065);' => 1,
+    '((Sly_13144:0.23984,Nto_30209:-0.21699):0.15468,(Nta_16648:-0.08506,(Nto_01097:-0.09116,Nsy_01476:0.12760):0.20143):0.06549);' => 1,
+    );
+
+my $init = "\n";
+my $MTFH = IO::Scalar->new(\$init);
+my $mtreeio = Bio::TreeIO->new( -format => 'newick', -fh => $MTFH );
+
+## Now it will reroot the trees and add to the midpoint root filehandle
+## After that it will parse and add each tree to a hash a key. If the there
+## are two copies of the same tree (one from $midtree and another from
+## _set_midpoint_root function) it will set the variable
+
+while (my $utree = $utreeio->next_tree()) {
+    my $midnode = PhyGeCluster::_set_midpoint_root($utree);
+    $mtreeio->write_tree($utree);  
+}
+
+## Reset the position of the filehandle
+
+$MTFH->setpos(1);
+
+my $midroot_pairs = 0;
+while(<$MTFH>) {
+    chomp($_);
+    if (exists $mid_trees{$_}) {
+	$midroot_pairs++;
+    }
+    else {
+	my $test = join("\n", keys %mid_trees);
+    }
+}
+
+## Finally it will check that there are two pairs of the same tree
+
+is($midroot_pairs, 3, 
+    "Testing _set_midpoint_root, checking midpoint root trees")
+    or diag("Looks like this has failed");
+
+throws_ok { PhyGeCluster::_set_midpoint_root() } qr/ERROR: No tree/, 
+    'TESTING DIE ERROR when no arg. is supplied to _set_midpoint_root';
+
+throws_ok { PhyGeCluster::_set_midpoint_root('fake') } qr/ERROR: fake/, 
+    'TESTING DIE ERROR when arg. supplied to _set_midpoint_root isnt Bio::Tree';
+
+
 
 
 
