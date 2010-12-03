@@ -28,6 +28,7 @@ use Bio::Tools::Run::StandAloneBlast;
 
 use Bio::AlignIO;
 use Bio::Align::DNAStatistics;
+use Bio::Align::PairwiseStatistics;
 
 use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
 
@@ -345,6 +346,7 @@ sub clone {
 	my $old_seqfam = $clusters{$cluster_id};
 	my @members = $old_seqfam->get_members();
 	my $old_align = $old_seqfam->alignment();
+	my $old_tree = $old_seqfam->tree();
 
 	my $new_align = '';
 	if (defined $old_align) {
@@ -362,11 +364,17 @@ sub clone {
 	    }
 	}
 
+	my $new_tree = '';
+	if (defined $old_tree) {
+	    $new_tree = $old_tree->clone();	
+	}
+
 	my $new_seqfam = Bio::Cluster::SequenceFamily->new(
 	    -family_id => $cluster_id,
 	    -members   => \@members,
 	    );
 	$new_seqfam->alignment($new_align);
+	$new_seqfam->tree($new_tree);
 	$new_clusters{$cluster_id} = $new_seqfam;
     }
     
@@ -3063,9 +3071,9 @@ sub reroot_trees {
 	croak("ARG. ERROR: $arg_href supplied to reroot_trees is not HASHREF");
     }
     else {
-	my %perm_args = ( midpoint   => '1', 
+	my %perm_args = ( midpoint   => 1, 
 			  strainref  => '\w+', 
-			  longestref => '1',
+			  longestref => 1,
 	    );
 	foreach my $argname (keys %{$arg_href}) {
 	    unless (exists $perm_args{$argname}) {
@@ -3075,7 +3083,7 @@ sub reroot_trees {
 		my $val = $arg_href->{$argname};
 		my $permval = $perm_args{$argname};
 		unless ($val =~ m/$permval/) {
-		    croak("ERROR: $argname value isnt valid for reroot_trees");
+		    croak("ARG. ERROR: $val value isnt valid for reroot_trees");
 		}
 	    }
 	}
@@ -3083,6 +3091,12 @@ sub reroot_trees {
 	    croak("ARG. ERROR: Only one argument can be used for reroot_trees");
 	}
     }
+
+
+    ## Create a hash to store the failed rooting seqfams
+
+    my %failed = ();
+
 
     ## Get trees, raw sequences and strains
 
@@ -3095,10 +3109,119 @@ sub reroot_trees {
 	if (defined $tree) {
 	    
 	    if (exists $arg_href->{midpoint}) {
+
+		## It will reset the root into the object
 		my $midpoint_node = _set_midpoint_root($tree);
+
+		unless (defined $midpoint_node) {
+		    $failed{$cluster_id} = $seqfams{$cluster_id};
+		}
 	    }
+	    elsif (exists $arg_href->{strainref}) {
+		my $str_ref = $arg_href->{strainref};
+		
+		## 0) Define the strain nodes
+
+		my @str_nodes = ();
+
+		## 1) Get all the sequences_id for this tree, check the strain
+		##    and add to the hash
+		
+		my @leaves = $tree->get_leaf_nodes();
+		foreach my $lnode (@leaves) {
+		    my $lnode_id = $lnode->id();
+		    
+		    if (exists $strains{$lnode_id}) {
+			if ($strains{$lnode_id} eq $str_ref) {
+			    push @str_nodes, $lnode;
+			}
+		    }
+		}
+
+		## 2) Two options, if there are more than one node, it
+		##    will select the node with the longest distance to
+		##    the common ancestor. If there are only one, it will 
+		##    use that.
+
+		my $newroot;
+		if (scalar(@str_nodes) > 1) {
+		    
+		    ## Get the common ancestor
+		    my $common_ancestor;
+		    my @nodes = $tree->get_nodes();
+		    foreach my $node (@nodes) {
+			my $ances = $node->ancestor();
+			unless (defined $ances) {
+			    $common_ancestor = $node;
+			}
+		    }
+
+		    ## Calculate distances between common ancestor and strnodes
+		    ## and define the longest. After that get the root
+
+		    if (defined $common_ancestor) {
+			my $longestdist = 0;
+			foreach my $str_node (@str_nodes) {
+			    my $dist = $tree->distance( 
+				[$common_ancestor, $str_node] );
+			    if ($dist >= $longestdist) {
+				$longestdist = $dist;
+				$newroot = $str_node;
+			    }
+			}
+		    }
+
+		}
+		elsif (scalar(@str_nodes) == 1) {
+		    $newroot = $str_nodes[0];
+		}
+
+		if (defined $newroot) {
+		    $tree->reroot($newroot, 0);
+		}
+		else {
+		    $failed{$cluster_id} = $seqfams{$cluster_id};
+		}
+
+	    }
+	    elsif (exists $arg_href->{longestref}) {
+		
+		## First get the seq_ids and the lenghts 
+		
+		my %seql = ();
+		my @seqs = $seqfams{$cluster_id}->get_members();
+		foreach my $seq (@seqs) {
+		    $seql{$seq->id()} = $seq->length();
+		}
+
+		## Second get the nodes ids and the max seqlenght
+		
+		my $longest_node;
+		my $longest_length = 0;
+		my @leaves = $tree->get_leaf_nodes();
+		foreach my $lnode (@leaves) {
+		    my $lnode_id = $lnode->id();
+		    
+		    if (exists $seql{$lnode_id}) {
+			if ($seql{$lnode_id} >= $longest_length) {
+			    $longest_node = $lnode;
+			    $longest_length = $seql{$lnode_id};
+			}
+		    }
+		}
+
+		## Third set the root
+
+		if (defined $longest_node) {
+		    $tree->reroot($longest_node, 0);
+		}
+		else {
+		    $failed{$cluster_id} = $seqfams{$cluster_id};
+		}
+	    }	    
 	}
     }
+    return %failed;
 }
 
 =head2 _set_midpoint_root
@@ -3231,6 +3354,170 @@ sub _set_midpoint_root {
     }
     return $newnode;
 }
+
+=head2 _get_outgroup
+
+  Usage: $member_id = _get_outgroup_id({ seqfam    => $seqfam, 
+                                      strains   => \%strains, 
+                                      reference => $reference,
+                                      alignprog => $name,
+                                      alignargs => \@args,
+                                      });
+
+  Desc: Return the member_id based in the reference for a group of sequences 
+        in a seqfam object.
+        If there are more than one option (it will compare these sequences with
+        the rest of them with Smith-Waterman (SW) algorithm picking the 
+        sequence with the lower score.
+
+  Ret: $member_id, a sequence id
+
+  Args: A hash reference with the following elements:
+        seqfam    => a Bio::Cluster::SequenceFamily object
+        strains   => a hash reference with key=seq_id and value=strain
+        reference => a scalar with the strain reference name
+        alignprog => alignment program name (clustalw by default)
+        alignargs => alignment arguments
+
+  Side_Effects: Die if none of the requested arguments are supplied
+
+  Example: $member_id = _get_outgroup_id({ 
+                              seqfam    => $seqfam, 
+                              strains   => { 'seq1' => 'str1', seq2' => 'str2'},
+                              reference => 'str2' });
+           
+
+=cut
+
+sub _get_outgroup_id {
+    my $argshref = shift ||
+	croak("ERROR: No argument href was used for _get_outgroup_id()");
+
+    ## Checkings
+
+    unless (ref($argshref) eq "HASH") {
+	croak("ERROR: $argshref isnt a HASH REF. for _get_outgroup_id");
+    }
+    
+    my $seqfam = $argshref->{seqfam} ||
+	croak("No Bio::Cluster::SequenceFamily was supplied _get_outgroup_id");
+
+    unless (ref($seqfam) eq 'Bio::Cluster::SequenceFamily') {
+	croak("$seqfam isnt a Bio::Cluster::SequenceFamily at get_outgroup_id");
+    }
+
+    my $strainshref = $argshref->{strains} ||
+	croak("No strains hash ref. was supplied _get_outgroup_id");
+
+    my %strains;
+    unless (ref($strainshref) eq 'HASH') {
+	croak("$strainshref isnt a HASH REF. at get_outgroup_id");
+    }
+    else {
+	%strains = %{$strainshref};
+    }
+
+    my $ref = $argshref->{reference} ||
+	croak("No (outgroup) reference was supplied _get_outgroup_id");
+
+    my %perm_prog = (
+	clustalw => 'Bio::Tools::Run::Alignment::Clustalw',
+	kalign   => 'Bio::Tools::Run::Alignment::Kalign',
+	mafft    => 'Bio::Tools::Run::Alignment::MAFFT',
+	muscle   => 'Bio::Tools::Run::Alignment::Muscle',
+	tcoffee  => 'Bio::Tools::Run::Alignment::TCoffee',
+	);
+
+    ## Check the programs and create the alignfactory
+    
+    if (exists $argshref->{alignprog}) {
+	my $pprog = join(',', sort(keys %perm_prog));
+	unless (exists $perm_prog{$argshref->{alignprog}}) {
+	    my $er1 = "Program selected for _get_outgroup_id()";
+	    $er1 .= "isnt in the list of permited programs ($pprog)";
+	    croak($er1);
+	}
+    }
+    else {
+	$argshref->{alignprog} = 'clustalw';
+    }
+    my $alignmodule = $perm_prog{$argshref->{alignprog}};
+
+    my @alignargs = ();
+    if (exists $argshref->{alignargs}) {
+	unless (ref($argshref->{alignargs}) eq 'ARRAY') {
+	    my $er4 = "'alignargs' args. supplied to _get_outgroup_id()";
+	    $er4 .= "doesn't contains 'alignargs' specification";
+	    croak($er4);
+	}
+	else {
+	    @alignargs = @{$argshref->{alignargs}};
+	}
+    }
+    
+    
+
+
+    ## Define the storage variables
+
+    my $ref_id;
+    my @candidates;
+    my @non_candidates;
+
+    ## Select the candidates sequences where strain = reference
+
+    my @seqs = $seqfam->get_members();
+    foreach my $seq (@seqs) {
+	my $seqid = $seq->id();
+	my $str = $strains{$seqid};
+	if (defined $str) {
+	    if ($str eq $ref) {
+		push @candidates, $seq;
+	    }
+	    else {
+		push @non_candidates, $seq;
+	    }
+	}
+    }
+
+    ## Count how many candidates there are. For more than one it will align
+    ## other members with non-candidates seqs, choosing the candidate with
+    ## the lower score.
+
+    if (scalar(@candidates) > 1) {
+	
+	## it will complare the sequences using Smith-Waterman algorithm 
+	my $factory = $alignmodule->new(@alignargs);
+
+	## Lower score (sequences more different between them)
+	my $low_score;
+	
+	foreach my $cand (@candidates) {
+	    foreach my $non_cand (@non_candidates) {
+		my $aln = $factory->align([$cand,$non_cand]);
+		my $stats = Bio::Align::PairwiseStatistics->new();
+		my $score = $stats->score_nuc($aln);
+		
+		unless (defined $low_score) {
+		    $low_score = $score;
+		    $ref_id = $cand->id();
+		}
+		else {
+		    if ($low_score >= $score) {
+			$low_score = $score;
+			$ref_id = $cand->id();
+		    }
+		}
+	    }
+	}
+    }
+    elsif (scalar(@candidates) == 1) {
+	$ref_id = $candidates[0]->id();
+    }
+    
+    return $ref_id;
+}
+
 
 
 ################################

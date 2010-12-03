@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 204;
+use Test::More tests => 227;
 use Test::Exception;
 
 use IO::Scalar;
@@ -828,12 +828,80 @@ throws_ok { $phygecluster_ace3->homologous_search($fhrf6) } qr/WRONG filterva/,
     'TESTING DIE ERROR when filter arg. supplied homologous_search isnot perm.';
 
 
+## Test _get_outgroup_id, TEST 91 and 92
+
+## Prepare the dataset.
+
+my %outstrains = ( A => 's1', B => 's1', C => 's2', D => 's3');
+my %outseqs = ( 
+    A => 'AAACGGGGAGCGCGATTGCGTAAGCTCAGTGGCATGGCAGT',
+    B => 'TAACGGGGAGCGCGAAAACGTAAGCTCCCTGGCATTTTAGT',
+    C => 'AAACGGGGAGCGCGATTGCGCAAGCTCAGTCGCATGGCCGT',
+    D => 'AAACGCCGAGCGCGATTGCGTAAGCTCAGTGGCATGGCAGT',
+    );
+
+my @outseqs = ();
+foreach my $outid (keys %outseqs) {
+    my $outseq = Bio::Seq->new( -id => $outid, -seq => $outseqs{$outid} );
+    push @outseqs, $outseq;
+}
+
+my $outseqfam = Bio::Cluster::SequenceFamily->new( 
+    -family_id => 'outtest1',
+    -members   => \@outseqs,
+    );
+
+## Run the function, the result should be B when s1 and D when s3 are used
+
+my $out_id1 = PhyGeCluster::_get_outgroup_id({ seqfam    => $outseqfam, 
+					       strains   => \%outstrains,
+					       reference => 's3',
+					     });
+is($out_id1, 'D', 
+   "TESTING _get_outgroup_id, checking id for only one candidate")
+    or diag("Looks like this has failed");
+
+my $out_id2 = PhyGeCluster::_get_outgroup_id({ seqfam    => $outseqfam, 
+					       strains   => \%outstrains,
+					       reference => 's1',
+					     });
+is($out_id2, 'B', 
+   "TESTING _get_outgroup_id, checking id for more than one candidate")
+    or diag("Looks like this has failed");
+
+## Test the croaks, TEST 94 to 99
+
+throws_ok { PhyGeCluster::_get_outgroup_id() } qr/ERROR: No argument/, 
+    'TESTING DIE ERROR when no argument is supplied to _get_outgroup_id()';
+					     
+throws_ok { PhyGeCluster::_get_outgroup_id('fake') } qr/ERROR: fake isnt/, 
+    'TESTING DIE ERROR when arg. supplied to _get_outgroup_id() isnt hashref';
+
+throws_ok { PhyGeCluster::_get_outgroup_id({}) } qr/No Bio::Cluster/, 
+    'TESTING DIE ERROR when no seqfam was supplied to _get_outgroup_id()';
+
+my $outfake1 = { seqfam => 'fake2' };
+throws_ok { PhyGeCluster::_get_outgroup_id($outfake1) } qr/fake2/, 
+    'TESTING DIE ERROR when seqfma supplied to _get_outgroup_id() isnt seqfam';
+
+my $outfake2 = { seqfam => $outseqfam };
+throws_ok { PhyGeCluster::_get_outgroup_id($outfake2) } qr/No strains/, 
+    'TESTING DIE ERROR when no strains hash supplied to _get_outgroup_id()';
+
+my $outfake3 = { seqfam => $outseqfam, strains => 'fake3' };
+throws_ok { PhyGeCluster::_get_outgroup_id($outfake3) } qr/fake3/, 
+    'TESTING DIE ERROR when seqfma supplied to _get_outgroup_id() isnt seqfam';
+
+my $outfake4 = { seqfam => $outseqfam, strains => \%outstrains };
+throws_ok { PhyGeCluster::_get_outgroup_id($outfake4) } qr/No \(outgroup\)/, 
+    'TESTING DIE ERROR when no ref was supplied to _get_outgroup_id()';
+
 
 ##########################
 ## ANALYTICAL FUNCTIONS ##
 ##########################
 
-## Checking cluster_sizes function, TEST 91 to 96
+## Checking cluster_sizes function, TEST 100 to 105
 
 my $phygecluster4 = PhyGeCluster->new(
      { 
@@ -885,7 +953,7 @@ is($phygecluster3->cluster_sizes(1000000), 0,
 
 ## Checking run_alignments
 ## The program used will be clustalw.
-## Testing died functions, TEST 97 to 102
+## Testing died functions, TEST 106 to 111
 
 throws_ok { $phygecluster3->run_alignments() } qr/ARG. ERROR: None/, 
     'TESTING DIE ERROR when none args. were supplied to run_alignments';
@@ -918,7 +986,7 @@ $phygecluster3->run_alignments(
     );
 
 ## It will check that all the singlets have not any Bio::SimpleAlign object
-## and the clusters have one. TEST 103 to 105
+## and the clusters have one. TEST 112 to 114
 
 my $singlets_aligns_expected = 0;
 my $contigs_aligns_expected = 41;
@@ -963,7 +1031,7 @@ is($diff_objects_count, $diff_objects_expected,
    "Testing run_alignment, checking absent of other objects")
     or diag("Looks like this has failed");
 
-## Check that the phygecluster_cloned has at least one align object, TEST 106
+## Check that the phygecluster_cloned has at least one align object, TEST 115
 
 my $phygecluster_cloned2 = $phygecluster3->clone();
 my $cloned_alignments = 0;
@@ -986,7 +1054,7 @@ is($cloned_alignments <=> 0, 1,
 
 
 ## testing run_distances() function, and check that the identity of the objects 
-## is Bio::Matrix::PhylipDist, TEST 107 to 109
+## is Bio::Matrix::PhylipDist, TEST 116 to 118
 
 
 $phygecluster3->run_distances({ quiet => 1 });
@@ -1032,7 +1100,7 @@ is($diff_dist_count, 1,
 ## Checking prune functions ##
 ##############################
 
-## Checking prune_by_align, TEST 110 to 112
+## Checking prune_by_align, TEST 119 to 121
 
 my $cluster_count1 = scalar(keys( %{$phygecluster3->get_clusters}));
 
@@ -1069,7 +1137,7 @@ is($wrong_rm_sequences, 0,
     "Testing prune_by_align, counting wrong removed clusters")
     or diag("Looks like this has failed");
 
-## Checking croak functions for prune_by_align, TEST 113 to 120
+## Checking croak functions for prune_by_align, TEST 122 to 129
 
 throws_ok { $phygecluster3->prune_by_align() } qr/ARG. ERROR: None args./, 
     'TESTING DIE ERROR when none argument is used with prune_by_align';
@@ -1105,7 +1173,7 @@ throws_ok { $phygecluster3->prune_by_align({score => ['*',1]}) } qr/ERROR:/,
 
 my %srcclusters = %{$phygecluster3->get_clusters()};
 
-## 1) Get three members at random, TEST 121 to 126
+## 1) Get three members at random, TEST 130 to 135
 
 my $phygecluster_cl2 = $phygecluster3->clone();
 my $prune_args1 = { 
@@ -1174,7 +1242,7 @@ is($clt_diffstr, 0,
     or diag("Looks like this has failed");
 
 
-## 2) Get three members for two min_distance constraints, TEST 127 to 134
+## 2) Get three members for two min_distance constraints, TEST 136 to 143
 
 my $phygecluster_cl3 = $phygecluster3->clone();
 my $prune_args3 = { 
@@ -1317,7 +1385,7 @@ is($clt_mindist3_ac, 0,
     or diag("Looks like this has failed");
 
 
-## 3) Get five members for six min_distance constraints, TEST 135 to 144 
+## 3) Get five members for six min_distance constraints, TEST 144 to 153 
 
 my $phygecluster_cl4 = $phygecluster3->clone();
 my $prune_args4 = { 
@@ -1505,7 +1573,7 @@ is($clt_mindist4_ad, 0,
     "Testing prune_by_strains min_distance2, checking all min_distance a-d")
     or diag("Looks like this has failed");
 
-## Finally check the croak for prune_by_strains function, TEST 145 to 151
+## Finally check the croak for prune_by_strains function, TEST 154 to 160
 
 throws_ok { $phygecluster3->prune_by_strains() } qr/ARG. ERROR: None hash./, 
     'TESTING DIE ERROR when none argument is used with prune_by_strains';
@@ -1538,7 +1606,7 @@ throws_ok { $phygecluster3_f2->prune_by_strains($prunehref3) } qr/ERROR: No di/,
     'TESTING DIE ERROR when none distances were loaded into the object';
 
 
-## Checking the outputs croak functions, TEST 152 to 161
+## Checking the outputs croak functions, TEST 161 to 170
 
 my @outfunctions = ('out_clusterfile', 
 		    'out_alignfile', 
@@ -1560,7 +1628,7 @@ foreach my $outfunc (@outfunctions) {
 ## BOOTSTRAPPING FUNCTIONS ##
 #############################
 
-## First test if get/set_bootstrapping died when should do it. TEST 162 to 164
+## First test if get/set_bootstrapping died when should do it. TEST 171 to 173
 
 
 throws_ok { $phygecluster3->set_bootstrapping() } qr/ARGUMENT ERROR: No/,
@@ -1573,7 +1641,7 @@ throws_ok { $phygecluster3->set_bootstrapping({ 1 => 't'}) } qr/VAL. ERROR: va/,
     "TESTING DIE ERROR when href. values arent PhyGeBoots set_bootstrapping";
 
 
-## Now it will test run_bootstrapping. TEST 165 to 168
+## Now it will test run_bootstrapping. TEST 174 to 177
 ## Bootstrapping function take some time with big clusters with more than 4 
 ## members. To simply that it will get a phygecluster object with member smaller
 ## than 5 members and bigger than 3.
@@ -1645,7 +1713,7 @@ is($wrong_boots_consensus, 0,
     "Testing run_bootstrapping, checking consen objects are Bio::Tree::Tree")
     or diag("Looks like this has failed");
 
-## Testing die options for run_bootstrapping, TEST 169 to 171
+## Testing die options for run_bootstrapping, TEST 178 to 180
 
 
 throws_ok { $phygecluster3->run_bootstrapping('fk') } qr/ARG. ERROR: Arg/,
@@ -1666,7 +1734,7 @@ throws_ok { $phygecluster3->run_bootstrapping($fk_hr1) } qr/ARG. ERROR: fk/,
 
 my %overlaps = $phygecluster3->calculate_overlaps();
 
-## Define some expected values (counted by other methods), TEST 172 to 174
+## Define some expected values (counted by other methods), TEST 181 to 183
 
 my %ov_expval = ( 
     'cluster_1' => { 
@@ -1750,7 +1818,7 @@ is($best_ovcluster2, 'Nta_08736,Sly_01219',
 ## prune_by_overlaps ## 
 #######################
 
-## TEST 175 to 185
+## TEST 184 to 194
 
 my $phygecluster_c3 = $phygecluster3->clone();
 my ($rm_ovcl1href, $rm_ovmb1href) = $phygecluster_c3->prune_by_overlaps(
@@ -1861,7 +1929,7 @@ is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
     "Testing prune_by_overlaps(composition), checking removed member count")
     or diag("Looks like this has failed");
 
-## Test the croak functions for prune_by_overlapings, TEST 187 to 191
+## Test the croak functions for prune_by_overlapings, TEST 195 to 200
 
 throws_ok { $phygecluster_c3->prune_by_overlaps() } qr/ARG. ERROR: No hash/,
     "TESTING DIE ERROR when none arg. is supplied to prune_by_overlaps";
@@ -1894,7 +1962,7 @@ throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ARG. ERROR: 'tr/,
 ## TREE TOOLS FUNCTIONS ##
 ##########################
 
-## First create a clone, TEST 192 and 193
+## First create a clone, TEST 201 and 202
 
 my $phygecl_tr1 = $phygecluster3->clone();
 $phygecl_tr1->run_njtrees({ quiet => 1 });
@@ -1925,7 +1993,7 @@ is(scalar(@njtrees) <=> 0, 1,
     "Testing run_njtrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 194 to 196
+## Test the croak, TEST 203 to 205
 
 throws_ok { $phygecl_tr1->run_njtrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_njtrees() arg. supplied isnt a HASHREF';
@@ -1936,7 +2004,7 @@ throws_ok { $phygecl_tr1->run_njtrees({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygecl_tr1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_njtrees() when value used is not permited';
 
-## First create a clone, TEST 197 and 198
+## First create a clone, TEST 206 and 207
 
 my $phygecl_tr2 = $phygecluster3->clone();
 $phygecl_tr2->run_mltrees();
@@ -1968,7 +2036,7 @@ is(scalar(@mltrees) <=> 0, 1,
     "Testing run_mltrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 199 to 201
+## Test the croak, TEST 208 to 210
 
 throws_ok { $phygecl_tr2->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_mltrees() arg. supplied isnt a HASHREF';
@@ -2027,6 +2095,7 @@ while(<$MTFH>) {
 }
 
 ## Finally it will check that there are two pairs of the same tree
+## TEST 211 to 213
 
 is($midroot_pairs, 3, 
     "Testing _set_midpoint_root, checking midpoint root trees")
@@ -2038,6 +2107,94 @@ throws_ok { PhyGeCluster::_set_midpoint_root() } qr/ERROR: No tree/,
 throws_ok { PhyGeCluster::_set_midpoint_root('fake') } qr/ERROR: fake/, 
     'TESTING DIE ERROR when arg. supplied to _set_midpoint_root isnt Bio::Tree';
 
+
+## Test reroot_trees function
+
+
+my %reroot_opts = ( midpoint => 1, strainref => 'Sly', longestref => 1 );
+
+foreach my $keyopt (keys %reroot_opts) {
+    
+    my $noroots = 0;
+    my $noretrees = 0;
+    my $no_plusonenode = 0;
+    my $no_samenodes = 0;
+    
+    my $phygecl_reroot = $phygecl_tr1->clone();
+    $phygecl_reroot->reroot_trees({ $keyopt => $reroot_opts{$keyopt} });
+  
+    my %cluster_wiroot = %{$phygecl_tr1->get_clusters()};
+    my %cluster_reroot = %{$phygecl_reroot->get_clusters()};
+    
+    foreach my $cl_rt_id (keys %cluster_reroot) {
+
+	my $retree = $cluster_reroot{$cl_rt_id}->tree();
+	my $ortree = $cluster_wiroot{$cl_rt_id}->tree();
+
+	if (defined $retree) {
+	    my $root = $retree->get_root_node();
+	    my $befor_nnodes = $ortree->number_nodes();
+	    my $after_nnodes = $retree->number_nodes();
+
+	    unless (defined $root) {
+		$noroots++;	    
+	    }
+	    else {
+		if ($befor_nnodes + 1 != $after_nnodes) {
+		    $no_plusonenode++;
+		}
+		elsif ($befor_nnodes != $after_nnodes) {
+		    $no_samenodes++;
+		}
+	    }
+	}
+	elsif (defined $ortree) {
+	    $noretrees++;
+	}
+    }
+    
+    ##  midpoint and longestref should have all the trees with roots, 
+    ##  but for strainref, there are some cases where do not exists the 
+    ##  strain... in that case it should not have root
+
+    is($noroots <=> 0, 0, 
+       "Testing reroot_trees ($keyopt), checking trees without root ($noroots)")
+	or diag("Looks like this has failed");
+    
+    ## Counting nodes, only midpoint rooting will create an extra node
+    ## other methods only change the root the new one
+
+    if ($keyopt eq 'midpoint') {
+	is($no_plusonenode, 0, 
+	   "Testing reroot_trees ($keyopt), checking notrees with + 1 node (0)")
+	    or diag("Looks like this has failed");
+    }
+    else {
+	is($no_samenodes, 0, 
+	   "Testing reroot_trees ($keyopt), checking trees with same node N(0)")
+	    or diag("Looks like this has failed");
+    }
+
+    is($noretrees <=> 0, 0, 
+       "Testing reroot_trees ($keyopt), checking trees/retrees ($noretrees)")
+	or diag("Looks like this has failed");
+}
+
+throws_ok { $phygecl_tr1->reroot_trees() } qr/ARG. ERROR: No argument/, 
+    'TESTING DIE ERROR when no argument was supplied to reroot_trees()';
+
+throws_ok { $phygecl_tr1->reroot_trees('fake') } qr/ARG. ERROR: fake supplied/, 
+    'TESTING DIE ERROR when arg. supplied to reroot_trees() is not hashref';
+
+throws_ok { $phygecl_tr1->reroot_trees({ fake2 => 1}) } qr/ARG. ERROR: fake2/, 
+    'TESTING DIE ERROR when arg.key supplied to reroot_trees() isnt valid';
+
+throws_ok { $phygecl_tr1->reroot_trees({ midpoint => 't'}) } qr/ARG. ERROR: t/, 
+    'TESTING DIE ERROR when arg.value supplied to reroot_trees() isnt valid';
+
+my $freroothref = { midpoint => 1, strainref => 'Sly'};
+throws_ok { $phygecl_tr1->reroot_trees($freroothref) } qr/ARG. ERROR: Only/, 
+    'TESTING DIE ERROR when more than one arg. was supplied to reroot_trees()';
 
 
 
