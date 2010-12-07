@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 71;
+use Test::More tests => 74;
 use Test::Exception;
 
 use FindBin;
@@ -515,7 +515,7 @@ throws_ok { $phygeb1->run_consensus({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygeb1->run_consensus({ quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_consensus() when value used is not permited';
 
-## 6) Testing consensus with outgroup
+## 6) Testing consensus using strain Sly as root
 
 my $consensus3 = $phygeb1->run_consensus({ quiet          => 1, 
 					   normalized     => 1, 
@@ -524,7 +524,7 @@ my $consensus3 = $phygeb1->run_consensus({ quiet          => 1,
 
 my $nodes_n = $consensus3->number_nodes();
 
-is($nodes_n, 7, 
+is($nodes_n, 6, 
     "Testing run_consensus, checking number of nodes")
     or diag("Looks like this has failed");
 
@@ -533,24 +533,94 @@ my %strains2 = $phygeb1->get_strains();
 
 if (defined $consensus3->get_root_node()) {
     my $root = $consensus3->get_root_node();
-    my @desc_nodes = $root->each_Descendent();
-
-    ## Should be two descendent, the node for the rest of the tree and the
-    ## outgroup
-
-    foreach my $desc_node (@desc_nodes) {
-	my $desc_id = $desc_node->id();
-	if ($desc_id =~ m/'(.+)'/) {
-	    $rootstrain = $strains2{$1};
-	}
-    }
+    my $root_id = $root->id();
+    $root_id =~ s/'//g;
+    $rootstrain = $strains2{$root_id};
 }
-
 
 is($rootstrain, 'Sly', 
     "Testing run_consensus, checking strain of the root")
     or diag("Looks like this has failed");
 
+## Testing outgroups for run_njtree and run_mltree options
+
+my $base_args = { 
+    seqfam        => $seqfam1, 
+    strains       => \%strains_cl, 
+    run_bootstrap => { 
+	datatype      => 'Sequence', 
+	replicates    => 500, 
+	quiet         => 1, },
+    run_distances => {
+	method        => 'JukesCantor' },
+    run_njtrees   => {
+	type            => 'NJ', 
+	quiet           => 1,
+	outgroup_strain => 'Nta',
+    },
+    run_consensus => { 
+	quiet           => 1,
+	normalized      => 1,
+    }
+};
+
+my $phygeb_norm_nj = PhyGeBoots->new($base_args);
+my $consensus_norm_nj = $phygeb_norm_nj->get_consensus();
+
+my $outgr_norm_nj = '';
+my $consroot_norm_nj = $consensus_norm_nj->get_root_node();
+foreach my $consdesc_norm_nj ($consroot_norm_nj->each_Descendent) {
+    if ($consdesc_norm_nj->is_Leaf()) {
+	$outgr_norm_nj = $consdesc_norm_nj->id();
+    }
+}
+
+## Add to the base the outgroup
+
+$base_args->{run_consensus} = { 
+    outgroup_strain => 'Sly',
+    quiet           => 1,
+    normalized      => 1,
+};
+
+my $phygeb_outg_nj = PhyGeBoots->new($base_args);
+my $consensus_outg_nj = $phygeb_outg_nj->get_consensus();
+
+my $outgr_outg_nj = '';
+my $consroot_outg_nj = $consensus_outg_nj->get_root_node();
+foreach my $consdesc_out_nj ($consroot_outg_nj->each_Descendent) {
+    if ($consdesc_out_nj->is_Leaf()) {
+	$outgr_outg_nj = $consdesc_out_nj->id();
+    }
+}
+
+my $testio = Bio::TreeIO->new( -file => ">test.txty", -format => 'newick');
+$testio->write_tree($consensus_norm_nj);
+$testio->write_tree($consensus_outg_nj);
+
+
+
+is($outgr_outg_nj ne $outgr_norm_nj, 1, 
+    "Testing run_consensus with outgroup strain, checking different outgroup")
+    or diag("Looks like this has failed");
+
+is($strains_cl{$outgr_outg_nj}, 'Sly', 
+    "Testing run_consensus with outgroup strain, checking outgroup strain")
+    or diag("Looks like this has failed");
+
+
+## Checking midpoint rooting
+
+delete($base_args->{run_consensus}->{outgroup_strain});
+$base_args->{run_consensus}->{root_by_midpoint} = 1;
+my $phygeb_midp_nj = PhyGeBoots->new($base_args);
+my $consensus_midp_nj = $phygeb_midp_nj->get_consensus();
+my $normnoden = $consensus_norm_nj->number_nodes();
+my $midpnoden = $consensus_midp_nj->number_nodes();
+
+is($midpnoden, $normnoden + 1,
+    "Testing run_consensus with root_by_midpoint, checking node n ($midpnoden)")
+    or diag("Looks like this has failed");
 
 ####
 1; #

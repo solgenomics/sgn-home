@@ -31,7 +31,7 @@ use Bio::Align::DNAStatistics;
 use Bio::Align::PairwiseStatistics;
 
 use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
-use Bio::Tools::Run::Phylo::Phylip::Dnaml;
+use Bio::Tools::Run::Phylo::Phylip::Dnaml;  ## Module from PhyGomics pipeline
 
 use Bio::Matrix::IO;
 use Bio::Matrix::Generic;
@@ -3441,6 +3441,7 @@ sub _get_outgroup_id {
     }
     else {
 	$argshref->{alignprog} = 'clustalw';
+	$argshref->{alignargs} = [ quiet => 1 ];
     }
     my $alignmodule = $perm_prog{$argshref->{alignprog}};
 
@@ -4146,9 +4147,6 @@ sub run_njtrees {
 		if (defined $outgroup_equiv) {
 		    $factory->outgroup($outgroup_equiv);
 		}
-	    }
-	    else {
-		my $test = join(',', keys %revnames);
 	    }
 	}
 

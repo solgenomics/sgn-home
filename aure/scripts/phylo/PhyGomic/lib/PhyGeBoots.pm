@@ -914,7 +914,7 @@ sub run_distances {
         subrep => 1|0 or/and jumble => int
         (for more information: 
          http://evolution.genetics.washington.edu/phylip/doc/seqboot.html)
- 
+        Also outgroup_strain => $strain name can be used
 
   Side_Effects: Died if the arguments are wrong.
                 Return undef if there are no dists inside the PhyGeBoots obj.
@@ -928,13 +928,14 @@ sub run_njtrees {
     my $self = shift;
     my $args_href = shift;
 
-    my %perm_args = ( type     => '(NJ|UPGMA)', 
-		      outgroup => '\d+', 
-		      lowtri   => '[1|0]', 
-		      uptri    => '[1|0]', 
-		      subrep   => '[1|0]', 
-		      jumble   => '\d+', 
-		      quiet    => '[1|0]',
+    my %perm_args = ( type            => '(NJ|UPGMA)', 
+		      outgroup        => '\d+', 
+		      lowtri          => '[1|0]', 
+		      uptri           => '[1|0]', 
+		      subrep          => '[1|0]', 
+		      jumble          => '\d+', 
+		      quiet           => '[1|0]',
+		      outgroup_strain => '\w+', 
 	);
 
     if (defined $args_href) {
@@ -956,20 +957,57 @@ sub run_njtrees {
 	}
     }
 
+    ## Get outgroup if it is defined and delete from arguments
+
+    my $outgroup;
+    if (defined $args_href->{outgroup_strain}) {	
+	$outgroup = delete($args_href->{outgroup_strain});    	
+    }
+
+    ## But outgroup can not be used for UPGMA
+
+    if (defined $args_href->{type}) {
+	if ($args_href->{type} =~ m/UPGMA/i) {
+	    undef($outgroup);
+	}
+    }
+
     my @args = ();
     foreach my $key (keys %{$args_href}) {
 	push @args, ($key, $args_href->{$key});
     }
 
     ## After check, create the array and the factory
-
-    my @trees = ();
+    ## It will create a new factory per tree (to be able to use
+    ## tools like outgroups)
     
     my $factory = Bio::Tools::Run::Phylo::Phylip::Neighbor->new(@args);
+
+    ## Define the outgroup (it will be the same for all the trees)
+
+    my %strains = $self->get_strains();
+    my $seqfam = $self->get_seqfam;
+
+    my $outgroup_id;
+    if (defined $outgroup) {
+
+	$outgroup_id = PhyGeCluster::_get_outgroup_id(
+	    {
+		seqfam    => $seqfam,
+		strains   => \%strains,
+		reference => $outgroup,
+	    }
+	    );
+    }
+    
+    ## After check, create the array and the factory
+
+    my @trees = ();
     
     ## And now it will run one tree per distance
 
     my @dists = $self->get_dists();
+
     foreach my $dist (@dists) {
 
 	## It will replace the ids before run the trees for an index
@@ -1003,8 +1041,18 @@ sub run_njtrees {
 	}
  	
 	$dist->names(\@newnames_list);
+	
+	## It will set the outgroup with the right id after the replacement
 
-	## Now it will run the tree
+	if (defined $outgroup_id) {
+	    my $outgroup_equiv = $revnames{$outgroup_id};
+
+	    if (defined $outgroup_equiv) {
+		$factory->outgroup($outgroup_equiv);
+	    }
+	}
+
+	## Now it will run the tree	
 
 	my ($tree) = $factory->run($dist);
 	if (defined $tree) {
@@ -1020,6 +1068,19 @@ sub run_njtrees {
 	    push @trees, $tree;	
 	}
 	
+	## Forth, replace the matrix names by the originals.
+	
+	my $mtx_href2 = $dist->_matrix();
+	foreach my $x_name (keys %{$mtx_href2}) {
+	    my $y_href = $mtx_href2->{$x_name};
+	    
+	    foreach my $y_name (keys %{$y_href}) {
+		$y_href->{$equivnames{$y_name}} = delete($y_href->{$y_name});
+	    }
+	    $mtx_href2->{$equivnames{$x_name}} = delete($mtx_href2->{$x_name});
+	}
+ 	
+	$dist->names(\@oldnames_list);
     }
     
     $self->set_trees(\@trees);
@@ -1141,12 +1202,14 @@ sub run_consensus {
     my $args_href = shift;
 
      my %perm_args = (
-	 type           => '\w+',
-	 rooted         => '\d+',
-	 outgroup       => '\d+', 
-	 quiet          => '[1|0]',
-	 normalized     => '[1|0]',
-	 root_by_strain => '\w+',
+	 type             => '\w+',
+	 rooted           => '\d+',
+	 outgroup         => '\d+', 
+	 quiet            => '[1|0]',
+	 normalized       => '[1|0]',
+	 root_by_strain   => '\w+',
+	 root_by_midpoint => '[1|0]',
+	 outgroup_strain  => '\w+',
 	 );
 
     my $norm = 0;
@@ -1176,16 +1239,38 @@ sub run_consensus {
     ## Also it will take the root based in strains, it will remove strains 
     ## before pass to the factory object
     
-    my %strains = $self->get_strains();
-    my $test = scalar(keys %strains);
+    my $midpoint_root;
 
-    my $str_root = '';
-    my $root_id = '';
-
-    if (defined $args_href->{'root_by_strain'}) {
-	$str_root = delete($args_href->{'root_by_strain'});
+    if (defined $args_href->{'root_by_midpoint'}) {
+	$midpoint_root = delete($args_href->{'root_by_midpoint'});
     }
 
+    my $selected_strainroot;
+    my $strain_root;
+
+    if (defined $args_href->{'root_by_strain'}) {
+	$selected_strainroot = delete($args_href->{'root_by_strain'});
+    }
+    
+
+    ## Catch the outgroup_strain
+
+    my %strains = $self->get_strains();
+    my $seqfam = $self->get_seqfam;
+
+    my $outgroup_id;
+    if (defined $args_href->{outgroup_strain}) {	
+	my $outgroup = delete($args_href->{outgroup_strain});
+    	$outgroup_id = PhyGeCluster::_get_outgroup_id(
+	    {
+		seqfam    => $seqfam,
+		strains   => \%strains,
+		reference => $outgroup,
+	    }
+	    );
+    }
+    
+    ## Pass the rest of the arguments
 
     my @args = ();
     foreach my $key (keys %{$args_href}) {
@@ -1213,46 +1298,37 @@ sub run_consensus {
 	foreach my $node (@nodes) {
 	    my $node_id = $node->id();
 	    if (defined $node_id) {
+		if ($node_id =~ m/^'.+'$/) {
+		    $node_id =~ s/'//g;
+		}
 		unless (exists $reveq{$node_id}) {
 		    $equiv{$i} = $node_id;
 		    $reveq{$node_id} = $i;
 		    $i++;
 		}
+
+		## Also it will get the strain_root if it is defined
+		if (defined $strains{$node_id}) {
+		    if (defined $selected_strainroot) {
+			if ($strains{$node_id} eq $selected_strainroot) {
+			    $strain_root = $node;
+			}
+		    }
+		}
+
+		## Finally it will change the node id for the new one
+		$node->id($reveq{$node_id});
 	    }
 	}
     }
 
-    my %nodes_order = ();    
-    foreach my $tree (@trees) {
-	my @nodes = $tree->get_leaf_nodes();
+    
 
-	my $n = 1;  ## define de nodes order
-
-	foreach my $node (@nodes) {
-	    my $node_id = $node->id();	    
-	    if (defined $node_id) {
-		$node->id($reveq{$node_id});
-		
-		## Node ids have 'original_name', so it will remove that
-		## Also it will add the order in the tree, toset later as 
-		## outgroup
-
-		if ($node_id =~ m/'(.+)'/) {
-		    my $orig_id = $1;
-		    $nodes_order{$orig_id} = $n;
-		    $n++;
-		   
-		    ## To get the root_id
-		    if (defined $strains{$orig_id}) {
-			if (defined $str_root) {
-			    if ($strains{$orig_id} eq $str_root) {
-				$root_id = $orig_id;
-			    }
-			}
-		    }
-		}
-	    }
-	}
+    ## After the change it will get the equiv for outgroup_id (if exists)
+    
+    my $outnode_id;
+    if (defined $outgroup_id) {
+	$outnode_id = $reveq{$outgroup_id};
     }
 
     my $tree_n = scalar(@trees);
@@ -1261,21 +1337,35 @@ sub run_consensus {
 
 	## Set outgroup if exists
 	
-	if ($root_id =~ m/\w+/) {
-	    $factory->outgroup($nodes_order{$root_id});
+	if (defined $outnode_id ) {
+	    $factory->outgroup($outnode_id);
 	}
 
 	$consensus = $factory->run(\@trees);
-
+	
 	## Get the right ids
 
-	my @consnodes = $consensus->get_leaf_nodes();
+	my @consnodes = $consensus->get_nodes();
 	foreach my $consnode (@consnodes) {
 	    my $consnode_id = $consnode->id();
 	    if (defined $consnode_id) {
 		$consnode->id($equiv{$consnode_id});
 	    }
 	}
+	
+	## Set root if exists
+	## Also root node should be set with the right id
+
+	if (defined $strain_root) {
+	    my $old_root_id = $strain_root->id();
+	    $strain_root->id($equiv{$old_root_id});
+	    $consensus->reroot($strain_root);
+	}
+	elsif (defined $midpoint_root && $midpoint_root == 1) {
+	    PhyGeCluster::_set_midpoint_root($consensus);
+	}
+
+	## Normalize the values
 
 	if ($norm == 1) {
 	    my @nodes = $consensus->get_nodes();
