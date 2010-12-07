@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 227;
+use Test::More tests => 229;
 use Test::Exception;
 
 use IO::Scalar;
@@ -2007,7 +2007,7 @@ throws_ok { $phygecl_tr1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/,
 ## First create a clone, TEST 206 and 207
 
 my $phygecl_tr2 = $phygecluster3->clone();
-$phygecl_tr2->run_mltrees();
+$phygecl_tr2->run_mltrees({ phyml => {} });
 
 my %clusters_tr2 = %{$phygecl_tr2->get_clusters()};
 
@@ -2044,7 +2044,7 @@ throws_ok { $phygecl_tr2->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/,
 throws_ok { $phygecl_tr2->run_mltrees({ fk => 1}) } qr/ARG. ERROR: fk/, 
     'TESTING DIE ERROR for run_mltrees() when arg supplied is not permited';
 
-throws_ok { $phygecl_tr2->run_mltrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
+throws_ok { $phygecl_tr2->run_mltrees({phyml =>'fk'}) } qr/ARG. ERROR: phyml/, 
     'TESTING DIE ERROR for run_mltrees() when value used is not permited';
 
 
@@ -2196,6 +2196,102 @@ my $freroothref = { midpoint => 1, strainref => 'Sly'};
 throws_ok { $phygecl_tr1->reroot_trees($freroothref) } qr/ARG. ERROR: Only/, 
     'TESTING DIE ERROR when more than one arg. was supplied to reroot_trees()';
 
+
+#############################
+## TEST OUTGROUP FOR TREES ##
+#############################
+
+
+my $phygecl_tr3 = $phygecluster3->clone();
+$phygecl_tr3->run_njtrees({ quiet => 1 , outgroup_strain => 'Sly' });
+
+my %strs3 = %{$phygecluster3->get_strains()};
+my %seqfamtr1 = %{$phygecl_tr1->get_clusters()};  ## First nj run
+my %seqfamtr3 = %{$phygecl_tr3->get_clusters()};
+
+## The outgroup will be the more close leaf to the root. It will be
+## different in at least one of the comparisons.
+
+my $outgr_nj = 0;
+
+foreach my $cl_id_tr3 (keys %seqfamtr3) {
+    my $tree_nj1 = $seqfamtr1{$cl_id_tr3}->tree();
+    my $tree_nj3 = $seqfamtr3{$cl_id_tr3}->tree();
+
+    if (defined $tree_nj1 && defined $tree_nj3) {
+	my ($out_nj1, $out_nj3);
+	my $root_nj1 = $tree_nj1->get_root_node();
+	foreach my $desc_nj1 ($root_nj1->each_Descendent()) {
+	    if ($desc_nj1->is_Leaf) {
+		$out_nj1 = $desc_nj1;
+	    }
+	}
+	
+	my $root_nj3 = $tree_nj3->get_root_node();
+	foreach my $desc_nj3 ($root_nj3->each_Descendent()) {
+	    if ($desc_nj3->is_Leaf) {
+		$out_nj3 = $desc_nj3;
+	    }
+	}
+	if (defined $out_nj1 && defined $out_nj3) {
+	    my $out_str1 = $strs3{$out_nj1->id()};
+	    my $out_str3 = $strs3{$out_nj3->id()};
+	    if ($out_str1 ne $out_str3) {
+		if ($out_str3 eq 'Sly') {
+		    $outgr_nj++;
+		}
+	    }
+	}
+    }
+}
+is($outgr_nj <=> 0, 1, 
+    "Testing run_nj_trees(with outgroup_strain), checking success ($outgr_nj)")
+    or diag("Looks like this has failed");
+
+
+my $phygecl_tr4 = $phygecluster3->clone();
+$phygecl_tr4->run_mltrees({dnaml => { quiet => 1 }});
+my $phygecl_tr5 = $phygecluster3->clone();
+$phygecl_tr5->run_mltrees({dnaml => { quiet => 1 }, outgroup_strain => 'Sly' });
+
+my %seqfamtr4 = %{$phygecl_tr4->get_clusters()};
+my %seqfamtr5 = %{$phygecl_tr5->get_clusters()};
+
+my $outgr_ml = 0;
+
+foreach my $cl_id_tr5 (keys %seqfamtr5) {
+    my $tree_ml4 = $seqfamtr4{$cl_id_tr5}->tree();
+    my $tree_ml5 = $seqfamtr5{$cl_id_tr5}->tree();
+
+    if (defined $tree_ml4 && defined $tree_ml5) {
+	my ($out_ml1, $out_ml2);
+	my $root_ml1 = $tree_ml4->get_root_node();
+	foreach my $desc_ml1 ($root_ml1->each_Descendent()) {
+	    if ($desc_ml1->is_Leaf) {
+		$out_ml1 = $desc_ml1;
+	    }
+	}
+	
+	my $root_ml2 = $tree_ml5->get_root_node();
+	foreach my $desc_ml2 ($root_ml2->each_Descendent()) {
+	    if ($desc_ml2->is_Leaf) {
+		$out_ml2 = $desc_ml2;
+	    }
+	}
+	if (defined $out_ml1 && defined $out_ml2) {
+	    my $out_str4 = $strs3{$out_ml1->id()};
+	    my $out_str5 = $strs3{$out_ml2->id()};
+	    if ($out_str4 ne $out_str5) {
+		if ($out_str5 eq 'Sly') {
+		    $outgr_ml++;
+		}
+	    }
+	}
+    }
+}
+is($outgr_ml <=> 0, 1, 
+    "Testing run_ml_trees(with outgroup_strain), checking success ($outgr_ml)")
+    or diag("Looks like this has failed");
 
 
 

@@ -31,6 +31,7 @@ use Bio::Align::DNAStatistics;
 use Bio::Align::PairwiseStatistics;
 
 use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
+use Bio::Tools::Run::Phylo::Phylip::Dnaml;
 
 use Bio::Matrix::IO;
 use Bio::Matrix::Generic;
@@ -3454,10 +3455,7 @@ sub _get_outgroup_id {
 	    @alignargs = @{$argshref->{alignargs}};
 	}
     }
-    
-    
-
-
+ 
     ## Define the storage variables
 
     my $ref_id;
@@ -4030,13 +4028,14 @@ sub run_njtrees {
     my $self = shift;
     my $args_href = shift;
 
-    my %perm_args = ( type     => '(NJ|UPGMA)', 
-		      outgroup => '\d+', 
-		      lowtri   => '[1|0]', 
-		      uptri    => '[1|0]', 
-		      subrep   => '[1|0]', 
-		      jumble   => '\d+', 
-		      quiet    => '[1|0]',
+    my %perm_args = ( type            => '(NJ|UPGMA)', 
+		      outgroup        => '\d+', 
+		      lowtri          => '[1|0]', 
+		      uptri           => '[1|0]', 
+		      subrep          => '[1|0]', 
+		      jumble          => '\d+', 
+		      quiet           => '[1|0]',
+		      outgroup_strain => '\w+', 
 	);
 
     if (defined $args_href) {
@@ -4058,6 +4057,21 @@ sub run_njtrees {
 	}
     }
 
+    ## Get outgroup if it is defined and delete from arguments
+
+    my $outgroup;
+    if (defined $args_href->{outgroup_strain}) {	
+	$outgroup = delete($args_href->{outgroup_strain});    	
+    }
+
+    ## But outgroup can not be used for UPGMA
+
+    if (defined $args_href->{type}) {
+	if ($args_href->{type} =~ m/UPGMA/i) {
+	    undef($outgroup);
+	}
+    }
+
     my @args = ();
     foreach my $key (keys %{$args_href}) {
 	push @args, ($key, $args_href->{$key});
@@ -4067,14 +4081,19 @@ sub run_njtrees {
 
     my %dists = %{$self->get_distances()};
     my %clusters = %{$self->get_clusters()};
-
-    ## After check, create the array and the factory
-    
-    my $factory = Bio::Tools::Run::Phylo::Phylip::Neighbor->new(@args);
+    my %strains = %{$self->get_strains()};    
     
     ## And now it will run one tree per distance and set tree in seqfam object
 
     foreach my $cluster_id (keys %dists) {
+
+	## After check, create the array and the factory
+	## It will create a new factory per tree (to be able to use
+	## tools like outgroups)
+    
+	my $factory = Bio::Tools::Run::Phylo::Phylip::Neighbor->new(@args);
+
+
 	my $distobj = $dists{$cluster_id};
 
 	## It will replace the ids before run the trees for an index
@@ -4112,6 +4131,26 @@ sub run_njtrees {
 	## Now it will run the tree
 
 	my $seqfam = $clusters{$cluster_id};
+
+	if (defined $outgroup) {
+
+	    my $outgroup_id = _get_outgroup_id(
+		{
+		    seqfam    => $seqfam,
+		    strains   => \%strains,
+		    reference => $outgroup,
+		}
+		);
+	    if (defined $outgroup_id) {
+		my $outgroup_equiv = $revnames{$outgroup_id};
+		if (defined $outgroup_equiv) {
+		    $factory->outgroup($outgroup_equiv);
+		}
+	    }
+	    else {
+		my $test = join(',', keys %revnames);
+	    }
+	}
 
 	my ($tree) = $factory->run($distobj);
 	if (defined $tree) {
@@ -4155,9 +4194,10 @@ sub run_njtrees {
   Ret: None
 
   Args: $args_href, a hash reference with the following options:
-        phyml_arg => {}, $hash ref with phyml arguments
+        phyml => {}, $hash ref with phyml arguments (it will use phyml program)
         (for more information: 
-         http://www.atgc-montpellier.fr/phyml/usersguide.php)
+        http://www.atgc-montpellier.fr/phyml/usersguide.php)
+        dnaml => {}, $hash ref with phylip dnaml arguments
  
 
   Side_Effects: Died if the arguments are wrong.
@@ -4171,7 +4211,9 @@ sub run_mltrees {
     my $args_href = shift;
 
     my %perm_args = ( 
-	phyml_arg      => 'HASH',
+	phyml           => 'HASH',
+	dnaml           => 'HASH',
+	outgroup_strain => '\w+',
 	);
 
     if (defined $args_href) {
@@ -4195,14 +4237,19 @@ sub run_mltrees {
 
     ## Default parameters:
 
-    my %phyargs = ();
-    if (defined $args_href->{phyml_args}) {
-	%phyargs = %{$args_href->{phyml_args}};
+    my %runargs = ();
+    if (defined $args_href->{phyml}) {
+	%runargs = %{$args_href->{phyml}};
+	unless (exists $runargs{-data_type}) {
+	    $runargs{-data_type} = 'nt';
+	}
+    }
+    elsif (defined %{$args_href->{dnaml}}) {
+	%runargs = %{$args_href->{dnaml}};
     }
     else {
-	%phyargs = (
-	    -data_type       => 'nt',
-	    );
+	$args_href->{dnaml} = {};
+	%runargs = %{$args_href->{dnaml}};
     }
 
     ## And now it will run one tree per alignment
@@ -4210,17 +4257,75 @@ sub run_mltrees {
     ## redo de factory as many times as trees to create.
 
     my %clusters = %{$self->get_clusters()};
+    my %strains = %{$self->get_strains()};
+
     foreach my $cluster_id (keys %clusters) {
 	my $seqfam = $clusters{$cluster_id};
 	my $align = $seqfam->alignment;
 	
 	if (defined $align) {
-	    my $factory = Bio::Tools::Run::Phylo::Phyml->new(%phyargs);
-	    my $tree = $factory->run($align);
-	    
-	    if (defined $tree) {
-		$seqfam->tree($tree);
+
+	    my $seqn = $align->no_sequences();
+
+	    my %seqids = ();
+	    my %revseqids = ();
+	    my $i = 1;
+	    foreach my $seqobj ($align->each_seq()) {
+		$seqids{$i} = $seqobj->display_id();
+		$revseqids{$seqobj->display_id()} = $i;
+		$align->remove_seq($seqobj);
+		$seqobj->display_id($i);
+		$align->add_seq($seqobj);
+		$i++;
 	    }
+
+	    my $factory;
+	    if (defined $args_href->{phyml}) {
+		$factory = Bio::Tools::Run::Phylo::Phyml->new(%runargs);
+	    }
+	    else {
+		if (defined $args_href->{outgroup_strain}) {
+		    my $outgroup_id = _get_outgroup_id(
+			{
+			    seqfam    => $seqfam,
+			    strains   => \%strains,
+			    reference => $args_href->{outgroup_strain},
+			}
+			);
+		    if (defined $outgroup_id) {
+			my $outgroup_idx = $revseqids{$outgroup_id};
+			$runargs{OUTGROUP} = $outgroup_idx;
+		    }
+		}
+		if ($seqn > 2) {
+		    $factory = Bio::Tools::Run::Phylo::Phylip::Dnaml->new(
+			%runargs);
+		}
+	    }
+
+	    if (defined $factory) {
+		my ($tree) = $factory->run($align);
+	    	    
+		if (defined $tree) {
+
+		    my @nodes = $tree->get_leaf_nodes();
+		    foreach my $node (@nodes) {
+			my $old_node_id = $node->id();
+			$node->id($seqids{$old_node_id});
+		    }
+		    
+		    $seqfam->tree($tree);
+		}
+	    }
+
+	    ## Finally it will replace the ids of the alignments back 
+	    foreach my $seqobj ($align->each_seq()) {
+		$align->remove_seq($seqobj);
+		my $oldid = $seqobj->display_id();
+		$seqobj->display_id($seqids{$oldid});
+		$align->add_seq($seqobj);
+	    }
+
 	}
     }
 }
