@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 74;
+use Test::More tests => 77;
 use Test::Exception;
 
 use FindBin;
@@ -438,7 +438,8 @@ throws_ok { $phygeb1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/,
 
 ## 4) test run_mltrees, TEST 58 to 60
 
-my @mltrees1 = $phygeb1->run_mltrees();
+my @mltrees1 = $phygeb1->run_mltrees({ phyml => { quiet => 1, 
+						  -data_type => 'nt'  }});
 
 is(scalar(@mltrees1), 500, 
     "Testing run_mltrees, checking number of replicates (500)")
@@ -515,7 +516,7 @@ throws_ok { $phygeb1->run_consensus({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygeb1->run_consensus({ quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_consensus() when value used is not permited';
 
-## 6) Testing consensus using strain Sly as root
+## 6) Testing consensus using strain Sly as root, TEST 70 and 71
 
 my $consensus3 = $phygeb1->run_consensus({ quiet          => 1, 
 					   normalized     => 1, 
@@ -542,7 +543,7 @@ is($rootstrain, 'Sly',
     "Testing run_consensus, checking strain of the root")
     or diag("Looks like this has failed");
 
-## Testing outgroups for run_njtree and run_mltree options
+## Testing outgroups for run_njtree and run_mltree options, TEST 72 and 73
 
 my $base_args = { 
     seqfam        => $seqfam1, 
@@ -594,12 +595,6 @@ foreach my $consdesc_out_nj ($consroot_outg_nj->each_Descendent) {
     }
 }
 
-my $testio = Bio::TreeIO->new( -file => ">test.txty", -format => 'newick');
-$testio->write_tree($consensus_norm_nj);
-$testio->write_tree($consensus_outg_nj);
-
-
-
 is($outgr_outg_nj ne $outgr_norm_nj, 1, 
     "Testing run_consensus with outgroup strain, checking different outgroup")
     or diag("Looks like this has failed");
@@ -609,7 +604,7 @@ is($strains_cl{$outgr_outg_nj}, 'Sly',
     or diag("Looks like this has failed");
 
 
-## Checking midpoint rooting
+## Checking midpoint rooting, TEST 74
 
 delete($base_args->{run_consensus}->{outgroup_strain});
 $base_args->{run_consensus}->{root_by_midpoint} = 1;
@@ -621,6 +616,69 @@ my $midpnoden = $consensus_midp_nj->number_nodes();
 is($midpnoden, $normnoden + 1,
     "Testing run_consensus with root_by_midpoint, checking node n ($midpnoden)")
     or diag("Looks like this has failed");
+
+
+## Checking the run_mltrees({ dnaml => {} }), TEST 75 to 77
+
+delete($base_args->{run_njtrees});
+$base_args->{run_mltrees} = { outgroup_strain => 'Nta' };
+$base_args->{run_consensus} = { outgroup_strain => 'Sly', 
+				quiet           => 1, 
+				normalized      => 1 };
+
+my $phygeb_norm_ml = PhyGeBoots->new($base_args);
+my $consensus_norm_ml = $phygeb_norm_ml->get_consensus();
+
+## compare the trees with the consensus_norm_nj
+my $normnodeml = $consensus_norm_ml->number_nodes();
+
+is($normnodeml, $normnoden,
+    "Testing run_mltrees with dnaml, checking same node number ($normnodeml)")
+    or diag("Looks like this has failed");
+
+my %norm_ml_nodes = ();
+my $ml_i = 1;
+
+foreach my $ml_node ($consensus_norm_ml->get_nodes()) {
+    $norm_ml_nodes{$ml_i} = $ml_node;
+    $ml_i++;
+} 
+
+my %norm_nj_nodes = ();
+my $nj_i = 1;
+
+foreach my $nj_node ($consensus_outg_nj->get_nodes()) {
+    $norm_nj_nodes{$nj_i} = $nj_node;
+    $nj_i++;
+} 
+
+my $diff_id_count = 0;
+my $diff_branch_count = 0;
+
+foreach my $indx (sort keys %norm_nj_nodes) {
+    my $njnode_id = $norm_nj_nodes{$indx}->id();
+    my $mlnode_id = $norm_ml_nodes{$indx}->id();
+    my $njnode_bl = $norm_nj_nodes{$indx}->branch_length();
+    my $mlnode_bl = $norm_ml_nodes{$indx}->branch_length();
+
+    if (defined $njnode_id && defined $mlnode_id && $njnode_id ne $mlnode_id) {
+	$diff_id_count++;
+    }
+    if (defined $njnode_bl && defined $mlnode_bl && $njnode_bl != $mlnode_bl) {
+	$diff_branch_count++;
+    }
+}
+
+## Different id order
+is($diff_id_count <=> 0, 1, 
+    "Testing run_mltrees with dnaml arg., checking diff. node ids order")
+    or diag("Looks like this has failed");
+
+##Same bootstrapping values
+is($diff_branch_count, 0, 
+    "Testing run_mltrees with dnaml arg., checking equal branch lengths")
+    or diag("Looks like this has failed");
+
 
 ####
 1; #

@@ -3356,7 +3356,7 @@ sub _set_midpoint_root {
     return $newnode;
 }
 
-=head2 _get_outgroup
+=head2 _get_outgroup_id
 
   Usage: $member_id = _get_outgroup_id({ seqfam    => $seqfam, 
                                       strains   => \%strains, 
@@ -4246,7 +4246,7 @@ sub run_mltrees {
 	%runargs = %{$args_href->{dnaml}};
     }
     else {
-	$args_href->{dnaml} = {};
+	$args_href->{dnaml} = { quiet => 1 };
 	%runargs = %{$args_href->{dnaml}};
     }
 

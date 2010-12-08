@@ -20,6 +20,7 @@ use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
 use Bio::Tools::Run::Phylo::Phylip::Neighbor;
 use Bio::Tools::Run::Phylo::Phyml;
 use Bio::Tools::Run::Phylo::Phylip::Consense;
+use Bio::Tools::Run::Phylo::Phylip::Dnaml; ## A PhyGoMics module
 
 use Bio::Matrix::IO;
 use Bio::Matrix::Generic;
@@ -225,13 +226,13 @@ sub new {
 			$consensus = $self->run_consensus($cons_href);
 		    }
 		}
-	    }
-	    elsif (defined $args_href->{'run_mltrees'}) {
-		@trees = $self->run_mltrees($args_href->{'run_mltrees'});
+		elsif (defined $args_href->{'run_mltrees'}) {
+		    @trees = $self->run_mltrees($args_href->{'run_mltrees'});
 		
-		if (defined $args_href->{'run_consensus'}) {
-		    my $cons_href = $args_href->{'run_consensus'};
-		    $consensus = $self->run_consensus($cons_href);	    
+		    if (defined $args_href->{'run_consensus'}) {
+			my $cons_href = $args_href->{'run_consensus'};
+			$consensus = $self->run_consensus($cons_href);	    
+		    }
 		}
 	    }
 	}
@@ -1098,10 +1099,10 @@ sub run_njtrees {
   Ret: An array of Bio::Tree::Tree objects
 
   Args: $args_href, a hash reference with the following options:
-        phyml_arg => {}, $hash ref with phyml arguments
+        phyml => {}, $hash ref with phyml arguments (it will use phyml program)
         (for more information: 
-         http://www.atgc-montpellier.fr/phyml/usersguide.php)
- 
+        http://www.atgc-montpellier.fr/phyml/usersguide.php)
+        dnaml => {}, $hash ref with phylip dnaml arguments
 
   Side_Effects: Died if the arguments are wrong.
                 Return undef if there are no dists inside the PhyGeBoots obj.
@@ -1116,7 +1117,9 @@ sub run_mltrees {
     my $args_href = shift;
 
     my %perm_args = ( 
-	phyml_arg      => 'HASH',
+	phyml           => 'HASH',
+	dnaml           => 'HASH',
+	outgroup_strain => '\w+',
 	);
 
     if (defined $args_href) {
@@ -1140,14 +1143,19 @@ sub run_mltrees {
 
     ## Default parameters:
 
-    my %phyargs = ();
-    if (defined $args_href->{phyml_args}) {
-	%phyargs = %{$args_href->{phyml_args}};
+    my %runargs = ();
+    if (defined $args_href->{phyml}) {
+	%runargs = %{$args_href->{phyml}};
+	unless (exists $runargs{-data_type}) {
+	    $runargs{-data_type} = 'nt';
+	}
+    }
+    elsif (defined %{$args_href->{dnaml}}) {
+	%runargs = %{$args_href->{dnaml}};
     }
     else {
-	%phyargs = (
-	    -data_type       => 'nt',
-	    );
+	$args_href->{dnaml} = { quiet => 1 };
+	%runargs = %{$args_href->{dnaml}};
     }
 
     ## After check, create the array and the factory
@@ -1158,14 +1166,89 @@ sub run_mltrees {
     ## Factory only can deal with one tree per run... so it is necessary
     ## redo de factory as many times as trees to create.
 
+    my $seqfam = $self->get_seqfam();
+    my %strains = $self->get_strains();
     my @aligns = $self->get_aligns();
+    
+    ## Get the outgroup if it is possible
+    
+    my $outgroup_id;
+    if (defined $args_href->{outgroup_strain}) {
+	my $outgroup_id = PhyGeCluster::_get_outgroup_id(
+	    {
+		seqfam    => $seqfam,
+		strains   => \%strains,
+		reference => $args_href->{outgroup_strain},
+	    }
+	    );
+    }
 
     foreach my $align (@aligns) {
 
-	my $factory = Bio::Tools::Run::Phylo::Phyml->new(%phyargs);
+	my $seqn = $align->no_sequences(); ## to skip dnaml runnings when < 3
 
-	my $tree = $factory->run($align);
-	push @trees, $tree;
+	## Replace the names for indexes (shorter to be used with phylip)
+
+	my %seqids = ();
+	my %revseqids = ();
+	my $i = 1;
+	foreach my $seqobj ($align->each_seq()) {
+	    $seqids{$i} = $seqobj->display_id();
+	    $revseqids{$seqobj->display_id()} = $i;
+	    $align->remove_seq($seqobj);
+	    $seqobj->display_id($i);
+	    $align->add_seq($seqobj);
+	    $i++;
+	}
+
+	## Define the outgroup index based in the subtitution 
+	
+	if (defined $outgroup_id) {
+	    my $outgroup_idx = $revseqids{$outgroup_id};
+	    $runargs{OUTGROUP} = $outgroup_idx;
+	}
+
+	## Create the factory 
+
+	my $factory;
+	if (defined $args_href->{phyml}) {
+	    $factory = Bio::Tools::Run::Phylo::Phyml->new(%runargs);
+	}
+	else {
+	    if ($seqn > 2) {
+		$factory = Bio::Tools::Run::Phylo::Phylip::Dnaml->new(%runargs);
+	    }
+	}
+
+	## ruin factory if it exists
+
+	if (defined $factory) {
+
+	    my ($tree) = $factory->run($align);
+	    
+	    ## replace the indexes for the right ids 
+
+	    if (defined $tree) {
+
+		my @nodes = $tree->get_leaf_nodes();
+		foreach my $node (@nodes) {
+		    my $old_node_id = $node->id();
+		    if ($old_node_id =~ m/^'.+'$/) {
+			$old_node_id =~ s/'//g;
+		    }
+		    $node->id($seqids{$old_node_id});
+		}
+		push @trees, $tree;
+	    }	    
+	}
+
+	## Finally it will replace the ids of the alignments back 
+	foreach my $seqobj ($align->each_seq()) {
+	    $align->remove_seq($seqobj);
+	    my $oldid = $seqobj->display_id();
+	    $seqobj->display_id($seqids{$oldid});
+	    $align->add_seq($seqobj);
+	}
     }
     
     $self->set_trees(\@trees);
@@ -1321,8 +1404,6 @@ sub run_consensus {
 	    }
 	}
     }
-
-    
 
     ## After the change it will get the equiv for outgroup_id (if exists)
     
