@@ -92,14 +92,21 @@ open my $estfile_fh, '<', $estfile;
 
 my %gb_fields = ( 
     'IDENTIFIERS' => [ 'EST name', 'dbEST Id', 'GenBank Acc', 'GenBank gi' ],
-    'CLONE INFO'  => [ 'Clone Id', 'Source', 'Id as DNA', 'DNA type' ],
-    'PRIMERS'     => [ 'PCR forward', 'PCR backward', 'Sequencing', 'PolyA Tail' ],
-    'SEQUENCE'    => [ 'Entry Created', 'Last Updated' ],
+    'CLONE INFO'  => [ 'Clone Id', 'Plate', 'Source', 'Insert length', 
+		       'Id as DNA', 'DNA type' ],
+    'PRIMERS'     => [ 'PCR forward', 'PCR backward', 'Sequencing', 
+		       'PolyA Tail' ],
+    'SEQUENCE'    => [ 'Quality', 'Entry Created', 'Last Updated' ],
+    'COMMENTS'    => [],
+    'PUTATIVE ID' => [],
     'LIBRARY'     => [ 'dbEST lib id', 'Lib Name', 'Organism', 'Subspecies', 
-		       'Cultivar', 'Organ', 'Tissue type', 'Lab host', 'Vector' , 
-		       'R. Site 1','R. Site 2','Develop. stage', 'Description'],
-    'SUBMITTER'   => [ 'Name', 'Lab', 'Institution', 'Address', 'Tel', 'Fax', 'E-mail' ],
-    'CITATIONS'   => [ 'PubMed ID', 'Title', 'Authors', 'Year', 'Status', 'Citation'],
+		       'Cultivar', 'Strain', 'Organ', 'Tissue type', 
+		       'Lab host', 'Vector', 'R. Site 1','R. Site 2',
+		       'Develop. stage', 'Description'],
+    'SUBMITTER'   => [ 'Name', 'Lab', 'Institution', 'Address', 'Tel', 'Fax', 
+		       'E-mail' ],
+    'CITATIONS'   => [ 'PubMed ID', 'Title', 'Authors', 'Year', 'Status', 
+		       'Citation'],
     );
 
 
@@ -108,8 +115,12 @@ my $l = 0;
 my $gb_est;
 my %est = ();
 my $seq = '';
+my $com = '';
+my $putid = '';
 my $description = '';
 my $enable_catchseq = 0;
+my $enable_catchcom = 0;
+my $enable_catchputid = 0;
 my $enable_catchdescrip = 0;
 
 
@@ -118,6 +129,11 @@ while (<$estfile_fh>) {
 
     print STDERR "\tParsing line=$l for file=$estfile.\r";
     chomp($_);
+
+    my $catcher = $enable_catchseq + 
+	$enable_catchcom + 
+	$enable_catchdescrip +
+	$enable_catchputid;
 
     ## Ignore the empty lines
     
@@ -130,12 +146,15 @@ while (<$estfile_fh>) {
 	    $gb_est = CXGN::Biosource::GB::Est->new();
 	}
 
-	## Catch the field and the data
+	## Catch the field and the data only if the catchers are disabled
 
-	if ($_ =~ m/^(.+?):\s+(.+)$/) {
-	    my $field = $1;
-	    my $data = $2;
-	    $gb_est->add_data({ $field => $data});
+	if ( $catcher == 0 ) {
+	    
+	    if ($_ =~ m/^(.+?):\s+(.+)$/) {
+		my $field = $1;
+		my $data = $2;
+		$gb_est->add_data({ $field => $data});
+	    }
 	}
 
 	## Catch the sequence from SEQUENCE to Entry Created field
@@ -143,7 +162,7 @@ while (<$estfile_fh>) {
 	if ($_ =~ m/^SEQUENCE$/) {
 	    $enable_catchseq = 1;
 	}
-	elsif ($_ =~ m/^Entry Created/) {
+	elsif ($_ =~ m/^Entry Created|^Quality/ && $enable_catchseq == 1) {
 	    $enable_catchseq = 0;
 	    $gb_est->add_data({ 'sequence' => $seq });
 	    $seq = '';
@@ -154,6 +173,42 @@ while (<$estfile_fh>) {
 	    $seq .= $seqfrag;
 	}
 	
+	## Catch the comment from COMMENT entry
+
+	if ($_ =~ m/^COMMENTS$/) {
+	    $enable_catchcom = 1;
+	}
+	elsif ($_ =~ m/^LIBRARY/) {
+	    $enable_catchcom = 0;
+	    $gb_est->add_data({ 'comments' => $com });
+	    $com = '';
+	}
+	elsif ($enable_catchcom == 1) {
+	    my $comfrag = $_;
+	    $comfrag =~ s/^\s+//g;
+	    $com .= ' ' . $comfrag;
+	}
+
+	## Catch the multiline PUTATIVE ID
+
+	if ($_ =~ m/^PUTATIVE ID/) {
+	    $enable_catchputid = 1;
+	}
+	elsif ($_ =~ m/^LIBRARY/ && $enable_catchputid == 1) {
+	    $enable_catchputid = 0;
+	    $gb_est->add_data({ 'putative id' => $putid });
+	    $putid = '';
+	}
+	elsif ($_ =~ m/^COMMENTS/ && $enable_catchputid == 1) {
+	    $enable_catchputid = 0;
+	    $gb_est->add_data({ 'putative id' => $putid });
+	    $putid = '';
+	}
+	elsif ($enable_catchputid == 1) {
+	    my $putidfrag = $_;
+	    $putidfrag =~ s/^\s+//g;
+	    $putid .= ' ' . $putidfrag;
+	}
 
 	## Catch description for the library (multiline)
 	
