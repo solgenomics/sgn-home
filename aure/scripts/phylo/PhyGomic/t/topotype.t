@@ -62,7 +62,7 @@ throws_ok { Bio::Tree::TopoType->new({ fake => {} }) } qr/ARG. ERROR: fake/,
     'TESTING DIE ERROR for new() when arg. is not a valid arg.';
 
 throws_ok { Bio::Tree::TopoType->new({ topology => 'fk2'}) } qr/ERROR: fk2/, 
-    'TESTING DIE ERROR for new() when run_distances is used without run_boots.';
+    'TESTING DIE ERROR for new() when arg. doesnt have valid value';
 
 
 ###############
