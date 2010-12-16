@@ -517,6 +517,368 @@ sub delete_description {
 }
 
 
+###################
+## OTHER METHODS ##
+###################
+
+=head2 is_same_tree
+
+  Usage: my $true = Bio::Tree::TopoType::is_same_tree($tree1, $tree2, $diff);
+
+  Desc: Compare two trees and return if is the same tree (1) or not (0)
+        If return differences is used, it will return an array with the
+        differences
+        
+  Ret: $true, a scalar 0 (false) or 1 (true)
+       @differences, an array with differences
+
+  Args: Two trees (Bio::Tree::Tree objects), 
+        An array of strings describing differences (id diff is used)
+
+  Side_Effects: Die if no argument is used or if they are no tree objects
+
+  Example: if ( Bio::Tree::TopoType::is_same_tree($tree1, $tree2) ) {
+              ## Do something
+           }
+           my @diff = Bio::Tree::TopoType::is_same_tree($tree1,$tree2,'getdiff')
+
+=cut
+
+sub is_same_tree {
+    my $tree1 = shift ||
+	croak("ARG. ERROR: First tree was not supplied to is_same_tree()");
+    my $tree2 = shift ||
+	croak("ARG. ERROR: Second tree was not supplied to is_same_tree()");
+    my $get_diff = shift;
+
+
+    if (ref($tree1) ne 'Bio::Tree::Tree') {
+	croak("ARG. ERROR: 1st tree supplied to is_same_tree() isnt Tree Obj");
+    }
+    elsif (ref($tree2) ne 'Bio::Tree::Tree') {
+	croak("ARG. ERROR: 2nd tree supplied to is_same_tree() isnt Tree Obj");
+    }
+
+    my $treename1 = $tree1->id || 'tree1';
+    my $treename2 = $tree2->id || 'tree2';
+    my %objstree = ( $treename1 => $tree1, $treename2 => $tree2 );
+    my %hashtree = ();
+
+    ## Decompose the trees in leaves, inode and ids
+
+    foreach my $treeid (keys %objstree) {
+	my $tree = $objstree{$treeid};
+	
+	my %parts = ( leaves => {}, inodes => {}, ids => {} );
+	my $in_idx = 1;
+	my $lf_idx = 1;
+	my @nodes1 = $tree->get_nodes();
+	foreach my $node (@nodes1) {
+	    if ($node->is_Leaf()) {
+		$parts{leaves}->{$lf_idx} = { id => $node->id(),
+					      br => $node->branch_length() };
+		$parts{ids}->{$node->id()} = $lf_idx;
+		$lf_idx++;
+	    }
+	    else {
+		my @desc_nodes = ();
+		foreach my $desc ($node->each_Descendent()) {
+		    my $dsc_id = $desc->id() || 'internalnode';
+		    push @desc_nodes, $dsc_id;
+		}
+		my $desc_line = join(',', sort(@desc_nodes));
+
+		$parts{inodes}->{$in_idx} = { br => $node->branch_length(), 
+		                              ds => $desc_line };
+		$in_idx++;
+	    }
+	}
+	$hashtree{$treeid} = \%parts;
+    }
+
+    ## Now it will compare both trees
+
+    ## 1) First if they have different leaves ids
+    
+    my @id_errors = ();
+    my %tree1ids = %{$hashtree{$treename1}->{ids}};
+    my %tree2ids = %{$hashtree{$treename2}->{ids}};
+
+    foreach my $leaf1 (sort {$a cmp $b} keys %tree1ids) {
+	unless (exists $tree2ids{$leaf1}) {
+	    push @id_errors, "ABSENT ID:$leaf1 FOR:$treename2";
+	}
+	else {
+	    if ($tree1ids{$leaf1} != $tree2ids{$leaf1}) {
+		my $msg = "DIFFERENT POSITION ID:$leaf1 ";
+		$msg .= "FOR:$treename1 POSITION:$tree1ids{$leaf1}";
+		$msg .= "FOR:$treename2 POSITION:$tree2ids{$leaf1}";
+		push @id_errors, $msg;
+	    }
+	}
+    }
+    foreach my $leaf2 (sort {$a cmp $b} keys %tree2ids) {
+	unless (exists $tree1ids{$leaf2}) {
+	    push @id_errors, "ABSENT ID:$leaf2 FOR:$treename1";
+	}
+    }
+
+    ## 2) Second, if they have different descendent and branch length for 
+    ##    internal nodes
+
+    my %tree1in = %{$hashtree{$treename1}->{inodes}};
+    my %tree2in = %{$hashtree{$treename2}->{inodes}};
+
+    foreach my $idx1 (sort {$a <=> $b} keys %tree1in) {
+	unless (exists $tree2in{$idx1}) {
+	    push @id_errors, "WITHOUT INTERNAL NODE for POSITION: $idx1";
+	}
+	else {
+	    my $desc1 = $tree1in{$idx1}->{ds};
+	    my $desc2 = $tree2in{$idx1}->{ds};
+	    if ($desc1 ne $desc2) {
+		my $msg = "DIFFERENT DESCENDENTS FOR INT-NODE $idx1 BETWEEN ";
+		$msg .= "TREES: $treename1 ($desc1) AND $treename2 ($desc2)";
+		push @id_errors, $msg;
+	    }
+
+	    my $brl1 = $tree1in{$idx1}->{br};
+	    my $brl2 = $tree2in{$idx1}->{br};
+	    if (defined $brl1 && defined $brl2 && $brl1 ne $brl2) {
+		my $msg = "DIFFERENT BRANCH LENGTH FOR INT-NODE $idx1 BETWEEN ";
+		$msg .= "TREES: $treename1 ($brl1) AND $treename2 ($brl2)";
+		push @id_errors, $msg;
+	    }	    
+	}
+    }
+
+    ## 3) Third, if they have different leaves and branch distances
+
+    my %tree1lf = %{$hashtree{$treename1}->{leaves}};
+    my %tree2lf = %{$hashtree{$treename2}->{leaves}};
+
+    foreach my $idx1 (sort {$a <=> $b} keys %tree1lf) {
+     	unless (exists $tree2lf{$idx1}) {
+    	    push @id_errors, "ABSENT LEAF $tree1lf{$idx1} for TREE: $treename2";
+    	}
+	else {
+     	    my $leaf1 = $tree1lf{$idx1}->{id};
+     	    my $leaf2 = $tree2lf{$idx1}->{id};
+     	    if ($leaf1 ne $leaf2) {
+    		push @id_errors, "DIFFERENT LEAF NODES: $idx1 ($leaf1 $leaf2)";
+    	    }
+	    else {
+		my $brl1 = $tree1lf{$idx1}->{br};
+		my $brl2 = $tree2lf{$idx1}->{br};
+		if ($brl1 ne $brl2) {
+		    my $msg = "DIFFERENT BRANCH LENGTH FOR LEAF $leaf1 BETWEEN";
+		    $msg .= "TREES: $treename1 ($brl1) AND $treename2 ($brl2)"
+		}
+	    }	    
+     	}
+    }
+
+    ## Finally it will sum all the errors.
+
+    my $issame = 1;
+    if (defined $get_diff && $get_diff =~ m/diff|1/) {
+	return @id_errors;
+    }
+    else {
+	if (scalar(@id_errors) > 0) {
+	    $issame = 0;
+	}
+	return $issame;
+    }
+
+
+}
+
+=head2 _make_topotype
+
+  Usage: my $topotype = Bio::Tree::TopoType::_make_topotype($args_href);
+
+  Desc: Make a topology tree (node_id=strains and branch_length=0|1) from
+        a tree argument. The branch length of these topologies can be 
+        changed using branch_cutoffs argument. For example if branch_length
+        => { 0.1 => 0, 0.5 => 1 } is used, all the branch length with values 
+        less or equal to 0.1 will be replaced by 0, all the values less or 
+        qual than 05 will be replaced by 1 and the rest by 2.
+        
+  Ret: $topotype, a Bio::Tree::Tree object
+
+  Args: A hash reference with:
+        tree           => $tree, a Bio::Tree::Tree object
+        strains        => \%strains, a hash reference with key   = Leaves_ids 
+                                                           value = strains
+        branch_cutoffs => \%cutoffs, a hash reference with key   = upper_cutoff
+                                                           value = new_value
+
+  Side_Effects: Die if no argument is used or if the does not exist the 
+                strain for a leaf id.
+
+  Example: my $topotype = Bio::Tree::TopoType::_make_topotype($tree, \%strains);
+
+=cut
+
+sub _make_topotype {
+    my $args_href = shift ||
+	croak("ARG. ERROR: No args. hashref. was used with _make_topotype()");
+    
+    ## Check variables
+
+    unless(ref($args_href) eq 'HASH') {
+	croak("ARG. ERROR: $args_href added to _make_topotype() isnt HASHREF");
+    }
+
+    my %permargs = ( 
+	tree           => 'Bio::Tree::Tree',
+	strains        => 'HASH',
+	branch_cutoffs => 'HASH',
+	);
+
+    foreach my $argkey (keys %{$args_href}) {
+	unless (exists $permargs{$argkey}) {
+	    croak("ARG. ERROR: $argkey isnt a permited key for _make_topotype");
+	}
+	else {
+	    if (ref($args_href->{$argkey}) ne $permargs{$argkey}) {
+		croak("ARG. ERROR: Value for $argkey isnt permited value");
+	    }
+	}
+    }
+ 
+    ## Check args and use default values
+
+    my $tree = $args_href->{'tree'} ||
+	croak("ARG. ERROR: No tree arg. was used with _make_topotype()");
+    my $strains_href = $args_href->{'strains'} ||
+	croak("ARG. ERROR: No strain arg. was used with _make_topotype()");
+    my $branch_cfs_href = $args_href->{'branch_cutoffs'} ||
+	{ 0.01 => 0 };
+
+    my @new_nodes = ();
+    my @nodes = $tree->get_nodes();
+
+    ## Order nodes by leaf names
+
+    my %nodes = ();
+    my $inode_idx = 0;
+    foreach my $nod (@nodes) {
+	if ($nod->is_Leaf()) {
+	    $nodes{$nod->id()} = $nod;
+	}
+	else {
+	    my @desc = ();
+	    foreach my $desc ($nod->each_Descendent()) {
+		if ($desc->is_Leaf()) {
+		    push @desc, $desc->id();
+		}
+		else {
+		    push @desc, 'inode' . $inode_idx;
+		    $inode_idx++;
+		}
+	    }
+	    my $iname = join(',', sort @desc);
+	    $nodes{$iname} = $nod;
+	}
+    }
+
+    
+    ## It will reproduce the tree in two steps.
+    ## 1) Get all the nodes and create a new ones. Store the relations
+    ##    based in the internal id
+
+    my %node_rel = ();
+    my %new_nodes = ();
+
+    foreach my $nod_name (sort {$a cmp $b} keys %nodes) {
+	my $node = $nodes{$nod_name};
+	my $node_id = $node->id();
+	my $int_node_id = $node->internal_id();
+	$node_rel{$int_node_id} = [];
+	
+	my $strain;
+
+	if (defined $node_id) {
+	    $strain = $strains_href->{$node_id};
+	    unless (defined $strain) {
+		croak("DATA ERROR: $node_id isnt have defined strain");
+	    }
+	}
+
+	## Get the node value for the topology
+
+	my $branch_val;
+	my $nbr_length = $node->branch_length();
+	foreach my $cutoff (sort {$a <=> $b} keys %{$branch_cfs_href}) {
+	    if (defined $nbr_length && !$branch_val) {
+		if ($nbr_length <= $cutoff) {
+		    $branch_val = $branch_cfs_href->{$cutoff};
+		}
+	    }
+	}
+	## If it is not defined by cutoff it will take the max + 1
+
+	my %brcf = %{$branch_cfs_href};
+	my @vals = sort {$brcf{$b} <=> $brcf{$a} } keys %brcf;
+	my $max = $brcf{$vals[0]};
+
+	if (defined $nbr_length && !$branch_val) {	    
+	    $branch_val = $max+1;	
+	}
+
+	## Create the new node and put into a hash with internal id as key
+
+	my $newnode = Bio::Tree::Node->new( -branch_length => $branch_val,
+					    -id            => $strain,
+	    );
+	$new_nodes{$int_node_id} = $newnode;
+
+	## Get the descendents for the old one
+
+	foreach my $desc ($node->each_Descendent()) {
+	    push @{$node_rel{$int_node_id}}, $desc->internal_id();
+	}
+    }
+
+    ## 2) After la creation of all the new nodes it will add the relations
+    ##    to each of them
+
+    foreach my $node_iid (keys %new_nodes) {
+
+	my @relats = @{$node_rel{$node_iid}};
+	foreach my $child_iid (@relats) {
+	    $new_nodes{$node_iid}->add_Descendent($new_nodes{$child_iid});
+	}
+    }
+
+    ## 3) Create the root
+    
+    my @new_rootdesc = ();
+    my $old_root = $tree->get_root_node();
+    foreach my $rootdesc ($old_root->each_Descendent()) {
+	push @new_rootdesc, $new_nodes{$rootdesc->internal_id()};
+    } 
+
+    my $new_root = Bio::Tree::Node->new( -descendents => \@new_rootdesc );
+    
+    ## 4) Finally create the tree
+
+    my $topotype = Bio::Tree::Tree->new( -root => $new_root );
+
+    return $topotype;
+}
+
+
+
+
+
+
+
+
+
+
 ####
 1; #
 ####

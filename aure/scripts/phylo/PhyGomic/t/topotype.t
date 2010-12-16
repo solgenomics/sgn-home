@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 38;
+use Test::More tests => 58;
 use Test::Exception;
 
 use FindBin;
@@ -107,7 +107,7 @@ my %tree_data = ('tree1' => \%first_tree,
     );
 
 my @trees_members = ();
-foreach my $tree_id (keys %tree_data) {
+foreach my $tree_id (sort keys %tree_data) {
     my %data = %{$tree_data{$tree_id}};
     my @root_desc = ();
     foreach my $node_branch (keys %data) {
@@ -129,6 +129,8 @@ foreach my $tree_id (keys %tree_data) {
     my $tree = Bio::Tree::Tree->new( -id => $tree_id, -root => $root );
     push @trees_members, $tree;
 }
+
+my @keepmemb = @trees_members;
 my $tree_4th = pop(@trees_members);
 
 ## 3) Create the descrition hash
@@ -302,6 +304,180 @@ is($deleted_tag, 0,
 throws_ok { $topoty0->delete_description() } qr/ARG. ERROR: No tag arg. was/, 
     'TESTING DIE ERROR when no arg. was supplied to delete_description()';
 
+
+#####################
+## OTHER FUNCTIONS ##
+#####################
+
+## TEST is_same_tree
+
+## First test the is_same_tree function
+
+my $same_trees = 0;
+if (Bio::Tree::TopoType::is_same_tree($keepmemb[0], $keepmemb[1])) {
+    $same_trees = 1;
+}
+is($same_trees, 0, 
+    "Testing is_same_tree, checking same trees is false ")
+    or diag("Looks like this has failed");
+
+if (Bio::Tree::TopoType::is_same_tree($keepmemb[0], $keepmemb[0])) {
+    $same_trees = 1;
+}
+is($same_trees, 1, 
+    "Testing is_same_tree, checking same trees is true ")
+    or diag("Looks like this has failed");
+
+
+my @diff = Bio::Tree::TopoType::is_same_tree( $keepmemb[0], 
+					      $keepmemb[1], 
+					      'get_diff',
+    );
+
+is(scalar(@diff) <=> 0, 1, 
+    "Testing is_same_tree, checking number of differences > 0")
+    or diag("Looks like this has failed");
+
+my ($abs_ids, $dif_pos_id, $abs_inode, $dif_inode_desc, $dif_inode_brln, 
+    $dif_leaf, $dif_leaf_brln, $nomatch) = (0, 0, 0, 0, 0, 0, 0, 0);
+
+foreach my $er (@diff) {
+    if ($er =~ m/ABSENT ID/) {
+	$abs_ids++;
+    }
+    elsif ($er =~ m/DIFFERENT POSITION ID/) {
+	$dif_pos_id++;
+    }
+    elsif ($er =~ m/WITHOUT INTERNAL NODE/) {
+	$abs_inode++;
+    }
+    elsif ($er =~ m/DIFFERENT DESCENDENTS/) {
+	$dif_inode_desc++;
+    }
+    elsif ($er =~ m/DIFFERENT BRANCH LENGTH FOR INT-NODE/) {
+	$dif_inode_brln++;
+    }
+    elsif ($er =~ m/DIFFERENT LEAF NODES/) {
+	$dif_leaf++    
+    }
+    elsif ($er =~ m/DIFFERENT BRANCH LENGTH FOR LEAF/) {
+	$dif_leaf_brln++;
+    }
+    else {
+	$nomatch++;
+    }
+}
+
+is($abs_ids, 8, 
+    "Testing is_same_tree, checking number of absent ids = 8")
+    or diag("Looks like this has failed");
+
+is($dif_pos_id, 0, 
+    "Testing is_same_tree, cheking number of different positions for ids (0)")
+    or diag("Looks like this has failed");
+
+is($abs_inode, 0, 
+    "Testing is_same_tree, checking number of absent internal nodes = 0")
+    or diag("Looks like this has failed");
+
+is($dif_inode_desc, 2, 
+    "Testing is_same_tree, checking number of different inodes descendents = 2")
+    or diag("Looks like this has failed");
+
+is($dif_inode_brln, 2, 
+    "Testing is_same_tree, checking number of different inodes branch len. = 2")
+    or diag("Looks like this has failed");
+
+is($dif_leaf, 4, 
+    "Testing is_same_tree, checking number of different leaves = 4")
+    or diag("Looks like this has failed");
+
+is($dif_leaf_brln, 0, 
+    "Testing is_same_tree, checking number of different leaf branch len. = 0")
+    or diag("Looks like this has failed");
+
+is($nomatch, 0, 
+    "Testing is_same_tree, checking number of no match messages = 0")
+    or diag("Looks like this has failed");
+
+## Chech the errors
+
+throws_ok { Bio::Tree::TopoType::is_same_tree() } qr/ERROR: First/, 
+    'TESTING DIE ERROR when no arg. was supplied to is_same_tree()';
+
+throws_ok { Bio::Tree::TopoType::is_same_tree($keepmemb[0]) } qr/ERROR: Second/,
+    'TESTING DIE ERROR when no second tree was supplied to is_same_tree()';
+
+throws_ok { Bio::Tree::TopoType::is_same_tree('fk', $keepmemb[0]) } qr/1st/,
+    'TESTING DIE ERROR when 1st arg. supplied to is_same_tree() isnt a tree';
+
+throws_ok { Bio::Tree::TopoType::is_same_tree($keepmemb[0], 'fk') } qr/2nd/,
+    'TESTING DIE ERROR when 2nd arg. supplied to is_same_tree() isnt a tree';
+
+
+## TEST _make_topotype
+
+## First tree ((Sp1_01:0.5,Sp1_02:0.7):0.8,(Sp2_01:0.3,Sp3_01:0.8):0.2));
+## Expected topology should be: ((Sp1:1,Sp1:1):1,(Sp2:1,Sp3:1):1)
+## Second tree ((Sp1_03:0.3,Sp1_04:0.2):0.3,(Sp2_02:0.8,Sp3_03:0.4):0.4));
+## Expected topology should be: ((Sp1:1,Sp1:1):1,(Sp2:1,Sp3:1):1)
+
+my %strains = ( Sp1_01 => 'Sp1', 
+		Sp1_02 => 'Sp1', 
+		Sp2_01 => 'Sp2', 
+		Sp3_01 => 'Sp3',
+		Sp1_03 => 'Sp1', 
+		Sp1_04 => 'Sp1', 
+		Sp2_02 => 'Sp2', 
+		Sp3_03 => 'Sp3',
+    );
+
+my $topotype1 = Bio::Tree::TopoType::_make_topotype({
+    tree    => $keepmemb[0],
+    strains => \%strains,
+    });
+
+my $topotype2 = Bio::Tree::TopoType::_make_topotype({
+    tree    => $keepmemb[1],
+    strains => \%strains,
+    });
+
+
+## The topologies should be the same
+
+my $same_topo2 = 0;
+if (Bio::Tree::TopoType::is_same_tree($topotype1, $topotype2)) {
+    $same_topo2 = 1;
+}
+is($same_topo2, 1, 
+    "Testing _make_topotype, checking same topology")
+    or diag("Looks like this has failed");
+
+## A different topology based in different branch_cutoffs
+
+my $topotype3 = Bio::Tree::TopoType::_make_topotype({
+    tree           => $keepmemb[1],
+    strains        => \%strains,
+    branch_cutoffs => { 0.1 => 0, 0.2 => 1},  
+    });
+
+my $same_topo3 = 0;
+if (Bio::Tree::TopoType::is_same_tree($topotype1, $topotype3)) {
+    $same_topo3 = 1;
+}
+is($same_topo3, 0, 
+    "Testing _make_topotype, checking different topology")
+    or diag("Looks like this has failed");
+
+
+throws_ok { Bio::Tree::TopoType::_make_topotype() } qr/ARG. ERROR: No args./, 
+    'TESTING DIE ERROR when no arg. was supplied to _make_topology()';
+
+throws_ok { Bio::Tree::TopoType::_make_topotype({'fk' => 1}) } qr/ERROR: fk/,
+    'TESTING DIE ERROR when arg.key supplied to _make_topology isnt permited';
+
+throws_ok { Bio::Tree::TopoType::_make_topotype({ tree=> 'fk2'}) } qr/ERROR: V/,
+    'TESTING DIE ERROR when arg.val supplied to _make_topology isnt permited';
 
 
 ####
