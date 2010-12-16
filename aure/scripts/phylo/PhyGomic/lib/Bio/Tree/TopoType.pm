@@ -760,13 +760,21 @@ sub _make_topotype {
     my @new_nodes = ();
     my @nodes = $tree->get_nodes();
 
-    ## Order nodes by leaf names
+    ## Order nodes by leaf names or descendents if it is an internal node
+    ## for example a tree like ((A:1,B:1):0.9,(D:1,C:1):0,7) will be order as
+    ## A,B,C,D,inode:0,7 (redefined as ~0) and inode:0.9 (redefined as ~1).
+    ## This means that the internal nodes in the new tree will be order by
+    ## original distance also.
 
     my %nodes = ();
+    my %onodes = ();  ## Key=$internalid and Value=$id or inode_id
     my $inode_idx = 0;
+    my $glob_idx = 0;
     foreach my $nod (@nodes) {
+	$glob_idx++;
 	if ($nod->is_Leaf()) {
 	    $nodes{$nod->id()} = $nod;
+	    $onodes{$nod->internal_id()} = $nod->id() . '_' . $glob_idx;
 	}
 	else {
 	    my @desc = ();
@@ -775,12 +783,13 @@ sub _make_topotype {
 		    push @desc, $desc->id();
 		}
 		else {
-		    push @desc, 'inode' . $inode_idx;
+		    push @desc, '~' . $inode_idx; 
 		    $inode_idx++;
 		}
 	    }
-	    my $iname = join(',', sort @desc);
+	    my $iname = join(',', sort @desc) . '_' . $glob_idx;
 	    $nodes{$iname} = $nod;
+	    $onodes{$nod->internal_id()} = $iname;
 	}
     }
 
@@ -796,7 +805,7 @@ sub _make_topotype {
 	my $node = $nodes{$nod_name};
 	my $node_id = $node->id();
 	my $int_node_id = $node->internal_id();
-	$node_rel{$int_node_id} = [];
+	$node_rel{$int_node_id} = {};
 	
 	my $strain;
 
@@ -838,17 +847,18 @@ sub _make_topotype {
 	## Get the descendents for the old one
 
 	foreach my $desc ($node->each_Descendent()) {
-	    push @{$node_rel{$int_node_id}}, $desc->internal_id();
+	    my $iid = $desc->internal_id();
+	    $node_rel{$int_node_id}->{$iid} = $onodes{$iid};
 	}
     }
 
     ## 2) After la creation of all the new nodes it will add the relations
-    ##    to each of them
+    ##    to each of them. Ordered by onode hash values
 
     foreach my $node_iid (keys %new_nodes) {
 
-	my @relats = @{$node_rel{$node_iid}};
-	foreach my $child_iid (@relats) {
+	my %relat = %{$node_rel{$node_iid}};
+	foreach my $child_iid (sort {$relat{$a} cmp $relat{$b}} keys %relat) {
 	    $new_nodes{$node_iid}->add_Descendent($new_nodes{$child_iid});
 	}
     }

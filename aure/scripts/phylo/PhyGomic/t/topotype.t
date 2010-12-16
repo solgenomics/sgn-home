@@ -480,6 +480,16 @@ throws_ok { Bio::Tree::TopoType::_make_topotype({ tree=> 'fk2'}) } qr/ERROR: V/,
     'TESTING DIE ERROR when arg.val supplied to _make_topology isnt permited';
 
 
+
+
+
+
+
+
+
+
+
+
 ####
 1; #
 ####
