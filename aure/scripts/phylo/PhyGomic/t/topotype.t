@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 58;
+use Test::More tests => 61;
 use Test::Exception;
 
 use FindBin;
@@ -479,8 +479,17 @@ throws_ok { Bio::Tree::TopoType::_make_topotype({'fk' => 1}) } qr/ERROR: fk/,
 throws_ok { Bio::Tree::TopoType::_make_topotype({ tree=> 'fk2'}) } qr/ERROR: V/,
     'TESTING DIE ERROR when arg.val supplied to _make_topology isnt permited';
 
+my $newick = Bio::Tree::TopoType::_tree2newick($topotype3);
 
+is($newick, '((Sp1:2Sp1:1):2(Sp2:2Sp3:2):2)', 
+    "Testing _tree2newick, checking newick string")
+    or diag("Looks like this has failed");
 
+throws_ok { Bio::Tree::TopoType::_tree2newick() } qr/ERROR: No/,
+    'TESTING DIE ERROR when no tree was supplied to _tree2newick function';
+
+throws_ok { Bio::Tree::TopoType::_tree2newick('fake') } qr/ERROR: Tree/,
+    'TESTING DIE ERROR when arg supplied to _tree2newick isnt Bio::Tree::Tree';
 
 
 

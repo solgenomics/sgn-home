@@ -10,6 +10,7 @@ use Try::Tiny;
 use Math::BigFloat;
 
 use Bio::Tree::Tree;
+use Bio::TreeIO::newick;
 
 ###############
 ### PERLDOC ###
@@ -881,7 +882,35 @@ sub _make_topotype {
 }
 
 
+=head2 _tree2newick
 
+  Usage: my $newick = Bio::Tree::TopoType::_tree2newick($tree);
+
+  Desc: Create a tree string in newick format
+        
+  Ret: $newick, a string
+
+  Args: $tree (a Bio::Tree::Tree object)
+
+  Side_Effects: Die if no argument is used
+
+  Example: my $newick = Bio::Tree::TopoType::_tree2newick($tree);
+
+=cut
+
+sub _tree2newick {
+    my $tree = shift ||
+	croak("ARG. ERROR: No tree was not supplied to _tree2newick()");
+
+    if (ref($tree) ne 'Bio::Tree::Tree') {
+	croak("ARG. ERROR: Tree supplied to _tree2newick() isnt Tree Obj");
+    }
+     
+    my @data = Bio::TreeIO::newick::_write_tree_Helper($tree->get_root_node);
+    my $string = join('', @data);
+
+    return $string;
+}
 
 
 
