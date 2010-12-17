@@ -2727,11 +2727,13 @@ sub best_overlaps {
   Ret: none (load the member in the phygecluster object)
 
   Args: $args_href, a hash reference with:
-        -blast => $array_reference with the same keys that available arguments 
-                   in a blast (for example -d <database> -e <evalue>...). The
-                   input sequences will be the cluster consensus sequence.
-        -strain => $strain, for the homologous sequences.
-        -filter => $hash_reference with the following permited keys: evalue, 
+        -blast   => $array_reference with the same keys that available 
+                    arguments in a blast (for example -d <database> -e <evalue>
+                    ...). The input sequences will be the cluster consensus 
+                    sequence.
+        -cleanup => clean all the temp dirs created during this script
+        -strain  => $strain, for the homologous sequences.
+        -filter  => $hash_reference with the following permited keys: evalue, 
                    expect, frac_identical, frac_conserved, gaps, hsp_length,
                    num_conserved, num_identical, score, bits, percent_identity
                    and a array reference with condition and value
