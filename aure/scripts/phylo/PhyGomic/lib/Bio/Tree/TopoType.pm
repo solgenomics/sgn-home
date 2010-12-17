@@ -810,7 +810,7 @@ sub _make_topotype {
 	
 	my $strain;
 
-	if (defined $node_id) {
+	if (defined $node_id && $node_id =~ m/\w+/) {
 	    $strain = $strains_href->{$node_id};
 	    unless (defined $strain) {
 		croak("DATA ERROR: $node_id isnt have defined strain");
@@ -907,7 +907,7 @@ sub _tree2newick {
     }
      
     my @data = Bio::TreeIO::newick::_write_tree_Helper($tree->get_root_node);
-    my $string = join('', @data);
+    my $string = join(',', @data);
 
     return $string;
 }

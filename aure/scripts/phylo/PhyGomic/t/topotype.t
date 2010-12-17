@@ -481,7 +481,7 @@ throws_ok { Bio::Tree::TopoType::_make_topotype({ tree=> 'fk2'}) } qr/ERROR: V/,
 
 my $newick = Bio::Tree::TopoType::_tree2newick($topotype3);
 
-is($newick, '((Sp1:2Sp1:1):2(Sp2:2Sp3:2):2)', 
+is($newick, '((Sp1:2,Sp1:1):2,(Sp2:2,Sp3:2):2)', 
     "Testing _tree2newick, checking newick string")
     or diag("Looks like this has failed");
 
