@@ -59,7 +59,8 @@ $VERSION = eval $VERSION;
   ## To get each cluster from a blast file
 
   my $phygecluster = PhyGeCluster->new({
-                                   blastfile     => $filename1,
+                                   acefile       => $filename1a,
+                                   blastfile     => $filename1b,
                                    blastformat   => $format, 
                                    sequencefile  => $filename2,
                                    strainfile    => $filename3,   
@@ -156,7 +157,8 @@ The following class methods are implemented:
   Ret: a PhyGeCluster.pm object
 
   Args: A hash reference with the following keys: 
-         + blastfile, $filename a scalar.
+         + acefile, $filename, a scalar for file in ace format
+         + blastfile, $filename a scalar for a blast result file.
          + blastformat, $fileformat, a scalar
          + fastblast_parser, 1, a scalar
          + clustervalues, a hash reference argument (see parse_blastfile())
@@ -3672,8 +3674,9 @@ sub run_alignments {
 
   Args: A hash reference with following keys:
         method, a scalar to pass to the Bio::Align::DNAStatistics->distance()
-        function (JukesCantor,Uncorrected,F81,Kimura,Tamura or TajimaNei).
-        quiet
+                  function (JukesCantor,Uncorrected,F81,Kimura,Tamura or 
+                  TajimaNei).
+        quiet, with values 1 or 0
 
   Side_Effects: Died if the methos used is not in the list of available
                 method for Bio::Align::DNAStatistics object.
@@ -3681,7 +3684,7 @@ sub run_alignments {
                 or for JukesCantor or F81 methods when gaps >= alignment length.
                 It will run JukesCantor distance by default.
 
-  Example: $phygecluster->run_distances('Kimura');
+  Example: $phygecluster->run_distances({method => 'Kimura'});
 
 =cut
 
@@ -4013,8 +4016,14 @@ sub run_bootstrapping {
   Ret: None (it loads the tree into Bio::Cluster::SequenceFamily object)
 
   Args: $args_href, a hash reference with the following options:
-        type => NJ|UPGMA, outgroup => int, lowtri => 1|0, uptri => 1|0, 
-        subrep => 1|0 or/and jumble => int
+        type            => NJ|UPGMA, 
+        outgroup        => int, 
+        lowtri          => 1|0, 
+        uptri           => 1|0, 
+        subrep          => 1|0,
+        jumble          => int, 
+        quiet           => 1|0,
+        outgroup_strain => $strain_name
         (for more information: 
          http://evolution.genetics.washington.edu/phylip/doc/seqboot.html)
  
@@ -4195,8 +4204,9 @@ sub run_njtrees {
         phyml => {}, $hash ref with phyml arguments (it will use phyml program)
         (for more information: 
         http://www.atgc-montpellier.fr/phyml/usersguide.php)
-        dnaml => {}, $hash ref with phylip dnaml arguments
- 
+        dnaml => {}, $hash ref with phylip dnaml arguments,
+        outgroup_strain => $strain, a scalar (a strain name to be as outgroup)
+        (usable only with dnaml option)
 
   Side_Effects: Died if the arguments are wrong.
                 
@@ -4279,6 +4289,11 @@ sub run_mltrees {
 
 	    my $factory;
 	    if (defined $args_href->{phyml}) {
+		if (defined $args_href->{outgroup_strain}) {
+		    my $err = "ERROR: outgroup_strain argument only can be ";
+		    $err .= "used with dnaml option for run_mltree function";
+		    croak($err);
+		}
 		$factory = Bio::Tools::Run::Phylo::Phyml->new(%runargs);
 	    }
 	    else {
