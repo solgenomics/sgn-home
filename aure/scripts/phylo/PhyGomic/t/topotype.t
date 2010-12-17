@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 61;
+use Test::More tests => 62;
 use Test::Exception;
 
 use FindBin;
@@ -492,7 +492,13 @@ throws_ok { Bio::Tree::TopoType::_tree2newick('fake') } qr/ERROR: Tree/,
     'TESTING DIE ERROR when arg supplied to _tree2newick isnt Bio::Tree::Tree';
 
 
+## test get_topology_as_newick (a wrapper for _tree2newick)
 
+my $topotype_obj = Bio::Tree::TopoType->new({ topology => $topotype3 });
+
+is($topotype_obj->get_topology_as_newick(), $newick, 
+    "Testing get_topology_as_newick(), checking string")
+    or diag("Looks like this has failed");
 
 
 

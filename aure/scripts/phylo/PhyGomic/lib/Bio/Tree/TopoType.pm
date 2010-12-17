@@ -912,7 +912,33 @@ sub _tree2newick {
     return $string;
 }
 
+=head2 get_topology_as_newick
 
+  Usage: my $newick = $topotype->get_topology_as_newick();
+
+  Desc: Get the topology of a topotype as a newick string
+        
+  Ret: $newick, a string
+
+  Args: None
+
+  Side_Effects: return undef in the topotype doesnt have any topology
+
+  Example: my $newick = $topotype->get_topology_as_newick();
+
+=cut
+
+sub get_topology_as_newick {
+    my $self = shift;
+
+    my $newick;
+
+    my $topology = $self->get_topology();
+    if (defined $topology) {
+	$newick = _tree2newick($topology);
+    }
+    return $newick;
+}
 
 
 
