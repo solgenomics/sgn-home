@@ -9,6 +9,8 @@ use Carp qw| croak cluck |;
 use Try::Tiny;
 use Math::BigFloat;
 
+use File::Temp qw/ tempfile tempdir/;
+
 
 ###############
 ### PERLDOC ###
@@ -428,7 +430,6 @@ sub set_topotypes {
 ## ANALYTICAL FUNCTIONS ##
 ##########################
 
-
 =head2 run_topoanalysis
 
   Usage: %topotypes = $phygetopo->run_topoanalysis($args_href);
@@ -535,10 +536,12 @@ sub run_topoanalysis {
 
     my %topoobjs = ();
     my $i = 0;
+    my $il = length(scalar(keys %tord));
     my $base = $args_href->{base_toponame} || "topotype";
 
     foreach my $topo_nwid (sort {$tord{$b} <=> $tord{$a}} keys %tord) {
 	$i++;
+	my $ci = sprintf("%0" . $il . "s", $i);
 
 	my $topotype_obj = Bio::Tree::TopoType->new(
 	    {
@@ -547,7 +550,7 @@ sub run_topoanalysis {
 	    }
 	    );
 	
-	my $name = $base . '_' . $i;
+	my $name = $base . '_' . $ci;
 	$topoobjs{$name} = $topotype_obj;
     }
 
@@ -558,7 +561,120 @@ sub run_topoanalysis {
     return %topoobjs;			   
 }
 
+=head2 out_topoanalysis
 
+  Usage: my $filename = $phygetopo->out_topoanalysis($args_href);
+
+  Desc: Print into a file the results of the topoanalysis
+
+  Ret: $filename, a filename
+
+  Args: a hash reference with keys=argument and value=value, such as:
+        basename => $basename, a scalar, a basename for output file
+        tempfile => produces a temp file,
+        headers  => $arrayref, an array reference with the names for the
+                    headers in the file.
+
+  Side_Effects: None
+
+  Example: my $filename = $phygetopo->out_topoanalysis({ basename => 'test'});
+
+=cut
+
+sub out_topoanalysis {
+    my $self = shift;
+    my $args_href = shift;
+
+    my %permargs = ( 
+	basename  => '\w+',
+	headers   => 'ARRAY',
+	r_in      => '1|0|yes|no',
+	tempfile  => '1|0|yes|no',
+	);
+
+    ## Check argument
+
+    if (defined $args_href) {
+	unless (ref($args_href) eq 'HASH') {
+	    croak("ERROR: $args_href used for run_topoanalysis() isnt HASHREF");
+	}
+	else {
+	    my %args = %{$args_href};
+	    foreach my $argkey (keys %args) {
+		my $exp = $permargs{$argkey};
+		unless (defined $exp) {
+		    croak("ERROR: $argkey isnt permited for run_topoanalysis");
+		}
+		else {
+		    if ($args{$argkey} !~ m/$exp/) {
+			my $err = "ERROR: $args{$argkey} isnt $exp for ";
+			$err .= "out_topoanalysis()";
+			croak($err);
+		    }
+		}	
+	    }
+	}
+    }
+
+    ## Get the topology types
+    
+    my %topotypes = %{$self->get_topotypes()};
+
+    ## Open the filehandle and print the headers if they exists
+    
+    my $filename;
+    my $fh;
+
+    if (exists $args_href->{tempfile}) {
+	($fh, $filename) = tempfile('topo_XXXXXXXXXX', TMPDIR => 1);
+    }
+    else {
+	$filename = $args_href->{tempfile} || 'out_topoanalysis.txt';
+	open $fh, '>', $filename;
+    }
+
+    if (exists $args_href->{headers}) {
+	my @headers = @{$args_href->{headers}};
+	my $header_line;
+
+	if (exists $args_href->{r_in} && $args_href->{r_in} =~ m/1|Y/) {
+	    
+	    my @fheaders = ('');  ## For R the first header will be empty
+	    foreach my $head (@headers) {
+		if ($head =~ m/^".+"$/) {
+		    push @fheaders, $head;
+		}
+		else {
+		    push @fheaders, '"' . $head . '"';
+		}
+	    }
+	    $header_line = join("\t", @fheaders);
+	}
+	else {
+	    $header_line = join("\t", @headers);
+	}
+	print $fh "$header_line\n";
+    }
+
+    ## Print the format into the file
+
+    foreach my $type_id (sort keys %topotypes) {
+	my $topotype = $topotypes{$type_id};
+	my @members = @{$topotype->get_members()};
+	my $memb_n = scalar(@members);
+	my $newick = $topotype->get_topology_as_newick();	
+    
+	if (exists $args_href->{r_in} && $args_href->{r_in} =~ m/1|Y/) {
+	    print $fh '"' . "$type_id" . '"' .  "\t$memb_n\n"
+	}
+	else {
+	    print $fh "$type_id\t$memb_n\n";
+	}
+    }
+    
+    close($fh);
+    return $filename;
+}
 
 
 

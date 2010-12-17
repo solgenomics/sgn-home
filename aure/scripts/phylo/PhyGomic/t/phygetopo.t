@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 36;
+use Test::More tests => 41;
 use Test::Exception;
 
 use FindBin;
@@ -392,6 +392,54 @@ throws_ok { $phygetop0->run_topoanalysis({ fake2 => 1}) } qr/ERROR: fake2 isn/,
 
 throws_ok { $phygetop0->run_topoanalysis({ base_toponame => ''}) } qr/ERROR: /, 
     'TESTING DIE ERROR when value supplied to run_topoanalysis() isnt permited';
+
+
+## Testing out_topoanalysis, TEST 37 to 41
+
+my $filename = $phygetopo1->out_topoanalysis(
+    {
+	tempfile => 1, 
+	r_in     => 1,
+	headers  => ['member_n'],
+    });
+
+my $wrong_outid = 0;
+my $right_header = 0;
+
+open my $ffh, '<', $filename;
+while(<$ffh>) {
+    chomp($_);
+    unless ($_ =~ m/member_n/) {
+	my @data = split(/\t/, $_);
+	
+	## It is formated to be used with R so it added a couple of "
+	if ($data[0] =~ m/^"(.+)"$/) {
+	    unless (exists $topotypes{$1}) {
+		$wrong_outid++;
+	    }
+	}
+    }
+    else {
+	$right_header++;
+    }
+}
+
+is($wrong_outid, 0, 
+    "Testing out_topoanalysis, checking row names")
+    or diag("Looks like this has failed");
+
+is($right_header, 1, 
+    "Testing out_topoanalysis, checking header names")
+    or diag("Looks like this has failed");
+
+throws_ok { $phygetop0->out_topoanalysis('fake') } qr/ERROR: fake used/, 
+    'TESTING DIE ERROR when arg. supplied to out_topoanalysis() isnt HashRef';
+
+throws_ok { $phygetop0->out_topoanalysis({ fake2 => 1}) } qr/ERROR: fake2 isn/, 
+    'TESTING DIE ERROR when arg. supplied to out_topoanalysis() isnt permited';
+
+throws_ok { $phygetop0->out_topoanalysis({ headers => 'fk'}) } qr/ERROR: /, 
+    'TESTING DIE ERROR when value supplied to out_topoanalysis() isnt permited';
 
 
 ####
