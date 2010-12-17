@@ -49,7 +49,7 @@ $VERSION = eval $VERSION;
   my $topotypes = $phygetopo->get_topotypes();
   $phygetopo->set_topotypes($topotypes_href);
 
-  ## To run different tools over the phygeboots object.
+  ## To run different tools over the phygetopo object.
 
   my @topotypes = $phygetopo->run_topoanalysis($args_href);
   foreach my $topotype (@topotypes) {
@@ -422,6 +422,145 @@ sub set_topotypes {
 	$self->{topotypes} = $topotypes_href;    
     }
 }
+
+
+##########################
+## ANALYTICAL FUNCTIONS ##
+##########################
+
+
+=head2 run_topoanalysis
+
+  Usage: %topotypes = $phygetopo->run_topoanalysis($args_href);
+
+  Desc: run a topology analysis over all the trees defined in the
+        phygetopo object.
+
+  Ret: An hash with key=Topotype_ID and value=Bio::Tree::TopoTypes object
+
+  Args: a hash reference with keys=argument and value=value, such as:
+        branch_cutoffs => hashref. with key=branch_lenght cutoff and 
+                          value=new quant. value.
+        base_toponame  => a scalar to be used as basename for topologies
+                          (topotype by default)
+
+  Side_Effects: Set topotypes in the phygetopo object.
+
+  Example: %topotypes = $phygetopo->run_topoanalysis({ 
+                                        branch_cutoffs => { 0.1 => 1 },
+                                    });
+
+=cut
+
+sub run_topoanalysis {
+    my $self = shift;
+    my $args_href = shift;
+
+    my %permargs = ( 
+	branch_cutoffs => 'HASH',
+	base_toponame  => '\w+',
+	);
+
+    ## Check argument
+
+    if (defined $args_href) {
+	unless (ref($args_href) eq 'HASH') {
+	    croak("ERROR: $args_href used for run_topoanalysis() isnt HASHREF");
+	}
+	else {
+	    my %args = %{$args_href};
+	    foreach my $argkey (keys %args) {
+		my $exp = $permargs{$argkey};
+		unless (defined $exp) {
+		    croak("ERROR: $argkey isnt permited for run_topoanalysis");
+		}
+		else {
+		    if (ref($args{$argkey}) !~ m/$exp/) {
+			my $err = "ERROR: $args{$argkey} isnt $exp for ";
+			$err .= "run_topoanalysis()";
+			croak($err);
+		    }
+		}	
+	    }
+	}
+    }
+
+    ## Define topotypes hash
+
+    my %topotypes = ();
+    my %toponewicks = ();
+    my %tord = ();  ## To order by members
+
+    ## Now it will get all the trees and strains
+
+    my $strains_href = $self->get_strains();
+    my %seqfams = %{$self->get_seqfams()};
+    
+    foreach my $seqfam_id (keys %seqfams) {
+	my $tree = $seqfams{$seqfam_id}->tree();
+
+	if (defined $tree) {
+
+	    ## Create the args and pass brach_cutoffs if it exists
+
+	    my %topoargs = ( tree    => $tree,
+			     strains => $strains_href,
+ 		);
+	    if (exists $args_href->{branch_cutoffs}) {
+		$topoargs{branch_cutoffs} = $args_href->{branch_cutoffs}
+	    }
+
+	    ## Run make_topotype and get the newick line for it
+
+	    my $topotype = Bio::Tree::TopoType::_make_topotype(\%topoargs);
+	    
+	    if (defined $topotype) {
+		my $toponewick = Bio::Tree::TopoType::_tree2newick($topotype);
+		
+		if (exists $toponewicks{$toponewick}) {
+		    push @{$toponewicks{$toponewick}}, $tree;
+		    $tord{$toponewick}++;
+		}
+		else {
+		    $toponewicks{$toponewick} = [$tree];
+		    $topotypes{$toponewick} = $topotype;
+		    $tord{$toponewick} = 1;
+		}
+	    }
+	}
+    }
+
+    ## After get all the topotypes it will create one topotype object
+    ## for each of them.
+
+    my %topoobjs = ();
+    my $i = 0;
+    my $base = $args_href->{base_toponame} || "topotype";
+
+    foreach my $topo_nwid (sort {$tord{$b} <=> $tord{$a}} keys %tord) {
+	$i++;
+
+	my $topotype_obj = Bio::Tree::TopoType->new(
+	    {
+		topology => $topotypes{$topo_nwid},
+		members  => $toponewicks{$topo_nwid}, 
+	    }
+	    );
+	
+	my $name = $base . '_' . $i;
+	$topoobjs{$name} = $topotype_obj;
+    }
+
+    ## Finally set the object
+
+    $self->set_topotypes(\%topoobjs);
+    
+    return %topoobjs;			   
+}
+
+
+
+
 
 
 ####

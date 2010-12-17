@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 30;
+use Test::More tests => 36;
 use Test::Exception;
 
 use FindBin;
@@ -294,10 +294,104 @@ throws_ok { $phygetop0->set_topotypes({id => 'fk2'}) } qr/ARG. ERROR: Values/,
 
 
 
+##########################
+## ANALYTICAL FUNCTIONS ##
+##########################
+
+## First it will prepare a new phygecluster object to get all the data
+## to phygetopo object, TEST 31 to 36
+
+my $blastfile = "$FindBin::Bin/testfiles/selfblast.test.m8";
+my $seqfile = "$FindBin::Bin/testfiles/seq.test.fasta";
+my $strainfile = "$FindBin::Bin/testfiles/strains.test.tab";
+my $acefile = "$FindBin::Bin/testfiles/assembly_out.test.ace";
+my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
+
+my $phygecluster = PhyGeCluster->new({ acefile => $acefile,
+				       seqfile    => $seqfile,
+				       strainfile => $strainfile,
+				     }
+    );
+
+$phygecluster->homologous_search(
+    { blast  => [ -p => 'blastn', -d => $blastdbfile, -e => '1e-10', -a => 2],
+      strain => 'Sly',
+      filter => { hsp_length => ['>', 100], }
+    }
+    );
+
+my @parameters1 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
+$phygecluster->run_alignments({ program    => 'clustalw', 
+				parameters => \@parameters1 });
+
+$phygecluster->run_distances({ method => 'Kimura' });
+
+$phygecluster->run_mltrees({ dnaml => {}, outgroup_strain => 'Sly' });
+
+my %seqfams = %{$phygecluster->get_clusters()};
+my %strains = %{$phygecluster->get_strains()};
+
+my %revstrains = ();
+foreach my $seqid (keys %strains) {
+    unless (exists $revstrains{$strains{$seqid}}) {
+	$revstrains{$strains{$seqid}} = 1;
+    }
+}
 
 
+## Create the phygetopo object and run the topoanalysis
+
+my $phygetopo1 = PhyGeTopo->new({ seqfams => \%seqfams, 
+				  strains => \%strains });
+
+my %topotypes = $phygetopo1->run_topoanalysis();
 
 
+is(scalar(keys %topotypes) <=> 0, 1,
+    "Testing run_topoanalysis, checking topotypes > 0")
+    or diag("Looks like this has failed");
+
+my $wrong_branch = 0;
+my $wrong_ids = 0;
+
+foreach my $type (sort keys %topotypes) {
+    my $topology = $topotypes{$type}->get_topology();
+    my $nwcks = Bio::Tree::TopoType::_tree2newick($topology);
+   
+    my @nodes = $topology->get_nodes();
+    foreach my $node (@nodes) {
+	my $branch = $node->branch_length();
+	my $id = $node->id();
+	if (defined $branch) {
+	    if ($branch != 1) {
+		$wrong_branch++;
+	    }
+	}
+	if (defined $id) {
+	    unless (exists $revstrains{$id}) {
+		$wrong_ids++;
+	    }
+	}
+    }
+}
+
+is($wrong_branch, 0, 
+   "testing run_topoanalysis, checking wrong branch length") 
+    or diag("Looks like this has failed");
+
+is($wrong_ids, 0, 
+   "testing run_topoanalysis, checking wrong node ids (all should be strains)") 
+    or diag("Looks like this has failed");
+
+
+throws_ok { $phygetop0->run_topoanalysis('fake') } qr/ERROR: fake used/, 
+    'TESTING DIE ERROR when arg. supplied to run_topoanalysis() isnt HashRef';
+
+throws_ok { $phygetop0->run_topoanalysis({ fake2 => 1}) } qr/ERROR: fake2 isn/, 
+    'TESTING DIE ERROR when arg. supplied to run_topoanalysis() isnt permited';
+
+throws_ok { $phygetop0->run_topoanalysis({ base_toponame => ''}) } qr/ERROR: /, 
+    'TESTING DIE ERROR when value supplied to run_topoanalysis() isnt permited';
 
 
 ####
