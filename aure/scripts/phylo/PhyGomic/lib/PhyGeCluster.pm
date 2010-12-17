@@ -2731,7 +2731,6 @@ sub best_overlaps {
                     arguments in a blast (for example -d <database> -e <evalue>
                     ...). The input sequences will be the cluster consensus 
                     sequence.
-        -cleanup => clean all the temp dirs created during this script
         -strain  => $strain, for the homologous sequences.
         -filter  => $hash_reference with the following permited keys: evalue, 
                    expect, frac_identical, frac_conserved, gaps, hsp_length,
