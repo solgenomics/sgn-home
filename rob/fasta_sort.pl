@@ -22,12 +22,12 @@ $message
 Usage:
   $FindBin::Script [options] fasta_file fasta_file ...
 
-  Sort a FASTA-format sequence or qual file alphabetically by identifier name.s
+  Sort a FASTA-format sequence or qual file alphabetically by identifier name.
 
   Options:
 
     -q treat inputs as qual files (defaults to false, meaning input is
-       treated as nucleotide or protein sequence
+       treated as nucleotide or protein sequence)
 
 EOU
 }
