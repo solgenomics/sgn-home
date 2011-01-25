@@ -402,7 +402,7 @@ sub process_genbank_file {
   $dbh->do("CREATE TEMP TABLE $temp_table 
 	  (locus varchar(250), accession varchar(250), version varchar(250), primary_id varchar(250), 
            description text, seq text, qscore_def text, mol_type varchar(250), organism varchar(250), 
-           cell_line varchar(250), cell_type varchar(250), clone_name varchar(250), clone_lib varchar(250), 
+           cell_line varchar(250), cell_type text, clone_name varchar(250), clone_lib varchar(250), 
            cultivar varchar(250), dbxref varchar(250), dev_stage varchar(250), ecotype varchar(250), 
            environmental_sample varchar(250), lab_host varchar(250), note text, PCR_primers text, 
            plasmid varchar(250), tissue_lib varchar(250), tissue_type varchar(250), author text, 
@@ -427,6 +427,8 @@ sub process_genbank_file {
       my ($locus, $accession, $version, $primary_id, $descrip, $sequence, $qscore, $mol_type, $organism, $cell_line, 
           $cell_type, $clone_name, $clone_lib, $cultivar, $dbxref, $dev_stage, $ecotype, $env_sample, $lab_host, $note, 
           $pcr_pr, $plasmid, $tissue_lib, $tissue_type, $authors)=get_genbank_fields($seq);
+
+      print STDERR "\n***** TESTING cell_type=$cell_type || $clone_lib\n";
       if (!$opt_r) {
 	  print "... GenBank field got for the accession: $accession.\n";
 	  print "Checking for previous sequences by accession in the $temp_table temp table...\n";
@@ -507,9 +509,9 @@ sub process_genbank_file {
       $dbh->do("DELETE FROM $temp_table WHERE mol_type NOT IN $mol_type");
   }
 
-  my $gbtab_filename=$filename;
+  my $gbtab_filename = $filename;
   $gbtab_filename =~ s/\.gb//;
-  my ($gbtab_filehandle, $gbtab_filepath)=create_file($outdir, $gbtab_filename, '.tab');
+  my ($gbtab_filehandle, $gbtab_filepath) = create_file($outdir, $gbtab_filename, '.tab');
   $dbh->do("COPY $temp_table TO '$gbtab_filepath'");
 
   my $accessions_count=`cut -f2 $gbtab_filepath | sort -u | wc -l`;
@@ -550,8 +552,12 @@ sub get_genbank_fields {
     my $primary_id = $seq->primary_id();
     my $seqdesc = $seq->description();
     my $sequence = $seq->seq();
-    my $qscore_default = $sequence;
-       $qscore_default =~ s/\w/15 /g;
+    my @qscore = ();
+    my @nt = split(//, $sequence);
+    foreach my $nt (@nt) {
+	push @qscore, 15;
+    }
+    my $qscore_default = join(' ', @qscore);
     my @seqkeyword = $seq->get_keywords();
         
     my @tags = qw/organism cell_line cell_type clone clone_lib cultivar dbxref dev_stage ecotype
@@ -587,8 +593,9 @@ sub get_genbank_fields {
 	    last;
 	}
     }
-    
-    for my $annot_object ($seq->get_Annotations('reference')) {         		
+
+    my $ann = $seq->annotation();
+    foreach my $annot_object ($ann->get_Annotations('reference')) { 
 	my $authors = $annot_object->authors();
 	if (!$authors) {
 	    $authors=undef;
