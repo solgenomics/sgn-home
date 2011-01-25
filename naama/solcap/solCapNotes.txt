@@ -102,16 +102,16 @@ public.stock- populate with sgn.accession
 sgn.pcr_experiment - add stock_id FK to stock
 
 ---
-3. load the pcr sequence types in cvterm
+3.  the pcr sequence types are SO terms (added recently ASPE and dCAPS primers)
 
-forward primer 
+forward primer
 reverse primer
 dCAPS primer
 ASPE
 
 
 4.
-linking table called pcr_experiment_sequence 
+linking table called pcr_experiment_sequence
 
 pcr_experiment_sequence_id
 pcr_experiment_id
@@ -136,9 +136,9 @@ and the search in cxgn/sgn/cgi-bin/search/markers/snp_search.pl
 
 
 ----------------
-SNP tool implementation 
+SNP tool implementation
 * aure has pipelines for snp analysis
-A tool for predicting the protein and telling the user the nature of the amino acid change (synonymous/non-synonymous) 
+A tool for predicting the protein and telling the user the nature of the amino acid change (synonymous/non-synonymous)
 
 
 
