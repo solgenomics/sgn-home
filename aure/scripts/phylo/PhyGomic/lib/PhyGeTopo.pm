@@ -11,6 +11,7 @@ use Math::BigFloat;
 
 use File::Temp qw/ tempfile tempdir/;
 
+use Bio::Tree::TopoType;
 
 ###############
 ### PERLDOC ###
