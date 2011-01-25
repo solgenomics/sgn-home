@@ -3,7 +3,9 @@
 =head1 NAME
  
  sequence_clean_pipeline.pl.
- Perl script to use different sequence clean programs as seqclean, nseg and trf.
+ Perl script to use different sequence clean programs as seqclean, 
+ nseg and trf.
+
 =cut
 
 =head1 SYNOPSIS
@@ -31,7 +33,8 @@ B<Input qual>           qual file (mandatory when lucy program is used)
       
 =item -a
 
-B<Argument file>        argument file with all the argument for the programs seqclean, nseg and trf
+B<Argument file>        argument file with all the argument for the 
+                        programs seqclean, nseg and trf
    
 =item -o
 
@@ -51,62 +54,74 @@ B<Help>                 print the help
 
 =head1 DESCRIPTION
 
-This script clean a fasta file. Use seqclean tool (http://compbio.dfci.harvard.edu/tgi/software/) to do it, 
-but this script check the output file. If this output has in its report a trimmed sequence number more than 0, 
-rerun the tool over the clean fasta file. Finally take the all the cleanning coordenates files, 
-calculate the final clean coordenates and put in a tab file. To do this use psql. This script make a cleanning files 
-folder and moves all the files to it. 
+  This script clean a fasta file. Use seqclean tool 
+  (http://compbio.dfci.harvard.edu/tgi/software/) to do it, 
+  but this script check the output file. If this output has in its report 
+  a trimmed sequence number more than 0, rerun the tool over the clean 
+  fasta file. 
+  Finally take the all the cleanning coordenates files, calculate the final 
+  clean coordenates and put in a tab file.
+  This script make a cleanning files folder and moves all the files to it. 
 
-Also run over the sequences the programs nseg (low complexity) and trf (tandem repeat finder)
+  Also run over the sequences the programs nseg (low complexity) and trf 
+  (tandem repeat finder)
       
-The output file (in the cleaning folder in the work dir) are:
+  The output file (in the cleaning folder in the work dir) are:
 
 =over
 
 =item - 
 
-cleaning_1 folder: Is the folder where the seqclean program put the cleaning slices files before ensambled all. 
-This folder are removed before run seqclean another time.
+  cleaning_1 folder: Is the folder where the seqclean program put the 
+  cleaning slices files before ensambled all. 
+  This folder are removed before run seqclean another time.
           
 =item - 
 
-.cdix file: binary file with indexes for each run of the program.
+  .cdix file: binary file with indexes for each run of the program.
           
 =item - 
 
-.clean file: fasta file with the cleanned sequences for each run of the program.
+  .clean file: fasta file with the cleanned sequences for each run of the 
+  program.
           
 =item - 
 
-.cln file: report file with the clean coordenates for each run of the program. 
+  .cln file: report file with the clean coordenates for each run of the  
+  program. 
           
 =item - 
 
-seqcl<input_fasta_file>.log: report file of the process for each run of the program.
+  seqcl<input_fasta_file>.log: report file of the process for each run of 
+  the program.
           
 =item - 
 
-err_seqcl<input_fasta_file>.log: report file with possible errors for each run of the program
+  err_seqcl<input_fasta_file>.log: report file with possible errors for each 
+  run of the program
           
 =item - 
 
-outparts_cln_sort: file with the all the search slices for the last run of the program.
+  outparts_cln_sort: file with the all the search slices for the last run of 
+  the program.
 
 =item - 
 
-(tag -o): output file with the clean coordenates for the global process.
+  (tag -o): output file with the clean coordenates for the global process.
           
 =item - 
 
-global_seqclean_report.txt: report of all seqclean process.
+  global_seqclean_report.txt: report of all seqclean process.
           
 =item - 
 
-equiv_clean_codes: .tab file with the equivalences between files used in the screening and the clean_code
+  equiv_clean_codes: .tab file with the equivalences between files used in 
+  the screening and the clean_code
 
 Note:	  
 	  
- The use of the argument -A in th seqclean program require from the use of other tags like -N
+  The use of the argument -A in th seqclean program require from the use of 
+  other tags like -N
 
 =back
 
@@ -507,21 +522,35 @@ print STDERR <<EOF;
   $0: 
 
     Description: 
-      This script clean a fasta file. Use seqclean tool (http://compbio.dfci.harvard.edu/tgi/software/) to do it, but this script check the output file. If this output has in its report a trimmed sequence number more than 0, rerun the tool over the clean fasta file. Finally take the all the cleanning coordenates files, calculate the final clean coordenates and put in a tab file. To do this use psql. This script make a cleanning files folder and moves all the files to it. 
+      This script clean a fasta file. Use seqclean tool 
+      (http://compbio.dfci.harvard.edu/tgi/software/) to do it, with the 
+      inprovement that check the output file. If this output has in its 
+      report a trimmed sequence number more than 0, rerun the tool over the 
+      clean fasta file. Finally take the all the cleanning coordenates files, 
+      calculate the final clean coordenates and put in a tab file. This 
+      script make a cleanning files folder and moves all the files to it. 
 
       The output file (in the cleaning folder in the work dir) are:
-	  - cleaning_1 folder: Is the folder where the seqclean program put the cleaning slices files before 
-            ensambled all. This folder are removed before run seqclean another time.
+	  - cleaning_1 folder: Is the folder where the seqclean program put 
+            the cleaning slices files before ensambled all. This folder are 
+            removed before run seqclean another time.
           - .cdix file: binary file with indexes for each run of the program.
-          - .clean file: fasta file with the cleanned sequences for each run of the program.
-          - .cln file: report file with the clean coordenates for each run of the program. 
-          - seqcl<input_fasta_file>.log: report file of the process for each run of the program.
-          - err_seqcl<input_fasta_file>.log: report file with possible errors for each run of the program
-          - outparts_cln_sort: file with the all the search slices for the last run of the program.
+          - .clean file: fasta file with the cleanned sequences for each run 
+            of the program.
+          - .cln file: report file with the clean coordenates for each run of 
+            the program. 
+          - seqcl<input_fasta_file>.log: report file of the process for each 
+            run of the program.
+          - err_seqcl<input_fasta_file>.log: report file with possible errors 
+            for each run of the program
+          - outparts_cln_sort: file with the all the search slices for the 
+            last run of the program.
 
-          - (tag -o): output file with the clean coordenates for the global process.
+          - (tag -o): output file with the clean coordenates for the global 
+            process.
           - global_seqclean_report.txt: report of all seqclean process.
-          - equiv_clean_codes: .tab file with the equivalences between files used in the screening and the clean_code
+          - equiv_clean_codes: .tab file with the equivalences between files 
+            used in the screening and the clean_code
 
     Usage: 
       Set the environment variables for the programs.
@@ -536,7 +565,8 @@ print STDERR <<EOF;
     Flags:
       -i input fasta          input file for clean. (mandatory)
       -q input qual           quality file (mandatory when lucy option is used)
-      -a argument file        argument file with all the arguments used in the programs (mandatory)
+      -a argument file        argument file with all the arguments used in 
+                              the programs (mandatory)
       -o output basename      output basename (by default: input fasta filename)
       -X print arg file       print argument file
       -h help                 print this help
