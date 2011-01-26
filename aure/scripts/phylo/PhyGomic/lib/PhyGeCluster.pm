@@ -4104,89 +4104,94 @@ sub run_njtrees {
     
 	my $factory = Bio::Tools::Run::Phylo::Phylip::Neighbor->new(@args);
 
-
 	my $distobj = $dists{$cluster_id};
-
-	## It will replace the ids before run the trees for an index
-
-	my %equivnames = ();
-	my %revnames = ();
-	my @newnames_list = ();
-	my @oldnames_list = ();
-	my $i = 1;
-
-	## First, create the equiv. hash
-
-	foreach my $name (@{$distobj->names()}) {
-	    $equivnames{$i} = $name;
-	    $revnames{$name} = $i;
-	    push @newnames_list, $i;
-	    push @oldnames_list, $name;
-	    $i++;
-	}	    
-
-	## Second, replace in the matrix (names and indexes) the names per i's
-
-	my $mtx_href = $distobj->_matrix();
-	foreach my $i_name (keys %{$mtx_href}) {
-	    my $j_href = $mtx_href->{$i_name};
-	    
-	    foreach my $j_name (keys %{$j_href}) {
-		$j_href->{$revnames{$j_name}} = delete($j_href->{$j_name});
-	    }
-	    $mtx_href->{$revnames{$i_name}} = delete($mtx_href->{$i_name});
-	}
- 	
-	$distobj->names(\@newnames_list);
-
-	## Now it will run the tree
-
-	my $seqfam = $clusters{$cluster_id};
-
-	if (defined $outgroup) {
-
-	    my $outgroup_id = _get_outgroup_id(
-		{
-		    seqfam    => $seqfam,
-		    strains   => \%strains,
-		    reference => $outgroup,
-		}
-		);
-	    if (defined $outgroup_id) {
-		my $outgroup_equiv = $revnames{$outgroup_id};
-		if (defined $outgroup_equiv) {
-		    $factory->outgroup($outgroup_equiv);
-		}
-	    }
-	}
-
-	my ($tree) = $factory->run($distobj);
-	if (defined $tree) {
-	    
-	    ## Third, replace in the tree the nodes names for the righ ones
-
-	    my @nodes = $tree->get_nodes();
-	    foreach my $node (@nodes) {
-		my $old_node_id = $node->id();
-		$node->id($equivnames{$old_node_id});
-	    }
-	    
-	    $seqfam->tree($tree);
-	}
-
-	## Forth, replace the matrix names by the originals.
 	
-	my $mtx_href2 = $distobj->_matrix();
-	foreach my $x_name (keys %{$mtx_href2}) {
-	    my $y_href = $mtx_href2->{$x_name};
+	if (defined $distobj && scalar(@{$distobj->names()}) > 1) {
+
+	    ## It will replace the ids before run the trees for an index
+
+	    my %equivnames = ();
+	    my %revnames = ();
+	    my @newnames_list = ();
+	    my @oldnames_list = ();
+	    my $i = 1;
+
+	    ## First, create the equiv. hash
+
+	    foreach my $name (@{$distobj->names()}) {
+		$equivnames{$i} = $name;
+		$revnames{$name} = $i;
+		push @newnames_list, $i;
+		push @oldnames_list, $name;
+		$i++;
+	    }	    
+
+	    ## Second, replace in the matrix (names and indexes) 
+	    ## the names per i's
 	    
-	    foreach my $y_name (keys %{$y_href}) {
-		$y_href->{$equivnames{$y_name}} = delete($y_href->{$y_name});
+	    my $mtx_href = $distobj->_matrix();
+	    foreach my $i_name (keys %{$mtx_href}) {
+		my $j_href = $mtx_href->{$i_name};
+	    
+		foreach my $j_name (keys %{$j_href}) {
+		    $j_href->{$revnames{$j_name}} = delete($j_href->{$j_name});
+		}
+		$mtx_href->{$revnames{$i_name}} = delete($mtx_href->{$i_name});
 	    }
-	    $mtx_href2->{$equivnames{$x_name}} = delete($mtx_href2->{$x_name});
-	}
  	
-	$distobj->names(\@oldnames_list);
+	    $distobj->names(\@newnames_list);
+
+	    ## Now it will run the tree
+
+	    my $seqfam = $clusters{$cluster_id};
+
+	    if (defined $outgroup) {
+
+		my $outgroup_id = _get_outgroup_id(
+		    {
+			seqfam    => $seqfam,
+			strains   => \%strains,
+			reference => $outgroup,
+		    }
+		    );
+		if (defined $outgroup_id) {
+		    my $outgroup_equiv = $revnames{$outgroup_id};
+		    if (defined $outgroup_equiv) {
+			$factory->outgroup($outgroup_equiv);
+		    }
+		}
+	    }
+
+	    my ($tree) = $factory->run($distobj);
+	    if (defined $tree) {
+	    
+		## Third, replace in the tree the nodes names for the righ ones
+
+		my @nodes = $tree->get_nodes();
+		foreach my $node (@nodes) {
+		    my $old_node_id = $node->id();
+		    $node->id($equivnames{$old_node_id});
+		}
+	    
+		$seqfam->tree($tree);
+	    }
+
+	    ## Forth, replace the matrix names by the originals.
+	
+	    my $mtx_href2 = $distobj->_matrix();
+	    foreach my $x_name (keys %{$mtx_href2}) {
+		my $y_href = $mtx_href2->{$x_name};
+		
+		foreach my $y_name (keys %{$y_href}) {
+		    $y_href->{$equivnames{$y_name}} = 
+			delete($y_href->{$y_name});
+		}
+		$mtx_href2->{$equivnames{$x_name}} = 
+		    delete($mtx_href2->{$x_name});
+	    }
+	    
+	    $distobj->names(\@oldnames_list);
+	}
     }
 }
 
