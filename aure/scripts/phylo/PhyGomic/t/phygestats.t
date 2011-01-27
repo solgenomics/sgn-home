@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 14;
+use Test::More tests => 23;
 use Test::Exception;
 
 use FindBin;
@@ -49,7 +49,7 @@ BEGIN {
 
 ## Create an empty object and test the possible die functions. TEST 5 to 8
 
-my $phstats0 = PhyGeStats->new();
+my $phstats0 = PhyGeStats->new({ r_connection => 0 });
 
 is(ref($phstats0), 'PhyGeStats', 
    "Test new function for an empty object; Checking object ref.")
@@ -61,7 +61,7 @@ throws_ok { PhyGeStats->new(['fake']) } qr/ARGUMENT ERROR: ARRAY/,
 throws_ok { PhyGeStats->new({ fake => {} }) } qr/ARG. ERROR: fake/, 
     'TESTING DIE ERROR for new() when arg. is not a valid arg.';
 
-throws_ok { PhyGeStats->new({ phygetopo => 'fk2'}) } qr/ERROR: fk2/, 
+throws_ok { PhyGeStats->new({ r_connection => 'fk2'}) } qr/ERROR: fk2/, 
     'TESTING DIE ERROR for new() when arg. doesnt have valid value';
 
 #####################
@@ -78,14 +78,16 @@ my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
 
 
 ## 1) PhyGeCluster:
+## It will create two phygecluster for two methods to be able to compare them
+ 
 
-my $phygecluster = PhyGeCluster->new({ acefile => $acefile,
-				       seqfile    => $seqfile,
-				       strainfile => $strainfile,
+my $phygecluster1 = PhyGeCluster->new({ acefile => $acefile,
+		 		        seqfile    => $seqfile,
+				        strainfile => $strainfile,
 				     }
     );
 
-$phygecluster->homologous_search(
+$phygecluster1->homologous_search(
     { blast  => [ -p => 'blastn', -d => $blastdbfile, -e => '1e-10', -a => 2],
       strain => 'Sly',
       filter => { hsp_length => ['>', 100], }
@@ -93,21 +95,34 @@ $phygecluster->homologous_search(
     );
 
 my @align0 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
-$phygecluster->run_alignments({program => 'clustalw', parameters => \@align0});
-$phygecluster->run_distances({ method => 'Kimura' });
-$phygecluster->run_mltrees({ dnaml => {}, outgroup_strain => 'Sly' });
+$phygecluster1->run_alignments({program => 'clustalw', parameters => \@align0});
 
-my %seqfams = %{$phygecluster->get_clusters()};
-my %strains = %{$phygecluster->get_strains()};
+my $phygecluster2 = $phygecluster1->clone();
+
+$phygecluster1->run_distances({ method => 'Kimura' });
+$phygecluster1->run_mltrees({ dnaml => {}, outgroup_strain => 'Sly' });
+
+my %seqfams1 = %{$phygecluster1->get_clusters()};
+my %strains1 = %{$phygecluster1->get_strains()};
+
+$phygecluster2->run_distances({ method => 'Kimura' });
+$phygecluster2->run_njtrees({ quiet => 1 });
+
+my %seqfams2 = %{$phygecluster2->get_clusters()};
+my %strains2 = %{$phygecluster2->get_strains()};
 
 
 ## 2) PhyGeTopo:
 
-my $phygetopo0 = PhyGeTopo->new({ seqfams => \%seqfams, 
-				  strains => \%strains });
+my $phygetopo1 = PhyGeTopo->new({ seqfams => \%seqfams1, 
+				  strains => \%strains1 });
 
-my %topotypes = $phygetopo0->run_topoanalysis();
+my %topotypes1 = $phygetopo1->run_topoanalysis();
 
+my $phygetopo2 = PhyGeTopo->new({ seqfams => \%seqfams2, 
+				  strains => \%strains2 });
+
+my %topotypes2 = $phygetopo2->run_topoanalysis();
 
 ## 3) Statistics::R
 
@@ -119,36 +134,116 @@ my $srh0 = Statistics::R->new();
 ## ACCESSORS ##
 ###############
 
-## Get/Set_phygetopo, TEST 9 to 11
+## Get/Set_phygetopo, TEST 9 to 18
 
-$phstats0->set_phygetopo($phygetopo0);
-my $phygetopo1 = $phstats0->get_phygetopo();
+$phstats0->set_phygetopo([$phygetopo1]);
+my ($phygetopo1_r) = @{$phstats0->get_phygetopo()};
 
-is(ref($phygetopo1), 'PhyGeTopo',
+is(ref($phygetopo1_r), 'PhyGeTopo',
    "Testing Get/Set_phygetopo, Checking object identity")
     or diag("Looks like this has failed");
 
 throws_ok { $phstats0->set_phygetopo() } qr/ARG. ERROR: No arg./, 
     'TESTING DIE ERROR when no arg. was supplied to set_phygetopo function';
 
-throws_ok { $phstats0->set_phygetopo(['fake']) } qr/ERROR: ARRAY/, 
+throws_ok { $phstats0->set_phygetopo('fake') } qr/ERROR: fake/, 
+    'TESTING DIE ERROR when arg. supplied to set_phygetopo isnt ARRAY obj.';
+
+throws_ok { $phstats0->set_phygetopo(['fake']) } qr/ERROR: member/, 
     'TESTING DIE ERROR when arg. supplied to set_phygetopo isnt PhyGeTopo obj.';
 
+$phstats0->add_phygetopo([$phygetopo2]);
+my @phygetopo_2r = @{$phstats0->get_phygetopo()};
 
-## Get/Set_srh, TEST 12 to 14
-
-$phstats0->set_srh($srh0);
-my $srh1 = $phstats0->get_srh();
-
-is(ref($srh1), 'Statistics::R',
-   "Testing Get/Set_srh, Checking object identity")
+is(scalar(@phygetopo_2r), 2, 
+    "Testing Add_phygetopo, checking number of elements")
     or diag("Looks like this has failed");
 
-throws_ok { $phstats0->set_srh() } qr/ARG. ERROR: No arg./, 
-    'TESTING DIE ERROR when no arg. was supplied to set_srh function';
+throws_ok { $phstats0->add_phygetopo() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to add_phygetopo function';
 
-throws_ok { $phstats0->set_srh(['fake']) } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg. supplied to set_srh isnt Statistics::R obj.';
+throws_ok { $phstats0->add_phygetopo('fake') } qr/ERROR: fake/, 
+    'TESTING DIE ERROR when arg. supplied to add_phygetopo isnt ARRAY obj.';
+
+throws_ok { $phstats0->add_phygetopo(['fake']) } qr/ERROR: member/, 
+    'TESTING DIE ERROR when arg. supplied to add_phygetopo isnt PhyGeTopo obj.';
+
+my $phygetopo_3r = $phstats0->delete_phygetopo();
+
+is(scalar(@{$phygetopo_3r}), 2, 
+    "Testing delete_phygetopo, checking number of elements deleted")
+    or diag("Looks like this has failed");
+
+my @phygetopo_4r = @{$phstats0->get_phygetopo()};
+
+is(scalar(@phygetopo_4r), 0, 
+    "Testing delete_phygetopo, checking empty array")
+    or diag("Looks like this has failed");
+
+
+## Get/Set_srh, TEST 19 to 21
+
+$phstats0->set_r_connection($srh0);
+my $srh1 = $phstats0->get_r_connection();
+
+is(ref($srh1), 'Statistics::R',
+   "Testing Get/Set_r_connection, Checking object identity")
+    or diag("Looks like this has failed");
+
+throws_ok { $phstats0->set_r_connection() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to set_r_connection function';
+
+throws_ok { $phstats0->set_r_connection(['fake']) } qr/ERROR: ARRAY/, 
+    'TESTING DIE ERROR when arg supplied set_r_connection isnt Statistics::R';
+
+
+##################
+## R connection ##
+##################
+
+## Test 22 and 23
+
+my $phystats1 = PhyGeStats->new();
+my $srh2 = $phystats1->get_r_connection();
+
+is($srh2->is_started(), 1, 
+    "Testing startR over Statistics::R object when a new object is created")
+    or diag("Looks like this has failed");
+
+$srh2->send('print(1:30)');
+my $result2 = $srh2->read();
+
+## Parse the results removing different lines
+
+$result2 =~ s/\s?\[\d+\]\s/ /g;
+$result2 =~ s/\n/ /g;
+$result2 =~ s/^\s+//g;
+$result2 =~ s/\s+/ /g;
+
+my @results = split(/ /, $result2);
+
+my @exp_results = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+		   11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+		   21, 22, 23, 24, 25, 26, 27, 28, 29, 30 );
+
+is(join(',', @results), join(',', @exp_results), 
+   "Testing startR over Statistics::R object with an operation 1:30")
+    or diag("Looks like this has failed");
+
+
+
+
+
+
+
+
+
+
+
+
+## END THE R COMUNICATION ##
+
+$srh2->stopR();
 
 ####
 1; #
