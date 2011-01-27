@@ -136,10 +136,10 @@ my $srh0 = Statistics::R->new();
 
 ## Get/Set_phygetopo, TEST 9 to 18
 
-$phstats0->set_phygetopo([$phygetopo1]);
-my ($phygetopo1_r) = @{$phstats0->get_phygetopo()};
+$phstats0->set_phygetopo({'ML' => $phygetopo1});
+my %phygetopo1_r = %{$phstats0->get_phygetopo()};
 
-is(ref($phygetopo1_r), 'PhyGeTopo',
+is(ref($phygetopo1_r{'ML'}), 'PhyGeTopo',
    "Testing Get/Set_phygetopo, Checking object identity")
     or diag("Looks like this has failed");
 
@@ -147,37 +147,37 @@ throws_ok { $phstats0->set_phygetopo() } qr/ARG. ERROR: No arg./,
     'TESTING DIE ERROR when no arg. was supplied to set_phygetopo function';
 
 throws_ok { $phstats0->set_phygetopo('fake') } qr/ERROR: fake/, 
-    'TESTING DIE ERROR when arg. supplied to set_phygetopo isnt ARRAY obj.';
+    'TESTING DIE ERROR when arg. supplied to set_phygetopo isnt HASH obj.';
 
-throws_ok { $phstats0->set_phygetopo(['fake']) } qr/ERROR: member/, 
+throws_ok { $phstats0->set_phygetopo({'name' => 'fake'}) } qr/ERROR: fake/, 
     'TESTING DIE ERROR when arg. supplied to set_phygetopo isnt PhyGeTopo obj.';
 
-$phstats0->add_phygetopo([$phygetopo2]);
-my @phygetopo_2r = @{$phstats0->get_phygetopo()};
+$phstats0->add_phygetopo('NJ', $phygetopo2);
+my %phygetopo_2r = %{$phstats0->get_phygetopo()};
 
-is(scalar(@phygetopo_2r), 2, 
+is(scalar(keys %phygetopo_2r), 2, 
     "Testing Add_phygetopo, checking number of elements")
     or diag("Looks like this has failed");
 
 throws_ok { $phstats0->add_phygetopo() } qr/ARG. ERROR: No arg./, 
     'TESTING DIE ERROR when no arg. was supplied to add_phygetopo function';
 
-throws_ok { $phstats0->add_phygetopo('fake') } qr/ERROR: fake/, 
-    'TESTING DIE ERROR when arg. supplied to add_phygetopo isnt ARRAY obj.';
+throws_ok { $phstats0->add_phygetopo('fake') } qr/ERROR: No phygetopo/, 
+    'TESTING DIE ERROR when no phygetopo arg. wassupplied to add_phygetopo';
 
-throws_ok { $phstats0->add_phygetopo(['fake']) } qr/ERROR: member/, 
+throws_ok { $phstats0->add_phygetopo('name', 'fake') } qr/ERROR: fake/, 
     'TESTING DIE ERROR when arg. supplied to add_phygetopo isnt PhyGeTopo obj.';
 
-my $phygetopo_3r = $phstats0->delete_phygetopo();
+my %phygetopo_3r = %{$phstats0->delete_phygetopo()};
 
-is(scalar(@{$phygetopo_3r}), 2, 
+is(scalar(keys %phygetopo_3r), 2, 
     "Testing delete_phygetopo, checking number of elements deleted")
     or diag("Looks like this has failed");
 
-my @phygetopo_4r = @{$phstats0->get_phygetopo()};
+my %phygetopo_4r = %{$phstats0->get_phygetopo()};
 
-is(scalar(@phygetopo_4r), 0, 
-    "Testing delete_phygetopo, checking empty array")
+is(scalar(keys %phygetopo_4r), 0, 
+    "Testing delete_phygetopo, checking empty hash")
     or diag("Looks like this has failed");
 
 

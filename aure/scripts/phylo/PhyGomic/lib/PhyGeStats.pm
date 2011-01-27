@@ -10,7 +10,9 @@ use Math::BigFloat;
 use Statistics::R;
 
 use File::Temp qw/ tempfile tempdir/;
+use Cwd;
 
+use Bio::Tree::TopoType;
 
 ###############
 ### PERLDOC ###
@@ -116,7 +118,7 @@ sub new {
     my $self = bless( {}, $class );                         
     
     my %permargs = ( 
-	phygetopo    => 'ARRAY',
+	phygetopo    => 'HASH',
 	r_connection => "[1|0|Statistics::R]",
 	);
 
@@ -144,9 +146,9 @@ sub new {
 
     ## As default values ir will create two empty objects
 
-    my $phygetopo_aref = $args_href->{phygetopo};
+    my $phygetopo_href = $args_href->{phygetopo};
     unless (defined $args_href->{phygetopo}) {
-	$phygetopo_aref = [];
+	$phygetopo_href = {};
     }
 
     my $srh = $args_href->{r_connection};
@@ -167,7 +169,7 @@ sub new {
     
     ## Set vars in the object
 
-    $self->set_phygetopo($phygetopo_aref);
+    $self->set_phygetopo($phygetopo_href);
     $self->set_r_connection($srh);
     
     return $self;
@@ -180,115 +182,97 @@ sub new {
 
 =head2 get_phygetopo
 
-  Usage: my $phygetopo_aref = $phygestats->get_phygetopo(); 
+  Usage: my $phygetopo_href = $phygestats->get_phygetopo(); 
 
   Desc: Get a PhyGeTopo objects array ref contained into the PhyGeStats 
         function
 
-  Ret: An array reference of PhyGeTopo objects
+  Ret: An hash reference with key=name and value=PhyGeTopo objects
 
   Args: None
 
   Side_Effects: None
 
-  Example:  my @phygetopo = @{$phygetopo->get_phygestats()};
+  Example:  my %phygetopo = %{$phygetopo->get_phygestats()};
 
 =cut
 
 sub get_phygetopo {
     my $self = shift;
-    return $self->{phygetopo_aref};
+    return $self->{phygetopo_href};
 }
 
 =head2 set_phygetopo
 
   Usage: $phygestats->set_phygetopo($phygetopo_aref);
 
-  Desc: Set PhyGeTopo array ref. in the phygestats object
+  Desc: Set PhyGeTopo hash ref. in the phygestats object
 
   Ret: None
 
-  Args: A PhyGeTopo object
+  Args: 
 
   Side_Effects: Die if no argument is used or if the object is not a PhyGeTopo
                 object
 
-  Example: $phygetstats->set_phygetopo($phygetopo);
+  Example: $phygetstats->set_phygetopo(\%phygetopos);
 
 =cut
 
 sub set_phygetopo {
     my $self = shift;
-    my $phyget_aref = shift;
-   
-    unless (defined $phyget_aref) {
+    my $phyget_href = shift ||
 	croak("ARG. ERROR: No arg. was used for set_phygetopo function");
+    
+    unless (ref($phyget_href) eq 'HASH') {
+	croak("ERROR: $phyget_href for set_phygetopo() isnt hash ref");
     }
     else {
-	if ($phyget_aref =~ m/\w+/) {
-	    unless (ref($phyget_aref) eq 'ARRAY') {
-		croak("ERROR: $phyget_aref for set_phygetopo() isnt array ref");
-	    }
-	    else {
-		foreach my $phygetop (@{$phyget_aref}) {
-		    unless (ref($phygetop) eq 'PhyGeTopo') {
-			my $msg = "ERROR: member $phygetop for set_phygetopo()";
-			$msg .= "isnt array ref.";
-			croak($msg);
-		    }
-		}
+	foreach my $n (keys %{$phyget_href}) {
+	    my $phytop = $phyget_href->{$n};
+	    unless (ref($phytop) eq 'PhyGeTopo') {
+		croak("ERROR: $phytop for set_phygetopo() PhyGeTopo inst obj");
 	    }
 	}
-	$self->{phygetopo_aref} = $phyget_aref;    
+	$self->{phygetopo_href} = $phyget_href;    
     }
 }
 
 =head2 add_phygetopo
 
-  Usage: $phygestats->add_phygetopo($phygetopo_aref);
+  Usage: $phygestats->add_phygetopo($name, $phygetopo);
 
   Desc: Add PhyGeTopo array ref. in the phygestats object
 
   Ret: None
 
-  Args: A PhyGeTopo object
+  Args: $name, a scalar for PhyGeTopo object
+        $phygetopo, a PhyGeTopo object
 
   Side_Effects: Die if no argument is used or if the object is not a PhyGeTopo
                 object
 
-  Example: $phygetstats->add_phygetopo($phygetopo);
+  Example: $phygetstats->add_phygetopo($name, $phygetopo);
 
 =cut
 
 sub add_phygetopo {
     my $self = shift;
-    my $phyget_aref = shift;
-   
-    unless (defined $phyget_aref) {
+    my $name = shift ||
 	croak("ARG. ERROR: No arg. was used for add_phygetopo function");
+    my $phyget = shift ||
+	croak("ARG. ERROR: No phygetopo arg. was used for add_phygetopo()");
+   
+    unless (ref($phyget) eq 'PhyGeTopo') {
+	croak("ERROR: $phyget for add_phygetopo() isnt PhyGeTopo object");
     }
-    else {
-	if ($phyget_aref =~ m/\w+/) {
-	    unless (ref($phyget_aref) eq 'ARRAY') {
-		croak("ERROR: $phyget_aref for add_phygetopo() isnt array ref");
-	    }
-	    else {
-		foreach my $phygetop (@{$phyget_aref}) {
-		    unless (ref($phygetop) eq 'PhyGeTopo') {
-			my $msg = "ERROR: member $phygetop for add_phygetopo()";
-			$msg .= "isnt array ref.";
-			croak($msg);
-		    }
-		}
-	    }
-	}
-	push @{$self->{phygetopo_aref}}, $phyget_aref;    
-    }
+	    
+    $self->{phygetopo_href}->{$name} = $phyget;
 }
 
 =head2 delete_phygetopo
 
-  Usage: my $phygetopo_aref = $phygestats->delete_phygetopo();
+  Usage: my $phygetopo_href = $phygestats->delete_phygetopo();
 
   Desc: Delete PhyGeTopo array ref. in the phygestats object
 
@@ -305,15 +289,9 @@ sub add_phygetopo {
 sub delete_phygetopo {
     my $self = shift;
     
-    my @del_phygetopo = ();
-    my $phygetopo_aref = $self->get_phygetopo();
-    
-    my $i = 0;
-    foreach my $phygetopo (@{$phygetopo_aref}) {
-	push @del_phygetopo, delete @{$phygetopo_aref}[$i];
-	$i++;
-    }
-    return \@del_phygetopo;
+    my $phygetop_href = $self->get_phygetopo();
+    $self->set_phygetopo({});
+    return $phygetop_href;
 }
 
 
@@ -386,6 +364,139 @@ sub set_r_connection {
 ## 
 
 
+=head2 _r_infile_topomemb
+
+  Usage: my $file = $phygestats->_r_infile_topomemb($argument_href); 
+
+  Desc: Print into a file topotype_id and member_count in table format
+
+  Ret: $file, a filename
+
+  Args: optional, a hash reference with the following arguments:
+        dirname   => dirname to create the file
+        filename  => filename for the file
+        tempfile  => [1|0], enable/disable the file creation as temp file
+                     (1 by default)
+        phygetopo => array ref. with PhyGeTopo objects to be used
+                     (all contained in the phygestats object by default)
+
+  Side_Effects: Die if some arguments are wrong
+
+  Example: my $file0 = $phygestats->_r_infile_topomemb();
+           my $file1 = $phygestats->_r_infile_topomemb(
+                                       { 
+                                         phygetopo => $phygetopo1,
+                                         dirname   => '/home/user/analysis/',
+                                         filename  => 'phygetopo_tab_for_r.txt',
+				       }
+                                     );
+
+
+=cut
+
+sub _r_infile_topomemb {
+    my $self = shift;
+    my $arghref = shift;
+
+    my $file = '';
+    my $fh = '';
+
+    ## Check arguments
+
+    my %permarg = (
+	dirname   => '\w+',
+	filename  => '\w+',
+	tempfile  => '[0|1|no|yes]',
+	phygetopo => 'PhyGeTopo'
+	);
+
+
+    if (defined $arghref) {
+	unless (ref($arghref) eq 'HASH') {
+	    croak("ERROR: $arghref isnt a hash ref. for _r_infile_topomemb()");
+	}
+	else {
+	    foreach my $keyarg (keys %{$arghref}) {
+		unless (exists $permarg{$keyarg}) {
+		    croak("ERROR: $keyarg isnt a permited argument");
+		}
+		else {
+		    my $valarg = $arghref->{$keyarg};
+		    unless ($valarg =~ m/$permarg{$keyarg}/i) {
+			croak("ERROR: $valarg doesnt have a right value");
+		    }
+		}
+	    }
+	}
+    }
+
+    ## First, create a file
+
+    my $filename = $arghref->{filename};
+    my $dirname = $arghref->{dirname} || getcwd();
+    my $tempfile = $arghref->{tempfile};
+    my $msg = "ERROR: filename and/or dirname are incompat args. with tempfile";
+    
+    if (defined $filename) {
+	if (defined $tempfile && $tempfile =~ m/[1|yes]/i) {
+	    croak($msg);
+	}
+	$file = $dirname . '/' . $filename;
+	open $fh, '>', $file;
+    }
+    else {	
+	($fh, $file) = tempfile('r_infile_topom_XXXXXX', TMPDIR => 1);
+    }
+
+    ## Second, create a hash with key=topotype_id and value=aref_member_counts
+    ## the first member always will be the headers
+
+    my %topodata = ();
+    my %topologies = ();
+
+    my $phyg_href = $arghref->{phygetopo} || $self->get_phygetopo();
+    
+    unless (ref($phyg_href) eq 'HASH') {
+	croak("ERROR: phygetopo value $phyg_href isnt an hash reference");
+    }
+
+    foreach my $phygename (keys %{$phyg_href}) {
+	my %topotypes = %{$phyg_href->{$phygename}->get_topotypes()};
+	foreach my $topo_id (sort keys %topotypes) {
+	    my $topology = $topotypes{$topo_id}->get_topology();
+	    my @members = @{$topotypes{$topo_id}->get_members()};
+	    
+	    ## Check if exists that topology
+	    my $match;
+	    foreach my $keep_topo (keys %topologies) {
+		if (Bio::Tree::TopoType::is_same_tree($topology, $keep_topo)) {
+		    $match = $topology;
+		}
+	    }
+
+	    ## If exists that topology add to the old one, if not, add a new
+	    ## one 
+
+	    if (defined $match) {
+		my $grouptopo_id = $topologies{$match};
+		$topodata{$grouptopo_id}->{$phygename} = scalar(@members);
+	    }
+	    else {
+		if (exists $topodata{$topo_id}) {
+
+		    ## It will need a new topology_id
+		    $topo_id = $topo_id . '_x';
+		}
+		$topodata{$topo_id}->{$phygename} = scalar(@members);
+		$topologies{$topology} = $topo_id;
+	    }
+	}
+    }
+
+    ## Third, print the hash
+
+    return $file;
+}
 
 
 
