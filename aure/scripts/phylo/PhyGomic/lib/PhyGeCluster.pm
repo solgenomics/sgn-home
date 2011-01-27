@@ -4172,7 +4172,7 @@ sub run_njtrees {
 		    my $old_node_id = $node->id();
 		    $node->id($equivnames{$old_node_id});
 		}
-	    
+
 		$seqfam->tree($tree);
 	    }
 
@@ -4823,6 +4823,7 @@ sub prune_by_strains {
 	}
 	else {
 	    my $cluster_removed = $self->remove_cluster($clid);
+	    my $rm_distmtx = delete($self->get_distances()->{$clid});
 	    $rm_clusters{$clid} = $cluster_removed;
 	}
     }
