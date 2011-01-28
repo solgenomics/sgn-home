@@ -73,14 +73,14 @@ $VERSION = eval $VERSION;
   $phygecluster->set_clusters(\%clusters);
   my $clusters_href = $phygecluster->get_clusters();
 
-  $phygecluster->set_strains(\%clusters);
+  $phygecluster->set_strains(\%strains);
   my $strains_href = $phygecluster->get_strains();
 
-  $phygecluster->set_distances(\%clusters);
+  $phygecluster->set_distances(\%distances);
   my $distances_href = $phygecluster->get_distances();
 
-  $phygecluster->set_bootstrapping(\%clusters);
-  my $distances_href = $phygecluster->get_bootstrapping();
+  $phygecluster->set_bootstrapping(\%bootstrap);
+  my $bootstrap_href = $phygecluster->get_bootstrapping();
 
   ## Load new sequences into the object
 
@@ -4361,7 +4361,7 @@ sub run_mltrees {
 
   Usage: my %removed_clusters = $phygecluster->prune_by_align($arg_href)
 
-  Desc: Remove sequence members and clusters that have not some conditions
+  Desc: Remove clusters that have not some conditions
         derived from the align object
 
   Ret: A hash with the sequencefamilies objects removed from the object 
@@ -4480,6 +4480,31 @@ sub prune_by_align {
 	if ($rmcluster == 1) {
 	    my $rmval = $self->remove_cluster($clid);
 	    $rmclusters{$clid} = $rmval;
+	}
+    }
+
+    ## If the prune has removed something it should remove also distances
+    ## and overlaps (alignment and trees are stored in the cluster that has
+    ## been removed)
+
+    if (scalar(keys %rmclusters) > 0) {
+		
+	my %dist = %{$self->get_distances()};
+	my %bootstr = %{$self->get_bootstrapping()};
+
+	foreach my $rmclid (keys %rmclusters) {
+	    
+            ## 1) Remove distances 
+	    
+	    if (exists $dist{$rmclid}) {
+		delete($dist{$rmclid});
+	    }
+	    
+            ## 2) Remove bootstrap
+	    
+	    if (exists $bootstr{$rmclid}) {
+		delete($bootstr{$rmclid});
+	    }
 	}
     }
     return %rmclusters;
