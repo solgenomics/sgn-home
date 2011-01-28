@@ -4532,6 +4532,10 @@ sub prune_by_align {
         max_distance => $aref_of_aref_pairs defining distances
         
   Side_Effects: Died if some of the parameters are wrong.
+                When as result of the prune arguments a cluster is deleted, 
+                it also delete distances and bootstrapping data for that 
+                cluster. 
+                
               
   Example:  ## To get three sequences for strains A, B and C:
             $phygecluster->prune_by_strains({ 
@@ -4643,6 +4647,11 @@ sub prune_by_strains {
     if ($dist_n < 1) {
 	croak("ERROR: No distances were loaded into PhyGeCluster object.");
     }
+
+    ## Get the bootstrapping clusters from tyhe object to be able to remove
+    ## them from the object
+
+    my %bootstr = %{$self->get_bootstrapping()};
 
     ## Now it will order the distances according each of the strains.
 
@@ -4845,10 +4854,24 @@ sub prune_by_strains {
 		}
 	    }
 	    $rm_members{$clid} = \@rm_members;
+
+	    ## The trees, distances and bootstrapping
+	    ## don't make sense once some members have been removed
+
+	    if (scalar(@rm_members) > 0) {
+		my $tree = $seqfam->tree();
+		if (defined $tree) {
+		    $seqfam->tree(undef);
+		}
+		my $rm_distmtx = delete($self->get_distances()->{$clid});
+		my $rm_boots = delete($self->get_bootstrapping()->{$clid});
+	    }
 	}
 	else {
 	    my $cluster_removed = $self->remove_cluster($clid);
 	    my $rm_distmtx = delete($self->get_distances()->{$clid});
+	    my $rm_boots = delete($self->get_bootstrapping()->{$clid});
+	    
 	    $rm_clusters{$clid} = $cluster_removed;
 	}
     }

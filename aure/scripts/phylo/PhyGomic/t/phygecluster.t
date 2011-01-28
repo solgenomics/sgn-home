@@ -1245,6 +1245,11 @@ is($clt_diffstr, 0,
 ## 2) Get three members for two min_distance constraints, TEST 136 to 143
 
 my $phygecluster_cl3 = $phygecluster3->clone();
+
+## Keep the distances to check that before prune it
+
+my %distance3 = %{$phygecluster_cl3->get_distances()};
+
 my $prune_args3 = { 
     composition  => { 'Sly' => 1, 'Nsy' => 1, 'Nto' => 1 },
     min_distance => [ [ 'Sly', 'Nsy' ], [ 'Sly', 'Nto' ] ]
@@ -1281,7 +1286,12 @@ my $clt_diffstr3 = 0;
 my $clt_mindist3_ab = 0;
 my $clt_mindist3_ac = 0;
 my %strains3 = %{$phygecluster_cl3->get_strains()};
-my %distance3 = %{$phygecluster_cl3->get_distances()};
+
+## Prune remove distances so it will need to rerun distances
+
+$phygecluster_cl3->run_distances({ method => 'Kimura'});
+
+my %distance3af = %{$phygecluster_cl3->get_distances()};
 
 foreach my $fam_id3 (sort keys %selclusters3) {
     my $famseq3 = $selclusters3{$fam_id3};
@@ -1314,7 +1324,6 @@ foreach my $fam_id3 (sort keys %selclusters3) {
 
 			my $dist_val = $distmt3->get_entry($mb_a, $mb_b);
 			if ($type eq 'prune') {
-
 			    push @str_ab, $dist_val;
 			}
 			else {
@@ -1388,6 +1397,11 @@ is($clt_mindist3_ac, 0,
 ## 3) Get five members for six min_distance constraints, TEST 144 to 153 
 
 my $phygecluster_cl4 = $phygecluster3->clone();
+
+## Keep the distances, (for checking purposes before prune)
+
+my %distance4 = %{$phygecluster_cl4->get_distances()};
+
 my $prune_args4 = { 
     composition  => { 'Sly' => 1, 'Nsy' => 1, 'Nto' => 1, 'Nta' => 2 },
     min_distance => [ 
@@ -1433,7 +1447,12 @@ my $clt_mindist4_ab = 0;
 my $clt_mindist4_ac = 0;
 my $clt_mindist4_ad = 0;
 my %strains4 = %{$phygecluster_cl4->get_strains()};
-my %distance4 = %{$phygecluster_cl4->get_distances()};
+
+## Prune remove distances so it will need to rerun distances
+
+$phygecluster_cl4->run_distances({ method => 'Kimura'});
+
+my %distance4af = %{$phygecluster_cl4->get_distances()};
 
 foreach my $fam_id4 (sort keys %selclusters4) {
     my $famseq4 = $selclusters4{$fam_id4};
