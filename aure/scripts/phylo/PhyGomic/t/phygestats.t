@@ -79,38 +79,53 @@ my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
 
 ## 1) PhyGeCluster:
 ## It will create two phygecluster for two methods to be able to compare them
- 
 
-my $phygecluster1 = PhyGeCluster->new({ acefile => $acefile,
-		 		        seqfile    => $seqfile,
-				        strainfile => $strainfile,
-				     }
-    );
-
-$phygecluster1->homologous_search(
-    { blast  => [ -p => 'blastn', -d => $blastdbfile, -e => '1e-10', -a => 2],
-      strain => 'Sly',
-      filter => { hsp_length => ['>', 100], }
-    }
-    );
+my $phygecluster1 = PhyGeCluster->new({ blastfile => $blastfile, 
+                                        fastblast_parser => 1,  });
+$phygecluster1->load_seqfile({ sequencefile => $seqfile });
+$phygecluster1->load_strainfile({ strainfile => $strainfile });
 
 my @align0 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
 $phygecluster1->run_alignments({program => 'clustalw', parameters => \@align0});
 
+$phygecluster1->run_distances({ method => 'Kimura' });
+
+my %files00 = $phygecluster1->out_distancefile({ rootname => 'testdistbefore'});
+
+my ($rm_clusters_href, $rm_members_href) = $phygecluster1->prune_by_strains({
+    composition  => { 'Sly' => 1, 'Nsy' => 1, 'Nto' => 1, 'Nta' => 2 },
+    min_distance => [ 
+        [ 'Nta', 'Nta' ],
+        [ 'Nta', 'Nsy' ], 
+        [ 'Nta', 'Nto' ], 
+        [ 'Nta', 'Sly' ],
+        [ 'Nsy', 'Sly' ],
+        [ 'Nto', 'Sly' ],                     
+        ],
+									    });
+
+foreach my $tid (sort keys %{$rm_clusters_href}) {
+    print STDERR "REMOVED CLUSTER=$tid\n";
+}
+
+my %files01 = $phygecluster1->out_distancefile({ rootname => 'testdistafter'});
+
 my $phygecluster2 = $phygecluster1->clone();
 
-$phygecluster1->run_distances({ method => 'Kimura' });
 $phygecluster1->run_mltrees({ dnaml => {}, outgroup_strain => 'Sly' });
 
 my %seqfams1 = %{$phygecluster1->get_clusters()};
 my %strains1 = %{$phygecluster1->get_strains()};
 
-$phygecluster2->run_distances({ method => 'Kimura' });
+my %files1 = $phygecluster1->out_treefile({ rootname => 'treetest1'});
+
+
 $phygecluster2->run_njtrees({ quiet => 1 });
 
 my %seqfams2 = %{$phygecluster2->get_clusters()};
 my %strains2 = %{$phygecluster2->get_strains()};
 
+my %files2 = $phygecluster2->out_treefile({ rootname => 'treetest2'});
 
 ## 2) PhyGeTopo:
 
@@ -232,7 +247,26 @@ is(join(',', @results), join(',', @exp_results),
 
 
 
+#########################
+## ANALYTICAL FUNCTION ##
+#########################
 
+my $file0 = $phystats1->_r_infile_topomemb();
+
+## It should not create any file because the phygetopo is empty
+
+is(-s $file0, 0, 
+    "Testing _r_infile_topomemb internal function when no file is created")
+    or diag("Looks like this has failed");
+
+$phystats1->set_phygetopo({ 'NJ' => $phygetopo2, 'ML' => $phygetopo1 });
+my $file1 = $phystats1->_r_infile_topomemb();
+
+print STDERR "File is: $file1\n\n";
+open my $fh, '<', $file1;
+while (<$fh>) {
+    print STDERR $_;
+}
 
 
 

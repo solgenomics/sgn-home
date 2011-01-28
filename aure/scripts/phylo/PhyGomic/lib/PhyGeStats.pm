@@ -430,29 +430,14 @@ sub _r_infile_topomemb {
 	}
     }
 
-    ## First, create a file
-
-    my $filename = $arghref->{filename};
-    my $dirname = $arghref->{dirname} || getcwd();
-    my $tempfile = $arghref->{tempfile};
-    my $msg = "ERROR: filename and/or dirname are incompat args. with tempfile";
     
-    if (defined $filename) {
-	if (defined $tempfile && $tempfile =~ m/[1|yes]/i) {
-	    croak($msg);
-	}
-	$file = $dirname . '/' . $filename;
-	open $fh, '>', $file;
-    }
-    else {	
-	($fh, $file) = tempfile('r_infile_topom_XXXXXX', TMPDIR => 1);
-    }
 
-    ## Second, create a hash with key=topotype_id and value=aref_member_counts
+    ## First, create a hash with key=topotype_id and value=aref_member_counts
     ## the first member always will be the headers
 
     my %topodata = ();
     my %topologies = ();
+    my %newick = ();
 
     my $phyg_href = $arghref->{phygetopo} || $self->get_phygetopo();
     
@@ -460,17 +445,22 @@ sub _r_infile_topomemb {
 	croak("ERROR: phygetopo value $phyg_href isnt an hash reference");
     }
 
-    foreach my $phygename (keys %{$phyg_href}) {
+    foreach my $phygename (sort keys %{$phyg_href}) {
+	print STDERR "TEST PHYGENAME: $phygename\n";
 	my %topotypes = %{$phyg_href->{$phygename}->get_topotypes()};
+	
 	foreach my $topo_id (sort keys %topotypes) {
+	    print STDERR "TEST TOPOID: $topo_id\n";
 	    my $topology = $topotypes{$topo_id}->get_topology();
+	    my $newick = $topotypes{$topo_id}->get_topology_as_newick();
 	    my @members = @{$topotypes{$topo_id}->get_members()};
 	    
 	    ## Check if exists that topology
 	    my $match;
-	    foreach my $keep_topo (keys %topologies) {
+	    foreach my $ktopo_id (keys %topologies) {
+		my $keep_topo = $topologies{$ktopo_id};
 		if (Bio::Tree::TopoType::is_same_tree($topology, $keep_topo)) {
-		    $match = $topology;
+		    $match = $ktopo_id;
 		}
 	    }
 
@@ -478,23 +468,71 @@ sub _r_infile_topomemb {
 	    ## one 
 
 	    if (defined $match) {
-		my $grouptopo_id = $topologies{$match};
+		print STDERR "MATCH ENABLE\n";
+		my $grouptopo_id = $match;
 		$topodata{$grouptopo_id}->{$phygename} = scalar(@members);
 	    }
 	    else {
+		print STDERR "MATCH DISABLE\n";
 		if (exists $topodata{$topo_id}) {
 
 		    ## It will need a new topology_id
 		    $topo_id = $topo_id . '_x';
 		}
 		$topodata{$topo_id}->{$phygename} = scalar(@members);
-		$topologies{$topology} = $topo_id;
+		$topologies{$topo_id} = $topology;
+		$newick{$topo_id} = $newick;  
+		print STDERR "ADDED TOPOLOGY $topology => $topo_id\n";
 	    }
 	}
     }
 
-    ## Third, print the hash
+    ## Second, create the file and print the hash only if there are any
+    ## phygetopo object
 
+    my @phygenames = sort keys %{$phyg_href};
+    if (scalar(@phygenames) > 0) {
+
+	## First, create a file
+
+	my $filename = $arghref->{filename};
+	my $dirname = $arghref->{dirname} || getcwd();
+	my $tempfile = $arghref->{tempfile};
+	my $msg = "ERROR: filename or dirname are incompat args. with tempfile";
+    
+	if (defined $filename) {
+	    if (defined $tempfile && $tempfile =~ m/[1|yes]/i) {
+		croak($msg);
+	    }
+	    $file = $dirname . '/' . $filename;
+	    open $fh, '>', $file;
+	}
+	else {	
+	    ($fh, $file) = tempfile('r_infile_topom_XXXXXX', TMPDIR => 1);
+	}
+	
+	my $header = "\t" . '"' . join("\"\t\"", @phygenames) . "\"\t\"T\"\n";
+	print $fh $header;
+    
+	foreach my $row_name (sort keys %topodata) {
+	    my %row_data = %{$topodata{$row_name}};
+	    print $fh '"' . $row_name . '"';
+	    foreach my $phname (@phygenames) {
+		if (exists $row_data{$phname}) {
+		    print $fh "\t$row_data{$phname}";
+		}
+		else {
+		    print $fh "\t0";
+		}
+	    }
+	    print $fh "\t" . '"' . $newick{$row_name} . '"' . "\n";
+	}
+
+	## Close only if the filehandle was open
+	close($fh);
+    }
+    
+    
     return $file;
 }
 
