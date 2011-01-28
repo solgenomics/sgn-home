@@ -4535,7 +4535,10 @@ sub prune_by_align {
                 When as result of the prune arguments a cluster is deleted, 
                 it also delete distances and bootstrapping data for that 
                 cluster. 
-                
+                When as result of the rpune arguments, some members of a 
+                cluster, it will remove them from the cluster and the alignment
+                also it will remove the distances and the bootstrapping for 
+                them.
               
   Example:  ## To get three sequences for strains A, B and C:
             $phygecluster->prune_by_strains({ 
@@ -5208,6 +5211,18 @@ sub prune_by_overlaps {
 		    }
 		    $seqfam->remove_members();
 		    $seqfam->add_members(\@select_members);
+
+		    ## The trees, distances and bootstrapping
+		    ## don't make sense once some members have been removed
+
+		    if (scalar(@rmmemb) > 0) {
+			my $tree = $seqfam->tree();
+			if (defined $tree) {
+			    $seqfam->tree(undef);
+			}
+			my $rmdistmtx = delete($self->get_distances()->{$clid});
+			my $rmboo = delete($self->get_bootstrapping()->{$clid});
+		    }
 		    
 		    ## And finally add to the hash 
 		    $rmmem{$clid} = \@rmmemb;		
@@ -5215,6 +5230,8 @@ sub prune_by_overlaps {
 		else {               ## Remove the complete cluster
 		    
 		    my $rmseqfam = delete($cls_href->{$clid});
+		    my $rm_distmtx = delete($self->get_distances()->{$clid});
+		    my $rm_boots = delete($self->get_bootstrapping()->{$clid});
 		    $rmcls{$clid} = $rmseqfam;		
 		}
 	    }
@@ -5226,6 +5243,8 @@ sub prune_by_overlaps {
 	    ## Just remove the cluster because it doesn't have any alignment
 
 	    my $rmseqfam = delete($cls_href->{$clid});
+	    my $rm_distmtx = delete($self->get_distances()->{$clid});
+	    my $rm_boots = delete($self->get_bootstrapping()->{$clid});
 	    $rmcls{$clid} = $rmseqfam;
 	}
     }
