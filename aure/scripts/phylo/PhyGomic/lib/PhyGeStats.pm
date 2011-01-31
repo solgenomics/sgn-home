@@ -10,6 +10,7 @@ use Math::BigFloat;
 use Statistics::R;
 
 use File::Temp qw/ tempfile tempdir/;
+use String::Random qw/ random_regex random_string/;
 use Cwd;
 
 use Bio::Tree::TopoType;
@@ -446,11 +447,11 @@ sub _r_infile_topomemb {
     }
 
     foreach my $phygename (sort keys %{$phyg_href}) {
-	print STDERR "TEST PHYGENAME: $phygename\n";
+
 	my %topotypes = %{$phyg_href->{$phygename}->get_topotypes()};
 	
 	foreach my $topo_id (sort keys %topotypes) {
-	    print STDERR "TEST TOPOID: $topo_id\n";
+
 	    my $topology = $topotypes{$topo_id}->get_topology();
 	    my $newick = $topotypes{$topo_id}->get_topology_as_newick();
 	    my @members = @{$topotypes{$topo_id}->get_members()};
@@ -468,21 +469,22 @@ sub _r_infile_topomemb {
 	    ## one 
 
 	    if (defined $match) {
-		print STDERR "MATCH ENABLE\n";
+
 		my $grouptopo_id = $match;
 		$topodata{$grouptopo_id}->{$phygename} = scalar(@members);
 	    }
 	    else {
-		print STDERR "MATCH DISABLE\n";
+
 		if (exists $topodata{$topo_id}) {
 
-		    ## It will need a new topology_id
-		    $topo_id = $topo_id . '_x';
+		    ## It will need a new topology_id, by default it will
+		    ## add the phylotopo name if it exists before
+
+		    $topo_id = $topo_id . '_' . $phygename;
 		}
 		$topodata{$topo_id}->{$phygename} = scalar(@members);
 		$topologies{$topo_id} = $topology;
 		$newick{$topo_id} = $newick;  
-		print STDERR "ADDED TOPOLOGY $topology => $topo_id\n";
 	    }
 	}
     }
@@ -511,7 +513,10 @@ sub _r_infile_topomemb {
 	    ($fh, $file) = tempfile('r_infile_topom_XXXXXX', TMPDIR => 1);
 	}
 	
-	my $header = "\t" . '"' . join("\"\t\"", @phygenames) . "\"\t\"T\"\n";
+	my $header = "\t" . '"' . join("\"\t\"", @phygenames);
+
+	## Add a topolovgy column
+	$header .= "\"\t\"Topology\"\n";
 	print $fh $header;
     
 	foreach my $row_name (sort keys %topodata) {
@@ -536,7 +541,61 @@ sub _r_infile_topomemb {
     return $file;
 }
 
+=head2 _r_loadfile
 
+  Usage: my $r_obj_name = $phygestats->_r_loadfile($file, $basename); 
+
+  Desc: Load the topomember file into R as a file
+
+  Ret: $r_obj_name, a R object name that contains the table
+
+  Args: $file, filename,
+        $basename, for the R object
+
+  Side_Effects: Die if no filename or R object basename is supplied.
+                Die if the R connection is not set or is not started
+
+  Example: my $r_obj_name = $phygestats->_r_loadfile($file, 'TopoMembTable'); 
+
+
+=cut
+
+sub _r_loadfile {
+    my $self = shift;
+    my $file = shift ||
+	croak("ERROR: No file was supplied to _r_loadfile function.");
+    my $basename = shift ||
+	croak("ERROR: No R basename was supplied to _r_loadfile function.");
+
+    my $srh = $self->get_r_connection();
+
+    my $r_obj = $basename . "_" . random_regex('\w\w\w\w\w\w');
+
+    ## Check that exists the connection and that it has been started
+
+    unless (defined $srh) {
+	croak("ERROR: r_connection is not set for PhyGeStat object");
+    }
+    else {
+	if ($srh->is_started() != 1) {
+	    my $msg = "ERROR: Data can not be load into R because r_connection";
+	    $msg .= " because it hasn't been started.\n";
+	    croak($msg);
+	}
+    }
+    
+    ## Now build the command to load the data
+
+    my $r_cmd = "$r_obj <- read.table(\"$file\", header=TRUE)";
+
+    ## Run the command
+
+    $srh->send("$r_cmd");
+
+    ## Return the object
+
+    return $r_obj;
+}
 
 
 ####

@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 23;
+use Test::More tests => 29;
 use Test::Exception;
 
 use FindBin;
@@ -104,11 +104,9 @@ my ($rm_clusters_href, $rm_members_href) = $phygecluster1->prune_by_strains({
         ],
 									    });
 
-foreach my $tid (sort keys %{$rm_clusters_href}) {
-    print STDERR "REMOVED CLUSTER=$tid\n";
-}
+$phygecluster1->run_alignments({program => 'clustalw', parameters => \@align0});
 
-my %files01 = $phygecluster1->out_distancefile({ rootname => 'testdistafter'});
+$phygecluster1->run_distances({ method => 'Kimura' });
 
 my $phygecluster2 = $phygecluster1->clone();
 
@@ -117,15 +115,11 @@ $phygecluster1->run_mltrees({ dnaml => {}, outgroup_strain => 'Sly' });
 my %seqfams1 = %{$phygecluster1->get_clusters()};
 my %strains1 = %{$phygecluster1->get_strains()};
 
-my %files1 = $phygecluster1->out_treefile({ rootname => 'treetest1'});
-
-
-$phygecluster2->run_njtrees({ quiet => 1 });
+$phygecluster2->run_njtrees({ quiet => 1, outgroup_strain => 'Sly' });
 
 my %seqfams2 = %{$phygecluster2->get_clusters()};
 my %strains2 = %{$phygecluster2->get_strains()};
 
-my %files2 = $phygecluster2->out_treefile({ rootname => 'treetest2'});
 
 ## 2) PhyGeTopo:
 
@@ -253,25 +247,108 @@ is(join(',', @results), join(',', @exp_results),
 
 my $file0 = $phystats1->_r_infile_topomemb();
 
-## It should not create any file because the phygetopo is empty
+## It should not create any file because the phygetopo is empty, TEST 24
 
-is(-s $file0, 0, 
+is(-s $file0, undef, 
     "Testing _r_infile_topomemb internal function when no file is created")
     or diag("Looks like this has failed");
+
+## Testing the file creation, TEST 25 to 29
 
 $phystats1->set_phygetopo({ 'NJ' => $phygetopo2, 'ML' => $phygetopo1 });
 my $file1 = $phystats1->_r_infile_topomemb();
 
-print STDERR "File is: $file1\n\n";
+my $wrong_coln = 0;
+my $wrong_headers = 0;
+my $wrong_rownames = 0;
+my $wrong_topoformat = 0;
+my $wrong_data_format = 0;
+
 open my $fh, '<', $file1;
+my $l = 0;
 while (<$fh>) {
-    print STDERR $_;
+    my @data = split(/\t/, $_);
+    if (scalar(@data) != 4) {
+	$wrong_coln++;
+    }
+
+    ## Check headers for the first line
+    if ($l == 0) {
+	unless ($_ =~ m/\t"\w+"\t"\w+"\t"Topology"/) {
+	    $wrong_headers++;
+	}
+    }
+    else {
+	my $row_names = shift(@data);
+	my $topologies = pop(@data);
+	
+	unless ($row_names =~ m/"\w+"/) {
+	    $wrong_rownames++;
+	}
+	unless ($topologies =~ m/"\(.+\)"/) {
+	    $wrong_topoformat++;
+	}
+	foreach my $data (@data) {
+	    unless ($data =~ m/^\d+$/) {
+		$wrong_data_format++;
+	    }
+	}
+    }
+    $l++;
 }
 
+is($wrong_coln, 0, 
+    "Testing _r_infile_topomemb internal function, checking col. number")
+    or diag("Looks like this has failed");
+
+is($wrong_headers, 0, 
+    "Testing _r_infile_topomemb internal function, checking headers")
+    or diag("Looks like this has failed");
+
+is($wrong_rownames, 0, 
+    "Testing _r_infile_topomemb internal function, checking row names")
+    or diag("Looks like this has failed");
+
+is($wrong_topoformat, 0, 
+    "Testing _r_infile_topomemb internal function, checking topology format")
+    or diag("Looks like this has failed");
+
+is($wrong_data_format, 0, 
+    "Testing _r_infile_topomemb internal function, checking data format")
+    or diag("Looks like this has failed");
+
+my $r_obj_name = $phystats1->_r_loadfile($file1, 'TopoMembTable');
 
 
+## Check that the object contains the data
 
+$srh2->send("print($r_obj_name)");
+my $topomembtable_r = $srh2->read();
 
+my $r_col_n = 0;
+my $r_row_n = 0;
+my $r_data_n = 0;
+
+my @r_rows = split(/\n/, $topomembtable_r);
+$r_row_n = scalar(@r_rows);
+
+foreach my $r_row (@r_rows) {
+    my @r_data = split(/\s+/, $r_row);
+    $r_col_n = scalar(@r_data);
+    $r_data_n += $r_col_n;
+}
+
+is($r_row_n, 4, 
+    "Testing _r_loadfile internal function, checking row number (4)")
+    or diag("Looks like this has failed");
+
+is($r_col_n, 4, 
+    "Testing _r_loadfile internal function, checking col number (4)")
+    or diag("Looks like this has failed");
+
+is($r_data_n, 16, 
+    "Testing _r_loadfile internal function, checking data number (4x4)")
+    or diag("Looks like this has failed");
 
 
 
