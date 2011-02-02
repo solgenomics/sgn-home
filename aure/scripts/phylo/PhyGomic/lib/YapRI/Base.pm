@@ -33,7 +33,7 @@ $VERSION = eval $VERSION;
 
 =head1 DESCRIPTION
 
- A wrapper to interact with R
+ Another yet perl wrapper to interact with R
 
 
 =head1 AUTHOR
@@ -137,6 +137,14 @@ sub new {
 
     my $resfiles_href = $args{resultfiles} || {}; ## Empty hashref by default  
     $self->set_resultfiles($resfiles_href);
+
+    my $r_optspass = $args{r_opts_pass} || '';  ## Empty scalar by default 
+    if (exists $args{use_defaults}) {
+	$self->set_default_r_opts_pass();
+    }
+    else {
+	$self->set_r_opts_pass($r_optspass);
+    }
 
     return $self;
 }
@@ -645,6 +653,105 @@ sub delete_resultfile {
     remove_tree($outfile);    
 }
 
+=head2 get_r_opts_pass
+
+  Usage: my $r_opts_pass = $rih->get_r_opts_pass(); 
+
+  Desc: Get the r_opts_pass variable (options used with the R command)
+        when run_command function is used
+
+  Ret: $r_opts_pass, a string
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my $r_opts_pass = $rih->get_r_opts_pass(); 
+           if ($r_opts_pass !~ m/vanilla/) {
+              $r_opts_pass .= ' --vanilla';
+           }
+
+=cut
+
+sub get_r_opts_pass {
+    my $self = shift;
+    return $self->{r_opts_pass};
+}
+
+=head2 set_r_opts_pass
+
+  Usage: $rih->set_r_opts_pass($r_opts_pass); 
+
+  Desc: Set the r_opts_pass variable (options used with the R command)
+        when run_command function is used. Use R -help for more info.
+        The most common options used:
+        --save                Do save workspace at the end of the session
+        --no-save             Don't save it
+        --no-environ          Don't read the site and user environment files
+        --no-site-file        Don't read the site-wide Rprofile
+        --no-init-file        Don't read the user R profile
+        --restore             Do restore previously saved objects at startup
+        --no-restore-data     Don't restore previously saved objects
+        --no-restore-history  Don't restore the R history file
+        --no-restore          Don't restore anything
+        --vanilla             Combine --no-save, --no-restore, --no-site-file,
+                              --no-init-file and --no-environ
+        -q, --quiet           Don't print startup message
+        --silent              Same as --quiet
+        --slave               Make R run as quietly as possible
+        --interactive         Force an interactive session
+        --verbose             Print more information about progress
+
+        The only opt that can not be set using set_r_opts_pass is --file, 
+        it is defined by the commands stored as cmdfiles.
+
+  Ret: None
+
+  Args: $r_opts_pass, a string
+
+  Side_Effects: Remove '--file=' from the r_opts_pass string
+
+  Example: $rih->set_r_opts_pass('--verbose');
+
+=cut
+
+sub set_r_opts_pass {
+    my $self = shift;
+    my $r_opts_pass = shift;
+ 
+    if ($r_opts_pass =~ m/(--file=.+)\s*/) {  ## If it exists, remove it
+	carp("WARNING: --file opt. will be ignore for set_r_opts_pass()");
+	$r_opts_pass =~ s/--file=.+\s*/ /g;
+    }
+    
+    $self->{r_opts_pass} = $r_opts_pass;
+}
+
+=head2 set_default_r_opts_pass
+
+  Usage: $rih->set_default_r_opts_pass(); 
+
+  Desc: Set the default r_opts_pass for YapRI::Base (R --slave --vanilla)
+
+  Ret: None
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: $rih->set_default_r_opts_pass(); 
+
+=cut
+
+sub set_default_r_opts_pass {
+    my $self = shift;
+
+    my $def_r_opts_pass = '--slave --vanilla';
+
+    $self->{r_opts_pass} = $def_r_opts_pass;
+}
+
+
 
 ##############################
 ## OUTPUT PARSING FUNCTIONS ##
@@ -818,7 +925,15 @@ sub run_command {
 	debug   => '1|0|yes|no'
 	);
     
-    my $base_cmd = 'R -q';
+    my $base_cmd = 'R ';
+
+    ## Add the running opts
+    my $r_opts_pass = $self->get_r_opts_pass();
+
+    $base_cmd .= $r_opts_pass;
+
+    ## Check args
+
     my %args = ();
     if (defined $args_href) {
 	unless (ref($args_href) eq 'HASH') {
@@ -839,29 +954,38 @@ sub run_command {
 		}
 	    }	    
 	}
-    }
+    }   
     
+    my $err = 'Aborting run_command.';
+
+    ## Check cmddir
+
+    my $cmddir = $self->get_cmddir();
+    unless (defined $cmddir) {
+	croak("ERROR: cmddir isnt set. Result files cannot be created. $err");
+    }
+
     ## Get the cmdfile
     
     my $cmdfile = $args{cmdfile};
     unless (defined $cmdfile) {
 	my ($filename, $fh) = $self->get_default_cmdfile();
-	unless (defined $filename) {
-	    croak("ERROR: No default cmdfile was found. run_command failed.")
+	unless (defined $filename && $filename =~ m/\w+/) {
+	    croak("ERROR: No default cmdfile was found. $err")
 	}
 	else {
 	    $cmdfile = $filename;
+	}
+    }
+    else {
+	unless (-s $cmdfile) {
+	    croak("ERROR: cmdfile=$cmdfile doesnt exist. $err");
 	}
     }
 
     $base_cmd .= " --file=$cmdfile";
 
     ## Create a tempfile to store the results
-
-    my $cmddir = $self->get_cmddir();
-    unless (defined $cmddir) {
-	croak("ERROR: cmddir isnt set. Result file cannot be created");
-    }
     
     my (undef, $resultfile) = tempfile( "RiPerlresult_XXXXXXXX", 
 					DIR => $cmddir,
@@ -880,7 +1004,7 @@ sub run_command {
     
        
     if ($run == 0) {   ## It means success
-	$self->add_resultfile($cmdfile, $resultfile);
+	$self->add_resultfile($cmdfile, $resultfile);	
     }
     else {
 	croak("\nSYSTEM FAILS running R:\n$run\n\n");

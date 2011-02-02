@@ -31,9 +31,12 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 58;
+use Test::More tests => 70;
 use Test::Exception;
+use Test::Warn;
+
 use File::stat;
+use Image::Size;
 use Cwd;
 
 use FindBin;
@@ -45,10 +48,14 @@ BEGIN {
     use_ok('YapRI::Base');
 }
 
+## Add the object created to an array to clean them at the end of the script
+
+my @rih_objs = ();
 
 ## Create an empty object and test the possible die functions. TEST 2 to 6
 
 my $rih0 = YapRI::Base->new();
+push @rih_objs, $rih0;
 
 is(ref($rih0), 'YapRI::Base', 
    "Test new function for an empty object; Checking object ref.")
@@ -216,6 +223,7 @@ throws_ok { $rih0->add_default_cmdfile() } qr/ERROR: Default/,
 ### TESTING add_commands, TEST 32 to 40
 
 my $rih1 = YapRI::Base->new({ use_defaults => 1 });
+push @rih_objs, $rih1;
 
 my @r_commands = (
     'x <- c(2)',
@@ -352,20 +360,129 @@ throws_ok { $rih1->add_resultfile({ $def_cmdfile, 'fake'}) } qr/resultfile/,
     'TESTING DIE ERROR when resultfile used for add_resultfile doesnt exist';
 
 
+## Test accessors for r_opts_pass
+
+$rih1->set_r_opts_pass('--verbose');
+my $r_opts_pass = $rih1->get_r_opts_pass();
+
+is($r_opts_pass, '--verbose', 
+    "testing get/set_r_opts_pass, checking r_opts_pass variable")
+    or diag("Looks like this has failed");
+
+warning_like { $rih1->set_r_opts_pass('--slave --vanilla --file=test') } 
+qr/WARNING: --file/i, 
+    "TESTING WARNING when --file= is used for set_r_opts_pass";
+    
+
 ##########################
 ## TEST RUNNING COMMAND ##
 ##########################
 
+## Lets create a new object to test something more complex
+
+my $rih2 = YapRI::Base->new({ use_defaults => 1 });
+push @rih_objs, $rih2;
+
+## Add the commands to enable a graph device and check that it exists
+
+my $grfile1 = $rih2->get_cmddir() . "/TestMyGraph.bmp";
+$rih2->add_command('bmp(filename="' . $grfile1 . '", width=600, height=800)');
+$rih2->add_command('dev.list()');
+$rih2->add_command('plot(c(1, 5, 10), type = "l")');
+$rih2->add_command('dev.off()');
+
+## Get the command file, and run it
+
+my ($def_cmdfile2, $fh_cmdfh2) = $rih2->get_default_cmdfile();
+$rih2->run_command({ debug => 0, cmdfile => $def_cmdfile2});
+
+## Get the file
+
+my $get_result_file2 = $rih2->get_resultfiles($def_cmdfile2);
+
+## So, it will check different things, TEST 61
+## 1) Does the output (result file) have the right data ?
+##    It should contains: 
+##    bmp            ## For bmp enable
+##      2
+##    null device    ## For bmp disable
+##              1
+
+my $filecontent_check = 0;
+open my $check_fh1, '<', $get_result_file2;
+while(<$check_fh1>) {
+    if ($_ =~ m/bmp|null device|\s+1|\s+2/) {
+	$filecontent_check++; 
+    }
+}
+
+is($filecontent_check, 4, 
+    "testing run_command, checking result file content")
+    or diag("Looks like this has failed");
+
+## Now it will check that the image file was created
+## with the right size
+
+## Put the image in the Image object, TEST 62 and 63
+
+my ($img_x, $img_y) = Image::Size::imgsize($grfile1);
+
+is($img_x, 600, 
+    "testing run_command, checking image size (width)")
+    or diag("Looks like this has failed");
+
+is($img_y, 800, 
+    "testing run_command, checking image size (heigth)")
+    or diag("Looks like this has failed");
+
+## Check die for run_command
+
+throws_ok  { $rih2->run_command('fake') } qr/ERROR: Arg. used/, 
+    'TESTING DIE ERROR when arg. used for run_command isnt a HASHREF';
+
+throws_ok  { $rih2->run_command({ fake => 1}) } qr/ERROR: Key=fake/, 
+    'TESTING DIE ERROR when key arg. used for run_command isnt valid';
+
+throws_ok  { $rih2->run_command({ debug => 'please'}) } qr/ERROR: Value=pl/, 
+    'TESTING DIE ERROR when value arg. used for run_command isnt valid';
+
+throws_ok  { $rih2->run_command({ cmdfile => 'fake'}) } qr/ERROR: cmdfile=/, 
+    'TESTING DIE ERROR when cmdfile used for run_command doesnt exist';
+
+$rih2->cleanup();
+
+throws_ok  { $rih2->run_command() } qr/ERROR: cmddir isnt set/, 
+    'TESTING DIE ERROR when cmddir doesnt exist for run_command';
+
+$rih2->set_default_cmddir(); 
+
+throws_ok  { $rih2->run_command() } qr/ERROR: No default cmdfile/, 
+    'TESTING DIE ERROR when no default cmdfile exists for run_command doesnt';
+
+$rih2->add_default_cmdfile(); 
+
+$rih2->add_command('bmp(filename="' . $grfile1 . '", width=600, height=800)');
+$rih2->add_command('dev.list()');
+
+##Add a non-specified file will make the command fail
+
+$rih2->set_r_opts_pass('--file=');
+
+throws_ok  { $rih2->run_command() } qr/SYSTEM FAILS running R/, 
+    'TESTING DIE ERROR when system fail running run_command function';
+
+$rih2->set_r_opts_pass('--slave --vanilla');
 
 
-my ($def_cmdfile12, $def_cmdfh12)  = $rih1->get_default_cmdfile();
-$rih1->run_command({ cmdfile => $def_cmdfile});
-my $get_resultfile12 = $rih1->get_resultfiles($def_cmdfile12);
-my $t = `cat $get_resultfile12`;
-print STDERR "TEST:\n$t\n";
 
+##############################################################
+## Finally it will clean the files produced during the test ##
+##############################################################
 
-
+foreach my $clean_rih (@rih_objs) {
+    $clean_rih->cleanup()
+}
+  
 ####
 1; #
 ####
