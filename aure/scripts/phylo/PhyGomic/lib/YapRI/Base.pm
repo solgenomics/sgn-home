@@ -1,5 +1,5 @@
 
-package RI::Base;
+package YapRI::Base;
 
 use strict;
 use warnings;
@@ -18,7 +18,7 @@ use File::stat;
 
 =head1 NAME
 
-RI::Base.pm
+YapRI::Base.pm
 A wrapper to interact with R/
 
 =cut
@@ -55,11 +55,11 @@ The following class methods are implemented:
 
 =head2 constructor new
 
-  Usage: my $rih = RI::Base->new($arguments_href);
+  Usage: my $rih = YapRI::Base->new($arguments_href);
 
   Desc: Create a new R interfase object.
 
-  Ret: a RI::Base object
+  Ret: a YapRI::Base object
 
   Args: A hash reference with the following parameters:
         tempdir => $tempdir to store the files
@@ -81,6 +81,7 @@ sub new {
     my %permargs = (
 	cmddir       => '\w+',
 	cmdfiles     => {},
+	r_opts_pass  => '-{1,2}\w+',
 	use_defaults => '1|yes|',
 	);
 
@@ -122,7 +123,7 @@ sub new {
 
     ## Set the dir to put all the commands
 
-    my $cmddir = $args{cmddir} || '';  ## Empty var bu default
+    my $cmddir = $args{cmddir} || '';  ## Empty var by default
     $self->set_cmddir($cmddir);
     if (exists $args{use_defaults}) {
 	$self->set_default_cmddir();
@@ -855,7 +856,7 @@ sub run_command {
 
     $base_cmd .= " --file=$cmdfile";
 
-    ## Create a tempfile tp store the results
+    ## Create a tempfile to store the results
 
     my $cmddir = $self->get_cmddir();
     unless (defined $cmddir) {
@@ -877,7 +878,6 @@ sub run_command {
 
     my $run = system($base_cmd);
     
-
        
     if ($run == 0) {   ## It means success
 	$self->add_resultfile($cmdfile, $resultfile);

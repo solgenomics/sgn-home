@@ -3,7 +3,7 @@
 =head1 NAME
 
   base.t
-  A piece of code to test the RI::Base module used 
+  A piece of code to test the YapRI::Base module used 
   for PhylGomic pipeline
 
 =cut
@@ -15,7 +15,7 @@
 
 =head1 DESCRIPTION
 
- Test RI::Base module used by PhylGomic pipeline.
+ Test YapRI::Base module used by PhylGomic pipeline.
 
 =cut
 
@@ -42,31 +42,31 @@ use lib "$FindBin::Bin/../lib";
 ## TEST 1
 
 BEGIN {
-    use_ok('RI::Base');
+    use_ok('YapRI::Base');
 }
 
 
 ## Create an empty object and test the possible die functions. TEST 2 to 6
 
-my $rih0 = RI::Base->new();
+my $rih0 = YapRI::Base->new();
 
-is(ref($rih0), 'RI::Base', 
+is(ref($rih0), 'YapRI::Base', 
    "Test new function for an empty object; Checking object ref.")
     or diag("Looks like this has failed");
 
 ## By default it will create an empty temp dir
 
 
-throws_ok { RI::Base->new(['fake']) } qr/ARGUMENT ERROR: Arg./, 
+throws_ok { YapRI::Base->new(['fake']) } qr/ARGUMENT ERROR: Arg./, 
     'TESTING DIE ERROR when arg. supplied new() function is not hash ref.';
 
-throws_ok { RI::Base->new({ fake => {} }) } qr/ARGUMENT ERROR: fake/, 
+throws_ok { YapRI::Base->new({ fake => {} }) } qr/ARGUMENT ERROR: fake/, 
     'TESTING DIE ERROR for new() when arg. is not a permited arg.';
 
-throws_ok { RI::Base->new({ cmddir => undef }) } qr/ARGUMENT ERROR: value/, 
+throws_ok { YapRI::Base->new({ cmddir => undef }) } qr/ARGUMENT ERROR: value/, 
     'TESTING DIE ERROR for new() when arg. has undef value';
 
-throws_ok { RI::Base->new({ cmdfiles => []}) } qr/ARGUMENT ERROR: ARRAY/, 
+throws_ok { YapRI::Base->new({ cmdfiles => []}) } qr/ARGUMENT ERROR: ARRAY/, 
     'TESTING DIE ERROR for new() when arg. doesnt have permited value';
 
 
@@ -215,7 +215,7 @@ throws_ok { $rih0->add_default_cmdfile() } qr/ERROR: Default/,
 
 ### TESTING add_commands, TEST 32 to 40
 
-my $rih1 = RI::Base->new({ use_defaults => 1 });
+my $rih1 = YapRI::Base->new({ use_defaults => 1 });
 
 my @r_commands = (
     'x <- c(2)',
@@ -358,8 +358,11 @@ throws_ok { $rih1->add_resultfile({ $def_cmdfile, 'fake'}) } qr/resultfile/,
 
 
 
-
-$rih1->run_command();
+my ($def_cmdfile12, $def_cmdfh12)  = $rih1->get_default_cmdfile();
+$rih1->run_command({ cmdfile => $def_cmdfile});
+my $get_resultfile12 = $rih1->get_resultfiles($def_cmdfile12);
+my $t = `cat $get_resultfile12`;
+print STDERR "TEST:\n$t\n";
 
 
 
