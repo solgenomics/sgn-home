@@ -40,40 +40,38 @@ $VERSION = eval $VERSION;
  
   $rih->run_command();
   
-  my %results = $rih->get_resultfile();
+  my $result_file = $rih->get_resultfiles('default');
 
 
 
   ## WORKING WITH COMMAND BLOCKS:
 
   my $rih = YapRI::Base->new();
-  my $cmddir = $rih->get_cmddir(); 
 
   ## Create a file-block_1
 
-  my ($bl1_fh, $bl1) = tempfile("block1", DIR => $cmddir);
-  $rih->add_cmdfile($bl1, $bl1_fh);
-  $rih->add_command('x <- c(10, 9, 8, 5)', $bl1);
-  $rih->add_command('z <- c(12, 8, 8, 4)', $bl1);
-  $rih->add_command('x + z', $bl1)
+  $rih->add_cmdfile('BLOCK1');
+  $rih->add_command('x <- c(10, 9, 8, 5)', 'BLOCK1');
+  $rih->add_command('z <- c(12, 8, 8, 4)', 'BLOCK1');
+  $rih->add_command('x + z', 'BLOCK1')
   
   ## Create a file-block_2
- 
-  my ($bl2_fh, $bl2) = tempfile("block2", DIR => $cmddir);
-  $rih->add_cmdfile($bl2, $bl2_fh);   
-  $rih->add_command('bmp(filename="myfile.bmp", width=600, height=800)', $bl2);
-  $rih->add_command('dev.list()', $bl2);
-  $rih->add_command('plot(c(1, 5, 10), type = "l")', $bl2);
+
+  $rih->add_cmdfile('BLOCK2');   
+  $rih->add_command('bmp(filename="myfile.bmp", width=600, height=800)', 
+                    'BLOCK2');
+  $rih->add_command('dev.list()', 'BLOCK2');
+  $rih->add_command('plot(c(1, 5, 10), type = "l")', 'BLOCK2');
   
   ## Run each block
 
-  $rih->run_command({ cmdfile => $bl1 });
-  $rih->run_command({ cmdfile => $bl2 });
+  $rih->run_command({ alias => 'BLOCK1' });
+  $rih->run_command({ alias => 'BLOCK2' });
 
   ## Get the results
 
-   my $resultfile1 = $rih->get_resultfiles($bl1);
-   my $resultfile2 = $rih->get_resultfiles($bl2);
+   my $resultfile1 = $rih->get_resultfiles('BLOCK1');
+   my $resultfile2 = $rih->get_resultfiles('BLOCK2');
 
 
 =head1 DESCRIPTION
@@ -98,6 +96,11 @@ The following class methods are implemented:
 ### GENERAL CONSTRUCTORS ###
 ############################
 
+=head1 (*) CONSTRUCTORS:
+
+=head2 ---------------
+
+
 =head2 constructor new
 
   Usage: my $rih = YapRI::Base->new($arguments_href);
@@ -107,13 +110,30 @@ The following class methods are implemented:
   Ret: a YapRI::Base object
 
   Args: A hash reference with the following parameters:
-        tempdir => $tempdir to store the files
-        
+        cmddir       => A string, a dir to store the command files
+        cmdfiles     => A hash ref. with pair key=alias, value=filename
+        r_opts_pass  => A string with the R options passed to run_command
+        use_defaults => 0|No to disable the default values.
         
   Side_Effects: Die if the argument used is not a hash or its values arent 
                 right.
+                By default it will use set_default_cmddir(), 
+                add_default_cmdfile() and set_default_r_opts_pass();
 
-  Example: 
+  Example: ## Default method:
+              my $rih = YapRI::Base->new();
+          
+           ## Create an empty object
+              my $rih = YapRI::Base->new({ use_defaults => 0 });
+
+           ## Defining own dir and command file
+              
+              my $rcmd_file = '/home/user/R/myRfile.txt';
+              open my $rfh, '>', $rcmd_file;
+              my $rih = YapRI::Base->new({ 
+                                            cmddir   => '/home/user/R',
+                                            cmdfiles => { $rcmd_file => $rfh },
+                                         });
 
 =cut
 
@@ -127,7 +147,7 @@ sub new {
 	cmddir       => '\w+',
 	cmdfiles     => {},
 	r_opts_pass  => '-{1,2}\w+',
-	use_defaults => '1|yes|',
+	use_defaults => '0|1|no|yes|',
 	);
 
     ## Check variables.
@@ -165,18 +185,22 @@ sub new {
 	}
     }
 
+    my $defs = 1;
+    if (defined $args{use_defaults}) {
+	$defs = $args{use_defaults};
+    }
 
     ## Set the dir to put all the commands
 
     my $cmddir = $args{cmddir} || '';  ## Empty var by default
     $self->set_cmddir($cmddir);
-    if (exists $args{use_defaults}) {
+    if ($defs =~ m/^[1|yes]$/i) {
 	$self->set_default_cmddir();
     }
 
     my $cmdfiles_href = $args{cmdfiles} || {}; ## Empty hashref by default  
     $self->set_cmdfiles($cmdfiles_href);
-    if (exists $args{use_defaults}) {
+    if ($defs =~ m/^[1|yes]$/i) {
 	$self->add_default_cmdfile();
     }
 
@@ -184,7 +208,7 @@ sub new {
     $self->set_resultfiles($resfiles_href);
 
     my $r_optspass = $args{r_opts_pass} || '';  ## Empty scalar by default 
-    if (exists $args{use_defaults}) {
+    if ($defs =~ m/^[1|yes]$/i) {
 	$self->set_default_r_opts_pass();
     }
     else {
@@ -214,14 +238,11 @@ sub new {
 sub cleanup {
     my $self = shift;
 
-    ## First close all the filehandles and remove the file hash from the object
+    ## First delete the files and remove the file hash from the object
 
     my %cmdfiles = %{$self->get_cmdfiles()};
-    foreach my $file (keys %cmdfiles) {
-	my $fh = $cmdfiles{$file};
-	if (fileno($fh)) {
-	    close($fh);
-	}
+    foreach my $alias (keys %cmdfiles) {
+	$self->delete_cmdfile($alias); 
     }
     
     $self->set_cmdfiles({});
@@ -238,6 +259,10 @@ sub cleanup {
 #################
 ### ACCESSORS ###
 #################
+
+=head1 (*) ACCESSORS:
+
+=head2 ------------
 
 =head2 get_cmddir
 
@@ -342,7 +367,13 @@ sub delete_cmddir {
 
     my $cmddir = $self->get_cmddir();
     remove_tree($cmddir);
-    return (delete($self->{cmddir}));
+    
+    delete($self->{cmddir});
+
+    ## Set an empty variable
+    $self->set_cmddir('');
+
+    return $cmddir;
 }
 
 =head2 get_cmdfiles
@@ -351,23 +382,23 @@ sub delete_cmddir {
 
   Desc: Get the command files used by the r interfase object
 
-  Ret: $filesdir_href, a hash reference with key=filename and value=fh
+  Ret: $filesdir_href, a hash reference with key=alias and value=filename
 
-  Args: $filename [optional]
+  Args: $alias [optional]
 
   Side_Effects: None
 
   Example: my %cmdfiles = %{$rih->get_cmdfiles()};
-           my $cmdfh = $rih->get_cmdfiles($filename);
+           my $block1_file = $rih->get_cmdfiles('block1');
 
 =cut
 
 sub get_cmdfiles {
     my $self = shift;
-    my $filename = shift;
+    my $alias = shift;
 
-    if (defined $filename) {
-	return $self->{cmdfiles}->{$filename};
+    if (defined $alias) {
+	return $self->{cmdfiles}->{$alias};
     }
     else { 
 	return $self->{cmdfiles};
@@ -376,30 +407,24 @@ sub get_cmdfiles {
 
 =head2 get_default_cmdfile
 
-  Usage: my ($filename, $fh) = $rih->get_default_cmdfile(); 
+  Usage: my $filename = $rih->get_default_cmdfile(); 
 
   Desc: Get the command default file used by the r interfase object
 
   Ret: $filename, default filename
-       $fh, default fh
 
   Args: None
 
   Side_Effects: None
 
-  Example: my ($filename, $fh) = $rih->get_default_cmdfile(); 
+  Example: my $filename = $rih->get_default_cmdfile(); 
 
 =cut
 
 sub get_default_cmdfile {
     my $self = shift;
     
-    my %cmdfiles = %{$self->get_cmdfiles()};
-    foreach my $file (keys %cmdfiles) {
-	if ($file =~ m/RiPerlcmd/) {
-	    return ($file, $cmdfiles{$file});
-	}
-    }
+    return $self->get_cmdfiles('default');
 }
 
 
@@ -411,7 +436,7 @@ sub get_default_cmdfile {
 
   Ret: None
 
-  Args: $cmdfile_hashref, an hash reference with key=filename and value=fh
+  Args: $cmdfile_hashref, an hash reference with key=alias and value=filename
 
   Side_Effects: Die if no argument is used.
                 Die if the argument is not a hash reference
@@ -424,21 +449,17 @@ sub get_default_cmdfile {
 sub set_cmdfiles {
     my $self = shift;
     my $cmdfiles_href = shift ||
-	croak("ERROR: No cmdfile argument was used for set_cmdfiles function");
+	croak("ERROR: No argument was used for set_cmdfiles function");
 
     unless(ref($cmdfiles_href) eq 'HASH') {
 	croak("ERROR: cmdfiles arg. used for set_cmdfiles isnt a hashref.");
     }
     else {
-	foreach my $filename (keys %{$cmdfiles_href}) {
-
+	foreach my $alias (keys %{$cmdfiles_href}) {
+	    
+	    my $filename = $cmdfiles_href->{$alias};
 	    unless (-f $filename) {
-		croak("ERROR: cmdfiles key=$filename doesnt exist");
-	    }
-
-	    my $fh = $cmdfiles_href->{$filename};
-	    unless (ref($fh) eq 'GLOB') {
-		croak("ERROR: cmdfiles value=$fh isnt a FILEHANDLE.");
+		croak("ERROR: cmdfiles value=$filename doesnt exist");
 	    }
 	}
     }
@@ -448,39 +469,54 @@ sub set_cmdfiles {
 
 =head2 add_cmdfile
 
-  Usage: $rih->add_cmdfile($filename, $fh); 
+  Usage: $rih->add_cmdfile($alias, $filename); 
 
   Desc: Add a new the command file for the r interfase object
 
   Ret: None
 
-  Args: $filename, a scalar
-        $fh, a filehandle
+  Args: $alias, a scalar
+        $filename, a scalar [optional]
 
   Side_Effects: Die if no argument is used.
-                Die if the filehandle is not a filehandle
+                Die if the filename supplied doesnt exist.
+                Die if the alias used exist in the object
+                Create a file in the cmddir if the $filename isnt supplied
 
-  Example: $rih->add_cmdfile($filename, $fh); 
+  Example: $rih->add_cmdfile('block1', '/home/user/R/block1.txt');
+           $rih->add_cmdfile('block1'); 
 
 =cut
 
 sub add_cmdfile {
     my $self = shift;
-    my $filename = shift ||
-	croak("ERROR: No filename argument was used for add_cmdfile function");
-
-    unless (-f $filename) {
-	 croak("ERROR: cmdfile $filename doesnt exist");
+    my $alias = shift ||
+	croak("ERROR: No alias argument was used for add_cmdfile function");
+    
+    my $filename = shift;
+    
+    if (exists $self->{cmdfiles}->{$alias}) {
+	croak("ERROR: alias=$alias exists into $self, add_cmdfile failed");
     }
 
-    my $fh = shift ||
-	croak("ERROR: No filehandle arg. was used for add_cmdfile function");
-
-    unless (ref($fh) eq 'GLOB') {
-	croak("ERROR: cmdfiles value=$fh isnt a FILEHANDLE.");
+    if (defined $filename) {
+	unless (-f $filename) {
+	    croak("ERROR: cmdfile=$filename doesnt exist");
+	}
+    }
+    else {
+	my $cmddir = $self->get_cmddir();
+	unless ($cmddir =~ m/\w+/) {
+	    croak("ERROR: new cmdfile cant be created if cmddir isnt set");
+	}
+	(undef, $filename) = tempfile("RiPerlcmd_XXXXXXXX", 
+				      DIR  => $cmddir, 
+				      OPEN => 0,
+	    );
     }
     
-    $self->{cmdfiles}->{$filename} = $fh;
+    
+    $self->{cmdfiles}->{$alias} = $filename;
 }
 
 =head2 add_default_cmdfile
@@ -507,53 +543,56 @@ sub add_default_cmdfile {
 
     ## First, check there are any default file
 
-    my ($filename, $fh) = $self->get_default_cmdfile();
+    my $filename = $self->get_default_cmdfile();
 
     ## Second create a default file
 
-    if (defined $filename) {
+    unless (defined $filename) {
+	
 	my $cmddir = $self->get_cmddir();
-	unless (defined $cmddir) {
+	unless ($cmddir =~ m/\w+/) {
 	    croak("ERROR: Default cmdfile cant be created if cmddir isnt set");
 	}
-	($fh, $filename) = tempfile("RiPerlcmd_XXXXXXXX", DIR => $cmddir);
-	$self->add_cmdfile($filename, $fh);
+	
+	## Create the file and close the fh
+
+	(my $fh, $filename) = tempfile("RiPerlcmd_XXXXXXXX", DIR => $cmddir);
+	close($fh);
+	$self->add_cmdfile('default', $filename);
+    }
+    else {
+	carp("WARNING: Default cmdfile was created before. Skipping function.");
     }
 }
 
 =head2 delete_cmdfile
 
-  Usage: $rih->delete_cmdfile($filename); 
+  Usage: $rih->delete_cmdfile($alias); 
 
   Desc: Delete a new the command file for the r interfase object, close the
         fh and delete the file.
 
   Ret: None
 
-  Args: $filename, a scalar
+  Args: $alias, a scalar
 
   Side_Effects: Die if no argument is used.
 
-  Example: $rih->delete_cmdfile($filename);
+  Example: $rih->delete_cmdfile($alias);
 
 =cut
 
 sub delete_cmdfile {
     my $self = shift;
-    my $filename = shift ||
-	croak("ERROR: No filename argument was used for delete_cmdfile");
+    my $alias = shift ||
+	croak("ERROR: No alias argument was used for delete_cmdfile");
 
     ## 1) delete from the object
 
-    my $fh = delete($self->{cmdfiles}->{$filename});
+    my $filename = delete($self->{cmdfiles}->{$alias});
 
-    ## 2) close the fh if it is opened
+    ## 2) delete the file
 
-    if (fileno($fh)) {
-	close($fh);
-    }
-
-    ## 3) delete the file from the system
     remove_tree($filename);    
 }
 
@@ -565,21 +604,21 @@ sub delete_cmdfile {
 
   Ret: $result_href, a hash reference with key=filename and value=resultfile
 
-  Args: $filename [optional]
+  Args: $alias [optional]
 
   Side_Effects: None
 
   Example: my %resfiles = %{$rih->get_resultfiles()};
-           my $resultfile = $rih->get_resultfiles($filename);
+           my $resultfile = $rih->get_resultfiles($alias);
 
 =cut
 
 sub get_resultfiles {
     my $self = shift;
-    my $filename = shift;
+    my $alias = shift;
 
-    if (defined $filename) {
-	return $self->{resultfiles}->{$filename};
+    if (defined $alias) {
+	return $self->{resultfiles}->{$alias};
     }
     else { 
 	return $self->{resultfiles};
@@ -595,7 +634,7 @@ sub get_resultfiles {
 
   Ret: None
 
-  Args: $resfile_hashref, an hash reference with key=filename and 
+  Args: $resfile_hashref, an hash reference with key=alias and 
         value=resultfile
 
   Side_Effects: Die if no argument is used.
@@ -615,15 +654,22 @@ sub set_resultfiles {
 	croak("ERROR: resultfiles used for set_resultfiles isnt a hashref.");
     }
     else {
-	foreach my $filename (keys %{$resfiles_href}) {
+	foreach my $alias (keys %{$resfiles_href}) {
 
-	    unless (-f $filename) {
-		croak("ERROR: cmdfiles key=$filename doesnt exist");
+	    my $cfil = $self->get_cmdfiles($alias);
+	    unless (defined $cfil) {
+		croak("ERROR: alias=$alias doesnt exist associated w. cmdfile");
 	    }
+	    else {
 
-	    my $resultfile = $resfiles_href->{$filename};
-	    unless (-f $resultfile) {
-		croak("ERROR: resultfile $resultfile doesnt exist");
+		unless (-f $cfil) {
+		    croak("ERROR: cmdfile=$cfil for alias=$alias doesnt exist");
+		}
+		
+		my $rfil = $resfiles_href->{$alias};
+		unless (-f $rfil) {
+		    croak("ERROR: resultfile=$rfil for $alias doesnt exist");
+		}
 	    }
 	}
     }
@@ -633,29 +679,37 @@ sub set_resultfiles {
 
 =head2 add_resultfile
 
-  Usage: $rih->add_resultfile($filename, $outfile); 
+  Usage: $rih->add_resultfile($alias, $outfile); 
 
-  Desc: Add a new resultfile associated to a cmdfile
+  Desc: Add a new resultfile associated to an alias
 
   Ret: None
 
-  Args: $filename, a scalar with a filepath
+  Args: $alias, a scalar
         $outfile, a scalar with a filepath
 
   Side_Effects: Die if no argument is used.
-                Die if doesnt exists the outfile
+                Die if doesnt exists the outfile, or
+                the infile associated with this alias
 
-  Example: $rih->add_cmdfile($filename, $fh); 
+  Example: $rih->add_cmdfile('block1', $filename); 
 
 =cut
 
 sub add_resultfile {
     my $self = shift;
-    my $filename = shift ||
+    my $alias = shift ||
 	croak("ERROR: No filename arg. was used for add_resultfile function");
 
-    unless (-f $filename) {
-	 croak("ERROR: cmdfile $filename doesnt exist for add_resultfile");
+    my $filename = $self->get_cmdfiles($alias);
+
+    unless (defined $filename) {
+	croak("ERROR: $alias wasnt created or doesnt have cmdfile associated.");
+    }
+    else {
+	unless (-f $filename) {
+	    croak("ERROR: cmdfile=$filename for alias=$alias doesnt exist");
+	}
     }
 
     my $outfile = shift ||
@@ -665,34 +719,34 @@ sub add_resultfile {
 	 croak("ERROR: resultfile $outfile doesnt exist for add_resultfile");
     }
     
-    $self->{resultfiles}->{$filename} = $outfile;
+    $self->{resultfiles}->{$alias} = $outfile;
 }
 
 
 =head2 delete_resultfile
 
-  Usage: $rih->result_cmdfile($filename); 
+  Usage: $rih->result_cmdfile($alias); 
 
   Desc: Delete a result file associated with a cmdfile
 
   Ret: None
 
-  Args: $filename, a scalar
+  Args: $alias, a scalar
 
   Side_Effects: Die if no argument is used.
 
-  Example: $rih->delete_resultfile($filename);
+  Example: $rih->delete_resultfile($alias);
 
 =cut
 
 sub delete_resultfile {
     my $self = shift;
-    my $filename = shift ||
-	croak("ERROR: No filename argument was used for delete_resultfile");
+    my $alias = shift ||
+	croak("ERROR: No alias argument was used for delete_resultfile");
 
     ## 1) delete from the object
 
-    my $outfile = delete($self->{resultfiles}->{$filename});
+    my $outfile = delete($self->{resultfiles}->{$alias});
 
     ## 3) delete the file from the system
     remove_tree($outfile);    
@@ -798,74 +852,32 @@ sub set_default_r_opts_pass {
 
 
 
-##############################
-## OUTPUT PARSING FUNCTIONS ##
-##############################
-
-=head parse_result 
-
-  Usage: my %outparse = $rih->parse_result($resultfile); 
-
-  Desc: Parse the output and return an hash with:
-        key   => r_command line from cmdfile
-        value => hashref with key=>line_number and value=value
-                 or undef if the r_command did give an output
-
-  Ret: A result hash (see description)
-
-  Args: $resultfile, the resultfilename 
-
-  Side_Effects: Die if resultfile doesnt exist or undef value is used
-
-  Example: my %outparse = $rih->parse_result($resultfile); 
-           my $result = $outparse{'y * x'};
-
-=cut
-
-sub parse_result {
-    my $self = shift;
-    my $resultfile = shift ||
-	croak("ERROR: No result file was supplied to parse_result");
-
-    unless (defined -f $resultfile) {
-	croak("ERROR: $resultfile supplied to parse_result doesnt exist");
-    }
-
-    open my $rfh, '<', $resultfile;
-
-    my %results = ();
-
-    while(<$rfh>) {
-	chomp($_);       
-    }
-}
-
-
-
-
-
-
-
 #################
 ## CMD OPTIONS ##
 #################
 
+=head1 (*) COMMAND METHODS:
+
+=head2 ------------------
+
 =head2 add_command
 
-  Usage: $rih->add_command($r_command, $filename); 
+  Usage: $rih->add_command($r_command, $alias); 
 
-  Desc: Add a R command line to a cmdfile.
-        If a filename is specified the command line will be added to a 
-        concrete $filename in the base object
+  Desc: Add a R command line to a cmdfile associated with an alias.
+        If no filename is used, it will added to the default cmdfile.
 
   Ret: None
 
   Args: $r_command, a string with a R command
-        $filename, a cmdfile to add the command
+        $alias, a alias with a cmdfile to add the command
 
-  Side_Effects: Add the command to the default if no filename is specified
+  Side_Effects: Die if the alias used doesnt exist or doesnt have cmdfile
+                Add the command to the default if no filename is specified,
+                if doesnt exist default cmdfile, it will create it.
 
   Example: $rih->add_command('x <- c(10, 9, 8, 5)')
+           $rih->add_command('x <- c(10, 9, 8, 5)', 'block1')
 
 =cut
 
@@ -873,75 +885,79 @@ sub add_command {
     my $self = shift;
     my $command = shift ||
 	croak("ERROR: No command line was added to add_command function");
-    my $cmdfile = shift;
+    my $alias = shift;
 
-    my ($fh, $filename);
-    if (defined $cmdfile) {
-	$fh = $self->get_cmdfiles($cmdfile);
+    my $filename;
+    if (defined $alias) {
+	$filename = $self->get_cmdfiles($alias);
+	unless (defined $filename) {
+	    my $err = "ERROR: alias=$alias doesnt exist or havent cmdfile. ";
+	    croak("$err. Aborting add_command().");
+	}
     }
     else {
-	($filename, $fh) = $self->get_default_cmdfile();
+	$filename = $self->get_default_cmdfile();
 	unless (defined $filename) {
 	    $self->add_default_cmdfile();
-	    ($filename, $fh) = $self->get_default_cmdfile();
+	    $filename = $self->get_default_cmdfile();
 	}
     }
+   
+    ## Open as , add and close the file
 
-    unless(defined $fh) {
-	croak("ERROR: No filehandle is associated with the filename used");
-    }
-    else {
-	if (eof($fh) == 1) { ## If the filehandle is close, reopen
-	    open $fh, '+>>', $filename;
-	}
-	print $fh "$command\n";
-    }
+    open my $fh, '>>', $filename;	
+    print $fh "$command\n";
+    close($fh);   
 }
 
 =head2 get_commands
 
-  Usage: my @commands = $rih->get_commands($filename); 
+  Usage: my @commands = $rih->get_commands($alias); 
 
-  Desc: Read the $filename and rerun
+  Desc: Read the cmdfile associated with an $alias
 
   Ret: None
 
-  Args: $filename, a cmdfile to add the command
+  Args: $alias, with a cmdfile associated.
 
-  Side_Effects: None
+  Side_Effects: Die if $alias doesnt exist or doesnt have cmdfile
+                Get commands for default file, by default
 
-  Example: my @commands = $rih->get_commands($filename); 
+  Example: my @commands = $rih->get_commands('block1');
+           my @def_commands = $rih->get_commands(); 
 
 =cut
 
 sub get_commands {
     my $self = shift;
-    my $cmdfile = shift;
+    my $alias = shift;
 
     my @commands = ();
-    my ($filename, $fh);
-    unless (defined $cmdfile) {
-	($filename, $fh) =  $self->get_default_cmdfile();
+
+    ## Get the filename from default or the alias
+    
+    my $filename;
+    unless (defined $alias) {
+	$filename =  $self->get_default_cmdfile();
     }
     else {
-	$fh = $self->get_cmdfiles($cmdfile);
+	$filename = $self->get_cmdfiles($alias);
+	unless (defined $filename) {
+	    croak("ERROR: alias=$alias wasnt created or doesnt have cmdfile.");
+	}	
     }
 
-    unless(defined $fh) {
-	croak("ERROR: No filehandle is associated with the filename used");
+    ## Open and read
+
+    open my $fh, '+<', $filename;
+    while(<$fh>) {
+	chomp($_);
+	push @commands, $_;
     }
-    else {
-	unless (eof($fh)) { ## If the filehandle is open
-	    seek($fh, 0, 1);
-	}
-	else {  ## If the filehandle is closed
-	    open $fh, '+<', $filename;
-	}
-	while(<$fh>) {
-	    chomp($_);
-	    push @commands, $_;
-	}
-    }
+
+    ## It can be used later... close it
+    close($fh);
+
     return @commands;
 }
 
@@ -953,9 +969,16 @@ sub get_commands {
 
   Ret: None
 
-  Args: $args_href with the following keys/values pair
+  Args: $args_href with the following keys/values pair:
+        cmdfile => a straing, a cmdfile to execute R comands
+        alias   => a string, an alias with a cmdfile associated
+        debug   => a scalar, 1 or yes to print R command
 
-  Side_Effects: None
+  Side_Effects: Die if the wrong args. are used, or if the alias used doesnt
+                exist.
+                When cmdfile and alias are used at the same time, alias will
+                be ignore.
+                It will run default cmdfile if no cmdfile or alias is used.
 
   Example: $rih->run_command($args_href); 
 
@@ -966,8 +989,9 @@ sub run_command {
     my $args_href = shift;
 
     my %permargs = (
-	cmdfile => '\w+',
-	debug   => '1|0|yes|no'
+	alias   => '\w+',
+        cmdfile => '\w+',
+	debug   => '1|0|yes|no',
 	);
     
     my $base_cmd = 'R ';
@@ -1006,28 +1030,42 @@ sub run_command {
     ## Check cmddir
 
     my $cmddir = $self->get_cmddir();
-    unless (defined $cmddir) {
+    unless ($cmddir =~ m/\w+/) {
 	croak("ERROR: cmddir isnt set. Result files cannot be created. $err");
     }
 
     ## Get the cmdfile
-    
-    my $cmdfile = $args{cmdfile};
-    unless (defined $cmdfile) {
-	my ($filename, $fh) = $self->get_default_cmdfile();
-	unless (defined $filename && $filename =~ m/\w+/) {
-	    croak("ERROR: No default cmdfile was found. $err")
-	}
-	else {
-	    $cmdfile = $filename;
-	}
+    ## 1) Through cmdfile
+
+    my $cmdfile = '';
+    if (defined $args{cmdfile}) {
+	
+	$cmdfile = $args{cmdfile};
     }
     else {
-	unless (-s $cmdfile) {
-	    croak("ERROR: cmdfile=$cmdfile doesnt exist. $err");
+	if (defined $args{alias}) {
+	
+	    $cmdfile = $self->get_cmdfiles($args{alias});
+	    unless (defined $cmdfile) {
+		my $msg = "ERROR: alias=$args{alias} wasnt created or doesnt";
+		croak("$msg have cmdfile. $err");
+	    }
+	}
+	else {
+	
+	    $cmdfile = $self->get_default_cmdfile();
+	    unless (defined $cmdfile && $cmdfile =~ m/\w+/) {
+		croak("ERROR: No default cmdfile was found. $err")
+	    }
 	}
     }
 
+    ## And check it 
+
+    unless (-s $cmdfile) {
+	croak("ERROR: cmdfile=$cmdfile doesnt exist. $err");
+    }
+    
     $base_cmd .= " --file=$cmdfile";
 
     ## Create a tempfile to store the results
@@ -1049,7 +1087,12 @@ sub run_command {
     
        
     if ($run == 0) {   ## It means success
-	$self->add_resultfile($cmdfile, $resultfile);	
+	if (defined $args{alias}) {
+	    $self->add_resultfile($args{alias}, $resultfile);
+	}
+	else {
+	     $self->add_resultfile('default', $resultfile);
+	}
     }
     else {
 	croak("\nSYSTEM FAILS running R:\n$run\n\n");
