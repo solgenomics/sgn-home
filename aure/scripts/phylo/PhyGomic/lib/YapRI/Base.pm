@@ -28,7 +28,52 @@ $VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
 
+  use YapRI::Base;
+
+  ## WORKING WITH THE DEFAULT MODE:
+
+  my $rih = YapRI::Base->new();
+  $rih->add_command('bmp(filename="myfile.bmp", width=600, height=800)');
+  $rih->add_command('dev.list()');
+  $rih->add_command('plot(c(1, 5, 10), type = "l")');
+  $rih->add_command('dev.off()');
  
+  $rih->run_command();
+  
+  my %results = $rih->get_resultfile();
+
+
+
+  ## WORKING WITH COMMAND BLOCKS:
+
+  my $rih = YapRI::Base->new();
+  my $cmddir = $rih->get_cmddir(); 
+
+  ## Create a file-block_1
+
+  my ($bl1_fh, $bl1) = tempfile("block1", DIR => $cmddir);
+  $rih->add_cmdfile($bl1, $bl1_fh);
+  $rih->add_command('x <- c(10, 9, 8, 5)', $bl1);
+  $rih->add_command('z <- c(12, 8, 8, 4)', $bl1);
+  $rih->add_command('x + z', $bl1)
+  
+  ## Create a file-block_2
+ 
+  my ($bl2_fh, $bl2) = tempfile("block2", DIR => $cmddir);
+  $rih->add_cmdfile($bl2, $bl2_fh);   
+  $rih->add_command('bmp(filename="myfile.bmp", width=600, height=800)', $bl2);
+  $rih->add_command('dev.list()', $bl2);
+  $rih->add_command('plot(c(1, 5, 10), type = "l")', $bl2);
+  
+  ## Run each block
+
+  $rih->run_command({ cmdfile => $bl1 });
+  $rih->run_command({ cmdfile => $bl2 });
+
+  ## Get the results
+
+   my $resultfile1 = $rih->get_resultfiles($bl1);
+   my $resultfile2 = $rih->get_resultfiles($bl2);
 
 
 =head1 DESCRIPTION
