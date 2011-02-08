@@ -566,20 +566,23 @@ sub _r_loadfile {
 
 =head2 _initR_grDevices
 
-  Usage: my $file = $phygestats->_initR_grDevices($device, $graph_arg_href); 
+  Usage: my ($file, $block) = $phygestats->_initR_grDevices( $device, 
+                                                             $graph_arg_href); 
 
-  Desc: Run Statistics::R->send function over a graphic device R command
+  Desc: Create a block to initiate a grDevice over a graphic device R command
         build with the function arguments.
         For more info about these R commands type in R screen:
         help(bmp), help(bmp), help(jpeg), help(png) or help(tiff)
 
   Ret: $file, a filename (if no filename was supplied to $graph_arg_href, it
-       will the filename created by default. See below)
+         will the filename created by default. See below).
+       $block, a block name where the command is stored in the YapRI::Base
+         object
 
-  Args: $device, graphic device to init in R (bmp, jpeg, png or tiff)
+  Args: $device, graphic device to init in R (bmp, jpeg, png or tiff).
         $graph_arg_href, an hash reference with the Graphics device arguments.
-        (filename, width, height, units, pointsize, bg, quality, compression, 
-	 res, type and antialias)
+          (filename, width, height, units, pointsize, bg, quality, compression, 
+   	  res, type and antialias)
     
   Side_Effects: Die if $graph_arg_href is not a HASH REFERENCE of if one
                 of the keys is not permited (see Args. for permited keys).
@@ -611,9 +614,11 @@ sub _initR_grDevices {
     my $self = shift;
     my $device = shift 
 	|| 'bmp';            ## Default value for device
-    
+
     my $grhref = shift 
 	|| {};               ## It is not default, but it will be fill
+
+    
 
     ## 1) Check variables and use set default values if they have not set
     
@@ -653,6 +658,11 @@ sub _initR_grDevices {
 	height      => '600',
 	units       => '"px"',
 	);
+
+    ## Define the block name
+
+    my $block = 'INIT_GRDEVICE_' . random_regex('\w\w\w\w');
+
     
     ## Is it defined in the permited arguments ?
 	
@@ -662,7 +672,7 @@ sub _initR_grDevices {
 	}
 	else {
 	    unless ($grargs{$grkey} =~ m/$perm_grargs{$grkey}/) {
-		croak("ERROR: %grkey => $grargs{$grkey} dont have valid value");
+		croak("ERROR: $grkey => $grargs{$grkey} dont have valid value");
 	    }
 	}
     }
@@ -677,10 +687,16 @@ sub _initR_grDevices {
 	
     ## 2) Check if the R Build is set and has been started
 
-    my $srh = $self->get_rbase();
+    my $srh = $self->get_rbase() || '';
 
+    my $no_srh_err = "ERROR: rbase is not set for PhyGeStat object";
     unless (defined $srh) {
-	croak("ERROR: rbase is not set for PhyGeStat object");
+	croak($no_srh_err);
+    }
+    else {
+	if (ref($srh) ne 'YapRI::Base') {
+	    croak($no_srh_err);
+	}
     }
 
     ## 3) Build the command as Device(grDevices arguments)
@@ -701,33 +717,15 @@ sub _initR_grDevices {
 
     my $grap_argline = join(', ', @grargs_line);
     my $r_cmd = "$device($grap_argline)";
-    print STDERR "TEST R_COMMAND:\n$r_cmd\n";
 
     ## 4) Send the command line
   
-    my $href = $srh->{BRIDGE};
-    my %h = %{$href};
-    foreach my $k (keys %h) {
-	print STDERR "BRIDGE KEY: $k VALUE $h{$k}\n";
-    }
+    $srh->create_block($block);
+    $srh->add_command($r_cmd, $block);
 
-    $srh->send('x = 2 + 2');
-    $srh->send('print(x)');
-    my $r0 = $srh->read();
-    print STDERR "READ 0:\n$r0\n";
+    ## 5) Return the filename
 
-    $srh->send($r_cmd);
-    $srh->send(q`plot(c(1, 5, 10), type = "l")`);
-    
-    $srh->send('print(dev.list())');
-    my $r1 = $srh->read();
-    $srh->send(q`dev.off()`);
-    print STDERR "CHECK POINT 1\n";
-    print STDERR "READ 1:\n$r1\n";
-
-    ## 5) Return the file
-	
-    return $grargs{filename};
+    return ($grargs{filename}, $block);
 }
 
 

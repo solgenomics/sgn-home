@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 37;
+use Test::More tests => 43;
 use Test::Exception;
 
 use FindBin;
@@ -90,8 +90,6 @@ my @align0 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
 $phygecluster1->run_alignments({program => 'clustalw', parameters => \@align0});
 
 $phygecluster1->run_distances({ method => 'Kimura' });
-
-my %files00 = $phygecluster1->out_distancefile({ rootname => 'testdistbefore'});
 
 my ($rm_clusters_href, $rm_members_href) = $phygecluster1->prune_by_strains({
     composition  => { 'Sly' => 1, 'Nsy' => 1, 'Nto' => 1, 'Nta' => 2 },
@@ -384,13 +382,56 @@ throws_ok { $phstats0->_r_loadfile('test'); } qr/ERROR: No R basename/,
     'TESTING DIE ERROR when no basename arg was supplied _r_loadfile()';
 
 
+################
+## TEST GRAPH ##
+################
 
+## Test _initR_grDevices, TEST 38 to 43
 
+my ($grfile, $grblock) = $phystats1->_initR_grDevices();
+
+is($grfile =~ m/rGraph/, 1, 
+    "testing _initR_grDevices, checking filename")
+    or diag("Looks like this has failed");
+
+$srh2->create_block('TEST_' . $grblock, $grblock);
+$srh2->add_command('dev.list()', 'TEST_' . $grblock);
+$srh2->run_block('TEST_' . $grblock);
+
+my $gr_checkfile1 = $srh2->get_resultfiles('TEST_' . $grblock);
+
+my $init_bmp = 0;
+open my $grfh1, '<', $gr_checkfile1;
+while (<$grfh1>) {
+    chomp($_);
+    if ($_ =~ m/bmp/) {
+	$init_bmp = 1;
+    }
+}
+close($grfh1);
+
+is($init_bmp, 1, 
+    "testing _initR_grDevices, checking dev.list R command over a new block")
+    or diag("Looks like this has failed");
+
+throws_ok { $phstats0->_initR_grDevices('fake'); } qr/ERROR:fake isnt/, 
+    'TESTING DIE ERROR when no valid device is used for _initR_grDevices()';
+
+throws_ok { $phstats0->_initR_grDevices(undef, { fk => 1}); } qr/ERROR: fk/, 
+    'TESTING DIE ERROR when no valid grarg key is used for _initR_grDevices()';
+
+throws_ok { $phstats0->_initR_grDevices(undef,{width => 'big'}); } qr/OR: w/, 
+    'TESTING DIE ERROR when no valid grarg val is used for _initR_grDevices()';
+
+$phstats0->set_rbase('');
+
+throws_ok { $phstats0->_initR_grDevices(); } qr/ERROR: rbase/, 
+    'TESTING DIE ERROR when rbase is not set for _initR_grDevices()';
 
 
 ## Clean the R dirs
 
-$srh0->cleanup();
+#$srh0->cleanup();
 
 ####
 1; #
