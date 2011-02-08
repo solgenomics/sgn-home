@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 29;
+use Test::More tests => 37;
 use Test::Exception;
 
 use FindBin;
@@ -43,13 +43,13 @@ BEGIN {
     use_ok('PhyGeStats');
     use_ok('PhyGeTopo');
     use_ok('PhyGeCluster');
-    use_ok('Statistics::R');
+    use_ok('YapRI::Base');
 }
 
 
 ## Create an empty object and test the possible die functions. TEST 5 to 8
 
-my $phstats0 = PhyGeStats->new({ r_connection => 0 });
+my $phstats0 = PhyGeStats->new({ rbase => '' });
 
 is(ref($phstats0), 'PhyGeStats', 
    "Test new function for an empty object; Checking object ref.")
@@ -61,8 +61,9 @@ throws_ok { PhyGeStats->new(['fake']) } qr/ARGUMENT ERROR: ARRAY/,
 throws_ok { PhyGeStats->new({ fake => {} }) } qr/ARG. ERROR: fake/, 
     'TESTING DIE ERROR for new() when arg. is not a valid arg.';
 
-throws_ok { PhyGeStats->new({ r_connection => 'fk2'}) } qr/ERROR: fk2/, 
+throws_ok { PhyGeStats->new({ rbase => 'fk2'}) } qr/ERROR: fk2/, 
     'TESTING DIE ERROR for new() when arg. doesnt have valid value';
+
 
 #####################
 ## PREPARING FILES ##
@@ -135,7 +136,8 @@ my %topotypes2 = $phygetopo2->run_topoanalysis();
 
 ## 3) Statistics::R
 
-my $srh0 = Statistics::R->new();
+my $rdir = "$FindBin::Bin/..";
+my $srh0 = YapRI::Base->new();
 
 
 
@@ -192,51 +194,49 @@ is(scalar(keys %phygetopo_4r), 0,
 
 ## Get/Set_srh, TEST 19 to 21
 
-$phstats0->set_r_connection($srh0);
-my $srh1 = $phstats0->get_r_connection();
+$phstats0->set_rbase($srh0);
+my $srh1 = $phstats0->get_rbase();
 
-is(ref($srh1), 'Statistics::R',
-   "Testing Get/Set_r_connection, Checking object identity")
+is(ref($srh1), 'YapRI::Base',
+   "Testing Get/Set_rbase, Checking object identity")
     or diag("Looks like this has failed");
 
-throws_ok { $phstats0->set_r_connection() } qr/ARG. ERROR: No arg./, 
-    'TESTING DIE ERROR when no arg. was supplied to set_r_connection function';
+throws_ok { $phstats0->set_rbase() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to set_rbase function';
 
-throws_ok { $phstats0->set_r_connection(['fake']) } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg supplied set_r_connection isnt Statistics::R';
+throws_ok { $phstats0->set_rbase(['fake']) } qr/ERROR: ARRAY/, 
+    'TESTING DIE ERROR when arg supplied set_rbase isnt Statistics::R';
 
 
 ##################
 ## R connection ##
 ##################
 
-## Test 22 and 23
+## Test 22
 
 my $phystats1 = PhyGeStats->new();
-my $srh2 = $phystats1->get_r_connection();
+my $srh2 = $phystats1->get_rbase();
 
-is($srh2->is_started(), 1, 
-    "Testing startR over Statistics::R object when a new object is created")
-    or diag("Looks like this has failed");
+$srh2->create_block('PHYGEBLOCK1');
+$srh2->add_command('print(1:30)', 'PHYGEBLOCK1');
+$srh2->run_block('PHYGEBLOCK1');
+my $result2 = $srh2->get_resultfiles('PHYGEBLOCK1');
 
-$srh2->send('print(1:30)');
-my $result2 = $srh2->read();
-
-## Parse the results removing different lines
-
-$result2 =~ s/\s?\[\d+\]\s/ /g;
-$result2 =~ s/\n/ /g;
-$result2 =~ s/^\s+//g;
-$result2 =~ s/\s+/ /g;
-
-my @results = split(/ /, $result2);
+my @results = ();
+open my $rfh2, '<', $result2;
+while(<$rfh2>) {
+    chomp($_);
+    $_ =~ s/^\s*\[\d+\]\s+//;
+    push @results, split(/\s+/, $_);
+}
+close($rfh2);
 
 my @exp_results = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
 		   11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 		   21, 22, 23, 24, 25, 26, 27, 28, 29, 30 );
 
 is(join(',', @results), join(',', @exp_results), 
-   "Testing startR over Statistics::R object with an operation 1:30")
+   "Testing run_block for YapRI::Base object with an operation 1:30")
     or diag("Looks like this has failed");
 
 
@@ -245,18 +245,18 @@ is(join(',', @results), join(',', @exp_results),
 ## ANALYTICAL FUNCTION ##
 #########################
 
-my $file0 = $phystats1->_r_infile_topomemb();
+my $file0 = $phystats1->_r_infile_tm();
 
-## It should not create any file because the phygetopo is empty, TEST 24
+## It should not create any file because the phygetopo is empty, TEST 23
 
 is(-s $file0, undef, 
     "Testing _r_infile_topomemb internal function when no file is created")
     or diag("Looks like this has failed");
 
-## Testing the file creation, TEST 25 to 29
+## Testing the file creation (_r_infile_tm), TEST 24 to 28
 
 $phystats1->set_phygetopo({ 'NJ' => $phygetopo2, 'ML' => $phygetopo1 });
-my $file1 = $phystats1->_r_infile_topomemb();
+my $file1 = $phystats1->_r_infile_tm();
 
 my $wrong_coln = 0;
 my $wrong_headers = 0;
@@ -317,26 +317,51 @@ is($wrong_data_format, 0,
     "Testing _r_infile_topomemb internal function, checking data format")
     or diag("Looks like this has failed");
 
+## Check the die functions for _r_infile_tm() function, TEST 29 to 32
+
+throws_ok { $phstats0->_r_infile_tm([]); } qr/ERROR: ARRAY/, 
+    'TESTING DIE ERROR when arg supplied _r_infile_tm isnt HASH REF.';
+
+throws_ok { $phstats0->_r_infile_tm({ 'fake' => 1}); } qr/ERROR: fake/, 
+    'TESTING DIE ERROR when key arg supplied _r_infile_tm isnt valid';
+
+throws_ok { $phstats0->_r_infile_tm({ tempfile => 2}); } qr/ERROR: 2/, 
+    'TESTING DIE ERROR when value arg supplied _r_infile_tm isnt valid';
+
+throws_ok { $phstats0->_r_infile_tm({ phygetopo => 'HASH'}); } qr/ERROR: phyg/, 
+    'TESTING DIE ERROR when phygetopo arg supplied _r_infile_tm isnt HASHREF';
+
+
+## Checking the _r_loadfile function, TEST 33 to 35
+
 my $r_obj_name = $phystats1->_r_loadfile($file1, 'TopoMembTable');
 
 
 ## Check that the object contains the data
 
-$srh2->send("print($r_obj_name)");
-my $topomembtable_r = $srh2->read();
+$srh2->create_block('CHECK_' . $r_obj_name, $r_obj_name);
+$srh2->add_command("print($r_obj_name)", 'CHECK_' . $r_obj_name);
+$srh2->run_block('CHECK_' . $r_obj_name);
+my $rfile3 = $srh2->get_resultfiles('CHECK_' . $r_obj_name);
 
 my $r_col_n = 0;
 my $r_row_n = 0;
 my $r_data_n = 0;
 
-my @r_rows = split(/\n/, $topomembtable_r);
-$r_row_n = scalar(@r_rows);
 
-foreach my $r_row (@r_rows) {
-    my @r_data = split(/\s+/, $r_row);
-    $r_col_n = scalar(@r_data);
+open my $rfh3, '<', $rfile3;
+while(<$rfh3>) {
+    chomp($_);
+    $_ =~ s/^\s+//;
+    $_ =~ s/\s+$//;
+    $_ =~ s/\s+/ /g;
+    
+    $r_row_n++;
+    my @data = split(/\s+/, $_);
+    $r_col_n = scalar(@data);
     $r_data_n += $r_col_n;
 }
+
 
 is($r_row_n, 4, 
     "Testing _r_loadfile internal function, checking row number (4)")
@@ -346,15 +371,26 @@ is($r_col_n, 4,
     "Testing _r_loadfile internal function, checking col number (4)")
     or diag("Looks like this has failed");
 
-is($r_data_n, 16, 
+is($r_data_n, 15, 
     "Testing _r_loadfile internal function, checking data number (4x4)")
     or diag("Looks like this has failed");
 
+## Check if it dies properly, TEST 36 and 37
+
+throws_ok { $phstats0->_r_loadfile(); } qr/ERROR: No file/, 
+    'TESTING DIE ERROR when no file arg was supplied _r_loadfile()';
+
+throws_ok { $phstats0->_r_loadfile('test'); } qr/ERROR: No R basename/, 
+    'TESTING DIE ERROR when no basename arg was supplied _r_loadfile()';
 
 
-## END THE R COMUNICATION ##
 
-$srh2->stopR();
+
+
+
+## Clean the R dirs
+
+$srh0->cleanup();
 
 ####
 1; #

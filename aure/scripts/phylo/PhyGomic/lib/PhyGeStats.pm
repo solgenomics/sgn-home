@@ -7,12 +7,15 @@ use autodie;
 
 use Carp qw| croak cluck |;
 use Math::BigFloat;
-use Statistics::R;
+use YapRI::Base;
+use YapRI::Data::Matrix;
 
 use File::Temp qw/ tempfile tempdir/;
 use String::Random qw/ random_regex random_string/;
 use Cwd;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use Bio::Tree::TopoType;
 
 ###############
@@ -37,38 +40,15 @@ $VERSION = eval $VERSION;
   my $phygestats = PhyGeStats->new();
 
 
-  ## Accessors
-
-  my $srh = $phygestast->get_srh();
-  $phygestats->set_srh($srh);
-
-  my $phygetopo = $phygestats->get_phygetopo();
-  $phygestats->set_phygetopo($phygetopo);
-
- 
-  ## Create a new R bridge and set into the phygestats object
-
-  $phygestats->startR();
-  $phygestats->stopR();
-
-  ## Pass the Statistical::R methods
-
-  $phygestats->stR($function, $parameter);
-
 
 =head1 DESCRIPTION
 
- PhyGeStats is a wrapper for Statistics::R with specific functions to
+ PhyGeStats is a wrapper for YapRI::Base with specific functions to
  analyze the data contained in a phygetopo object. 
 
  For example:
 
  my $phygestats = PhyGeStats->new();
- $phygestats->startR();
- 
- my $bargraph_filename = $phygestats->bargraph();
- my $treegraph_filename = $phygestats->treegraph();
-
 
 =head1 AUTHOR
 
@@ -96,8 +76,8 @@ The following class methods are implemented:
   Ret: a PhyGeStats.pm object
 
   Args: A hash reference with the following key-value pairs: 
-         + phygetopo   => a phygetopo object 
-         + srh         => a Statistics::R object
+         + phygetopo    => a phygetopo object 
+         + rbase => a YapRI::BAse object
         
   Side_Effects: Die if the argument used is not a hash or there are argument
                 incompatibility (for example run_trees without run_distances).
@@ -106,7 +86,7 @@ The following class methods are implemented:
            my $phygestats = PhyGeStats->new(
                                              { 
                                                phygetopo => $phygetopo,
-                                               srh       => $r_stats,
+                                               rbase => $rbase,
                                              }
                                            );
 
@@ -120,7 +100,8 @@ sub new {
     
     my %permargs = ( 
 	phygetopo    => 'HASH',
-	r_connection => "[1|0|Statistics::R]",
+	rbase => "YapRI::Base",
+	r_dir        => '\w+',
 	);
 
     ## Check argument
@@ -145,6 +126,8 @@ sub new {
 	}
     }
 
+    my $r_dir = $args_href->{r_dir} || cwd();
+
     ## As default values ir will create two empty objects
 
     my $phygetopo_href = $args_href->{phygetopo};
@@ -152,26 +135,15 @@ sub new {
 	$phygetopo_href = {};
     }
 
-    my $srh = $args_href->{r_connection};
-    if (defined $srh) {
-	if ($srh =~ m/^1$/) {
-	    $srh = Statistics::R->new();
-	    $srh->start_sharedR();
-	}
-	elsif ($srh =~ m/^0$/) {
-	    $srh = Statistics::R->new();
-	}
+    my $srh = $args_href->{rbase};
+    unless (defined $srh) {
+	$srh = YapRI::Base->new();
     }
-    else {
-	$srh = Statistics::R->new();
-	$srh->start_sharedR();
-    }
-    
     
     ## Set vars in the object
 
     $self->set_phygetopo($phygetopo_href);
-    $self->set_r_connection($srh);
+    $self->set_rbase($srh);
     
     return $self;
 }
@@ -297,58 +269,58 @@ sub delete_phygetopo {
 
 
 
-=head2 get_r_connection
+=head2 get_rbase
 
-  Usage: my $srh = $phygestats->get_r_connection(); 
+  Usage: my $srh = $phygestats->get_rbase(); 
 
-  Desc: Get a Statistics::R object contained into the PhyGeStats function
+  Desc: Get a YapRI::Base object contained into the PhyGeStats function
 
-  Ret: A Statistics::R object
+  Ret: A YapRI::Base object
 
   Args: None
 
   Side_Effects: None
 
-  Example: my $srh = $phygestats->get_r_connection(); 
+  Example: my $srh = $phygestats->get_rbase(); 
 
 =cut
 
-sub get_r_connection {
+sub get_rbase {
     my $self = shift;
-    return $self->{r_connection};
+    return $self->{rbase};
 }
 
-=head2 set_r_connection
+=head2 set_rbase
 
-  Usage: $phygestats->set_r_connection($srh);
+  Usage: $phygestats->set_rbase($srh);
 
-  Desc: Set Statistics::R object in the phygestats object
+  Desc: Set YapRI::Base object in the phygestats object
 
   Ret: None
 
-  Args: A Statistics::R object
+  Args: A YapRI::Base object
 
   Side_Effects: Die if no argument is used or if the object is not a PhyGeTopo
                 object
 
-  Example: $phygestats->set_r_connection($srh);
+  Example: $phygestats->set_rbase($srh);
 
 =cut
 
-sub set_r_connection {
+sub set_rbase {
     my $self = shift;
     my $srh = shift;
    
     unless (defined $srh) {
-	croak("ARG. ERROR: No arg. was used for set_r_connection function");
+	croak("ARG. ERROR: No arg. was used for set_rbase function");
     }
     else {
 	if ($srh =~ m/\w+/) {
-	    unless (ref($srh) eq 'Statistics::R') {
-		croak("ERROR: $srh set_r_connection() isnt Statistics::R obj");
+	    unless (ref($srh) eq 'YapRI::Base') {
+		croak("ERROR: $srh set_rbase() isnt YapRI::Base obj");
 	    }	    
 	}
-	$self->{r_connection} = $srh;    
+	$self->{rbase} = $srh;    
     }
 }
 
@@ -365,9 +337,9 @@ sub set_r_connection {
 ## 
 
 
-=head2 _r_infile_topomemb
+=head2 _r_infile_tm
 
-  Usage: my $file = $phygestats->_r_infile_topomemb($argument_href); 
+  Usage: my $file = $phygestats->_r_infile_tm($argument_href); 
 
   Desc: Print into a file topotype_id and member_count in table format
 
@@ -383,8 +355,8 @@ sub set_r_connection {
 
   Side_Effects: Die if some arguments are wrong
 
-  Example: my $file0 = $phygestats->_r_infile_topomemb();
-           my $file1 = $phygestats->_r_infile_topomemb(
+  Example: my $file0 = $phygestats->_r_infile_tm();
+           my $file1 = $phygestats->_r_infile_tm(
                                        { 
                                          phygetopo => $phygetopo1,
                                          dirname   => '/home/user/analysis/',
@@ -395,7 +367,7 @@ sub set_r_connection {
 
 =cut
 
-sub _r_infile_topomemb {
+sub _r_infile_tm {
     my $self = shift;
     my $arghref = shift;
 
@@ -408,7 +380,7 @@ sub _r_infile_topomemb {
 	dirname   => '\w+',
 	filename  => '\w+',
 	tempfile  => '[0|1|no|yes]',
-	phygetopo => 'PhyGeTopo'
+	phygetopo => 'HASH'
 	);
 
 
@@ -419,7 +391,7 @@ sub _r_infile_topomemb {
 	else {
 	    foreach my $keyarg (keys %{$arghref}) {
 		unless (exists $permarg{$keyarg}) {
-		    croak("ERROR: $keyarg isnt a permited argument");
+		    croak("ERROR: $keyarg isnt a valid argument");
 		}
 		else {
 		    my $valarg = $arghref->{$keyarg};
@@ -430,8 +402,6 @@ sub _r_infile_topomemb {
 	    }
 	}
     }
-
-    
 
     ## First, create a hash with key=topotype_id and value=aref_member_counts
     ## the first member always will be the headers
@@ -547,7 +517,8 @@ sub _r_infile_topomemb {
 
   Desc: Load the topomember file into R as a file
 
-  Ret: $r_obj_name, a R object name that contains the table
+  Ret: $r_obj_name, a R object name that contains the table, and also
+       the name of the YapRI::Base block
 
   Args: $file, filename,
         $basename, for the R object
@@ -567,22 +538,16 @@ sub _r_loadfile {
     my $basename = shift ||
 	croak("ERROR: No R basename was supplied to _r_loadfile function.");
 
-    my $srh = $self->get_r_connection();
+    my $srh = $self->get_rbase();
 
     my $r_obj = $basename . "_" . random_regex('\w\w\w\w\w\w');
 
     ## Check that exists the connection and that it has been started
 
     unless (defined $srh) {
-	croak("ERROR: r_connection is not set for PhyGeStat object");
+	croak("ERROR: rbase is not set for PhyGeStat object");
     }
-    else {
-	if ($srh->is_started() != 1) {
-	    my $msg = "ERROR: Data can not be load into R because r_connection";
-	    $msg .= " because it hasn't been started.\n";
-	    croak($msg);
-	}
-    }
+ 
     
     ## Now build the command to load the data
 
@@ -590,12 +555,181 @@ sub _r_loadfile {
 
     ## Run the command
 
-    $srh->send("$r_cmd");
+    $srh->create_block($r_obj);
+    $srh->add_command("$r_cmd", $r_obj);
 
     ## Return the object
 
     return $r_obj;
 }
+
+
+=head2 _initR_grDevices
+
+  Usage: my $file = $phygestats->_initR_grDevices($device, $graph_arg_href); 
+
+  Desc: Run Statistics::R->send function over a graphic device R command
+        build with the function arguments.
+        For more info about these R commands type in R screen:
+        help(bmp), help(bmp), help(jpeg), help(png) or help(tiff)
+
+  Ret: $file, a filename (if no filename was supplied to $graph_arg_href, it
+       will the filename created by default. See below)
+
+  Args: $device, graphic device to init in R (bmp, jpeg, png or tiff)
+        $graph_arg_href, an hash reference with the Graphics device arguments.
+        (filename, width, height, units, pointsize, bg, quality, compression, 
+	 res, type and antialias)
+    
+  Side_Effects: Die if $graph_arg_href is not a HASH REFERENCE of if one
+                of the keys is not permited (see Args. for permited keys).
+                If no argument are used it will use the default parameters.
+                  $device = 'bmp',
+                  $graph_arg_href = { 
+                     filename => '"rGraph_XXXXX.bmp"',
+                     width    => 800,
+                     height   => 600,
+                     units    => "px",
+                  }
+
+  Example: my $graphfile = $phygestats->_initR_grDevices();
+           my $jpeg_graphfile = $phygestats->_initR_grDevices('jpeg');
+           my $othergraph = $phygestats->_initR_grDevices(
+                               'tiff',
+                               {
+                                  filename => '"MyGraph.tiff"',
+                                  width    => 480,
+                                  height   => 480,
+                                  units    => "px",
+                                  bg       => "white",
+                               }
+                            );
+
+=cut
+
+sub _initR_grDevices {
+    my $self = shift;
+    my $device = shift 
+	|| 'bmp';            ## Default value for device
+    
+    my $grhref = shift 
+	|| {};               ## It is not default, but it will be fill
+
+    ## 1) Check variables and use set default values if they have not set
+    
+    ## About the device
+    
+    if (defined $device) {
+	unless ($device =~ m/^bmp|jpeg|png|tiff$/) {
+	    croak("ERROR:$device isnt valid R grDevice for _initR_grDevices()");
+	}
+    }
+    
+    ## About graph devices arguments for R
+    
+    if (ref($grhref) ne 'HASH') {
+	croak("ERROR:$grhref grDevice arg. isnt a hashref. _initR_grDevices()");
+    }
+    
+    my %grargs = %{$grhref};
+
+    my %perm_grargs = ( 
+	filename    => '".+"',
+	width       => '^\d+$',
+	height      => '^\d+$',
+	units       => '^"[px|in|cm|mm]"$',
+	pointsize   => '^\d+$',
+	bg          => '^\w+$',
+	quality     => '^\d+$',
+	compression => '^"[none|rle|lzw|jpeg|zip]"$',
+	res         => '^\d+$',
+	type        => '^"[Xlib|quartz|cairo]"$',
+	antialias   => undef,
+	);
+
+    my %def_grargs = (
+	filename    => '"rGraph_' . random_regex('\w\w\w\w\w\w') . '.bmp"',
+	width       => '800',
+	height      => '600',
+	units       => '"px"',
+	);
+    
+    ## Is it defined in the permited arguments ?
+	
+    foreach my $grkey (keys %grargs) {
+	unless (exists $perm_grargs{$grkey}) {
+	    croak("ERROR: $grkey isnt valid key for _initR_grDevice() funct.");
+	}
+	else {
+	    unless ($grargs{$grkey} =~ m/$perm_grargs{$grkey}/) {
+		croak("ERROR: %grkey => $grargs{$grkey} dont have valid value");
+	    }
+	}
+    }
+	
+    ## Use the default args "to fill the holes"
+	
+    foreach my $def_grkey (keys %def_grargs) {
+	unless (exists $grargs{$def_grkey}) {
+	    $grargs{$def_grkey} = $def_grargs{$def_grkey};
+	}
+    }
+	
+    ## 2) Check if the R Build is set and has been started
+
+    my $srh = $self->get_rbase();
+
+    unless (defined $srh) {
+	croak("ERROR: rbase is not set for PhyGeStat object");
+    }
+
+    ## 3) Build the command as Device(grDevices arguments)
+
+    ## Build the argument line
+    
+    my @grargs_line = ();
+    foreach my $grargs_k (keys %grargs) {
+	if (defined $grargs{$grargs_k}) {
+	    push @grargs_line, $grargs_k . ' = ' . $grargs{$grargs_k};
+	}
+	else {
+	    push @grargs_line, $grargs_k;
+	}
+    }
+
+    ## Build the R command line
+
+    my $grap_argline = join(', ', @grargs_line);
+    my $r_cmd = "$device($grap_argline)";
+    print STDERR "TEST R_COMMAND:\n$r_cmd\n";
+
+    ## 4) Send the command line
+  
+    my $href = $srh->{BRIDGE};
+    my %h = %{$href};
+    foreach my $k (keys %h) {
+	print STDERR "BRIDGE KEY: $k VALUE $h{$k}\n";
+    }
+
+    $srh->send('x = 2 + 2');
+    $srh->send('print(x)');
+    my $r0 = $srh->read();
+    print STDERR "READ 0:\n$r0\n";
+
+    $srh->send($r_cmd);
+    $srh->send(q`plot(c(1, 5, 10), type = "l")`);
+    
+    $srh->send('print(dev.list())');
+    my $r1 = $srh->read();
+    $srh->send(q`dev.off()`);
+    print STDERR "CHECK POINT 1\n";
+    print STDERR "READ 1:\n$r1\n";
+
+    ## 5) Return the file
+	
+    return $grargs{filename};
+}
+
 
 
 ####
