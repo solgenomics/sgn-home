@@ -16,7 +16,7 @@ use Cwd;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
-use Bio::Tree::TopoType;
+use Bio::Tree::TopoType qw/ is_same_tree /;
 
 ###############
 ### PERLDOC ###
@@ -337,6 +337,129 @@ sub set_rbase {
 ## 
 
 
+=head2 _compare_phygetopos
+
+  Usage: my %phygetopos = $phygestats->_compare_phygetopos($toponame) 
+
+  Desc: Compare phygetopologies and return a hash with:
+          key   = unique_phygetopo_name
+          value = hash ref. with key   = phygename
+                                 value = topo_id
+
+        For exampple, if it compare two phylotopo:
+          'a' with topologies 'topoA', 'topoB' and 'topoC'
+          'b' with topologies 'topoA', and 'topoB'
+
+        If 'topoA' for 'a' and 'topoB' for 'b' are the same, it will return:
+        %phygetopos = ( 'topo1' => {a => 'topoA', b => 'topoB' },
+                        'topo2' => {a => 'topoB', b => undef   },
+                        'topo3' => {a => 'topoC', b => undef   },
+                        'topo4' => {a => undef,   b => 'topoA' }
+        );
+
+
+  Ret: %phygetopos, a hash (see above)
+
+  Args: $toponame, a base name to use to define the new topologies
+
+  Side_Effects: Die if some arguments are wrong.
+                It uses 'topology' by default
+
+  Example: my %phygetopos = $phygestats->_compare_phygetopos('topology') 
+
+=cut
+
+sub _compare_phygetopos {
+    my $self = shift;
+    my $base = shift ||
+	'topology';
+
+    my %phygt_comp = ();
+    my %phygt_keep = ();
+
+    ## Get count
+
+    my $maxph = 0;
+
+    my %phygt = %{$self->get_phygetopo()};
+
+    foreach my $phygename (sort keys %phygt) {
+
+	my %topotypes = %{$phygt{$phygename}->get_topotypes()};	
+	$maxph += scalar(keys %topotypes);
+    }
+
+    my $fcount = length($maxph);
+
+    foreach my $phygename (sort keys %phygt) {
+	
+	my %topotypes = %{$phygt{$phygename}->get_topotypes()};	
+	foreach my $topo_id (sort keys %topotypes) {
+	    
+	    my $topology = $topotypes{$topo_id}->get_topology();
+	    
+	    ## Check if exists that topology
+
+	    my $topo_match = 'none';
+	    my $comp_match = '';
+
+	    foreach my $comp_id (sort keys %phygt_comp) {
+		my %types_comps = %{$phygt_comp{$comp_id}};
+		
+		## Compare with the topologies stored into %phygt_keep hash
+
+		foreach my $phname (keys %types_comps) {
+		    
+		    my $ktopo = $phygt_keep{$comp_id}->{$phname}; 
+		    if (is_same_tree($topology, $ktopo)) {
+			$topo_match = $ktopo;
+			$comp_match = $comp_id;
+		    }
+		}
+	    }
+	
+	    if (ref($topo_match) eq 'Bio::Tree::Tree') {  ## if exists add old
+		$phygt_keep{$comp_match} = { $phygename => $topology };
+		$phygt_comp{$comp_match} = { $phygename => $topo_id };
+	    }
+	    else {                                  ## if doesnt exist, to new
+		my $n = scalar(keys %phygt_comp) + 1;
+		my $new_comp = $base . '_' . sprintf('%0' . $fcount . 's' , $n);
+		$phygt_keep{$new_comp} = { $phygename => $topology };
+		$phygt_comp{$new_comp} = { $phygename => $topo_id };
+	    }
+	}
+    }
+    return %phygt_comp;
+}
+
+=head2 _phygt2matrix
+
+  Usage: my $matrix = $self->_phygt2matrix(); 
+
+  Desc: Creates a YapRI::Data::Matrix with the PhyGeTopo data
+
+  Ret: $matrix, a YapRI::Data::Matrix object
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my $ymatrix = $self->_phygt2matrix(); 
+
+=cut
+
+sub _phygt2matrix {
+
+
+
+}
+
+
+
+
+
+
 =head2 _r_infile_tm
 
   Usage: my $file = $phygestats->_r_infile_tm($argument_href); 
@@ -563,170 +686,14 @@ sub _r_loadfile {
     return $r_obj;
 }
 
+=head2 _phto2ymtx
 
-=head2 _initR_grDevices
+  
 
-  Usage: my ($file, $block) = $phygestats->_initR_grDevices( $device, 
-                                                             $graph_arg_href); 
-
-  Desc: Create a block to initiate a grDevice over a graphic device R command
-        build with the function arguments.
-        For more info about these R commands type in R screen:
-        help(bmp), help(bmp), help(jpeg), help(png) or help(tiff)
-
-  Ret: $file, a filename (if no filename was supplied to $graph_arg_href, it
-         will the filename created by default. See below).
-       $block, a block name where the command is stored in the YapRI::Base
-         object
-
-  Args: $device, graphic device to init in R (bmp, jpeg, png or tiff).
-        $graph_arg_href, an hash reference with the Graphics device arguments.
-          (filename, width, height, units, pointsize, bg, quality, compression, 
-   	  res, type and antialias)
-    
-  Side_Effects: Die if $graph_arg_href is not a HASH REFERENCE of if one
-                of the keys is not permited (see Args. for permited keys).
-                If no argument are used it will use the default parameters.
-                  $device = 'bmp',
-                  $graph_arg_href = { 
-                     filename => '"rGraph_XXXXX.bmp"',
-                     width    => 800,
-                     height   => 600,
-                     units    => "px",
-                  }
-
-  Example: my $graphfile = $phygestats->_initR_grDevices();
-           my $jpeg_graphfile = $phygestats->_initR_grDevices('jpeg');
-           my $othergraph = $phygestats->_initR_grDevices(
-                               'tiff',
-                               {
-                                  filename => '"MyGraph.tiff"',
-                                  width    => 480,
-                                  height   => 480,
-                                  units    => "px",
-                                  bg       => "white",
-                               }
-                            );
 
 =cut
 
-sub _initR_grDevices {
-    my $self = shift;
-    my $device = shift 
-	|| 'bmp';            ## Default value for device
 
-    my $grhref = shift 
-	|| {};               ## It is not default, but it will be fill
-
-    
-
-    ## 1) Check variables and use set default values if they have not set
-    
-    ## About the device
-    
-    if (defined $device) {
-	unless ($device =~ m/^bmp|jpeg|png|tiff$/) {
-	    croak("ERROR:$device isnt valid R grDevice for _initR_grDevices()");
-	}
-    }
-    
-    ## About graph devices arguments for R
-    
-    if (ref($grhref) ne 'HASH') {
-	croak("ERROR:$grhref grDevice arg. isnt a hashref. _initR_grDevices()");
-    }
-    
-    my %grargs = %{$grhref};
-
-    my %perm_grargs = ( 
-	filename    => '".+"',
-	width       => '^\d+$',
-	height      => '^\d+$',
-	units       => '^"[px|in|cm|mm]"$',
-	pointsize   => '^\d+$',
-	bg          => '^\w+$',
-	quality     => '^\d+$',
-	compression => '^"[none|rle|lzw|jpeg|zip]"$',
-	res         => '^\d+$',
-	type        => '^"[Xlib|quartz|cairo]"$',
-	antialias   => undef,
-	);
-
-    my %def_grargs = (
-	filename    => '"rGraph_' . random_regex('\w\w\w\w\w\w') . '.bmp"',
-	width       => '800',
-	height      => '600',
-	units       => '"px"',
-	);
-
-    ## Define the block name
-
-    my $block = 'INIT_GRDEVICE_' . random_regex('\w\w\w\w');
-
-    
-    ## Is it defined in the permited arguments ?
-	
-    foreach my $grkey (keys %grargs) {
-	unless (exists $perm_grargs{$grkey}) {
-	    croak("ERROR: $grkey isnt valid key for _initR_grDevice() funct.");
-	}
-	else {
-	    unless ($grargs{$grkey} =~ m/$perm_grargs{$grkey}/) {
-		croak("ERROR: $grkey => $grargs{$grkey} dont have valid value");
-	    }
-	}
-    }
-	
-    ## Use the default args "to fill the holes"
-	
-    foreach my $def_grkey (keys %def_grargs) {
-	unless (exists $grargs{$def_grkey}) {
-	    $grargs{$def_grkey} = $def_grargs{$def_grkey};
-	}
-    }
-	
-    ## 2) Check if the R Build is set and has been started
-
-    my $srh = $self->get_rbase() || '';
-
-    my $no_srh_err = "ERROR: rbase is not set for PhyGeStat object";
-    unless (defined $srh) {
-	croak($no_srh_err);
-    }
-    else {
-	if (ref($srh) ne 'YapRI::Base') {
-	    croak($no_srh_err);
-	}
-    }
-
-    ## 3) Build the command as Device(grDevices arguments)
-
-    ## Build the argument line
-    
-    my @grargs_line = ();
-    foreach my $grargs_k (keys %grargs) {
-	if (defined $grargs{$grargs_k}) {
-	    push @grargs_line, $grargs_k . ' = ' . $grargs{$grargs_k};
-	}
-	else {
-	    push @grargs_line, $grargs_k;
-	}
-    }
-
-    ## Build the R command line
-
-    my $grap_argline = join(', ', @grargs_line);
-    my $r_cmd = "$device($grap_argline)";
-
-    ## 4) Send the command line
-  
-    $srh->create_block($block);
-    $srh->add_command($r_cmd, $block);
-
-    ## 5) Return the filename
-
-    return ($grargs{filename}, $block);
-}
 
 
 

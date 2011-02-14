@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 43;
+use Test::More tests => 38;
 use Test::Exception;
 
 use FindBin;
@@ -382,51 +382,22 @@ throws_ok { $phstats0->_r_loadfile('test'); } qr/ERROR: No R basename/,
     'TESTING DIE ERROR when no basename arg was supplied _r_loadfile()';
 
 
+## Test _compare_phygetopos, TEST 38
+
+my %phycomp = $phystats1->_compare_phygetopos();
+
+is(scalar(keys %phycomp), 3, 
+    "testing _compare_phygetopos, checking number of new topologies")
+    or diag("Looks like this has failed");
+
+
+
+
+
 ################
 ## TEST GRAPH ##
 ################
 
-## Test _initR_grDevices, TEST 38 to 43
-
-my ($grfile, $grblock) = $phystats1->_initR_grDevices();
-
-is($grfile =~ m/rGraph/, 1, 
-    "testing _initR_grDevices, checking filename")
-    or diag("Looks like this has failed");
-
-$srh2->create_block('TEST_' . $grblock, $grblock);
-$srh2->add_command('dev.list()', 'TEST_' . $grblock);
-$srh2->run_block('TEST_' . $grblock);
-
-my $gr_checkfile1 = $srh2->get_resultfiles('TEST_' . $grblock);
-
-my $init_bmp = 0;
-open my $grfh1, '<', $gr_checkfile1;
-while (<$grfh1>) {
-    chomp($_);
-    if ($_ =~ m/bmp/) {
-	$init_bmp = 1;
-    }
-}
-close($grfh1);
-
-is($init_bmp, 1, 
-    "testing _initR_grDevices, checking dev.list R command over a new block")
-    or diag("Looks like this has failed");
-
-throws_ok { $phstats0->_initR_grDevices('fake'); } qr/ERROR:fake isnt/, 
-    'TESTING DIE ERROR when no valid device is used for _initR_grDevices()';
-
-throws_ok { $phstats0->_initR_grDevices(undef, { fk => 1}); } qr/ERROR: fk/, 
-    'TESTING DIE ERROR when no valid grarg key is used for _initR_grDevices()';
-
-throws_ok { $phstats0->_initR_grDevices(undef,{width => 'big'}); } qr/OR: w/, 
-    'TESTING DIE ERROR when no valid grarg val is used for _initR_grDevices()';
-
-$phstats0->set_rbase('');
-
-throws_ok { $phstats0->_initR_grDevices(); } qr/ERROR: rbase/, 
-    'TESTING DIE ERROR when rbase is not set for _initR_grDevices()';
 
 
 ## Clean the R dirs
