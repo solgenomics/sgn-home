@@ -12,6 +12,12 @@ use Math::BigFloat;
 use Bio::Tree::Tree;
 use Bio::TreeIO::newick;
 
+# To export some functions
+
+use Exporter qw( import );
+
+our @EXPORT_OK = qw( _tree2newick is_same_tree );
+
 ###############
 ### PERLDOC ###
 ###############
