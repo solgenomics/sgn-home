@@ -31,11 +31,13 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 34;
+use Test::More tests => 36;
 use Test::Exception;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
+
+use Image::Size;
 
 ## TEST 1 to 4
 
@@ -326,6 +328,24 @@ is($phystats1->get_matrix()->get_name(), 'topomtx',
 ################
 ## TEST GRAPH ##
 ################
+
+## create_composition_graph, TEST 35 and 36
+
+my $tempdir = $phystats1->get_rbase()->get_cmddir();
+my $graphfile = $tempdir . '/TopoComp.bmp';
+
+
+$phystats1->create_composition_graph($graphfile);
+
+my ($img_x, $img_y) = Image::Size::imgsize($graphfile);
+
+is($img_x, 800, 
+    "testing create_composition_graph, checking image width")
+    or diag("Looks like this has failed");
+
+is($img_y, 600, 
+    "testing create_composition_graph, checking image height")
+    or diag("Looks like this has failed");
 
 
 

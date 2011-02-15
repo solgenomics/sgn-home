@@ -9,6 +9,7 @@ use Carp qw| croak cluck |;
 use Math::BigFloat;
 use YapRI::Base;
 use YapRI::Data::Matrix;
+use YapRI::Graph::Simple;
 
 use File::Temp qw/ tempfile tempdir/;
 use String::Random qw/ random_regex random_string/;
@@ -600,6 +601,122 @@ sub create_matrix {
 
     $self->set_matrix($matrix);
 }
+
+=head2 create_composition_graph
+
+  Usage: $phystats->create_composition_graph($filename, $graph_args); 
+
+  Desc: Creates a file with a barplot graph
+
+  Ret: None
+
+  Args: $filename, name for the graph file (required)
+        $graph_args, a hash reference with the arguments for the graph, 
+                     according YapRI::Graph::Simple accessors
+
+  Side_Effects: Die if no filename argument is used.
+                Die if graph_args isnt a hash ref.
+                Die if no rbase was set before run this method.
+                Die if no matrix was set before run this method 
+                Use default YapRI::Graph::Simple accessors
+
+  Example: $phystats->create_composition_graph('MyFile.bmp');
+
+=cut
+
+sub create_composition_graph {
+    my $self = shift;
+    my $filename = shift ||
+	croak("ERROR: No filename was supplied to create_composition_graph.");
+    
+    my $grhref = shift;
+
+    if (defined $grhref) {
+	unless (ref($grhref) eq 'HASH') {
+	    croak("ERROR: $grhref supplied to create_comp. isnt a HASHREF.");
+	}
+    }
+
+    ## Check is exists rbase and matrix.
+
+    my $rbase = $self->get_rbase();
+    if (ref($rbase) ne 'YapRI::Base') {
+	croak("ERROR: No rbase was set before run create_composition_graph.");
+    }
+    
+    my $rmtx = $self->get_matrix();
+    if (ref($rmtx) ne 'YapRI::Data::Matrix') {
+	croak("ERROR: No matrix was set before run create_composition_graph.");
+    }
+
+    ## It needs the matrix by topotypes (rows), no by methods (cols)
+
+    my $trmtx = $rmtx->transpose();
+
+    ## Now it will create the default graph parameters.
+    
+    my $rown = $trmtx->get_rown();  ## To know how many groups are.
+    my $coln = $trmtx->get_coln();
+
+    ## Define the object to set the colors in the barblot
+
+    my $barcols = 'barcolors <- terrain.colors(' . $rown . ')'; 
+
+    my %grargs = (
+	rbase  => $rbase,
+	rdata  => { height => $trmtx },
+	grfile => $filename, 
+	device => { bmp     => { width  => 800, 
+				 height => 600,
+		    } 
+	},
+	grparams => { par => { cex => 1.5 }, 
+	},
+	sgraph => { barplot => { beside => 'TRUE',
+				 main   => 'Topotypes Abundance',
+				 xlab   => 'Topotype',
+				 ylab   => 'Count',
+				 col    => { $barcols => '' }, 
+		    }
+	},
+	gritems => [ 
+	    { 
+		legend => {
+		    x      => "topright",
+		    legend => $trmtx->get_rownames(),
+		    fill   => { $barcols => '' }, 
+		}
+	    } 
+	],
+	);
+	
+    foreach my $arg (keys %{$grhref}) {
+	unless (exists $grargs{$arg}) {
+	    croak("ERROR: $arg isnt a valid argument for create_graph");
+	}
+	else {
+	    ## Ignore rbase, rdata and grfile
+
+	    if ($arg !~ m/(rbase|rdata|grfile)/) {
+		my %argsh = %{$grargs{$arg}};
+		foreach my $karg (keys %argsh) {
+		    $grargs{$arg}->{$karg} = $argsh{$karg}; ## remplace them 
+		}
+	    }
+	}
+    }
+
+    ## Run the graph commands
+
+    my $rgraph = YapRI::Graph::Simple->new(\%grargs);
+
+    my $block = $rgraph->build_graph();
+
+    $rgraph->run_graph($block);
+}
+
+
+
 
 
 
