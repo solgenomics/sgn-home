@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 36;
+use Test::More tests => 46;
 use Test::Exception;
 
 use FindBin;
@@ -329,7 +329,7 @@ is($phystats1->get_matrix()->get_name(), 'topomtx',
 ## TEST GRAPH ##
 ################
 
-## create_composition_graph, TEST 35 and 36
+## create_composition_graph, TEST 35 and 41
 
 my $tempdir = $phystats1->get_rbase()->get_cmddir();
 my $graphfile = $tempdir . '/TopoComp.bmp';
@@ -346,6 +346,67 @@ is($img_x, 800,
 is($img_y, 600, 
     "testing create_composition_graph, checking image height")
     or diag("Looks like this has failed");
+
+throws_ok { $phstats0->create_composition_graph() } qr/ERROR: No filename/, 
+    'TESTING DIE ERROR when no filename was supplied create_composition_graph';
+
+throws_ok { $phstats0->create_composition_graph('test', []) } qr/ERROR: ARRAY/, 
+    'TESTING DIE ERROR when arg. supplied create_composition_graph isnt HREF';
+
+$phstats0->set_rbase('');
+throws_ok { $phstats0->create_composition_graph('test') } qr/ERROR: No rbase/, 
+    'TESTING DIE ERROR when rbase is empty before run create_composition_graph';
+$phstats0->set_rbase($srh0);
+
+$phstats0->set_matrix('');
+throws_ok { $phstats0->create_composition_graph('test') } qr/ERROR: No matrix/, 
+    'TESTING DIE ERROR when rbase is empty before run create_composition_graph';
+$phstats0->set_matrix($matrix);
+
+throws_ok { $phstats0->create_composition_graph('test', { fk => {} }) } qr/fk/, 
+    'TESTING DIE ERROR when no-valid graph arg. used run create_composition_gr';
+
+
+
+################
+## TEST TABLE ##
+################
+
+## create_composition_table, TEST 42 to 46
+
+my $tabfile = $tempdir . '/TopoTable.tab';
+$phystats1->create_composition_table($tabfile);
+
+open my $tabfh, '<', $tabfile;
+
+my $match = 0;
+
+my %exptabfile = (
+    1 => "\tML\tNJ",
+    2 => "cluster_10\ttopology_1\ttopology_3",
+    3 => "cluster_23\ttopology_1\ttopology_2",
+    );
+
+my %obttabfile = ();
+my $l = 0;
+while(<$tabfh>) {
+    chomp($_);
+    $l++;
+    $obttabfile{$l} = $_;
+}
+close($tabfh);
+
+foreach my $idx (sort {$a <=> $b} keys %exptabfile) {
+    is($obttabfile{$idx}, $exptabfile{$idx},
+	"testing create_composition_table, checking tab file line $idx")
+	or diag("Looks like this has failed");
+}
+
+throws_ok { $phstats0->create_composition_table() } qr/ERROR: No filename/, 
+    'TESTING DIE ERROR when no filename was supplied create_composition_table';
+
+throws_ok { $phstats0->create_composition_table('fake') } qr/ERROR: There isn/, 
+    'TESTING DIE ERROR when there isnt any set before create_composition_table';
 
 
 

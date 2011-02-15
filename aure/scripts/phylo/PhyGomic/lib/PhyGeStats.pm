@@ -465,7 +465,7 @@ sub _compare_phygetopos {
 		
 		## Compare with the topologies stored into %phygt_keep hash
 
-		foreach my $phname (keys %types_comps) {
+		foreach my $phname (sort keys %types_comps) {
 		    
 		    my $ktopo = $phygt_keep{$comp_id}->{$phname}; 
 		    if (is_same_tree($topology, $ktopo)) {
@@ -715,6 +715,109 @@ sub create_composition_graph {
     $rgraph->run_graph($block);
 }
 
+=head2 create_composition_table
+
+  Usage: $phystats->create_composition_table($filename); 
+
+  Desc: Print into a tab delimiter file a table with: 
+         + headers  = phygetopo methods (phygenames),
+         + rownames = member_id
+         + data     = topotype_id after the comparison (see _compare_phygetopos)
+
+  Ret: None
+
+  Args: $filename, a filename to print the table, 
+        $rowbase, a basename for rows.
+
+  Side_Effects: Die if no filename argument is used.
+                Die if phygetopo accessor is empty.
+
+  Example: $phystats->create_composition_table('MyTable.tab');   
+
+=cut
+
+sub create_composition_table {
+    my $self = shift;
+    my $filename = shift ||
+	croak("ERROR: No filename was supplied to create_composition_table.");
+    
+    my $rowbase = shift;
+
+    ## Check that phygetopo contains data.
+
+    my %phygt = %{$self->get_phygetopo()};
+
+    if (scalar( keys %phygt) == 0) {
+	croak("ERROR: There isnt any phygetopo data inside phygestat object.");
+    }
+
+    ## Get the composition hash to get the same names that the rest of 
+    ## the methods.
+
+    my %comp_phygt = $self->_compare_phygetopos($rowbase);
+
+    ## It will create a hash with:
+    ##    keys  = member_id,
+    ##    value = hashref. with key = phygename and value = new topology_id
+
+    my %phymembers = ();
+
+    foreach my $phyname (sort keys %phygt) {
+
+	my %topotypes = %{$phygt{$phyname}->get_topotypes()};
+	
+	foreach my $topo_id (sort keys %topotypes) {
+	    
+	    my @members = @{$topotypes{$topo_id}->get_members()};
+            ## Search the global topology name for this topo_id
+	    
+	    my $gtopo_id = '';
+	    foreach my $gtopo_cid (sort keys %comp_phygt) {
+		my $old_topo_id = $comp_phygt{$gtopo_cid}->{$phyname};
+		if (defined $old_topo_id) {
+		    if ($old_topo_id eq $topo_id) {
+			$gtopo_id = $gtopo_cid;
+		    }
+		}
+	    }
+
+	    ## Add to the hash
+
+	    foreach my $member (@members) {
+		my $clid = $member->id();
+		unless (exists $phymembers{$clid}) {
+		    $phymembers{$clid} = { $phyname => $gtopo_id };
+		}
+		else {
+		    $phymembers{$clid}->{$phyname} = $gtopo_id;
+		}
+	    }
+	}
+    }
+
+    ## Now all the members should be in the hash, it will print the file
+
+    open my $fh, '>', $filename;
+
+    my @phynames = sort keys %phygt;
+    
+    my $header = "\t" . join("\t", @phynames);
+    print $fh "$header\n";
+    foreach my $memb_id (sort keys %phymembers) {
+	my $line = $memb_id . "\t";
+	my @data = ();
+	foreach my $phyname (@phynames) {
+	    if (exists $phymembers{$memb_id}->{$phyname}) {
+		push @data, $phymembers{$memb_id}->{$phyname};
+	    }
+	    else {
+		push @data, 'NA';
+	    }
+	}
+	$line .= join("\t", @data);
+	print $fh "$line\n";
+    }
+}
 
 
 
