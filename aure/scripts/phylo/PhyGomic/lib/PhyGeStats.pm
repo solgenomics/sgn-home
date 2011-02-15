@@ -490,6 +490,57 @@ sub _compare_phygetopos {
     return %phygt_comp;
 }
 
+=head2 _tree_list
+
+  Usage: my %trees = $phygestats->_tree_list($toponame) 
+
+  Desc: Get a hash with key   = global_topology_id
+                        value = tree (newick format)
+
+
+  Ret: %trees, a hash (see above)
+
+  Args: $toponame, a base name to use to define the new topologies
+
+  Side_Effects: Die if some arguments are wrong.
+                It uses 'topology' by default
+
+  Example: my %trees = $phygestats->_tree_list('topology') 
+
+=cut
+
+sub _tree_list {
+    my $self = shift;
+    my $rowbase = shift;
+
+    my %comp_phygt = $self->_compare_phygetopos($rowbase);
+    my %phygt = %{$self->get_phygetopo()};
+
+    my %trees = ();
+
+    foreach my $phyname (sort keys %phygt) {
+
+	my %topotypes = %{$phygt{$phyname}->get_topotypes()};
+	
+	foreach my $topo_id (sort keys %topotypes) {
+	    
+	    my $topo = $topotypes{$topo_id};
+
+            ## Search the global topology name for this topo_id
+	    
+	    foreach my $gtopo_cid (sort keys %comp_phygt) {
+		my $old_topo_id = $comp_phygt{$gtopo_cid}->{$phyname};
+		if (defined $old_topo_id) {
+		    if ($old_topo_id eq $topo_id) {
+			$trees{$gtopo_cid} = $topo->get_topology_as_newick();
+		    }
+		}
+	    }
+	}
+    }
+    return %trees;
+}
+
 =head2 _phygt2matrix
 
   Usage: my $matrix = $self->_phygt2matrix($mtxname, $rownames); 

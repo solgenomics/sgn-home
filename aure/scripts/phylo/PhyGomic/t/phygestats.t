@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 46;
+use Test::More tests => 49;
 use Test::Exception;
 
 use FindBin;
@@ -407,6 +407,31 @@ throws_ok { $phstats0->create_composition_table() } qr/ERROR: No filename/,
 
 throws_ok { $phstats0->create_composition_table('fake') } qr/ERROR: There isn/, 
     'TESTING DIE ERROR when there isnt any set before create_composition_table';
+
+
+#######################
+## TEST TREE METHODS ##
+#######################
+
+## _tree_list, TEST 47 to 49
+
+my %trees = $phystats1->_tree_list();
+my %expected_trees = (
+    topology_1	=> "(((Nsy:1,Nto:1):1,Nta:1):1,Nta:1,Sly:1)",
+    topology_2	=> "((Nsy:1,(Nta:1,Nto:1):1):1,Nta:1,Sly:1)",
+    topology_3	=> "((Nsy:1,Nto:1):1,(Nta:1,Nta:1):1,Sly:1)",
+    );
+
+
+foreach my $tpid (sort keys %expected_trees) {
+    is($trees{$tpid}, $expected_trees{$tpid},
+	"testing _tree_list function, checking trees and keys for $tpid")
+	or diag("Looks like this has failed");
+}
+
+
+
+
 
 
 
