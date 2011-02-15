@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 32;
+use Test::More tests => 34;
 use Test::Exception;
 
 use FindBin;
@@ -307,6 +307,22 @@ is(scalar(@data), 6,
     or diag("Looks like this has failed");
 
 
+## create_matrix, TEST 33 and 34
+
+## phstats0 should be empty
+
+throws_ok { $phstats0->create_matrix() } qr/ERROR: There isnt/, 
+    'TESTING DIE ERROR when there isnt any phygt. set before run create_matrix';
+
+$phystats1->create_matrix('topomtx');
+
+is($phystats1->get_matrix()->get_name(), 'topomtx', 
+    "testing create_matrix, checking matrix name set into the accessor")
+    or diag("Looks like this has failed");
+
+
+
+
 ################
 ## TEST GRAPH ##
 ################
@@ -315,7 +331,7 @@ is(scalar(@data), 6,
 
 ## Clean the R dirs
 
-#$srh0->cleanup();
+$srh0->cleanup();
 
 ####
 1; #

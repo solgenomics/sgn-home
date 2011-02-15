@@ -562,7 +562,44 @@ sub _phygt2matrix {
     return $matrix;
 }
 
+=head2 create_matrix
 
+  Usage: $phystats->create_matrix($mtxname, $rowbasename); 
+
+  Desc: Creates a YapRI::Data::Matrix with the PhyGeTopo data and load it into
+        the accessor.
+
+  Ret: None
+
+  Args: $mtxname, matrix name,
+        $rowbasename, a basename for rows
+
+  Side_Effects: Die if no phygetopo objects were loaded into the object.
+                If there is a matrix into the accessor, it will overwrite it.
+
+  Example: $phystats->create_matrix('topomtx', 'topology');   
+
+=cut
+
+sub create_matrix {
+    my $self = shift;
+    my $mtxname = shift;
+    my $rowbase = shift;
+
+    ## Check that phygetopo contains data.
+
+    my %phygt = %{$self->get_phygetopo()};
+
+    if (scalar( keys %phygt) == 0) {
+	croak("ERROR: There isnt any phygetopo data inside phygestat object.");
+    }
+
+    ## Run _phygt2matrix and load the result into the object
+
+    my $matrix = $self->_phygt2matrix($mtxname, $rowbase); 
+
+    $self->set_matrix($matrix);
+}
 
 
 
