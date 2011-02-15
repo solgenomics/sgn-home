@@ -4163,7 +4163,9 @@ sub run_njtrees {
 	    }
 
 	    my ($tree) = $factory->run($distobj);
+
 	    if (defined $tree) {
+		$tree->id($cluster_id);
 	    
 		## Third, replace in the tree the nodes names for the righ ones
 
@@ -4323,9 +4325,11 @@ sub run_mltrees {
 	    }
 
 	    if (defined $factory) {
-		my ($tree) = $factory->run($align);
+		my ($tree) = $factory->run($align);	
 	    	    
 		if (defined $tree) {
+
+		    $tree->id($cluster_id);
 
 		    my @nodes = $tree->get_leaf_nodes();
 		    foreach my $node (@nodes) {
