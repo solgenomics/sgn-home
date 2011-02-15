@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 38;
+use Test::More tests => 32;
 use Test::Exception;
 
 use FindBin;
@@ -190,7 +190,7 @@ is(scalar(keys %phygetopo_4r), 0,
     or diag("Looks like this has failed");
 
 
-## Get/Set_srh, TEST 19 to 21
+## Get/Set_rbase, TEST 19 to 21
 
 $phstats0->set_rbase($srh0);
 my $srh1 = $phstats0->get_rbase();
@@ -203,14 +203,37 @@ throws_ok { $phstats0->set_rbase() } qr/ARG. ERROR: No arg./,
     'TESTING DIE ERROR when no arg. was supplied to set_rbase function';
 
 throws_ok { $phstats0->set_rbase(['fake']) } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg supplied set_rbase isnt Statistics::R';
+    'TESTING DIE ERROR when arg supplied set_rbase isnt YapRI::Base';
+
+
+## Get/Set_matrix, TEST 22 to 25
+
+my $mtx0 = YapRI::Data::Matrix->new({ name => 'mtx0' });
+$phstats0->set_matrix($mtx0);
+my $mtx1 = $phstats0->get_matrix();
+
+is(ref($mtx1), 'YapRI::Data::Matrix',
+   "Testing Get/Set_matrix, Checking object identity")
+    or diag("Looks like this has failed");
+
+is($mtx1->get_name(), 'mtx0',
+   "Testing Get/Set_matrix, Checking matrix name")
+    or diag("Looks like this has failed");
+
+
+throws_ok { $phstats0->set_matrix() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to set_matrix function';
+
+throws_ok { $phstats0->set_matrix(['fake']) } qr/ERROR: ARRAY/, 
+    'TESTING DIE ERROR when arg supplied set_matrix isnt YapRI::Data::Matrix';
+
 
 
 ##################
 ## R connection ##
 ##################
 
-## Test 22
+## Test 26
 
 my $phystats1 = PhyGeStats->new();
 my $srh2 = $phystats1->get_rbase();
@@ -243,146 +266,10 @@ is(join(',', @results), join(',', @exp_results),
 ## ANALYTICAL FUNCTION ##
 #########################
 
-my $file0 = $phystats1->_r_infile_tm();
-
-## It should not create any file because the phygetopo is empty, TEST 23
-
-is(-s $file0, undef, 
-    "Testing _r_infile_topomemb internal function when no file is created")
-    or diag("Looks like this has failed");
-
-## Testing the file creation (_r_infile_tm), TEST 24 to 28
-
 $phystats1->set_phygetopo({ 'NJ' => $phygetopo2, 'ML' => $phygetopo1 });
-my $file1 = $phystats1->_r_infile_tm();
-
-my $wrong_coln = 0;
-my $wrong_headers = 0;
-my $wrong_rownames = 0;
-my $wrong_topoformat = 0;
-my $wrong_data_format = 0;
-
-open my $fh, '<', $file1;
-my $l = 0;
-while (<$fh>) {
-    my @data = split(/\t/, $_);
-    if (scalar(@data) != 4) {
-	$wrong_coln++;
-    }
-
-    ## Check headers for the first line
-    if ($l == 0) {
-	unless ($_ =~ m/\t"\w+"\t"\w+"\t"Topology"/) {
-	    $wrong_headers++;
-	}
-    }
-    else {
-	my $row_names = shift(@data);
-	my $topologies = pop(@data);
-	
-	unless ($row_names =~ m/"\w+"/) {
-	    $wrong_rownames++;
-	}
-	unless ($topologies =~ m/"\(.+\)"/) {
-	    $wrong_topoformat++;
-	}
-	foreach my $data (@data) {
-	    unless ($data =~ m/^\d+$/) {
-		$wrong_data_format++;
-	    }
-	}
-    }
-    $l++;
-}
-
-is($wrong_coln, 0, 
-    "Testing _r_infile_topomemb internal function, checking col. number")
-    or diag("Looks like this has failed");
-
-is($wrong_headers, 0, 
-    "Testing _r_infile_topomemb internal function, checking headers")
-    or diag("Looks like this has failed");
-
-is($wrong_rownames, 0, 
-    "Testing _r_infile_topomemb internal function, checking row names")
-    or diag("Looks like this has failed");
-
-is($wrong_topoformat, 0, 
-    "Testing _r_infile_topomemb internal function, checking topology format")
-    or diag("Looks like this has failed");
-
-is($wrong_data_format, 0, 
-    "Testing _r_infile_topomemb internal function, checking data format")
-    or diag("Looks like this has failed");
-
-## Check the die functions for _r_infile_tm() function, TEST 29 to 32
-
-throws_ok { $phstats0->_r_infile_tm([]); } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg supplied _r_infile_tm isnt HASH REF.';
-
-throws_ok { $phstats0->_r_infile_tm({ 'fake' => 1}); } qr/ERROR: fake/, 
-    'TESTING DIE ERROR when key arg supplied _r_infile_tm isnt valid';
-
-throws_ok { $phstats0->_r_infile_tm({ tempfile => 2}); } qr/ERROR: 2/, 
-    'TESTING DIE ERROR when value arg supplied _r_infile_tm isnt valid';
-
-throws_ok { $phstats0->_r_infile_tm({ phygetopo => 'HASH'}); } qr/ERROR: phyg/, 
-    'TESTING DIE ERROR when phygetopo arg supplied _r_infile_tm isnt HASHREF';
 
 
-## Checking the _r_loadfile function, TEST 33 to 35
-
-my $r_obj_name = $phystats1->_r_loadfile($file1, 'TopoMembTable');
-
-
-## Check that the object contains the data
-
-$srh2->create_block('CHECK_' . $r_obj_name, $r_obj_name);
-$srh2->add_command("print($r_obj_name)", 'CHECK_' . $r_obj_name);
-$srh2->run_block('CHECK_' . $r_obj_name);
-my $rfile3 = $srh2->get_resultfiles('CHECK_' . $r_obj_name);
-
-my $r_col_n = 0;
-my $r_row_n = 0;
-my $r_data_n = 0;
-
-
-open my $rfh3, '<', $rfile3;
-while(<$rfh3>) {
-    chomp($_);
-    $_ =~ s/^\s+//;
-    $_ =~ s/\s+$//;
-    $_ =~ s/\s+/ /g;
-    
-    $r_row_n++;
-    my @data = split(/\s+/, $_);
-    $r_col_n = scalar(@data);
-    $r_data_n += $r_col_n;
-}
-
-
-is($r_row_n, 4, 
-    "Testing _r_loadfile internal function, checking row number (4)")
-    or diag("Looks like this has failed");
-
-is($r_col_n, 4, 
-    "Testing _r_loadfile internal function, checking col number (4)")
-    or diag("Looks like this has failed");
-
-is($r_data_n, 15, 
-    "Testing _r_loadfile internal function, checking data number (4x4)")
-    or diag("Looks like this has failed");
-
-## Check if it dies properly, TEST 36 and 37
-
-throws_ok { $phstats0->_r_loadfile(); } qr/ERROR: No file/, 
-    'TESTING DIE ERROR when no file arg was supplied _r_loadfile()';
-
-throws_ok { $phstats0->_r_loadfile('test'); } qr/ERROR: No R basename/, 
-    'TESTING DIE ERROR when no basename arg was supplied _r_loadfile()';
-
-
-## Test _compare_phygetopos, TEST 38
+## Test _compare_phygetopos, TEST 27
 
 my %phycomp = $phystats1->_compare_phygetopos();
 
@@ -391,7 +278,33 @@ is(scalar(keys %phycomp), 3,
     or diag("Looks like this has failed");
 
 
+## Test _phygt2matrix, TEST 28 to 32
 
+my $matrix = $phystats1->_phygt2matrix();
+
+my @rownames = @{$matrix->get_rownames()};
+my @colnames = @{$matrix->get_colnames()};
+my @data = @{$matrix->get_data()};
+
+is($matrix->get_coln(), 2, 
+    "testing _phygt2matrix, checking column number (2)")
+    or diag("Looks like this has failed");
+
+is($matrix->get_rown(), 3, 
+    "testing _phygt2matrix, checking row number (3)")
+    or diag("Looks like this has failed");
+
+is(join(',', @colnames), "ML,NJ", 
+    "testing _phygt2matrix, checking colnames")
+    or diag("Looks like this has failed");
+
+is(join(',', @rownames), "topology_1,topology_2,topology_3",
+    "testing _phygt2matrix, checking rownames")
+    or diag("Looks like this has failed");
+
+is(scalar(@data), 6, 
+    "testing _phygt2matrix, checking data number (6)")
+    or diag("Looks like this has failed");
 
 
 ################

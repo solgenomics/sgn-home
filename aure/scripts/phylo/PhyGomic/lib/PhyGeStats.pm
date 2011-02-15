@@ -77,7 +77,8 @@ The following class methods are implemented:
 
   Args: A hash reference with the following key-value pairs: 
          + phygetopo    => a phygetopo object 
-         + rbase => a YapRI::BAse object
+         + rbase        => a YapRI::Base object
+         + matrix       => a YapRI::Data::Matrix object
         
   Side_Effects: Die if the argument used is not a hash or there are argument
                 incompatibility (for example run_trees without run_distances).
@@ -86,7 +87,8 @@ The following class methods are implemented:
            my $phygestats = PhyGeStats->new(
                                              { 
                                                phygetopo => $phygetopo,
-                                               rbase => $rbase,
+                                               rbase     => $rbase,
+                                               matrix    => $matrix,
                                              }
                                            );
 
@@ -100,8 +102,8 @@ sub new {
     
     my %permargs = ( 
 	phygetopo    => 'HASH',
-	rbase => "YapRI::Base",
-	r_dir        => '\w+',
+	rbase        => "YapRI::Base",
+	matrix       => "YapRI::Data::Matrix",
 	);
 
     ## Check argument
@@ -126,8 +128,6 @@ sub new {
 	}
     }
 
-    my $r_dir = $args_href->{r_dir} || cwd();
-
     ## As default values ir will create two empty objects
 
     my $phygetopo_href = $args_href->{phygetopo};
@@ -139,11 +139,14 @@ sub new {
     unless (defined $srh) {
 	$srh = YapRI::Base->new();
     }
+
+    my $matrix = $args_href->{matrix} || '';
     
     ## Set vars in the object
 
     $self->set_phygetopo($phygetopo_href);
     $self->set_rbase($srh);
+    $self->set_matrix($matrix);
     
     return $self;
 }
@@ -267,8 +270,6 @@ sub delete_phygetopo {
     return $phygetop_href;
 }
 
-
-
 =head2 get_rbase
 
   Usage: my $srh = $phygestats->get_rbase(); 
@@ -300,7 +301,7 @@ sub get_rbase {
 
   Args: A YapRI::Base object
 
-  Side_Effects: Die if no argument is used or if the object is not a PhyGeTopo
+  Side_Effects: Die if no argument is used or if the object is not a YapRI::Base
                 object
 
   Example: $phygestats->set_rbase($srh);
@@ -321,6 +322,61 @@ sub set_rbase {
 	    }	    
 	}
 	$self->{rbase} = $srh;    
+    }
+}
+
+
+=head2 get_matrix
+
+  Usage: my $matrix = $phygestats->get_matrix(); 
+
+  Desc: Get a YapRI::Data::Matrix object contained into the PhyGeStats function
+
+  Ret: A YapRI::Data::Matrix
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my $matrix = $phygestats->get_matrix();
+
+=cut
+
+sub get_matrix {
+    my $self = shift;
+    return $self->{matrix};
+}
+
+=head2 set_matrix
+
+  Usage: $phygestats->set_matrix($matrix);
+
+  Desc: Set YapRI::Data::Matrix object in the phygestats object
+
+  Ret: None
+
+  Args: A YapRI::Data::Matrix object
+
+  Side_Effects: Die if no argument is used or if it is not a YapRI::Data::Matrix
+
+  Example: $phygestats->set_matrix($matrix);
+
+=cut
+
+sub set_matrix {
+    my $self = shift;
+    my $matrix = shift;
+   
+    unless (defined $matrix) {
+	croak("ARG. ERROR: No arg. was used for set_matrix function");
+    }
+    else {
+	if ($matrix =~ m/\w+/) {
+	    unless (ref($matrix) eq 'YapRI::Data::Matrix') {
+		croak("ERROR: $matrix set_matrix() isnt YapRI::Data::Matrix");
+	    }	    
+	}
+	$self->{matrix} = $matrix;    
     }
 }
 
@@ -435,263 +491,77 @@ sub _compare_phygetopos {
 
 =head2 _phygt2matrix
 
-  Usage: my $matrix = $self->_phygt2matrix(); 
+  Usage: my $matrix = $self->_phygt2matrix($mtxname, $rownames); 
 
   Desc: Creates a YapRI::Data::Matrix with the PhyGeTopo data
 
   Ret: $matrix, a YapRI::Data::Matrix object
 
-  Args: None
+  Args: $mtxname, matrix name,
+        $rownames, base for the rownames
 
-  Side_Effects: None
+  Side_Effects: Use 'PhyGeTopo_Comp' as default matrix name.
 
   Example: my $ymatrix = $self->_phygt2matrix(); 
 
 =cut
 
 sub _phygt2matrix {
-
-
-
-}
-
-
-
-
-
-
-=head2 _r_infile_tm
-
-  Usage: my $file = $phygestats->_r_infile_tm($argument_href); 
-
-  Desc: Print into a file topotype_id and member_count in table format
-
-  Ret: $file, a filename
-
-  Args: optional, a hash reference with the following arguments:
-        dirname   => dirname to create the file
-        filename  => filename for the file
-        tempfile  => [1|0], enable/disable the file creation as temp file
-                     (1 by default)
-        phygetopo => array ref. with PhyGeTopo objects to be used
-                     (all contained in the phygestats object by default)
-
-  Side_Effects: Die if some arguments are wrong
-
-  Example: my $file0 = $phygestats->_r_infile_tm();
-           my $file1 = $phygestats->_r_infile_tm(
-                                       { 
-                                         phygetopo => $phygetopo1,
-                                         dirname   => '/home/user/analysis/',
-                                         filename  => 'phygetopo_tab_for_r.txt',
-				       }
-                                     );
-
-
-=cut
-
-sub _r_infile_tm {
     my $self = shift;
-    my $arghref = shift;
+    my $mtxname = shift
+	|| 'PhyGeTopo_Comp';
+    my $rowbase = shift;
 
-    my $file = '';
-    my $fh = '';
+    ## Get the phygetopo objects, colnames and coln
 
-    ## Check arguments
+    my %phygt = %{$self->get_phygetopo()};
+    my @colnames = sort keys %phygt;
+    my $coln = scalar(@colnames);
 
-    my %permarg = (
-	dirname   => '\w+',
-	filename  => '\w+',
-	tempfile  => '[0|1|no|yes]',
-	phygetopo => 'HASH'
-	);
+    ## Get the comparison hash, rownames and rown
+
+    my %comp_phygt = $self->_compare_phygetopos($rowbase);
+    my @rownames = sort keys %comp_phygt;
+    my $rown = scalar(@rownames);
 
 
-    if (defined $arghref) {
-	unless (ref($arghref) eq 'HASH') {
-	    croak("ERROR: $arghref isnt a hash ref. for _r_infile_topomemb()");
-	}
-	else {
-	    foreach my $keyarg (keys %{$arghref}) {
-		unless (exists $permarg{$keyarg}) {
-		    croak("ERROR: $keyarg isnt a valid argument");
-		}
-		else {
-		    my $valarg = $arghref->{$keyarg};
-		    unless ($valarg =~ m/$permarg{$keyarg}/i) {
-			croak("ERROR: $valarg doesnt have a right value");
-		    }
-		}
-	    }
-	}
-    }
+    ## Create a new matrix
 
-    ## First, create a hash with key=topotype_id and value=aref_member_counts
-    ## the first member always will be the headers
+    my $mtx = { name     => $mtxname,
+		coln     => $coln, 
+		rown     => $rown, 
+		colnames => \@colnames, 
+		rownames => \@rownames,
+    };
 
-    my %topodata = ();
-    my %topologies = ();
-    my %newick = ();
+    my $matrix = YapRI::Data::Matrix->new($mtx);
 
-    my $phyg_href = $arghref->{phygetopo} || $self->get_phygetopo();
-    
-    unless (ref($phyg_href) eq 'HASH') {
-	croak("ERROR: phygetopo value $phyg_href isnt an hash reference");
-    }
+    ## Get the data (sort always by names). If it is defined for the comparison
+    ## hash it will get the members, if isnt defined, it will add 0.
 
-    foreach my $phygename (sort keys %{$phyg_href}) {
-
-	my %topotypes = %{$phyg_href->{$phygename}->get_topotypes()};
-	
-	foreach my $topo_id (sort keys %topotypes) {
-
-	    my $topology = $topotypes{$topo_id}->get_topology();
-	    my $newick = $topotypes{$topo_id}->get_topology_as_newick();
-	    my @members = @{$topotypes{$topo_id}->get_members()};
-	    
-	    ## Check if exists that topology
-	    my $match;
-	    foreach my $ktopo_id (keys %topologies) {
-		my $keep_topo = $topologies{$ktopo_id};
-		if (Bio::Tree::TopoType::is_same_tree($topology, $keep_topo)) {
-		    $match = $ktopo_id;
-		}
-	    }
-
-	    ## If exists that topology add to the old one, if not, add a new
-	    ## one 
-
-	    if (defined $match) {
-
-		my $grouptopo_id = $match;
-		$topodata{$grouptopo_id}->{$phygename} = scalar(@members);
+    my @data = ();
+    foreach my $rowname (sort keys %comp_phygt) {
+	my %datah = %{$comp_phygt{$rowname}};
+	foreach my $colname (@colnames) {
+	    if (defined $datah{$colname}) {
+		my $topo_id = $datah{$colname};
+		my %topoty = %{$phygt{$colname}->get_topotypes()};
+		my @members = @{$topoty{$topo_id}->get_members()};
+		push @data, scalar(@members);
 	    }
 	    else {
-
-		if (exists $topodata{$topo_id}) {
-
-		    ## It will need a new topology_id, by default it will
-		    ## add the phylotopo name if it exists before
-
-		    $topo_id = $topo_id . '_' . $phygename;
-		}
-		$topodata{$topo_id}->{$phygename} = scalar(@members);
-		$topologies{$topo_id} = $topology;
-		$newick{$topo_id} = $newick;  
+		push @data, 0;
 	    }
 	}
     }
 
-    ## Second, create the file and print the hash only if there are any
-    ## phygetopo object
+    ## Add the data to the matrix
 
-    my @phygenames = sort keys %{$phyg_href};
-    if (scalar(@phygenames) > 0) {
+    $matrix->set_data(\@data);
 
-	## First, create a file
-
-	my $filename = $arghref->{filename};
-	my $dirname = $arghref->{dirname} || getcwd();
-	my $tempfile = $arghref->{tempfile};
-	my $msg = "ERROR: filename or dirname are incompat args. with tempfile";
-    
-	if (defined $filename) {
-	    if (defined $tempfile && $tempfile =~ m/[1|yes]/i) {
-		croak($msg);
-	    }
-	    $file = $dirname . '/' . $filename;
-	    open $fh, '>', $file;
-	}
-	else {	
-	    ($fh, $file) = tempfile('r_infile_topom_XXXXXX', TMPDIR => 1);
-	}
-	
-	my $header = "\t" . '"' . join("\"\t\"", @phygenames);
-
-	## Add a topolovgy column
-	$header .= "\"\t\"Topology\"\n";
-	print $fh $header;
-    
-	foreach my $row_name (sort keys %topodata) {
-	    my %row_data = %{$topodata{$row_name}};
-	    print $fh '"' . $row_name . '"';
-	    foreach my $phname (@phygenames) {
-		if (exists $row_data{$phname}) {
-		    print $fh "\t$row_data{$phname}";
-		}
-		else {
-		    print $fh "\t0";
-		}
-	    }
-	    print $fh "\t" . '"' . $newick{$row_name} . '"' . "\n";
-	}
-
-	## Close only if the filehandle was open
-	close($fh);
-    }
-    
-    
-    return $file;
+    return $matrix;
 }
 
-=head2 _r_loadfile
-
-  Usage: my $r_obj_name = $phygestats->_r_loadfile($file, $basename); 
-
-  Desc: Load the topomember file into R as a file
-
-  Ret: $r_obj_name, a R object name that contains the table, and also
-       the name of the YapRI::Base block
-
-  Args: $file, filename,
-        $basename, for the R object
-
-  Side_Effects: Die if no filename or R object basename is supplied.
-                Die if the R connection is not set or is not started
-
-  Example: my $r_obj_name = $phygestats->_r_loadfile($file, 'TopoMembTable'); 
-
-
-=cut
-
-sub _r_loadfile {
-    my $self = shift;
-    my $file = shift ||
-	croak("ERROR: No file was supplied to _r_loadfile function.");
-    my $basename = shift ||
-	croak("ERROR: No R basename was supplied to _r_loadfile function.");
-
-    my $srh = $self->get_rbase();
-
-    my $r_obj = $basename . "_" . random_regex('\w\w\w\w\w\w');
-
-    ## Check that exists the connection and that it has been started
-
-    unless (defined $srh) {
-	croak("ERROR: rbase is not set for PhyGeStat object");
-    }
- 
-    
-    ## Now build the command to load the data
-
-    my $r_cmd = "$r_obj <- read.table(\"$file\", header=TRUE)";
-
-    ## Run the command
-
-    $srh->create_block($r_obj);
-    $srh->add_command("$r_cmd", $r_obj);
-
-    ## Return the object
-
-    return $r_obj;
-}
-
-=head2 _phto2ymtx
-
-  
-
-
-=cut
 
 
 
