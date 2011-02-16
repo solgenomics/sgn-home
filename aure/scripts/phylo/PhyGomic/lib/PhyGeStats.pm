@@ -7,7 +7,7 @@ use autodie;
 
 use Carp qw| croak cluck |;
 use Math::BigFloat;
-use YapRI::Base;
+use YapRI::Base qw/ r_var /;
 use YapRI::Data::Matrix;
 use YapRI::Graph::Simple;
 
@@ -37,9 +37,43 @@ $VERSION = eval $VERSION;
 =head1 SYNOPSIS
 
   use PhyGeStats;
+  use PhyGeTopo;
+  use PhyGeCluster;
 
-  my $phygestats = PhyGeStats->new();
+  ## Prepare data from PhyGeCluster:
+ 
+  my $phygecluster = PhyGeCluster->new( { blastfile => $blastfile } );
+  $phygecluster->load_seqfile( { sequencefile => $seqfile } );
+  $phygecluster->load_strainfile( { strainfile => $strainfile } );
 
+  $phygecluster->run_alignments( { program => 'clustalw' } );
+  $phygecluster->run_distances( { method => 'Kimura' } );
+  $phygecluster->run_mltrees({ dnaml => {}});
+
+  ## Prepare PhyGeTopo as analysis of PhyGeCluster:
+
+  my %seqfams = %{$phygecluster->get_clusters()};
+  my %strains = %{$phygecluster->get_strains()};
+
+  my $phygetopo = PhyGeTopo->new({seqfams => \%seqfams, strains => \%strains});
+  my %topotypes = $phygetopo->run_topoanalysis();
+
+  ## Create a rbase object:
+
+  my $rbase = YapRI::Base->new();
+
+
+  ## Create a PhyGeStats:
+
+  my $phygestats = PhyGeStats->new({ rbase     => $rbase, 
+                                     phygetopo => { 'ML' => $phygetopo } } );
+
+
+  ##  Run analysis and create the result files
+
+  $phygestats->create_composition_table('MyTable.tab');
+  $phygestats->create_composition_graph('MyCompositionGraph.bmp');
+  $phygestats->create_tree_graph('MyTreeGraph.bmp');
 
 
 =head1 DESCRIPTION
@@ -870,7 +904,154 @@ sub create_composition_table {
     }
 }
 
+=head2 create_tree_graph
 
+  Usage: $phystats->create_tree_graph($filename, $gr_args_href); 
+
+  Desc: Creates a image file with trees
+
+  Ret: None
+
+  Args: $filename, name for the graph file (required),
+        $gr_args_href, a hash reference with the following keys:
+          - stack   => (horizontal|vertical|matrix), default horizontal.
+          - device  => a hash ref. with the R device arguments
+          - grparam => a hash ref. with key = par and values = hashref. with 
+                       par args. mfrow controls the number of plots inside
+                       the device.
+          - plot.phylog => a hash ref. with key=plot.phylog and 
+                           value=hash ref. with this R function args.
+
+  Side_Effects: Die if no filename argument is used.
+                Die if no rbase was set before run this method. 
+
+  Example: $phystats->create_tree_graph('MyFile.bmp');
+
+=cut
+
+sub create_tree_graph {
+    my $self = shift;
+    my $filename = shift ||
+	croak("ERROR: No filename was supplied to create_tree_graph.");
+    
+    my $grhref = shift;
+
+    if (defined $grhref) {
+	unless (ref($grhref) eq 'HASH') {
+	    croak("ERROR: $grhref supplied create_tree_graph isnt a HASHREF.");
+	}
+    }
+    
+    ## Get trees
+
+    my %trees = $self->_tree_list();
+
+    ## Get rbase or die
+
+    my $rbase = $self->get_rbase();
+    if (ref($rbase) ne 'YapRI::Base') {
+	croak("ERROR: No rbase was set before run create_composition_graph.");
+    }
+
+    ## If tree number is 0, die
+
+    my $tree_n = scalar(keys %trees);
+
+    if ($tree_n == 0) {
+	croak("ERROR: No trees were are contained at phygestat object.");
+    }
+
+    ## 1) Create a block.
+
+    my $block = 'TREEGRAPH_' . random_regex('\w\w\w\w');
+    $rbase->create_block($block);
+
+    ## 2) Load the R module to write phylogenetic trees
+
+    $rbase->add_command('suppressPackageStartupMessages(library(ade4))', 
+			$block );
+    
+    ## 4) Get size and par according stack
+
+    my $stack = $grhref->{stack} || "horizontal";
+    my $size = { width => 150 * $tree_n, height => 200 };
+    my $mfrow = { mfrow => [1, $tree_n] };
+
+    if ($stack eq 'vertical') {
+	$size = { width => 200, height => 150 * $tree_n };
+	$mfrow = { mfrow => [$tree_n, 1] };
+    }
+    elsif ($stack eq 'matrix') {
+	sqrt($tree_n) =~ m/^(\d)/;
+	my $row = $1;
+	my $div = $tree_n / $row;
+	$div =~ m/^(\d+)/;
+	my $col = $1;
+	if ($div - $col > 0) {
+	    $col++;
+	}
+	$size = { width => 150 * $col, height => 150 * $row };
+	$mfrow = { mfrow => [$row, $col] };
+    }
+
+    ## 5) Create the device
+
+    my $defdev_cmd = 'bmp(filename="' . $filename . '", ';
+    $defdev_cmd .= 'width = ' . $size->{width} . ', ';
+    $defdev_cmd .= 'height = ' . $size->{height} . ')';
+
+    my $dev_cmd = $grhref->{device} || $defdev_cmd;
+
+    $rbase->add_command($dev_cmd, $block);
+
+    ## 6) Add par arguments
+
+    my $defpar = { par => $mfrow };
+    $defpar->{par}->{cex} = 1.5;
+
+    my $parhref = $grhref->{grparam} || $defpar;
+    
+    $rbase->add_command(r_var($parhref), $block);
+    
+    ## 7) Create the objects
+
+    foreach my $topo_id (sort keys %trees) {
+	my $obj_cmd = $topo_id . ' <- "' . $trees{$topo_id} . ';"'; 
+	$rbase->add_command($obj_cmd, $block)
+    }
+
+    ## 8) Create the plotting commands
+
+    my $def_plot = { 
+	'plot.phylog' => { 
+	    f          => 0.5, 
+	    cnod       => 2, 
+	    cleav      => 2, 
+	    'clabel.l' => 3,
+	    csub       => 3,
+	    possub     => "bottomright",
+	} 
+    };
+
+    my $plot = $grhref->{'plot.phylog'} || $def_plot; 
+
+    foreach my $topo_id (sort keys %trees) {
+	
+	## It will overwrite each command with x = newick2phylog($topo_id)
+	## and sub = $topo_id
+
+	my $obj = 'newick2phylog(' . $topo_id . ')';
+	$plot->{'plot.phylog'}->{x} = { $obj => '' };
+	$plot->{'plot.phylog'}->{'sub'} = $topo_id;
+	
+	$rbase->add_command(r_var($plot), $block);
+    }
+
+    ## 9) Run commands
+
+    $rbase->run_block($block);
+    
+}
 
 
 

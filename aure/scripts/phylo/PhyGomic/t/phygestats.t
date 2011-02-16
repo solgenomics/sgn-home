@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 49;
+use Test::More tests => 58;
 use Test::Exception;
 
 use FindBin;
@@ -136,7 +136,6 @@ my %topotypes2 = $phygetopo2->run_topoanalysis();
 
 ## 3) Statistics::R
 
-my $rdir = "$FindBin::Bin/..";
 my $srh0 = YapRI::Base->new();
 
 
@@ -429,9 +428,51 @@ foreach my $tpid (sort keys %expected_trees) {
 	or diag("Looks like this has failed");
 }
 
+## create_tree_graph, TEST 50 to 58
+
+my %treefile = (
+    vertical   => { filename => $tempdir . '/TopoTreesVertical.bmp',
+		    width    => 200,
+		    height   => 450,
+    },
+    horizontal => { filename => $tempdir . '/TopoTreesHorizontal.bmp',
+		    width    => 450,
+		    height   => 200,
+    },
+    matrix     => { filename => $tempdir . '/TopoTreesMatrix.bmp',
+		    width    => 450,
+		    height   => 150,
+    },
+    );
 
 
+foreach my $stack (sort keys %treefile) {
 
+    $phystats1->create_tree_graph( $treefile{$stack}->{filename}, 
+				   { stack => $stack } 
+	);
+    my ($w_img, $h_img) = Image::Size::imgsize($treefile{$stack}->{filename});
+    
+    is($w_img, $treefile{$stack}->{width}, 
+       "testing create_tree_graph for $stack stack, checking width")
+	or diag("Looks likke this has failed");
+
+    is($h_img, $treefile{$stack}->{height}, 
+       "testing create_tree_graph for $stack stack, checking height")
+	or diag("Looks likke this has failed");
+}
+
+
+throws_ok { $phstats0->create_tree_graph() } qr/ERROR: No filename/, 
+    'TESTING DIE ERROR when no filename was supplied create_tree_graph';
+
+throws_ok { $phstats0->create_tree_graph('test', []) } qr/ERROR: ARRAY/, 
+    'TESTING DIE ERROR when arg. supplied create_tree_graph isnt HREF';
+
+$phstats0->set_rbase('');
+throws_ok { $phstats0->create_tree_graph('test') } qr/ERROR: No rbase/, 
+    'TESTING DIE ERROR when rbase is empty before run create_tree_graph';
+$phstats0->set_rbase($srh0);
 
 
 
