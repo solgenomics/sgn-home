@@ -780,7 +780,7 @@ sub set_bootstrapping {
 
   Usage: $phygecluster->load_seqfile($arguments_href);
 
-  Desc: Parse the seqquence file using parse_seqfile function and
+  Desc: Parse the sequence file using parse_seqfile function and
         load the results into the PhyGeCluster object
 
   Ret: None
@@ -1420,8 +1420,8 @@ sub fastparse_blastfile {
   Ret: %seqs, a hash with keys=seq_id and value= with
        sequences ids.
 
-  Args: A hash reference with the following keys: blastfile, blastformat,
-        sequencefile, clustervalues and rootname.
+  Args: A hash reference with the following keys: sequencefile,
+        report_status
 
   Side_Effects: Die if the argument used is not a hash.
                 Print status messages with $arg_href->{'debug'}
@@ -1487,12 +1487,11 @@ sub parse_seqfile {
 
   Ret: %strain, a hash with keys=seq_id and value= strain
 
-  Args: A hash reference with the following keys: blastfile, blastformat,
-        sequencefile, strainfile, clustervalues and rootname.
+  Args: A hash reference with the following keys: strainfile, report_status
 
   Side_Effects: Die if the argument used is not a hash.
                 Die if the if do not exists $args{'strainfile'}
-                Print status messages with $arg_href->{'debug'}
+                Print status messages with $arg_href->{'report_status'}
 
   Example: my %strain = parse_strainfile($arguments_href);
 
@@ -1548,7 +1547,7 @@ sub parse_strainfile {
 
   Ret: A hash with keys=contig_id and value=Bio::Cluster::SequenceFamily
 
-  Args: A hash reference with the following keys: acefile, debug
+  Args: A hash reference with the following keys: acefile, report_status
 
   Side_Effects: Die if the argument used is not a hash.
                 Die if the if do not exists $args{'acefile'}
