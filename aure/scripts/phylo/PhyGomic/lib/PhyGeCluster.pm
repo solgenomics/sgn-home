@@ -892,7 +892,7 @@ sub load_strainfile {
        value=Bio::Cluster::SequenceFamily object
 
   Args: A hash reference with the following keys: blastfile, blastformat,
-        sequencefile, clustervalues and rootname.
+        report_status, clustervalues and rootname.
         Permited clustervalues: evalue, expect, frac_identical, frac_conserved,
 		                gaps, hsp_length,  num_conserved, 
                                 num_identical, score, bits, percent_identity
@@ -904,7 +904,7 @@ sub load_strainfile {
                 clustervalues = { percent_identity => ['>', 90'], 
                                   hsp_length       => ['>', 60'] }
                 rootname = 'cluster'
-                Print status messages with $arg_href->{'debug'}
+                Print status messages with $arg_href->{'report_status'}
                 Calculate the percent_identity as frac_identical * 100
                 instead to use percent_identity from the blast result
                 (it is a Bio::SearchIO
@@ -982,6 +982,11 @@ sub parse_blastfile {
 		);
 	    
 	    my $ht = $searchio->result_count();
+	    unless (defined $ht) {
+		my $infile = $arg_href->{'blastfile'};
+		$ht = `cut -f1 $infile | wc -l`;
+		chomp($ht);
+	    }
 	    my $hc = 0;
 
 	    ## define the last cluster n
@@ -1151,7 +1156,7 @@ sub parse_blastfile {
        value=Bio::Cluster::SequenceFamily object
 
   Args: A hash reference with the following keys: blastfile, blastformat,
-        sequencefile, clustervalues and rootname.
+        report_status, clustervalues and rootname.
         Permited clustervalues: query_id, subject_id, percent_identity, 
                                 align_length, mismatches, gaps_openings, 
                                 q_start, q_end, s_start, s_end, e_value, 
@@ -1165,7 +1170,7 @@ sub parse_blastfile {
                                   align_length     => ['>', 60 ],
                                   mismatches       => ['<', 25 ]}
                 rootname = 'cluster'
-                Print status messages with $arg_href->{'debug'}
+                Print status messages with $arg_href->{'report_status'}
 
   Example: my %clusters = parse_blastfile($arguments_href);
 
@@ -1605,7 +1610,7 @@ sub parse_acefile {
 
 	if (exists $arg_href->{'report_status'}) {
 	    my $contig_c = scalar(keys %contigs);
-	    print_parsing_status($contig_c, $contigs_n, 
+	    print_parsing_status($l, $L, 
 				 "Percentage of ace file parsed:");
 	}
 	
@@ -1819,18 +1824,25 @@ sub parse_acefile {
 =cut
 
 sub print_parsing_status {
-    my $a = shift ||
+    my $a = shift;
+
+    unless (defined $a) {
 	croak("ERROR: 1st argument is not defined for print_parsing_status()");
-    my $z = shift ||
+    }
+    my $z = shift;
+    
+    unless (defined $z) {
 	croak("ERROR: 2nd argument is not defined for print_parsing_status()");
+    }
+	
     my $message = shift ||
 	"Percentage of the file parsed:";
 
     unless ($a =~ m/^\d+$/) {
 	croak("ERROR: 1st argument is not an int. for print_parsing_status()");
     }
-    unless ($a =~ m/^\d+$/) {
-	croak("ERROR: 1st argument is not an int. for print_parsing_status()");
+    unless ($z =~ m/^\d+$/) {
+	croak("ERROR: 2nd argument is not an int. for print_parsing_status()");
     }
     
     my $perc = $a * 100 / $z;
