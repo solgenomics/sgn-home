@@ -57,6 +57,28 @@ B<print_pipeline_status>      Print as STDOUT the pipeline status for parsing
 
    phygomics.pl is the scripts that executes the PhyGomics pipeline.
 
+   It will run the pipeline in two three steps:
+     1) Data loading [1 cycle]
+        1.1) Cluster extraction from one source, assembly file or selfblast.
+        1.2) Sequence members loading from a fasta file.
+        1.3) Strains for members loading from a tabular file.
+
+     2) Data processing [as many cycles as paths are described]
+        2.1) Search homologous using blast                   [optional]
+        2.2) Run alignments                                  [mandatory]
+        2.3) Run distances                                   [mandatory for NJ]
+        2.4) Prune members, it will rerun 2.2 and 2.3        [optional]
+        2.5) Run trees                                       [mandatory]
+        2.6) Tree rerooting                                  [optional]
+        2.7) Run bootstrapping                               [optional]
+        2.8) Run topoanalysis                                [mandatory]
+
+     3) Data integration and analysis [1 cycle]
+        3.1) Create graphs and tables.
+
+    (see -C, configuration file for more details about data)
+
+
 =cut
 
 =head1 AUTHORS
@@ -89,7 +111,7 @@ use PhyGeCluster;
 
 our ($opt_c, $opt_i, $opt_o, $opt_h, $opt_C, $opt_S);
 getopts("c:i:o:hCS");
-if (!$opt_c && !$opt_i && !$opt_o && !$opt_h && !$opt_C && !$opt_S) {
+if (!$opt_c && !$opt_i && !$opt_o && !$opt_C && !$opt_S) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
@@ -159,9 +181,9 @@ my $phyg = PhyGeCluster->new();
 
 
 ###############################################
-## 1) Add the cluster source file and parse it.
+## 1.1) Add the cluster source file and parse it.
 
-print STDERR "1) PARSING CLUSTER SOURCE FILE (" .  date() . "):\n\n";
+print STDERR "1.1) PARSING CLUSTER SOURCE FILE (" .  date() . "):\n\n";
 
 my $sc = $conf{cl_sc} || '';
 
@@ -214,14 +236,14 @@ print STDERR "\tPARSED. $cl_v clusters have been extracted.\n\n";
 
 
 ###################################################
-## 2) Parse the strain file and add to phygecluster
+## 1.2) Parse the strain file and add to phygecluster
 
 my $seq_args = { sequencefile => $indir . '/' . $conf{seq_fn} };
 if ($opt_S) {
     $seq_args->{report_status} = 1;
 }
 
-print STDERR "2) PARSING SEQUENCE MEMBER FILE (" .  date() . "):\n\n";
+print STDERR "1.2) PARSING SEQUENCE MEMBER FILE (" .  date() . "):\n\n";
 $phyg->load_seqfile($seq_args);
 
 my $seqn = 0;
@@ -235,14 +257,14 @@ print STDERR "\tPARSED. $seqn sequences have been extracted.\n\n";
 
 
 ###################################################
-## 3) Parse the strain file and add to phygecluster
+## 1.3) Parse the strain file and add to phygecluster
 
 my $str_args = { strainfile => $indir . '/' . $conf{str_fn} };
 if ($opt_S) {
     $str_args->{report_status} = 1;
 }
 
-print STDERR "3) PARSING STRAIN FILE (" .  date() . "):\n\n";
+print STDERR "1.3) PARSING STRAIN FILE (" .  date() . "):\n\n";
 $phyg->load_strainfile($str_args);
 my $str_n = scalar(keys %{$phyg->get_strains()});
 
@@ -250,13 +272,80 @@ print STDERR "\tPARSED. $str_n strains have been extracted.\n\n";
 
 
 ##############################################################################
-## 4) Now the pipeline will run different paths depending of the configuration
+## 2) Now the pipeline will run different paths depending of the configuration
 ##    file. Each path will clone phygecluster and run a sepparate analysis.
 ##    at the end, it will integrate all of them in a phygestat object.
 
+my %paths = %{$conf{paths}};
+my $pn = scalar(keys %paths);
+
+print STDERR "\n** $pn PATHS has been defined (".date()."):\n\n";
+
+my %phygecls = ();
+
+foreach my $path_idx (sort {$a <=> $b} keys %paths) {
+    my %pargs = %{$paths{$path_idx}};
+    my $phname = $pargs{pa_name} || $path_idx; 
+
+    print STDERR "\t$path_idx ==> INIT. PATH=$phname (" .  date() . "):\n\n";
+
+    ## 2.0) Clone the PhyGeCluster
+
+    print STDERR "\t\t2.0) CLONNING CLUSTER DATA (" .  date() . "):\n\n";
+
+    my $paphyg = $phyg->clone();
+
+    ## 2.1) Homologous search
+
+    print STDERR "\t\t2.1) HOMOLOGOUS SEARCH (" .  date() . "):\n\n";
+
+
+    if (defined $pargs{hs_dts} && defined $pargs{hs_str}) {
+	
+	my %hom_args = (
+	    -blast  => [ -p => 'blastn', -d => $indir . '/' . $pargs{hs_dts} ],
+	    -strain => $pargs{hs_dts},
+	    );
+	
+	if (exists $pargs{hs_arg}) {
+	    my @bargs = split(/;/, $pargs{hs_arg});
+	    foreach my $barg (@args) {
+		if ($bargs =~ m/\s*(-\w)\s+(.+?)\s*/) {
+		    my $b_ar = $1;
+		    my $b_vl = $2;
+		    unless ($b_ar =~ m/-(o|i|p|d)/) {
+			push @{$hom_args{-blast}}, $b_ar => $b_vl; 
+		    }
+		}
+	    }
+	}
+	if (exists $pargs{hs_fil}) {
+	    my @bfils = split(/;/, $pargs{hs_fil});
+	    foreach my $bfil (@fils) {
+		if ($bfil =~ m/\s*(.+?)\s*(.+?)\s*(.+?)\s*/) {
+		    my ($arg, $ope, $val) = ($1, $2, $3);
+		    if (exists $hom_args{-filter}) {
+			$hom_args{-filter}->{$arg} = [$2, $3];
+		    }
+		    else {
+			$hom_args{-filter} = { $arg = [$2, $3] };
+		    }
+		}
+	    }
+	}
+	
+	## And run homologous search
+	
+	$paphyg->homologous_search($hom_args_href);
+
+    }
+    else {
+    }
 
 
 
+    print STDERR "\t$path_idx ==> END. PATH=$phname (" .  date() . "):\n\n";
+}
 
 
 
@@ -299,7 +388,30 @@ sub help {
 
     Description:   
  
-      phygomics.pl is the scripts that executes the PhyGomics pipeline.       
+      phygomics.pl is the scripts that executes the PhyGomics pipeline.
+
+      It will run the pipeline in two three steps:
+     
+      1) Data loading [1 cycle]
+        1.1) Cluster extraction from one source, assembly file or selfblast.
+        1.2) Sequence members loading from a fasta file.
+        1.3) Strains for members loading from a tabular file.
+
+      2) Data processing [as many cycles as paths are described]
+        2.1) Search homologous using blast                   [optional]
+        2.2) Run alignments                                  [mandatory]
+        2.3) Run distances                                   [mandatory for NJ]
+        2.4) Prune members, it will rerun 2.2 and 2.3        [optional]
+        2.5) Run trees                                       [mandatory]
+        2.6) Tree rerooting                                  [optional]
+        2.7) Run bootstrapping                               [optional]
+        2.8) Run topoanalysis                                [mandatory]
+
+      3) Data integration and analysis [1 cycle]
+        3.1) Create graphs and tables.
+
+      (see -C, configuration file for more details about data)
+
 
     Usage:
   
@@ -429,7 +541,7 @@ sub print_config {
 ## Fill the data between square brackets without break each line.
 
 ###############################################################################
-## CLUSTERS CREATION ##########################################################
+## 1) DATA LOADING ############################################################
 ###############################################################################
 ##
 ## It can be based in two approaches: 
@@ -440,31 +552,266 @@ sub print_config {
 ##   2) A selfblast. Cluster will be created based in sequence match results.
 ##      Recomended for species where homologous genes cannot be coasssembled.
 
+######################
+## 1.1 ## MANDATORY ##
+######################
 
->CLUSTER_DATASOURCE:           []  
-## Two possible sources, blast or ace files
+<>CLUSTER_DATASOURCE:          []
+##  
+## Source type to extract the clusters
+##
+## format:  [{value}]
+## example: [ace]
+## values:  blast, ace
 
->CLUSTER_FILENAME:             []  
+<>CLUSTER_FILENAME:            []  
+##
 ## Name of the file to extract the clusters.
+##
+## format:  [{filename_without_dir}]
+## example: [assembly_out.test.ace]
 
->CLUSTER_VALUES:               []  
-## If cluster_datasource: [blast], a list separated by semicolons of arguments
-## operators and values of different blast datatypes. Valid values are:
-##   evalue, expect, frac_identical, frac_conserved, gaps, hsp_length, 
-##   num_conserved, num_identical, score, bits, percent_identity, 
+
+<>CLUSTER_VALUES:              []  
+##
+## Arguments to use to analyze the blast result file to get sequence clusters
+##
+## format:  [{parameter}{space}{operator}{space}{value}{semicolon}...]
+## example: [score > 100; percent_identity > 90]
+## parameters: evalue, expect, frac_identical, frac_conserved, gaps, 
+##             hsp_length, num_conserved, num_identical, score, bits, 
+##             percent_identity, 
 ## If fastblastparser is enabled, the valid values are:
-##   query_id, subject_id, percent_identity, align_length, mismatches, 
-##   gaps_openings, q_start, q_end, s_start, s_end, e_value, bit_score
-## Example: [ hsp_length > 100; percent_identity > 90, gaps < 5 ]
+##             query_id, subject_id, percent_identity, align_length, 
+##             mismatches, gaps_openings, q_start, q_end, s_start, s_end, 
+##             e_value, bit_score
 
->FASTBLASTPARSER:              []
+
+<>FASTBLASTPARSER:             []
+##
 ## Switch to use the fast blast parser (to enable add any character inside [])
+##
+## format: [1]
+## example [1]
 
->MEMBERSEQ_FILENAME:           []
+
+######################
+## 1.2 ## MANDATORY ##
+######################
+
+<>MEMBERSEQ_FILENAME:          []
+##
 ## Sequence file for the members of the blast or ace file in fasta format.
+##
+## format:  [{filename_without_dir}]
+## example: [seq.test.fasta]
 
->MEMBERSTRAIN_FILENAME:        []
+
+######################
+## 1.3 ## MANDATORY ##
+######################
+
+<>MEMBERSTRAIN_FILENAME:       []
 ## File with 2 columns: -f1 member_id, and -f2 strain name.
+##
+## format:  [{filename_without_dir}]
+## example: [strains.test.tab]
+
+
+###############################################################################
+## ANALYSIS PATHS #############################################################
+###############################################################################
+##
+## The phygomics pipeline is designed to work with different analysis paths,
+## so it could run different alignment methods, distance calculations and\/or
+## tree analysis. To do that it defines analysis paths using an integer 
+## between diamond brackets <>
+##
+## For example, analysis path 1 will be annotated as <1> 
+
+<>PATH_NAME:                   []
+##
+## A name to define the path.
+##
+## format:  [{name}]
+## example: ['ML']
+
+#####################
+## 2.1 ## OPTIONAL ##
+#####################
+
+<>HOMOLOGOUS_SEARCH_ARGUMENTS: []
+##
+## Blast arguments to use with the homologous search
+## 
+## format:  [{blast_argument}{space}{value}{space}{semicolon}...]
+## example: [-e 1e-10; -a 2]
+## arguments: all the blast arguments except: -i, -o, -p, -d
+
+<>HOMOLOGOUS_SEARCH_DATASET:   []
+##
+## Dataset to use with the homologous search
+##
+## format:  [{blastdb_file_without_dir}]
+## example: [blastref.test.fasta]
+
+<>HOMOLOGOUS_SEARCH_STRAIN:    []
+##
+## Strain to define as homologous
+##
+## format:  [{strain}]
+## example: [Sly]
+
+<>HOMOLOGOUS_SEARCH_FILTER:    []
+##
+## To filter the blast output before parse and analyze to find the homologous
+##
+## format:  [{parameter}{space}{operator}{space}{value}{semicolon}...]
+## example: [score > 100; percent_identity > 90]
+## parameters: evalue, expect, frac_identical, frac_conserved, gaps, hsp_length,
+##             num_conserved, num_identical, score, bits, percent_identity
+
+######################
+## 2.2 ## MANDATORY ##
+######################
+
+<>RUN_ALIGNMENT_PROGRAM:       []
+##
+## Name of the sequence alignment program to use. 
+##
+## format:  [{program}]
+## example: [clustalw]
+## programs: clustalw, kalign, MAFFT, muscle, tcoffee
+
+<>RUN_ALIGNMENT_ARGUMENTS:     []
+##
+## Arguments to be used with the program. For more infomation try perldoc
+## Bio::Tools::Run::Alignment.
+##
+## format:  [{parameter}{=}{value}{semicolon}...]
+## example: [quiet = yes; matrix = BLOSUM]
+
+
+###################################
+## 2.3 ## MANDATORY FOR NJ TREES ##
+###################################
+
+<>RUN_DISTANCE_FUNCTION:       []
+##
+## Name of the distance method to use. Required for NJ trees and ignored for ML.
+##
+## format:  [{function}] 
+## example: [Kimura]
+## functions: JukesCantor, Uncorrected, F81, Kimura,  Tamura or TajimaNei.  
+
+
+######################
+## 2.4 ## OPTIONALS ##
+######################
+
+<>PRUNE_ALIGN_ARGUMENTS:       []
+##
+## Prune (remove) elements based in the alignment data.
+##
+## format:    [{argument}{space}{operator}{space}{value}{semicolon}...]
+## example:   [ num_sequences < 4; length < 100 ]
+## arguments: score, length, num_residues, num_sequences or percentage_identity
+
+<>PRUNE_STRAINS_ARGUMENTS:     []
+##
+## Prune (remove) elements based in the strain data that dont have the 
+## specified conditions
+##
+## format:   [composition => {strain}={value}{comma}...{semicolon}...]
+##           [min_distance => {strain1}={strain2}{comma}...{semicolon}]
+## example:  [composition => Sly=1,Nta=2,Nto=1,Nsy=1]
+##           [min_distance => Nta=Nta,Nsy=Nta,Nto=Nta,Nsy=Nto,Nta=Sly]
+## arguments: composition, min_distance, max_distance
+
+<>PRUNE_OVERLAPS_ARGUMENTS:    []
+##
+## Prune (remove) elements based in the alignment overlap values. It takes the
+## best overlap
+##
+## format:   [composition => {strain}={value}{comma}...{semicolon}...]
+##           [random => {integer}]
+             [trim   => {1}]
+## example:  [composition => Sly=1,Nta=2,Nto=1,Nsy=1]
+##           [trim => 1 ]
+## arguments: composition, random, trim
+
+
+######################
+## 2.5 ## MANDATORY ##
+######################
+
+<>RUN_TREE_METHOD:             []
+##
+## Name of the tree method to run (NJ, UPGMA, ML)
+##
+## format:  [{method}]
+## example: [ML]
+## methods: NJ, UPGMA, ML
+
+<>RUN_TREE_ARGUMENTS:          []
+##
+## List of arguments to use with the tree calculation
+##
+## format:  [{argument}{space}{=}{space}{value}{semicolon}...]
+## example: [quiet = 1; outgroup_strain = Sly]
+## arguments for NJ or UPGMA: lowtri (0 or 1), uptri (0 or 1), subrep (0 or 1)
+##                            jumble (integer), quiet (0 or 1) or 
+##                            outgroup_strain (strain).
+## arguments for ML: phyml, dnaml and outgroup_strain (strain)
+
+
+#####################
+## 2.6 ## OPTIONAL ##
+#####################
+
+<>REROOT_TREE:                 []
+##
+## Reroot tree based the specified method 
+##
+## format:  [{method}{=}{value}]
+## example: [midpoint=1]
+## methods: midpoint (1), strainref (strain) and longest (1)
+
+
+#####################
+## 2.7 ## OPTIONAL ##
+#####################
+
+<>RUN_BOOTSTRAPPING:           []
+##
+## Number of replicates. It will use the same distance and tree method than
+## the rest of the path
+##
+## format:  [{integer}]
+## example: [1000]
+
+<>FILTER_BOOTSTRAPPING:        []
+##
+## Minimum bootstrapping value to discard a tree from a topology analysis.
+## Values are normalized to 100.
+##
+## format:  [{integer}]
+## example: [1000]
+
+
+######################
+## 2.8 ## MANDATORY ##
+######################
+
+<>RUN_TOPOANALYSIS:            []
+##
+## Run the topology analysis over the trees set. 
+##
+## format:  [branch_cutoff{=>}{integer}{=}{integer}{comma}...]
+## example: [branch_cutoff => 0.1=1]
+
+
+
 
 
 
@@ -501,7 +848,7 @@ sub parse_config {
     
     ## Define variables
 
-    my %config = ();
+    my %config = ( paths => {} );
     my $region = '';
 
     ## Define the regexp and the keys:
@@ -513,6 +860,23 @@ sub parse_config {
 	'MEMBERSEQ_FILENAME'           => 'seq_fn',
 	'MEMBERSTRAIN_FILENAME'        => 'str_fn',
 	'FASTBLASTPARSER'              => 'cl_fast',
+	'PATH_NAME'                    => 'pa_name',
+	'HOMOLOGOUS_SEARCH_ARGUMENTS'  => 'hs_arg',
+	'HOMOLOGOUS_SEARCH_DATASET'    => 'hs_dts',
+	'HOMOLOGOUS_SEARCH_STRAIN'     => 'hs_str',
+	'HOMOLOGOUS_SEARCH_FILTER'     => 'hs_fil',	
+	'RUN_ALIGNMENT_PROGRAM'        => 'al_prg',
+	'RUN_ALIGNMENT_ARGUMENTS'      => 'al_arg',
+	'RUN_DISTANCE_FUNCTION'        => 'di_fun',
+	'PRUNE_ALIGN_ARGUMENTS'        => 'pr_aln',
+	'PRUNE_STRAINS_ARGUMENTS'      => 'pr_str',
+	'PRUNE_OVERLAPS_ARGUMENTS'     => 'pr_ovl',
+	'RUN_TREE_METHOD'              => 'tr_met',
+	'RUN_TREE_ARGUMENTS'           => 'tr_arg',
+	'REROOT_TREE'                  => 'tr_rer',
+	'RUN_BOOTSTRAPPING'            => 'bo_run',
+	'FILTER_BOOTSTRAPPING'         => 'bo_fil',
+	'RUN_TOPOANALYSIS'             => 'tp_run',	
 	);
 
 
@@ -528,13 +892,26 @@ sub parse_config {
 	unless ($line =~ m/^(#|)$/) {  ## Just ignore lines that start with #
                                        ## or are empty
 
-	    if ($line =~ m/^>(.+?):\s+\[\s*(.+?)\s*\]/) {  ## ignore empty []
-		my $match_k = $match{$1};                 
+	    if ($line =~ m/^<(\d*)>(.+?):\s+\[\s*(.+?)\s*\]/) {  ## ignore []
+		my $path = $1;
+		my $arg = $2;
+		my $match_k = $match{$arg};
+		my $match_v = $3;
 		if (defined $match_k) {
-		    $config{$match_k} = $2;
+		    if ($path =~ m/^\d+$/) {
+			if (defined $config{paths}->{$path}) {
+			    $config{paths}->{$path}->{$match_k} = $match_v;
+			}
+			else {
+			    $config{paths}->{$path} = { $match_k => $match_v };
+			}
+		    }
+		    else {
+			$config{$match_k} = $match_v;
+		    }
 		}
 		else {
-		    print STDERR "\nWARNING: $1 isnt a valid conf. argument.\n";
+		    print STDERR "\nWARNING: $arg isnt a valid conf. arg.\n";
 		}
 	    }
 	}
@@ -582,7 +959,26 @@ sub parse_clustervals {
 }
 
 
+=head2 parse_homolog_args
 
+  Usage: my $hom_val_href = parse_homolog_args(\%conf);
+
+  Desc: parse homologous_search arguments and return a hash ref. usable by
+        homologous_search function.
+
+  Ret: $hom_val_href, a hash reference with homologous_search arguments
+
+  Args: \%conf, a hash ref. with the configuration data.
+
+  Side_Effects: None
+
+  Example: my $hom_val_href = parse_homolog_args(\%conf);
+
+=cut
+
+sub parse_homolog_args {
+    
+}
 
 
 
