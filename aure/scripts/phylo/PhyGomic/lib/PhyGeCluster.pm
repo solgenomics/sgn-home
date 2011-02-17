@@ -2738,21 +2738,21 @@ sub best_overlaps {
   Ret: none (load the member in the phygecluster object)
 
   Args: $args_href, a hash reference with:
-        -blast   => $array_reference with the same keys that available 
+        blast   => $array_reference with the same keys that available 
                     arguments in a blast (for example -d <database> -e <evalue>
                     ...). The input sequences will be the cluster consensus 
                     sequence.
-        -strain  => $strain, for the homologous sequences.
-        -filter  => $hash_reference with the following permited keys: evalue, 
+        strain  => $strain, for the homologous sequences.
+        filter  => $hash_reference with the following permited keys: evalue, 
                    expect, frac_identical, frac_conserved, gaps, hsp_length,
                    num_conserved, num_identical, score, bits, percent_identity
                    and a array reference with condition and value
 
   Side_Effects: Died if some of the parameters are wrong.
                 
-  Example:  phygecluster->homologous_search({ -blast  => [ -d => $database ],
-                                              -strain => 'Sly',
-                                              -filter => { 
+  Example:  phygecluster->homologous_search({ blast  => [ -d => $database ],
+                                              strain => 'Sly',
+                                              filter => { 
                                                            hsp_length => 
                                                                    ['>', 100],
                                                          }, 
@@ -4924,7 +4924,8 @@ sub prune_by_strains {
         
   Side_Effects: Died if some of the parameters are wrong.
               
-  Example:  
+  Example: my ($rm_clust_hf, $rm_memb_hf) = 
+                       $phygecluster->prune_by_overlaps({random => 4 });
 
 =cut
 
@@ -5266,6 +5267,76 @@ sub prune_by_overlaps {
     return (\%rmcls, \%rmmem);
 }
 
+=head2 prune_by_bootstrap
+
+  Usage: my %removed_clusters = $phygecluster->prune_by_bootstrap($arg_href)
+
+  Desc: Remove clusters that have not some conditions
+        derived from the bootstrap values object
+
+  Ret: A hash with the sequencefamilies objects removed from the object 
+       (key=cluster_id and value=Bio::Cluster::SequenceFamily object) 
+       (also modify the PhyGeCluster, Bio::Cluster::SequenceFamily and 
+       Bio::SimpleAlign objects)
+
+  Args: A scalar with the bootstrap value used as cutoff.
+        
+  Side_Effects: Died if some of the parameters are wrong.
+              
+  Example:  $phygecluster->prune_by_bootstrap(90)
+
+=cut
+
+sub prune_by_bootstrap {
+    my $self = shift;
+    my $bootval = shift ||
+	croak("ERROR: No bootstrap value was supplied to prune_by_bootstrap()");
+
+    unless ($bootval =~ m/^\d+$/) {
+	croak("ERROR: bootstrap value isnt a int. for prune_by_bootstrap()");
+    }
+    
+    my %rem_cls = ();
+
+    ## Get hashref with clusters
+
+    my $cls_href = $self->get_clusters();
+    my $cls_dist = $self->get_distances();
+
+    ## First get bootstrapping
+
+    my %boots = %{$self->get_bootstrapping()};
+
+    foreach my $clid (sort keys %boots) {
+	
+	my $consensus = $boots{$clid}->get_consensus();
+	my @nodes = $consensus->get_nodes();
+
+	my $nopass = 0;
+	foreach my $node (@nodes) {
+	
+	    my $nodboot = $node->bootstrap() || $node->branch_length();
+
+	    if (defined $nodboot) { ## It can be the root
+		if ($nodboot < $bootval) {
+		    $nopass = 1;
+		}
+	    }
+	}
+
+	## If it has a node with a bootstrap value under the cutoff, it 
+	## will remove it.
+
+	if ($nopass == 1) {
+	    $rem_cls{$clid} = $self->remove_cluster($clid);
+	    
+	    delete($cls_dist->{$clid});
+	    delete($boots{$clid});
+	}
+    }
+
+    return %rem_cls;
+}
 
 
 
