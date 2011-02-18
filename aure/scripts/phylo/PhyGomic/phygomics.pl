@@ -151,7 +151,7 @@ unless (-d $indir) {
     die("\n$err_m $indir input dir. doesnt exist.\n\n");
 }
 unless (-d $outdir) {
-    print STDOUT ("\nMESSAGE: Outdir doesnt exist. Creating outdir=$outdir\n");
+    print STDERR ("\nMESSAGE: Outdir doesnt exist. Creating outdir=$outdir\n");
     mkdir($outdir);
 }
 
@@ -189,14 +189,6 @@ $conf{indir} = $indir;
 $conf{outdir} = $outdir;
 
 filecheck(\%conf);
-
-## Check if exists $out dir, if not, create it:
-
-unless (-d $outdir) {
-    mkdir($outdir);
-    print STDERR "\tOUTPUT DIR. $outdir has been created.\n\n";
-}
-
 
 
 ## Create an empty phygecluster object
@@ -1286,7 +1278,7 @@ sub print_config {
 /;
 
     print $cfh $info;
-    print STDOUT "\nCONTROL FILE: $contrfile has been created (".date().")\n\n";
+    print STDERR "\nCONTROL FILE: $contrfile has been created (".date().")\n\n";
     exit (1);
 }
 
