@@ -155,7 +155,7 @@ sub new {
 		    croak("ARG. ERROR: $argkey isnt a permited arg. for new()");
 		}
 		else {
-		    if (ref($args{$argkey}) =~ m/$exp/) {
+		    if (ref($args{$argkey}) ne $exp) {
 			croak("ARG. ERROR: $args{$argkey} isnt $exp for new()");
 		    }
 		}	
