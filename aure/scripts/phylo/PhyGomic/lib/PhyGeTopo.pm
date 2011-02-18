@@ -630,7 +630,7 @@ sub out_topoanalysis {
 	($fh, $filename) = tempfile('topo_XXXXXXXXXX', TMPDIR => 1);
     }
     else {
-	$filename = $args_href->{tempfile} || 'out_topoanalysis.txt';
+	$filename = $args_href->{basename} . '.txt' || 'out_topoanalysis.txt';
 	open $fh, '>', $filename;
     }
 
@@ -666,10 +666,10 @@ sub out_topoanalysis {
 	my $newick = $topotype->get_topology_as_newick();	
     
 	if (exists $args_href->{r_in} && $args_href->{r_in} =~ m/1|Y/) {
-	    print $fh '"' . "$type_id" . '"' .  "\t$memb_n\n"
+	    print $fh '"'."$type_id".'"'."\t$memb_n\t".'"'.$newick.'"'."\n"
 	}
 	else {
-	    print $fh "$type_id\t$memb_n\n";
+	    print $fh "$type_id\t$memb_n\t$newick\n";
 	}
     }
     
