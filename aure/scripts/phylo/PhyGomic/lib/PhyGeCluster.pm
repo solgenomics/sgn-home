@@ -2350,7 +2350,10 @@ sub out_distancefile {
 
 	foreach my $cluster_id (sort keys %distances) {
             if (defined $distances{$cluster_id}) {
-                $matrixio1->write_matrix($distances{$cluster_id});
+                my $rowcount = $distances{$cluster_id}->num_rows();
+                if ($rowcount > 1) {
+                       $matrixio1->write_matrix($distances{$cluster_id});
+                }
             }
 	}	
     }
@@ -2359,15 +2362,20 @@ sub out_distancefile {
 	    my $outname2 = $argshref->{'rootname'} . '.' . 
                            $cluster_id  . '.' .
                            $argshref->{'extension'};
-	    $outfiles{$cluster_id} = $outname2;
+	    
 	    
 	    if (defined $distances{$cluster_id}) {
-		my $matrixio2 = Bio::Matrix::IO->new( 
-		    -format => $argshref->{'format'},
-		    -file   => ">$outname2",
-		);
+                my $rowcount = $distances{$cluster_id}->num_rows();
+                if ($rowcount > 1) {
+		       my $matrixio2 = Bio::Matrix::IO->new( 
+		                  -format => $argshref->{'format'},
+		                  -file   => ">$outname2",
+		       );
+                              
+                       $matrixio2->write_matrix($distances{$cluster_id});
 
-                $matrixio2->write_matrix($distances{$cluster_id});
+                       $outfiles{$cluster_id} = $outname2;
+                }
 	    }
 	}
     }
