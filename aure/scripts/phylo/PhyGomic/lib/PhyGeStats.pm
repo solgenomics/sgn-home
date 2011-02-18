@@ -69,6 +69,10 @@ $VERSION = eval $VERSION;
                                      phygetopo => { 'ML' => $phygetopo } } );
 
 
+  ## Create the matrix table with the data
+
+  $phygestats->create_matrix();
+
   ##  Run analysis and create the result files
 
   $phygestats->create_composition_table('MyTable.tab');
@@ -113,7 +117,6 @@ The following class methods are implemented:
   Args: A hash reference with the following key-value pairs: 
          + phygetopo    => a phygetopo object 
          + rbase        => a YapRI::Base object
-         + matrix       => a YapRI::Data::Matrix object
         
   Side_Effects: Die if the argument used is not a hash or there are argument
                 incompatibility (for example run_trees without run_distances).
@@ -123,7 +126,6 @@ The following class methods are implemented:
                                              { 
                                                phygetopo => $phygetopo,
                                                rbase     => $rbase,
-                                               matrix    => $matrix,
                                              }
                                            );
 
@@ -138,7 +140,6 @@ sub new {
     my %permargs = ( 
 	phygetopo    => 'HASH',
 	rbase        => "YapRI::Base",
-	matrix       => "YapRI::Data::Matrix",
 	);
 
     ## Check argument
@@ -155,7 +156,7 @@ sub new {
 		    croak("ARG. ERROR: $argkey isnt a permited arg. for new()");
 		}
 		else {
-		    if (ref($args{$argkey}) ne $exp) {
+		    if (ref($args{$argkey}) ne $exp && $args{$argkey} =~ m/./) {
 			croak("ARG. ERROR: $args{$argkey} isnt $exp for new()");
 		    }
 		}	
@@ -181,7 +182,6 @@ sub new {
 
     $self->set_phygetopo($phygetopo_href);
     $self->set_rbase($srh);
-    $self->set_matrix($matrix);
     
     return $self;
 }
