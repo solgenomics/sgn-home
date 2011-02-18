@@ -598,6 +598,12 @@ sub _phygt2matrix {
 	|| 'PhyGeTopo_Comp';
     my $rowbase = shift;
 
+    ## Check matrix name
+
+    if ($mtxname =~ m/:/) {
+	croak("ERROR: Matrix name can not have non word characters like ':'");
+    }
+
     ## Get the phygetopo objects, colnames and coln
 
     my %phygt = %{$self->get_phygetopo()};
@@ -609,7 +615,6 @@ sub _phygt2matrix {
     my %comp_phygt = $self->_compare_phygetopos($rowbase);
     my @rownames = sort keys %comp_phygt;
     my $rown = scalar(@rownames);
-
 
     ## Create a new matrix
 
@@ -657,7 +662,7 @@ sub _phygt2matrix {
 
   Ret: None
 
-  Args: $mtxname, matrix name,
+  Args: $mtxname, a matrix name,
         $rowbasename, a basename for rows
 
   Side_Effects: Die if no phygetopo objects were loaded into the object.
@@ -737,6 +742,7 @@ sub create_composition_graph {
     ## It needs the matrix by topotypes (rows), no by methods (cols)
 
     my $trmtx = $rmtx->transpose();
+    my $t = $trmtx->get_name();
 
     ## Now it will create the default graph parameters.
     
