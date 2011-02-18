@@ -9,7 +9,7 @@
 
 =head1 SYPNOSIS
 
- phygomics.pl [-h] -c config.file -i input.dir -o output.dir [-C] [-S]
+ phygomics.pl [-h] -c config.file -i input.dir -o output.dir [-C] [-S] [-O]
 
 =head1 EXAMPLE 
 
@@ -49,6 +49,11 @@ B<create_config.file>         Create an empty configuration file with the name:
 B<print_pipeline_status>      Print as STDOUT the pipeline status for parsing
                               and executing methods.
 
+=item -O
+
+B<create_steps_files>         Create the files for each step (alignments, 
+                              distances, trees, consensus and topologies)
+
 =back
 
 =cut
@@ -65,19 +70,19 @@ B<print_pipeline_status>      Print as STDOUT the pipeline status for parsing
 
      2) Data processing [as many cycles as paths are described]
         2.1) Search homologous using blast                [optional]
-        2.2) Run alignments, 'clustalw' by default        [mandatory]
-        2.3) Run distances, 'kimura' by default           [mandatory for NJ]
+        2.2) Run alignments, 'clustalw' by default        [mandatory]*
+        2.3) Run distances, 'kimura' by default           [mandatory for NJ]*
         2.4) Prune members, it will rerun 2.2 and 2.3     [optional]
-        2.5) Run trees, 'ML' & 'phyml' by default         [mandatory]
+        2.5) Run trees, 'ML' & 'phyml' by default         [mandatory]*
         2.6) Tree rerooting                               [optional]
-        2.7) Run bootstrapping                            [optional]
-        2.8) Run topoanalysis                             [mandatory]
+        2.7) Run bootstrapping                            [optional]*
+        2.8) Run topoanalysis                             [mandatory]*
 
      3) Data integration and analysis [1 cycle]
         3.1) Create graphs and tables.
 
     (see -C, configuration file for more details about data)
-
+    (using -O argument will create output files for each of these steps)
 
 =cut
 
@@ -108,10 +113,12 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 
 use PhyGeCluster;
+use PhyGeTopo;
+use PhyGeStats;
 
-our ($opt_c, $opt_i, $opt_o, $opt_h, $opt_C, $opt_S);
-getopts("c:i:o:hCS");
-if (!$opt_c && !$opt_i && !$opt_o && !$opt_C && !$opt_S) {
+our ($opt_c, $opt_i, $opt_o, $opt_h, $opt_C, $opt_S, $opt_O);
+getopts("c:i:o:hCSO");
+if (!$opt_c && !$opt_i && !$opt_o && !$opt_C && !$opt_S && !$opt_O) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
@@ -155,8 +162,11 @@ unless (-d $outdir) {
 ############################################
 ## 0) Print start message and start to parse
 
-print STDERR "\n** STARTING PhyGomic PIPELINE (" . date() . "):\n\n";
-
+print STDERR "\n\n";
+print STDERR "*************************************************************";
+print STDERR "\n** STARTING PhyGomic PIPELINE (" . date() . "):\n";
+print STDERR "*************************************************************";
+print STDERR "\n\n";
 
 #############################################################################
 ## 0) Parse configuration file, check files and PhyGeCluster object creation.
@@ -179,6 +189,15 @@ $conf{indir} = $indir;
 $conf{outdir} = $outdir;
 
 filecheck(\%conf);
+
+## Check if exists $out dir, if not, create it:
+
+unless (-d $outdir) {
+    mkdir($outdir);
+    print STDERR "\tOUTPUT DIR. $outdir has been created.\n\n";
+}
+
+
 
 ## Create an empty phygecluster object
 
@@ -239,6 +258,23 @@ $phyg->set_clusters(\%clusters);
 my $cl_v = scalar(keys %clusters);
 print STDERR "\tPARSED. $cl_v clusters have been extracted.\n\n";
 
+if ($opt_O) {
+
+    ## Create a folder:
+    my $clusterdir = $outdir . '/0_cluster_prepath';
+    mkdir($clusterdir);
+
+    ## Print files
+    my $clbasename = $clusterdir . '/clusters.prepath';
+    my %clfiles = $phyg->out_clusterfile({ rootname     => $clbasename,
+					   distribution => 'single',
+					 });
+    
+    my $clf_n = scalar(keys %clfiles);
+    print STDERR "\tOPTION -O enabled: $clf_n prepath clusters files have been";
+    print STDERR "created with basename:\n\t$clbasename\n\n";
+}
+
 
 ###################################################
 ## 1.2) Parse the strain file and add to phygecluster
@@ -286,13 +322,19 @@ my $pn = scalar(keys %paths);
 
 print STDERR "\n** $pn PATHS has been defined (".date()."):\n\n";
 
-my %phygecls = ();
+my %topostats = ();
 
 foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     my %pargs = %{$paths{$path_idx}};
     my $phname = $pargs{pa_name} || $path_idx; 
 
     print STDERR "\t$path_idx ==> INIT. PATH=$phname (" .  date() . "):\n\n";
+
+    my $pathoutdir = $outdir . '/path_' . $path_idx;
+    if ($opt_O) {
+	mkdir($pathoutdir);
+    }
+
 
     ## 2.0) Clone the PhyGeCluster
 
@@ -330,6 +372,26 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	}
 
 	print STDERR "\t\t\tDONE. $hom_c homologous have been assigned.\n\n";
+
+	if ($opt_O) {
+
+	    ## Create a folder:
+	    my $homologdir = $pathoutdir . '/1_cluster_homologs';
+	    mkdir($homologdir);
+	    
+	    ## Print files
+	    my $hoclbase = $homologdir . '/clusters.homologs';
+	    my %hoclfiles = $paphyg->out_clusterfile({ 
+		rootname     => $hoclbase,
+		distribution => 'single',
+						     });
+
+	    my $hof_n = scalar(keys %hoclfiles);
+	    print STDERR "\t\t\tOPTION -O enabled: ";
+	    print STDERR "$hof_n clusters with homolog files have been created";
+	    print STDERR " with basename:\n\t\t\t$hoclbase\n\n";
+	}
+
     }
     else {
 	
@@ -344,10 +406,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     if (defined $pargs{al_prg}) {
 	
-	 $align_args = parse_align_args(\%pargs);
-	
-	
-	
+	 $align_args = parse_align_args(\%pargs);		
     }
     else {
 	 print STDERR "\t\t\t USING DEFAULT ALIGNMENT (clustalw)\n\n";
@@ -370,6 +429,26 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     print STDERR "\t\t\tDONE. $alig_n alignments have been added.\n\n";
 
+    if ($opt_O) {
+
+	## Create a folder:
+	my $alndir = $pathoutdir . '/2_alignments';
+	mkdir($alndir);
+	
+	## Print files
+	my $alnbase = $alndir . '/alignments';
+	my %alnfiles = $paphyg->out_alignfile({ 
+	    rootname     => $alnbase,
+	    distribution => 'single',
+	    format       => 'clustalw',
+						 });
+
+	my $aln_n = scalar(keys %alnfiles);
+	print STDERR "\t\t\tOPTION -O enabled: ";
+	print STDERR "$aln_n alignment files have been created";
+	print STDERR " with basename:\n\t\t\t$alnbase\n\n";
+    }
+
     ## 2.3) Run distances
 
     print STDERR "\t\t2.3) RUN DISTANCES (" .  date() . "):\n\n";
@@ -385,18 +464,39 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	$dist_args = { method => 'Kimura', quiet => 1};
     }
 
-    ## Run distances
+    ## And now use the Run distances method
 
     $paphyg->run_distances($dist_args);
 
     my $dist_n = scalar( keys %{$paphyg->get_distances()});    
     print STDERR "\t\t\tDONE. $dist_n distance matrices have been added.\n\n";
 
+    if ($opt_O) {
+
+	## Create a folder:
+	my $disdir = $pathoutdir . '/3_distances';
+	mkdir($disdir);
+	
+	## Print files
+	my $disbase = $disdir . '/distances';
+	my %disfiles = $paphyg->out_distancefile({ 
+	    rootname     => $disbase,
+	    distribution => 'single',
+	    format       => 'phylip',
+						 });
+
+	my $dis_n = scalar(keys %disfiles);
+	print STDERR "\t\t\tOPTION -O enabled: ";
+	print STDERR "$dis_n distance files have been created";
+	print STDERR " with basename:\n\t\t\t$disbase\n\n";
+    }
+
 
     ## 2.4) Run prune member methods
 
     print STDERR "\t\t2.4) PRUNING METHODS (" .  date() . "):\n\n";
 
+    my $prune = 0;
     if (defined $pargs{pr_aln}) {
 
 	print STDERR "\t\t\t2.4.1) PRUNE BY ALIGNMENTS (" .  date() . "):\n\n";
@@ -411,6 +511,8 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	$paphyg->run_alignments($align_args);
 	print STDERR "\t\t\t\tRERUNING distances.\n\n";
 	$paphyg->run_distances($dist_args);
+
+        $prune = 1;
     }
     else {
 	print STDERR "\t\t\tNo Arguments. SKIPPING PRUNE BY ALIGNMENTS.\n\n";
@@ -432,6 +534,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	$paphyg->run_alignments($align_args);
 	print STDERR "\t\t\t\tRERUNNING distances.\n\n";
 	$paphyg->run_distances($dist_args);
+        $prune = 1;
     }
     else {
 	print STDERR "\t\t\tNo Arguments. SKIPPING PRUNE BY STRAINS.\n\n";
@@ -453,6 +556,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	$paphyg->run_alignments($align_args);
 	print STDERR "\t\t\t\tRERUNNING distances.\n\n";
 	$paphyg->run_distances($dist_args);
+        $prune = 1;
     }
     else {
 	print STDERR "\t\t\tNo Arguments. SKIPPING PRUNE BY OVERLAPINGS.\n\n";
@@ -461,6 +565,34 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     my $cls_n = scalar( keys %{$paphyg->get_clusters()});
     print STDERR "\t\t$cls_n clusters remain after prunning.\n\n";
     
+    if ($opt_O && $prune == 1) {
+
+	## Create a folder:
+	my $prdir = $pathoutdir . '/4_afterprunning';
+	mkdir($prdir);
+	
+	## Print files
+	my $pr_alnbase = $prdir . '/ap.alignments';
+	my %pr_alnfiles = $paphyg->out_alignfile({ 
+	    rootname     => $pr_alnbase,
+	    distribution => 'single',
+	    format       => 'clustalw',
+						 });
+
+        my $pr_disbase = $prdir . '/ap.distances';
+	my %pr_disfiles = $paphyg->out_distancefile({ 
+	    rootname     => $pr_disbase,
+	    distribution => 'single',
+	    format       => 'phylip',
+						 });
+	my $pr_aln_n = scalar(keys %pr_alnfiles);
+        my $pr_dis_n = scalar(keys %pr_disfiles);
+	print STDERR "\t\t\tOPTION -O enabled: $pr_aln_n align. and $pr_dis_n ";
+	print STDERR "distance files (after prunning) have been created ";
+	print STDERR "with basename:\n\t\t\t$pr_alnbase\n\t\t\t$pr_disbase\n\n";
+    }
+
+
     ## Now it will continue, only if $cls_n > 0
 
     if ($cls_n > 0) {
@@ -493,6 +625,26 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	
 	print STDERR "\t\t\tDONE. $trees_n trees have been added.\n\n";
 
+        if ($opt_O) {
+
+	    ## Create a folder:
+	    my $treedir = $pathoutdir . '/5_trees';
+	    mkdir($treedir);
+	
+	    ## Print files
+	    my $treebase = $treedir . '/tree';
+	    my %treefiles = $paphyg->out_treefile({ 
+	         rootname     => $treebase,
+	         distribution => 'single',
+	         format       => 'newick',
+		   				    });
+
+	    my $tree_n = scalar(keys %treefiles);
+	    print STDERR "\t\t\tOPTION -O enabled: ";
+	    print STDERR "$tree_n tree files have been created ";
+	    print STDERR "with basename:\n\t\t\t$treebase\n\n";
+        }
+
 
 	## 2.6) Reroot tree
 
@@ -511,6 +663,26 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    }
 	
 	    print STDERR "\t\t\tDONE. $rtrees_n trees have been rerooted.\n\n";
+
+            if ($opt_O) {
+
+	        ## Create a folder:
+	        my $retreedir = $pathoutdir . '/6_trees_rerooted';
+	        mkdir($retreedir);
+	
+	        ## Print files
+	        my $retreebase = $retreedir . '/tree_rerooted';
+	        my %retreefiles = $paphyg->out_treefile({ 
+	            rootname     => $retreebase,
+	            distribution => 'single',
+	            format       => 'newick',
+		      				      });
+
+  	        my $retree_n = scalar(keys %retreefiles);
+	        print STDERR "\t\t\tOPTION -O enabled: ";
+	        print STDERR "$retree_n rerooted tree files have been created ";
+	        print STDERR "with basename:\n\t\t\t$retreebase\n\n";
+            }
 	}
 	else {
 	    print STDERR "\t\t\tNo Arguments. SKIPPING REROOT TREES.\n\n";
@@ -539,30 +711,118 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    	
 		print STDERR "\t\t\tDONE. $rboots_n trees have been removed ";
 		print STDERR "according the bootstrapping values.\n\n";
-	    }	    
+	    }
+
+            if ($opt_O) {
+
+	        ## Create a folder:
+	        my $bootsdir = $pathoutdir . '/7_bootstrap_consensus';
+	        mkdir($bootsdir);
+	
+	        ## Print files
+	        my $bootsbase = $bootsdir . '/consensus';
+	        my %bootsfiles = $paphyg->out_bootstrapfile({ 
+	             rootname     => $bootsbase,
+	             distribution => 'single',
+                     type         => 'consensus',
+	             format       => 'newick',
+		   				      });
+
+	        my $boots_n = scalar(keys %bootsfiles);
+	        print STDERR "\t\t\tOPTION -O enabled: ";
+	        print STDERR "$boots_n bootstrapping consensus files have been";
+	        print STDERR " created with basename:\n\t\t\t$bootsbase\n\n";
+             }	    
 	}
 	else {
 	    print STDERR "\t\t\tNo Arguments. SKIPPING BOOTSTRAPPING.\n\n";
 	}
 
+	## 2.8) Run phygetopo
 
+	print STDERR "\t\t2.8) RUN TOPOANALYSIS (" .  date() . "):\n\n";
+		    
+	my $seqfams_href = $paphyg->get_clusters();
+	my $strains_href = $paphyg->get_strains();
+
+	my $phygetopo = PhyGeTopo->new({ seqfams => $seqfams_href,
+					 strains => $strains_href,
+				       });
+
+	my $topo_args = parse_topo_args(\%pargs);
+	my %topotypes = $phygetopo->run_topoanalysis($topo_args);
+	
+	$topostats{$phname} = $phygetopo;
+
+	my $topot_n = scalar(keys %topotypes);
+	print STDERR "\t\t\tDONE. $topot_n topotypes have been created\n\n";
+
+        if ($opt_O) {
+
+	    ## Create a folder:
+	    my $topodir = $pathoutdir . '/8_topologies';
+            mkdir($topodir);
+	
+            ## Print files
+            my $topobase = $topodir . '/topology_analysis';
+            my $topofile = $phygetopo->out_topoanalysis( 
+                                                      {basename => $topobase }
+                                                       );
+
+            print STDERR "\t\t\tOPTION -O enabled: ";
+            print STDERR "a topoanalysis file have been";
+            print STDERR " created with basename:\n\t\t\t$topobase\n\n";
+         }	 
     }
 
-
-
-    print STDERR "\t$path_idx ==> END. PATH=$phname (" .  date() . "):\n\n\n";
+    print STDERR "\t$path_idx ==> END. PATH=$phname (" .  date() . "):\n\n";
+    print STDERR "\t\t\t\t<======+======>\n\n\n";
 }
 
+## 3) Analysis of phygetopos
+
+print STDERR "\t3) RUNING STATISTICAL ANALISIS (" .  date() . "):\n\n";
+
+## Create the R base object
+
+my $rbase = YapRI::Base->new();
+
+## Create the PhyGeStat object.
+
+my $phygestats = PhyGeStats->new( { rbase     => $rbase, 
+				    phygetopo => \%topostats,
+				  } );
+
+## Create the result dir
+
+my $statsdir = $outdir . '/9_Results';
+mkdir($statsdir);
+
+my $filetable = $statsdir . '/topology_composition.tab';
+my $barplot = $statsdir . '/topology_composition.bmp';
+my $treeplot = $statsdir . '/topology_trees.bmp';
+
+## Create the matrix with the phygetopo data
+
+$phygestats->create_matrix(); 
+
+$phygestats->create_composition_table($filetable);
+$phygestats->create_composition_graph($barplot);
+$phygestats->create_tree_graph($treeplot);
+
+print STDERR "\t\tDONE. 3 files have been created:\n\n";
+print STDERR "\t\t\t$filetable\n\t\t\t$barplot\n\t\t\t$treeplot\n\n";
 
 
 
+############################################
+## 4) Print end message
 
-
-
-
-
-
-
+print STDERR "\n\n";
+print STDERR "*************************************************************";
+print STDERR "\n** ENDING PhyGomic PIPELINE (" . date() . "):\n";
+print STDERR "*************************************************************";
+print STDERR "\n\nThanks for use PhyGomics.\n\n\n";
 
 
 
@@ -1014,8 +1274,8 @@ sub print_config {
 ##
 ## Run the topology analysis over the trees set. 
 ##
-## format:  [branch_cutoff{=>}{integer}{=}{integer}{comma}...]
-## example: [branch_cutoff => 0.1=1]
+## format:  [branch_cutoffs{=>}{integer}{=}{integer}{comma}{semicolon}...]
+## example: [branch_cutoffs => 0.1=1]
 
 
 
@@ -1690,7 +1950,69 @@ sub parse_boots_args {
 }
 
 
+=head2 parse_topo_args
 
+  Usage: my $topo_href = parse_topo_args(\%conf_for_path);
+
+  Desc: parse run_topoanalysis arguments and return a hash ref. usable by
+        run_topoanalysis function.
+
+  Ret: $topo_href, a hash reference with topoanalysis arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $boots_href = parse_topo_args(\%conf_for_path);
+
+=cut
+
+sub parse_topo_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_topo_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_topo_args() isnt a href.");
+    }
+
+    my %topo = ();
+
+    my %pargs = %{$pconf_href};
+
+    if (defined $pargs{tp_run}) {
+
+	my @tpargs = split(/;/, $pargs{tp_run});
+
+	foreach my $tparg (@tpargs) {
+
+	    if  ($tparg =~ m/(.+?)\s*=>\s*(.+)/) {
+		my ($arg, $val) = ($1, $2);
+
+		if ($val =~ m/=/) {
+
+		    $topo{$arg} = {};
+		    my @equs = split(/,/, $val);
+		    foreach my $eq (@equs) {
+
+			if ($eq =~ m/(.+)\s*=\s*(.+)/) {
+			    $topo{$arg}->{$1} = $2;
+			}
+		    }
+		}
+		else {
+
+		    $topo{$arg} = $val;
+		}
+	    }
+	}
+    }
+    else {
+	$topo{branch_cutoffs} = { 0.1 => 1 };
+    }
+    return \%topo;
+
+}
 
 ####
 1; #
