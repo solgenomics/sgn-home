@@ -248,7 +248,7 @@ else {  ## By default it will .ace file
 $phyg->set_clusters(\%clusters);
 
 my $cl_v = scalar(keys %clusters);
-print STDERR "\tPARSED. $cl_v clusters have been extracted.\n\n";
+print STDERR "\n\tPARSED. $cl_v clusters have been extracted.\n\n";
 
 if ($opt_O) {
 
@@ -286,7 +286,7 @@ foreach my $clid (keys %cls) {
     $seqn += scalar(@members);
 }
 
-print STDERR "\tPARSED. $seqn sequences have been extracted.\n\n";
+print STDERR "\n\tPARSED. $seqn sequences have been extracted.\n\n";
 
 
 ###################################################
@@ -301,7 +301,7 @@ print STDERR "1.3) PARSING STRAIN FILE (" .  date() . "):\n\n";
 $phyg->load_strainfile($str_args);
 my $str_n = scalar(keys %{$phyg->get_strains()});
 
-print STDERR "\tPARSED. $str_n strains have been extracted.\n\n";
+print STDERR "\n\tPARSED. $str_n strains have been extracted.\n\n";
 
 
 ##############################################################################
@@ -407,6 +407,10 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	 };
     }
     
+    if ($opt_S) {
+	$align_args->{report_status} = 1;
+    }
+
     ## Run the alignment
 
     $paphyg->run_alignments($align_args);
@@ -419,7 +423,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	}
     }
 
-    print STDERR "\t\t\tDONE. $alig_n alignments have been added.\n\n";
+    print STDERR "\n\t\t\tDONE. $alig_n alignments have been added.\n\n";
 
     if ($opt_O) {
 
@@ -456,12 +460,16 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	$dist_args = { method => 'Kimura', quiet => 1};
     }
 
+    if ($opt_S) {
+	$dist_args->{report_status} = 1;
+    }
+
     ## And now use the Run distances method
 
     $paphyg->run_distances($dist_args);
 
     my $dist_n = scalar( keys %{$paphyg->get_distances()});    
-    print STDERR "\t\t\tDONE. $dist_n distance matrices have been added.\n\n";
+    print STDERR "\n\t\t\tDONE. $dist_n distance matrices have been added.\n\n";
 
     if ($opt_O) {
 
@@ -501,8 +509,9 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	
 	print STDERR "\t\t\t\tRERUNING alignments.\n\n";
 	$paphyg->run_alignments($align_args);
-	print STDERR "\t\t\t\tRERUNING distances.\n\n";
+	print STDERR "\n\t\t\t\tRERUNING distances.\n\n";
 	$paphyg->run_distances($dist_args);
+        print STDERR "\n";
 
         $prune = 1;
     }
@@ -524,8 +533,9 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	
 	print STDERR "\t\t\t\tRERUNNING alignments.\n\n";
 	$paphyg->run_alignments($align_args);
-	print STDERR "\t\t\t\tRERUNNING distances.\n\n";
+	print STDERR "\n\t\t\t\tRERUNNING distances.\n\n";
 	$paphyg->run_distances($dist_args);
+        print STDERR "\n";
         $prune = 1;
     }
     else {
@@ -546,8 +556,9 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	
 	print STDERR "\t\t\t\tRERUNNING alignments.\n\n";
 	$paphyg->run_alignments($align_args);
-	print STDERR "\t\t\t\tRERUNNING distances.\n\n";
+	print STDERR "\n\t\t\t\tRERUNNING distances.\n\n";
 	$paphyg->run_distances($dist_args);
+        print STDERR "\n";
         $prune = 1;
     }
     else {
@@ -597,11 +608,21 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	if ($tree_mth =~ m/^(NJ|UPGMA)$/) {
 
 	    my $njtree_args = parse_njtrees_args(\%pargs);
+
+            if ($opt_S) {
+	        $njtree_args->{report_status} = 1;
+            }
+
 	    $paphyg->run_njtrees($njtree_args);
 	}
 	else {
 
 	    my $mltree_args = parse_mltrees_args(\%pargs);
+
+            if ($opt_S) {
+	        $mltree_args->{report_status} = 1;
+            }
+
 	    $paphyg->run_mltrees($mltree_args);
 	}
 
@@ -615,7 +636,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    }
 	}
 	
-	print STDERR "\t\t\tDONE. $trees_n trees have been added.\n\n";
+	print STDERR "\n\t\t\tDONE. $trees_n trees have been added.\n\n";
 
         if ($opt_O) {
 
@@ -687,6 +708,11 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	if (defined $pargs{bo_run}) {
 		    
 	    my $boots_args = parse_boots_args(\%pargs);
+
+            if ($opt_S) {
+	        $boots_args->{report_status} = 1;
+            }
+
 	    $paphyg->run_bootstrapping($boots_args);
 
 	    my %boots = %{$paphyg->get_bootstrapping()};
@@ -701,7 +727,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    
 		my $rboots_n = scalar(keys %rmcls_boots);
 	    	
-		print STDERR "\t\t\tDONE. $rboots_n trees have been removed ";
+		print STDERR "\n\t\t\tDONE. $rboots_n trees have been removed ";
 		print STDERR "according the bootstrapping values.\n\n";
 	    }
 
@@ -845,35 +871,36 @@ sub help {
   $0:
 
     Description:   
- 
+
       phygomics.pl is the scripts that executes the PhyGomics pipeline.
 
       It will run the pipeline in two three steps:
-     
+      
       1) Data loading [1 cycle]
-        1.1) Cluster extraction from one source, assembly file or selfblast.
-        1.2) Sequence members loading from a fasta file.
-        1.3) Strains for members loading from a tabular file.
+         1.1) Cluster extraction from one source, assembly file or selfblast.
+         1.2) Sequence members loading from a fasta file.
+         1.3) Strains for members loading from a tabular file.
 
       2) Data processing [as many cycles as paths are described]
-        2.1) Search homologous using blast                [optional]
-        2.2) Run alignments, 'clustalw' by default        [mandatory]
-        2.3) Run distances, 'kimura' by default           [mandatory for NJ]
-        2.4) Prune members, it will rerun 2.2 and 2.3     [optional]
-        2.5) Run trees, 'ML' & 'phyml' by default         [mandatory]
-        2.6) Tree rerooting                               [optional]
-        2.7) Run bootstrapping                            [optional]
-        2.8) Run topoanalysis                             [mandatory]
+         2.1) Search homologous using blast                [optional]
+         2.2) Run alignments, 'clustalw' by default        [mandatory]*
+         2.3) Run distances, 'kimura' by default           [mandatory for NJ]*
+         2.4) Prune members, it will rerun 2.2 and 2.3     [optional]
+         2.5) Run trees, 'ML' & 'phyml' by default         [mandatory]*
+         2.6) Tree rerooting                               [optional]
+         2.7) Run bootstrapping                            [optional]*
+         2.8) Run topoanalysis                             [mandatory]*
 
       3) Data integration and analysis [1 cycle]
-        3.1) Create graphs and tables.
+         3.1) Create graphs and tables.
 
       (see -C, configuration file for more details about data)
+      (using -O argument will create output files for each of these steps)
 
 
     Usage:
   
-     phygomics.pl [-h] -c config.file -i input.dir -o output.dir [-C]
+     phygomics.pl [-h] -c config.file -i input.dir -o output.dir [-C][-S][-O]
                               
     Example:
 
@@ -889,6 +916,8 @@ sub help {
                                phygomics.conf 
       -S <print_status>        Print as STDOUT the pipeline status for parsing
                                and executing methods.
+      -O <create_steps_files>  Create the files for each step (alignments, 
+                               distances, trees, consensus and topologies)
 
 EOF
 exit (1);

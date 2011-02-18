@@ -1349,6 +1349,14 @@ sub fastparse_blastfile {
 				'_' . 
 				($cluster_n+1);
 			}
+			else {
+			    unless (exists $cluster_members{$q_name}) {
+		    
+				$cluster_name =  $arg_href->{'rootname'} . 
+				    '_' . 
+				    ($cluster_n+1);
+			    }
+			}
 
 			unless (exists $clusters{$cluster_name}) {
 			    $clusters{$cluster_name} = [$s_name];
@@ -3628,8 +3636,13 @@ sub run_alignments {
  
 	my %clusters = %{$self->get_clusters()};
 
+	my $a = 0;
+	my $t = scalar(keys %clusters);
+
 	foreach my $cluster_id (keys %clusters) {
 	 
+	    $a++;
+
 	    my @seq_members = $clusters{$cluster_id}->get_members();
 
 	    ## Only make sense if the cluster has more than one member
@@ -3648,6 +3661,11 @@ sub run_alignments {
 		    $i++;
 		}
 	
+		if (exists $args_href->{'report_status'}) {
+		    print_parsing_status($a, $t, 
+				       "\t\tPercentage of alignments produced");
+		}
+
 		my $alignobj = $factory->align(\@seq_members);
 
 		## Come back to old ids. It require to change the name
@@ -3757,6 +3775,8 @@ sub run_distances {
     ## Get the alignment objects
 
     my %clusters = %{$self->get_clusters()};
+
+    my $t = scalar( keys %clusters);
     
     foreach my $cluster_id (keys %clusters) {
 
@@ -3765,9 +3785,12 @@ sub run_distances {
 	foreach my $member (@members) {
 	    my $memb_id = $member->id();
 	}
-	
+
+	$a++;
+
 	if (defined $alignobj) {
 	   
+	    
 	    ## Some alignments can have a problem because there are non-ATGC
 	    ## nt that produce can produce gaps in the alignment and the number
 	    ## of those gaps are bigger than the sequence length. For those
@@ -3802,6 +3825,11 @@ sub run_distances {
 		if ($gaps >= $length) {
 		    $skip_distance = 1;
 		}
+	    }
+
+	    if (exists $arghref->{'report_status'}) {
+		print_parsing_status($a, $t, 
+				     "\t\tPercentage of distances calculated");
 	    }
 
 	    if ($skip_distance == 0) {
@@ -3945,6 +3973,7 @@ sub run_bootstrapping {
 
     my %default_args = (
 	replace_no_atcg => 0,
+	report_status => 0,
 	run_bootstrap => { 
 	    datatype   => 'Sequence',
 	    replicates => 1000,
@@ -3975,7 +4004,7 @@ sub run_bootstrapping {
 	else {
 	    foreach my $argkey (keys %{$args_href}) {
 		my $val = $args_href->{$argkey};
-		unless ($argkey eq 'replace_no_atcg') {
+		unless ($argkey =~ m/(replace_no_atcg|report_status)/) {
 		    unless (exists $default_args{$argkey}) {
 			my $err = "ARG. ERROR: $argkey is not a permited arg. ";
 			$err .= "for run_bootstrapping() function";
@@ -4004,8 +4033,11 @@ sub run_bootstrapping {
     my %clusters = %{$self->get_clusters()};
     my $strains_href = $self->get_strains();
 
+    my $a = 0;
+    my $t = scalar( keys %clusters );
+
     foreach my $cluster_id (keys %clusters) {
-	
+	$a++;
 	my $seqfam = $clusters{$cluster_id};
 	my $align = $seqfam->alignment();
 	
@@ -4015,6 +4047,12 @@ sub run_bootstrapping {
 	    $args{seqfam} = $seqfam;
 	    $args{strains} = $strains_href;
 	    my $memb_n = $align->num_sequences();
+
+	    if (exists $args_href->{'report_status'}) {
+		print_parsing_status($a, $t, 
+				 "\t\tPercentage of bootstrapping calculated");
+	    }
+
 	    my $phygeboots = PhyGeBoots->new(\%args);
 	    my $trees_n = scalar( $phygeboots->get_trees());
 	    $bootstr{$cluster_id} = $phygeboots;
@@ -4065,6 +4103,7 @@ sub run_njtrees {
 		      subrep          => '[1|0]', 
 		      jumble          => '\d+', 
 		      quiet           => '[1|0]',
+                      report_status   => '[1|0]',
 		      outgroup_strain => '\w+', 
 	);
 
@@ -4085,6 +4124,13 @@ sub run_njtrees {
 		}
 	    }
 	}
+    }
+
+    ## Delete report status
+
+    my $repstatus;
+    if (exists $args_href->{report_status}) {
+	$repstatus = delete($args_href->{report_status});
     }
 
     ## Get outgroup if it is defined and delete from arguments
@@ -4115,8 +4161,12 @@ sub run_njtrees {
     
     ## And now it will run one tree per distance and set tree in seqfam object
 
+    my $a = 0;
+    my $t = scalar( keys %dists );
+
     foreach my $cluster_id (keys %dists) {
 
+	$a++;
 	## After check, create the array and the factory
 	## It will create a new factory per tree (to be able to use
 	## tools like outgroups)
@@ -4179,6 +4229,11 @@ sub run_njtrees {
 			$factory->outgroup($outgroup_equiv);
 		    }
 		}
+	    }
+
+	    if (defined $repstatus) {
+		print_parsing_status($a, $t, 
+				     "\t\tPercentage of tree calculated");
 	    }
 
 	    my ($tree) = $factory->run($distobj);
@@ -4249,6 +4304,7 @@ sub run_mltrees {
 	phyml           => 'HASH',
 	dnaml           => 'HASH',
 	outgroup_strain => '\w+',
+        report_status   => '\d+',
 	);
 
     if (defined $args_href) {
@@ -4294,7 +4350,12 @@ sub run_mltrees {
     my %clusters = %{$self->get_clusters()};
     my %strains = %{$self->get_strains()};
 
+    my $a = 0;
+    my $t = scalar( keys %clusters );
+
     foreach my $cluster_id (keys %clusters) {
+
+	$a++;
 	my $seqfam = $clusters{$cluster_id};
 	my $align = $seqfam->alignment;
 	
@@ -4346,6 +4407,12 @@ sub run_mltrees {
 	    }
 
 	    if (defined $factory) {
+
+		if (exists $args_href->{'report_status'}) {
+		    print_parsing_status($a, $t, 
+					 "\t\tPercentage of tree calculated");
+		}
+
 		my ($tree) = $factory->run($align);	
 	    	    
 		if (defined $tree) {
