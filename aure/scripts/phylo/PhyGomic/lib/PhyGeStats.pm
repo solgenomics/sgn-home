@@ -899,7 +899,12 @@ sub create_composition_table {
 	my @data = ();
 	foreach my $phyname (@phynames) {
 	    if (exists $phymembers{$memb_id}->{$phyname}) {
-		push @data, $phymembers{$memb_id}->{$phyname};
+		if ($phymembers{$memb_id}->{$phyname} =~ m/./) {
+		    push @data, $phymembers{$memb_id}->{$phyname};
+		}
+		else {
+		    push @data, 'NA';
+		}
 	    }
 	    else {
 		push @data, 'NA';
