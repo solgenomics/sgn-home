@@ -815,11 +815,13 @@ sub _make_topotype {
 	$node_rel{$int_node_id} = {};
 	
 	my $strain;
-
-	if (defined $node_id && $node_id =~ m/\w+/) {
-	    $strain = $strains_href->{$node_id};
-	    unless (defined $strain) {
-		croak("DATA ERROR: $node_id isnt have defined strain");
+	
+	if ($node->is_Leaf()) {
+	    if (defined $node_id && $node_id =~ m/\w+/) {
+		$strain = $strains_href->{$node_id};
+		unless (defined $strain) {
+		    croak("DATA ERROR: $node_id isnt have defined strain");
+		}
 	    }
 	}
 
