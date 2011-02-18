@@ -4306,8 +4306,10 @@ sub run_mltrees {
 	    my %revseqids = ();
 	    my $i = 1;
 	    foreach my $seqobj ($align->each_seq()) {
-		$seqids{$i} = $seqobj->display_id();
-		$revseqids{$seqobj->display_id()} = $i;
+
+		my $seqid = $seqobj->display_id();
+		$seqids{$i} = $seqid;
+		$revseqids{$seqid} = $i;
 		$align->remove_seq($seqobj);
 		$seqobj->display_id($i);
 		$align->add_seq($seqobj);
@@ -4351,8 +4353,9 @@ sub run_mltrees {
 		    $tree->id($cluster_id);
 
 		    my @nodes = $tree->get_leaf_nodes();
-		    foreach my $node (@nodes) {
+		    foreach my $node (@nodes) {		
 			my $old_node_id = $node->id();
+			$old_node_id =~ s/'//g;  ## Some methods add ' to id
 			$node->id($seqids{$old_node_id});
 		    }
 		    
