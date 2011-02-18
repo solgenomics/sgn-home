@@ -64,14 +64,14 @@ B<print_pipeline_status>      Print as STDOUT the pipeline status for parsing
         1.3) Strains for members loading from a tabular file.
 
      2) Data processing [as many cycles as paths are described]
-        2.1) Search homologous using blast                   [optional]
-        2.2) Run alignments                                  [mandatory]
-        2.3) Run distances                                   [mandatory for NJ]
-        2.4) Prune members, it will rerun 2.2 and 2.3        [optional]
-        2.5) Run trees                                       [mandatory]
-        2.6) Tree rerooting                                  [optional]
-        2.7) Run bootstrapping                               [optional]
-        2.8) Run topoanalysis                                [mandatory]
+        2.1) Search homologous using blast                [optional]
+        2.2) Run alignments, 'clustalw' by default        [mandatory]
+        2.3) Run distances, 'kimura' by default           [mandatory for NJ]
+        2.4) Prune members, it will rerun 2.2 and 2.3     [optional]
+        2.5) Run trees, 'ML' & 'phyml' by default         [mandatory]
+        2.6) Tree rerooting                               [optional]
+        2.7) Run bootstrapping                            [optional]
+        2.8) Run topoanalysis                             [mandatory]
 
      3) Data integration and analysis [1 cycle]
         3.1) Create graphs and tables.
@@ -165,6 +165,11 @@ print STDERR "0) PARSING CONFIGURATION FILE (" .  date() . "):\n";
 
 my %conf = parse_config($control);
 my $cv = scalar(keys %conf);
+my %cpaths = %{$conf{paths}};
+foreach my $pi (keys %cpaths) {
+    $cv += scalar(keys %{$cpaths{$pi}});
+}
+$cv--;
 
 print STDERR "\tPARSED. $cv configuration arguments have been parsed.\n\n";
 
@@ -291,7 +296,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     ## 2.0) Clone the PhyGeCluster
 
-    print STDERR "\t\t2.0) CLONNING CLUSTER DATA (" .  date() . "):\n\n";
+    print STDERR "\t\t2.0) CLONING CLUSTER DATA (" .  date() . "):\n\n";
 
     my $paphyg = $phyg->clone();
 
@@ -299,52 +304,253 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     print STDERR "\t\t2.1) HOMOLOGOUS SEARCH (" .  date() . "):\n\n";
 
-
     if (defined $pargs{hs_dts} && defined $pargs{hs_str}) {
 	
-	my %hom_args = (
-	    -blast  => [ -p => 'blastn', -d => $indir . '/' . $pargs{hs_dts} ],
-	    -strain => $pargs{hs_dts},
-	    );
-	
-	if (exists $pargs{hs_arg}) {
-	    my @bargs = split(/;/, $pargs{hs_arg});
-	    foreach my $barg (@args) {
-		if ($bargs =~ m/\s*(-\w)\s+(.+?)\s*/) {
-		    my $b_ar = $1;
-		    my $b_vl = $2;
-		    unless ($b_ar =~ m/-(o|i|p|d)/) {
-			push @{$hom_args{-blast}}, $b_ar => $b_vl; 
-		    }
-		}
-	    }
-	}
-	if (exists $pargs{hs_fil}) {
-	    my @bfils = split(/;/, $pargs{hs_fil});
-	    foreach my $bfil (@fils) {
-		if ($bfil =~ m/\s*(.+?)\s*(.+?)\s*(.+?)\s*/) {
-		    my ($arg, $ope, $val) = ($1, $2, $3);
-		    if (exists $hom_args{-filter}) {
-			$hom_args{-filter}->{$arg} = [$2, $3];
-		    }
-		    else {
-			$hom_args{-filter} = { $arg = [$2, $3] };
-		    }
-		}
-	    }
-	}
-	
+	my $hom_args_href = parse_homolog_args(\%pargs);
+
 	## And run homologous search
 	
 	$paphyg->homologous_search($hom_args_href);
+	
+	## Count homologous
+	my $hom_c = 0;
 
+	my %cls = %{$paphyg->get_clusters()};
+	my %str = %{$paphyg->get_strains()};
+	foreach my $clid (keys %cls) {
+	    my @membs = $cls{$clid}->get_members();
+	    foreach my $memb (@membs) {
+		my $m_id = $memb->id();
+		if (defined $m_id) {
+		    if ($str{$m_id} eq $pargs{hs_str}) {
+			$hom_c++;
+		    }
+		}
+	    }
+	}
+
+	print STDERR "\t\t\tDONE. $hom_c homologous have been assigned.\n\n";
     }
     else {
+	
+	print STDERR "\t\t\tNo HOMOLOGOUS SEARCH arguments. SKIP STEP.\n\n";
+    }
+
+    ## 2.2) Run alignments
+
+    print STDERR "\t\t2.2) RUN ALIGNMENTS (" .  date() . "):\n\n";
+
+    my $align_args;
+
+    if (defined $pargs{al_prg}) {
+	
+	 $align_args = parse_align_args(\%pargs);
+	
+	
+	
+    }
+    else {
+	 print STDERR "\t\t\t USING DEFAULT ALIGNMENT (clustalw)\n\n";
+	 $align_args = { program    => 'clustalw', 
+			 parameters => [ quiet => 'yes', matrix => 'BLOSUM'],
+	 };
+    }
+    
+    ## Run the alignment
+
+    $paphyg->run_alignments($align_args);
+
+    my $alig_n = 0;
+    my %a_cls = %{$paphyg->get_clusters()};
+    foreach my $a_clid (keys %a_cls) {
+	if (defined $a_cls{$a_clid}->alignment()) {
+	    $alig_n++;
+	}
+    }
+
+    print STDERR "\t\t\tDONE. $alig_n alignments have been added.\n\n";
+
+    ## 2.3) Run distances
+
+    print STDERR "\t\t2.3) RUN DISTANCES (" .  date() . "):\n\n";
+
+    my $dist_args;
+    if (defined $pargs{di_fun}) {
+	
+	$dist_args = { method => $pargs{di_fun}, quiet => 1};	
+    }
+    else {
+
+	print STDERR "\t\t\t USING DEFAULT DISTANCE (Kimura)\n\n";
+	$dist_args = { method => 'Kimura', quiet => 1};
+    }
+
+    ## Run distances
+
+    $paphyg->run_distances($dist_args);
+
+    my $dist_n = scalar( keys %{$paphyg->get_distances()});    
+    print STDERR "\t\t\tDONE. $dist_n distance matrices have been added.\n\n";
+
+
+    ## 2.4) Run prune member methods
+
+    print STDERR "\t\t2.4) PRUNING METHODS (" .  date() . "):\n\n";
+
+    if (defined $pargs{pr_aln}) {
+
+	print STDERR "\t\t\t2.4.1) PRUNE BY ALIGNMENTS (" .  date() . "):\n\n";
+	
+	my $pr_aln_args = parse_prune_aln_args(\%pargs);
+	my %rem_cls = $paphyg->prune_by_align($pr_aln_args);
+	my $rem_c = scalar(keys %rem_cls);
+
+	print STDERR "\t\t\t\tDONE. $rem_c clusters have been removed.\n\n";
+	
+	print STDERR "\t\t\t\tRERUNING alignments.\n\n";
+	$paphyg->run_alignments($align_args);
+	print STDERR "\t\t\t\tRERUNING distances.\n\n";
+	$paphyg->run_distances($dist_args);
+    }
+    else {
+	print STDERR "\t\t\tNo Arguments. SKIPPING PRUNE BY ALIGNMENTS.\n\n";
+    }
+
+    if (defined $pargs{pr_str}) {
+    
+    	print STDERR "\t\t\t2.4.2) PRUNE BY STRAINS (" .  date() . "):\n\n";
+
+	my $pr_str_args = parse_prune_str_args(\%pargs);
+	my ($rem_p_cls, $rem_p_mbs)  = $paphyg->prune_by_strains($pr_str_args);
+	my $rem_p_c = scalar(keys %{$rem_p_cls});
+	my $rem_p_m = scalar(keys %{$rem_p_mbs});
+
+	print STDERR "\t\t\t\tDONE. $rem_p_c clusters and $rem_p_m members ";
+	print STDERR "have been removed.\n\n";
+	
+	print STDERR "\t\t\t\tRERUNNING alignments.\n\n";
+	$paphyg->run_alignments($align_args);
+	print STDERR "\t\t\t\tRERUNNING distances.\n\n";
+	$paphyg->run_distances($dist_args);
+    }
+    else {
+	print STDERR "\t\t\tNo Arguments. SKIPPING PRUNE BY STRAINS.\n\n";
+    }
+
+    if (defined $pargs{pr_ovl}) {
+ 	
+   	print STDERR "\t\t\t2.4.3) PRUNE BY OVERLAPINGS (" .  date() . "):\n\n";
+    
+	my $pr_ovl_args = parse_prune_ovl_args(\%pargs);
+	my ($rem_o_cls, $rem_o_mbs)  = $paphyg->prune_by_overlaps($pr_ovl_args);
+	my $rem_o_c = scalar(keys %{$rem_o_cls});
+	my $rem_o_m = scalar(keys %{$rem_o_mbs});
+
+	print STDERR "\t\t\t\tDONE. $rem_o_c clusters and $rem_o_m members ";
+	print STDERR "have been removed.\n\n";
+	
+	print STDERR "\t\t\t\tRERUNNING alignments.\n\n";
+	$paphyg->run_alignments($align_args);
+	print STDERR "\t\t\t\tRERUNNING distances.\n\n";
+	$paphyg->run_distances($dist_args);
+    }
+    else {
+	print STDERR "\t\t\tNo Arguments. SKIPPING PRUNE BY OVERLAPINGS.\n\n";
+    }
+
+    my $cls_n = scalar( keys %{$paphyg->get_clusters()});
+    print STDERR "\t\t$cls_n clusters remain after prunning.\n\n";
+    
+    ## Now it will continue, only if $cls_n > 0
+
+    if ($cls_n > 0) {
+    
+	## 2.5) Run tree methods
+	
+	print STDERR "\t\t2.5) RUN TREES (" .  date() . "):\n\n";
+
+	my $tree_mth = $pargs{tr_met} || 'ML';
+	if ($tree_mth =~ m/^(NJ|UPGMA)$/) {
+
+	    my $njtree_args = parse_njtrees_args(\%pargs);
+	    $paphyg->run_njtrees($njtree_args);
+	}
+	else {
+
+	    my $mltree_args = parse_mltrees_args(\%pargs);
+	    $paphyg->run_mltrees($mltree_args);
+	}
+
+	## Get number of trees
+
+	my $trees_n = 0;
+	my %t_cls = %{$paphyg->get_clusters()};
+	foreach my $clid (keys %t_cls) {
+	    if (defined $t_cls{$clid}->tree()) {
+		$trees_n++;
+	    }
+	}
+	
+	print STDERR "\t\t\tDONE. $trees_n trees have been added.\n\n";
+
+
+	## 2.6) Reroot tree
+
+	print STDERR "\t\t2.6) REROOTING TREES (" .  date() . "):\n\n";
+	if (defined $pargs{tr_rer}) {
+		    
+	    my $reroot_args = parse_reroot_args(\%pargs);
+	    $paphyg->reroot_trees($reroot_args);
+
+	    my $rtrees_n = 0;
+	    my %rt_cls = %{$paphyg->get_clusters()};
+	    foreach my $clid (keys %rt_cls) {
+		if (defined $rt_cls{$clid}->tree()) {
+		    $rtrees_n++;
+		}
+	    }
+	
+	    print STDERR "\t\t\tDONE. $rtrees_n trees have been rerooted.\n\n";
+	}
+	else {
+	    print STDERR "\t\t\tNo Arguments. SKIPPING REROOT TREES.\n\n";
+	}
+
+
+	## 2.7) Run bootstrapping
+
+	print STDERR "\t\t2.7) RUN BOOTSTRAPPING (" .  date() . "):\n\n";
+	if (defined $pargs{bo_run}) {
+		    
+	    my $boots_args = parse_boots_args(\%pargs);
+	    $paphyg->run_bootstrapping($boots_args);
+
+	    my %boots = %{$paphyg->get_bootstrapping()};
+	    my $boots_n = scalar(keys %boots);
+
+	    print STDERR "\t\t\tDONE. $boots_n bootstraps have been added\n\n";
+
+	    if (defined $pargs{bo_fil}) {
+
+		print STDERR "\t\t\tPRUNING BY BOOTSTRAP VALUES.\n\n";
+		my %rmcls_boots = $paphyg->prune_by_bootstrap($pargs{bo_fil});
+	    
+		my $rboots_n = scalar(keys %rmcls_boots);
+	    	
+		print STDERR "\t\t\tDONE. $rboots_n trees have been removed ";
+		print STDERR "according the bootstrapping values.\n\n";
+	    }	    
+	}
+	else {
+	    print STDERR "\t\t\tNo Arguments. SKIPPING BOOTSTRAPPING.\n\n";
+	}
+
+
     }
 
 
 
-    print STDERR "\t$path_idx ==> END. PATH=$phname (" .  date() . "):\n\n";
+    print STDERR "\t$path_idx ==> END. PATH=$phname (" .  date() . "):\n\n\n";
 }
 
 
@@ -398,14 +604,14 @@ sub help {
         1.3) Strains for members loading from a tabular file.
 
       2) Data processing [as many cycles as paths are described]
-        2.1) Search homologous using blast                   [optional]
-        2.2) Run alignments                                  [mandatory]
-        2.3) Run distances                                   [mandatory for NJ]
-        2.4) Prune members, it will rerun 2.2 and 2.3        [optional]
-        2.5) Run trees                                       [mandatory]
-        2.6) Tree rerooting                                  [optional]
-        2.7) Run bootstrapping                               [optional]
-        2.8) Run topoanalysis                                [mandatory]
+        2.1) Search homologous using blast                [optional]
+        2.2) Run alignments, 'clustalw' by default        [mandatory]
+        2.3) Run distances, 'kimura' by default           [mandatory for NJ]
+        2.4) Prune members, it will rerun 2.2 and 2.3     [optional]
+        2.5) Run trees, 'ML' & 'phyml' by default         [mandatory]
+        2.6) Tree rerooting                               [optional]
+        2.7) Run bootstrapping                            [optional]
+        2.8) Run topoanalysis                             [mandatory]
 
       3) Data integration and analysis [1 cycle]
         3.1) Create graphs and tables.
@@ -757,8 +963,9 @@ sub print_config {
 ##
 ## List of arguments to use with the tree calculation
 ##
-## format:  [{argument}{space}{=}{space}{value}{semicolon}...]
-## example: [quiet = 1; outgroup_strain = Sly]
+## format:  [{argument}{space}{=}or{=>}{space}{value}{semicolon}...]
+## example: [quiet = 1; outgroup_strain = Sly] for NJ
+##          [ phyml => -b=1000, -m=JC69]
 ## arguments for NJ or UPGMA: lowtri (0 or 1), uptri (0 or 1), subrep (0 or 1)
 ##                            jumble (integer), quiet (0 or 1) or 
 ##                            outgroup_strain (strain).
@@ -787,8 +994,8 @@ sub print_config {
 ## Number of replicates. It will use the same distance and tree method than
 ## the rest of the path
 ##
-## format:  [{integer}]
-## example: [1000]
+## format:  [{argument}={integer}{semicolon}]
+## example: [replicates = 1000]
 
 <>FILTER_BOOTSTRAPPING:        []
 ##
@@ -961,32 +1168,526 @@ sub parse_clustervals {
 
 =head2 parse_homolog_args
 
-  Usage: my $hom_val_href = parse_homolog_args(\%conf);
+  Usage: my $hom_val_href = parse_homolog_args(\%conf_for_path);
 
   Desc: parse homologous_search arguments and return a hash ref. usable by
         homologous_search function.
 
   Ret: $hom_val_href, a hash reference with homologous_search arguments
 
-  Args: \%conf, a hash ref. with the configuration data.
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
 
   Side_Effects: None
 
-  Example: my $hom_val_href = parse_homolog_args(\%conf);
+  Example: my $hom_val_href = parse_homolog_args(\%conf_for_path);
 
 =cut
 
 sub parse_homolog_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_homolog_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied to parse_homolog_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
     
+    my %hom_args = (
+	blast  => [ -p => 'blastn', -d => $indir . '/' . $pargs{hs_dts} ],
+	strain => $pargs{hs_str},
+	);
+	
+    if (exists $pargs{hs_arg}) {
+	my @bargs = split(/;/, $pargs{hs_arg});
+	foreach my $barg (@bargs) {
+	    if ($barg =~ m/\s*(-\w)\s+(.+)\s*/) {
+		my $b_ar = $1;
+		my $b_vl = $2;
+		unless ($b_ar =~ m/-(o|i|p|d)/) {
+		    push @{$hom_args{blast}}, ($b_ar => $b_vl); 
+		}
+	    }
+	}
+    }
+    if (exists $pargs{hs_fil}) {
+	my @bfils = split(/;/, $pargs{hs_fil});
+	foreach my $bfil (@bfils) {
+	    if ($bfil =~ m/\s*(.+?)\s+(.+?)\s+(.+?)\s*/) {
+		my ($arg, $ope, $val) = ($1, $2, $3);
+		if (exists $hom_args{filter}) {
+		    $hom_args{filter}->{$arg} = [$2, $3];
+		}
+		else {
+		    $hom_args{filter} = { $arg => [$2, $3] };
+		}
+	    }
+	}
+    }
+    return \%hom_args;
+}
+
+=head2 parse_align_args
+
+  Usage: my $align_href = parse_align_args(\%conf_for_path);
+
+  Desc: parse run_alignment arguments and return a hash ref. usable by
+        run_alignment function.
+
+  Ret: $align_href, a hash reference with run alignment arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $align_href = parse_align_args(\%conf_for_path);
+
+=cut
+
+sub parse_align_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_align_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied to parse_align_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %align_args = ( program => $pargs{al_prg} );
+	
+    if (exists $pargs{al_arg}) {
+	
+	$align_args{parameters} = [];
+
+	my @aargs = split(/;/, $pargs{al_arg});
+	foreach my $aarg (@aargs) {
+	    if ($aarg =~ m/\s*(.+)\s*=\s*(.+)\s*/) {
+		
+		push @{$align_args{parameters}}, ($1 => $2); 
+	    }
+	}
+    }
+    
+    return \%align_args;
+}
+
+=head2 parse_align_args
+
+  Usage: my $prune_aln_href = parse_prune_aln_args(\%conf_for_path);
+
+  Desc: parse prune_by_align arguments and return a hash ref. usable by
+        prune_by_align function.
+
+  Ret: $prune_aln_href, a hash reference with prune_by_align arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $prune_aln_href = parse_prune_aln_args(\%conf_for_path);
+
+=cut
+
+sub parse_prune_aln_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_prune_aln_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_prune_aln_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %pr_aln = ();
+
+    if (exists $pargs{pr_aln}) {
+	my @pr_alns = split(/;/, $pargs{pr_aln});
+	foreach my $pr_aln (@pr_alns) {
+	    if ($pr_aln =~ m/\s*(.+?)\s+(.+?)\s+(.+?)\s*/) {
+		$pr_aln{$1} = [$2, $3];
+	    }
+	}
+    }
+
+    return \%pr_aln;
+}
+
+=head2 parse_prune_str_args
+
+  Usage: my $prune_str_href = parse_prune_str_args(\%conf_for_path);
+
+  Desc: parse prune_by_strains arguments and return a hash ref. usable by
+        prune_by_strains function.
+
+  Ret: $prune_str_href, a hash reference with prune_by_strains arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $prune_str_href = parse_prune_str_args(\%conf_for_path);
+
+=cut
+
+sub parse_prune_str_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_prune_str_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_prune_str_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %pr_str = ();
+
+    if (exists $pargs{pr_str}) {
+	my @pr_strs = split(/;/, $pargs{pr_str});
+	foreach my $pr_str (@pr_strs) {
+	    if  ($pr_str =~ m/composition\s+=>\s+(.+)/) {
+		$pr_str{composition} = {};
+
+		my @comps = split(/,/, $1);
+		foreach my $comp (@comps) {
+		    if ($comp =~ m/(.+?)\s*=\s*(\d+?)/) {
+			$pr_str{composition}->{$1} = $2;
+		    }
+		}
+	    }
+	    elsif ($pr_str =~ m/(\w+_distance)\s+=>\s+(.+)/) {
+		my $arg = $1;
+		$pr_str{$arg} = [];
+
+		my @dists = split(/,/, $1);
+		foreach my $dist (@dists) {
+		    if ($dist =~ m/(.+?)\s*=\s*(\.+?)/) {
+			push @{$pr_str{$arg}}, [$1, $2];
+		    }
+		}
+	    }
+	}
+    }
+
+    return \%pr_str;
 }
 
 
+=head2 parse_prune_ovl_args
+
+  Usage: my $prune_ovl_href = parse_prune_ovl_args(\%conf_for_path);
+
+  Desc: parse prune_by_overlaps arguments and return a hash ref. usable by
+        prune_by_overlaps function.
+
+  Ret: $prune_ovl_href, a hash reference with prune_by_overlaps arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $prune_str_href = parse_prune_ovl_args(\%conf_for_path);
+
+=cut
+
+sub parse_prune_ovl_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_prune_ovl_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_prune_ovl_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %pr_ovl = ();
+
+    if (exists $pargs{pr_ovl}) {
+	my @pr_strs = split(/;/, $pargs{pr_ovl});
+	foreach my $pr_ovl (@pr_strs) {
+	    if  ($pr_ovl =~ m/composition\s+=>\s+(.+)/) {
+		$pr_ovl{composition} = {};
+
+		my @comps = split(/,/, $1);
+		foreach my $comp (@comps) {
+		    if ($comp =~ m/(.+?)\s*=\s*(\d+?)/) {
+			$pr_ovl{composition}->{$1} = $2;
+		    }
+		}
+	    }
+	    elsif ($pr_ovl =~ m/(random|trim)\s+=>\s+(\s+)/) {
+		$pr_ovl{$1} = $2;
+	    }
+	}
+    }
+
+    return \%pr_ovl;
+}
+
+=head2 parse_njtrees_args
+
+  Usage: my $njtrees_href = parse_njtrees_args(\%conf_for_path);
+
+  Desc: parse run_njtrees arguments and return a hash ref. usable by
+        run_njtrees function.
+
+  Ret: $njtrees_href, a hash reference with njtrees arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $njtrees_href = parse_njtrees_args(\%conf_for_path);
+
+=cut
+
+sub parse_njtrees_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_njtrees_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_njtrees_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %njtrees = ();
+
+    if (exists $pargs{tr_arg}) {
+	my @trargs = split(/;/, $pargs{tr_arg});
+	foreach my $trarg (@trargs) {
+	    if  ($trarg =~ m/(.+?)\s*=\s*(.+?)/) {
+		$njtrees{$1} = $2;
+	    }
+	}
+    }
+
+    ## Overwrite type with $pargs{tr_met}
+
+    $njtrees{type} = $pargs{tr_met};
+
+    return \%njtrees;
+}
 
 
+=head2 parse_mltrees_args
+
+  Usage: my $mltrees_href = parse_mltrees_args(\%conf_for_path);
+
+  Desc: parse run_mltrees arguments and return a hash ref. usable by
+        run_mltrees function.
+
+  Ret: $mltrees_href, a hash reference with mltrees arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $mltrees_href = parse_mltrees_args(\%conf_for_path);
+
+=cut
+
+sub parse_mltrees_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_mltrees_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_mltrees_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %mltrees = ();
+
+    my $prog;
+    if (exists $pargs{tr_arg}) {
+	my @trargs = split(/;/, $pargs{tr_arg});
+	foreach my $trarg (@trargs) {
+	    if ($trarg =~ m/phyml\s*=?>?\s*(.*)/) {
+		$prog = 'phyml';
+		$mltrees{phyml} = {};
+		my $args1 = $1;
+		if (defined $args1) {
+		    my @args1 = split(/,/, $args1);
+		    foreach my $arg1 (@args1) {
+			if ($arg1 =~ m/(.+?)\s*=\s*(.+?)/) {
+			    $mltrees{phyml}->{$1} = $2;
+			}
+		    }
+		}
+	    }
+	    elsif ($trarg =~ m/dnaml\s*=>\s*(.+)/) {
+		
+		$prog = 'dnaml';
+		$mltrees{dnaml} = {};
+		my $args2 = $1;
+		if (defined $args2) {
+		    my @args2 = split(/,/, $args2);
+		    foreach my $arg2 (@args2) {
+			if ($arg2 =~ m/(.+?)\s*=\s*(.+?)/) {
+			    $mltrees{dnaml}->{$1} = $2;
+			}
+		    }
+		}
+	    }
+	    elsif ($trarg =~ m/outgroup_strain\s*=>?\s*(.+)/) {
+		$mltrees{outgroup_strain} = $1;
+	    }
+	}
+    }
+    unless (defined $prog) {  ## If no program is defined add phyml by default
+	$mltrees{phyml} = {};
+    }
 
 
+    return \%mltrees;
+}
 
 
+=head2 parse_reroot_args
+
+  Usage: my $reroot_href = parse_reroot_args(\%conf_for_path);
+
+  Desc: parse reroot_trees arguments and return a hash ref. usable by
+        reroot_trees function.
+
+  Ret: $reroot_href, a hash reference with reroot arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $reroot_href = parse_reroot_args(\%conf_for_path);
+
+=cut
+
+sub parse_reroot_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_reroot_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_reroot_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    my %reroot = ();
+
+    if (exists $pargs{tr_rer}) {
+	my @trargs = split(/;/, $pargs{tr_rer});
+	foreach my $trarg (@trargs) {
+	    if  ($trarg =~ m/(.+?)\s*=\s*(.+?)/) {
+		$reroot{$1} = $2;
+	    }
+	}
+    }
+
+    return \%reroot;
+}
+
+
+=head2 parse_boots_args
+
+  Usage: my $boots_href = parse_boots_args(\%conf_for_path);
+
+  Desc: parse run_bootstrapping arguments and return a hash ref. usable by
+        run_bootstrapping function.
+
+  Ret: $boots_href, a hash reference with bootstrapping arguments
+
+  Args: \%conf_for_path, a hash ref. with the configuration data for a concrete
+        path
+
+  Side_Effects: None
+
+  Example: my $boots_href = parse_boots_args(\%conf_for_path);
+
+=cut
+
+sub parse_boots_args {
+    my $pconf_href = shift ||
+	die("ERROR: No conf. hashref. was supplied to parse_boots_args()");
+
+    unless (ref($pconf_href) eq 'HASH') {
+	die("ERROR: $pconf_href supplied parse_boots_args() isnt a href.");
+    }
+
+    my %pargs = %{$pconf_href};
+    
+    ## Define the bootstrapping args
+
+    my %boots = ( 
+	run_bootstrap => { datatype => 'Sequence' },
+	run_distances => { quiet => 1},
+	## Tree will depend of the tree_method
+	run_consensus => { quiet => 1, normalized => 1 }
+	);
+
+    ## Bootstrap values
+
+    if (exists $pargs{bo_run}) {
+	my @boargs = split(/;/, $pargs{bo_run});
+	
+	foreach my $bo (@boargs) {
+	    if  ($bo =~ m/(.+?)\s*=\s*(.+?)/) {
+		$boots{run_bootstrap}->{$1} = $2;
+	    }
+	}
+    }
+
+    ## Distances
+
+    if (exists $pargs{di_fun}) {
+	$boots{run_distances}->{method} = $pargs{di_fun};
+    }
+    else {
+	$boots{run_distances}->{method} = 'Kimura';
+    }
+
+    ## Trees
+
+    my $tree_mth = $pargs{tr_met} || 'ML';
+    if ($tree_mth =~ m/^(NJ|UPGMA)$/) {
+
+	my $njtree_args = parse_njtrees_args(\%pargs);
+	$boots{run_njtrees} = $njtree_args;
+
+	if (exists $njtree_args->{outgroup_strain}) {
+	    $boots{run_consensus}->{outgroup_strain} = 
+		$njtree_args->{outgroup_strain};
+	}
+    }
+    else {
+	
+	my $mltree_args = parse_mltrees_args(\%pargs);
+	$boots{run_mltrees} = $mltree_args;
+
+	if (exists $mltree_args->{outgroup_strain}) {
+	    $boots{run_consensus}->{outgroup_strain} = 
+		$mltree_args->{outgroup_strain};
+	}
+    }
+
+    ## Consensus
+
+    if (defined $pargs{tr_rer}) {
+		    
+	my $reroot_args = parse_reroot_args(\%pargs);
+	if (exists $reroot_args->{midpoint}) {
+	    $boots{run_consensus}->{root_by_midpoint} = 1;
+	}
+    }
+    
+    return \%boots;
+}
 
 
 
