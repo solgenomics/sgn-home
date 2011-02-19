@@ -896,6 +896,7 @@ sub load_strainfile {
         Permited clustervalues: evalue, expect, frac_identical, frac_conserved,
 		                gaps, hsp_length,  num_conserved, 
                                 num_identical, score, bits, percent_identity
+        Aditional argument: max_cluster_members
 
   Side_Effects: Die if the argument used is not a hash, if none 
                 blastfile is detailed or if the clustervalues is not
@@ -922,17 +923,17 @@ sub parse_blastfile {
     ## Define the permited blast variables according the 
     ## HSP methods
 
-    my %blastvar = ( evalue           => 1,
-		     expect           => 1,
-		     frac_identical   => 1,
-		     frac_conserved   => 1, 
-		     gaps             => 1,
-		     hsp_length       => 1,
-		     num_conserved    => 1, 
-		     num_identical    => 1,
-		     score            => 1,
-		     bits             => 1,
-		     percent_identity => 1, 
+    my %blastvar = ( evalue              => 1,
+		     expect              => 1,
+		     frac_identical      => 1,
+		     frac_conserved      => 1, 
+		     gaps                => 1,
+		     hsp_length          => 1,
+		     num_conserved       => 1, 
+		     num_identical       => 1,
+		     score               => 1,
+		     bits                => 1,
+		     percent_identity    => 1,
 	);
 
 
@@ -1015,6 +1016,15 @@ sub parse_blastfile {
 			## Define the cluster name according the q_name
 		
 			my $cluster_name = $cluster_members{$q_name};
+			my $member_n = 0;
+
+			if (defined $cluster_name) {
+			    if (exists $clusters{$cluster_name}) {
+				my @members = @{$clusters{$cluster_name}};
+				$member_n = scalar(@members);
+			    }
+			}
+
 			    
 			unless ($q_name eq $s_name) {
 			    
@@ -1074,6 +1084,16 @@ sub parse_blastfile {
 				}
 			    }    
 			    
+			    ## Anyway if exists max cluster members and it is >
+			    ## than that change conditions
+			    
+			    if (exists $arg_href->{max_cluster_members}) {
+				my $max_mb = $arg_href->{max_cluster_members};
+				if ($member_n > $max_mb) {
+				    $conditions_n = 1;
+				}
+			    }
+
 			    unless (exists $cluster_members{$s_name}) {
 				
 				## New cluster condition, it will overwrite
@@ -1161,6 +1181,8 @@ sub parse_blastfile {
                                 align_length, mismatches, gaps_openings, 
                                 q_start, q_end, s_start, s_end, e_value, 
                                 bit_score.
+
+        Aditional clustervalues: max_cluster_members
 
   Side_Effects: Die if the argument used is not a hash or if none 
                 blastfile is detailed.
@@ -1277,6 +1299,12 @@ sub fastparse_blastfile {
 		
 		my $cluster_name = $cluster_members{$q_name};
 		
+		my $member_n = 0;
+		if (defined $cluster_name) {
+		    $member_n = scalar(@{$clusters{$cluster_name}});
+		}
+
+
 		if (exists $arg_href->{'report_status'}) {
 		    print_parsing_status($hc, $ht, 
 					 "Percentage of blast file parsed:");
@@ -1337,7 +1365,17 @@ sub fastparse_blastfile {
 			    $er4 .= "'==','>=' or '>')\n";
 			    croak($er4);
 			}
-		    }    
+		    }
+		    
+		    ## Anyway if exists max cluster members and it is >
+                    ## than that change conditions                      
+
+		    if (exists $arg_href->{max_cluster_members}) {
+			my $max_mb = $arg_href->{max_cluster_members};
+			if ($member_n > $max_mb) {
+			    $conditions_n = 1;
+			}
+		    }
 			    
 		    unless (exists $cluster_members{$s_name}) {
 				
