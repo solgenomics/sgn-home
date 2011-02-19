@@ -1072,7 +1072,7 @@ sub print_config {
 ##             query_id, subject_id, percent_identity, align_length, 
 ##             mismatches, gaps_openings, q_start, q_end, s_start, s_end, 
 ##             e_value, bit_score
-
+## Boths can use max_cluster_members
 
 <>FASTBLASTPARSER:             []
 ##
@@ -1437,8 +1437,13 @@ sub parse_clustervals {
 	my @sublines = split(/;/,  $cl_line);
 	foreach my $subline (@sublines) {
 	    if ($subline =~ m/^\s*(.+?)\s+(.+?)\s+(.+?)\s*$/) {
-		$clval{$1} = [$2, $3];
-	    }	
+		if ($1 eq 'max_cluster_members') {
+		    $clval{$1} = $3;
+		}
+		else {
+		    $clval{$1} = [$2, $3];
+		}	
+	    }
 	}
 	$clval_href = \%clval;
     }

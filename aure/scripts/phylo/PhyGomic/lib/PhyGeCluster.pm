@@ -934,6 +934,7 @@ sub parse_blastfile {
 		     score               => 1,
 		     bits                => 1,
 		     percent_identity    => 1,
+		     max_cluster_members => 1,
 	);
 
 
@@ -973,6 +974,15 @@ sub parse_blastfile {
 		$arg_href->{'rootname'} = 'cluster';
 	    }
 	    
+	    ## Get and delete max_cluster_members if exist
+
+
+	    my $max_mb;
+	    if (exists $arg_href->{clustervalues}->{max_cluster_members}) {
+		$max_mb = delete($arg_href->{clustervalues}
+				          ->{max_cluster_members});
+	    }
+
 	    ## 1) Parse the file and create the clusters
 	    
 	    my %clustervals = %{$arg_href->{'clustervalues'}};
@@ -1087,8 +1097,7 @@ sub parse_blastfile {
 			    ## Anyway if exists max cluster members and it is >
 			    ## than that change conditions
 			    
-			    if (exists $arg_href->{max_cluster_members}) {
-				my $max_mb = $arg_href->{max_cluster_members};
+			    if (defined $max_mb) {
 				if ($member_n > $max_mb) {
 				    $conditions_n = 1;
 				}
@@ -1207,18 +1216,19 @@ sub fastparse_blastfile {
     ## Define the possible clustervalues
 
     my %blastvar = (
-	            'query_id'         => 0, 
-		    'subject_id'       => 1, 
-		    'percent_identity' => 2, 
-		    'align_length'     => 3,
-		    'mismatches'       => 4, 
-		    'gaps_openings'    => 5,
-		    'q_start'          => 6,
-		    'q_end'            => 7, 
-		    's_start'          => 8, 
-		    's_end'            => 9,
-		    'e_value'          => 10,
-		    'bit_score'        => 11,
+	            'query_id'            => 0, 
+		    'subject_id'          => 1, 
+		    'percent_identity'    => 2, 
+		    'align_length'        => 3,
+		    'mismatches'          => 4, 
+		    'gaps_openings'       => 5,
+		    'q_start'             => 6,
+		    'q_end'               => 7, 
+		    's_start'             => 8, 
+		    's_end'               => 9,
+		    'e_value'             => 10,
+		    'bit_score'           => 11,
+                    'max_cluster_members' => 12,
 	);
 
     ## Now parsing...
@@ -1264,6 +1274,12 @@ sub fastparse_blastfile {
 		$arg_href->{'rootname'} = 'cluster';
 	    }
 	    
+	    my $max_mb;
+	    if (exists $arg_href->{clustervalues}->{max_cluster_members}) {
+		$max_mb = delete($arg_href->{clustervalues}
+				          ->{max_cluster_members});
+	    }
+
 	    ## 1) Parse the file and create the clusters
 	    
 	    my %clustervals = %{$arg_href->{'clustervalues'}};
@@ -1370,8 +1386,7 @@ sub fastparse_blastfile {
 		    ## Anyway if exists max cluster members and it is >
                     ## than that change conditions                      
 
-		    if (exists $arg_href->{max_cluster_members}) {
-			my $max_mb = $arg_href->{max_cluster_members};
+		    if (defined $max_mb) {
 			if ($member_n > $max_mb) {
 			    $conditions_n = 1;
 			}
