@@ -165,6 +165,7 @@ while( my $line = <$temp_out_read> ) {
     }
 }
 $temp_out_2->close;
+unlink $temp_out;
 system "gff3_reformat.pl -s $temp_out_2";
 
 ########## SUBROUTINES ##############
@@ -177,8 +178,8 @@ sub increment_version_for_line {
 
     for my $aname ('ID','Parent','Name') {
 	if( $attrs->{$aname} && $attrs->{$aname}[0] ) {
-	    my ( $solyc ) = $attrs->{$aname}[0] =~ /(Solyc\d\d[rg]\d+)/ or die;
-	    if( $increment_version{ $solyc } ) {
+	    my ( $solyc ) = $attrs->{$aname}[0] =~ /(Solyc\d\d[rg]\d+)/;
+	    if( $solyc && $increment_version{ $solyc } ) {
 		$attrs->{$aname}[0] =~ s/\.(\d+)/'.'.($1+1)/e;
 	    }
 	}
