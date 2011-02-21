@@ -1867,7 +1867,7 @@ sub parse_acefile {
 
 =head2 print_parsing_status
 
-  Usage: print_parsing_status($progress, $total, $message);
+  Usage: print_parsing_status($progress, $total, $message, $id);
 
   Desc: Print as STDERR the percentage of the file parsed
 
@@ -1876,6 +1876,7 @@ sub parse_acefile {
   Args: $progress, a scalar, an integer with the progress
         $total, a scalar, a integer with the total
         $message to print before the percentage
+        $id, to print after the percetage
 
   Side_Effects: Die if 1st and 2nd arguments are undefined or are not integers
                 Print as default message: Percentage of the file parsed: ";
@@ -1899,6 +1900,8 @@ sub print_parsing_status {
     my $message = shift ||
 	"Percentage of the file parsed:";
 
+    my $id = shift || 'NA';
+
     unless ($a =~ m/^\d+$/) {
 	croak("ERROR: 1st argument is not an int. for print_parsing_status()");
     }
@@ -1910,7 +1913,7 @@ sub print_parsing_status {
     my $perc_obj = Math::BigFloat->new($perc);
     my $perc_formated = $perc_obj->bfround(-2);
 
-    print STDERR "\t$message $perc_formated %\r";
+    print STDERR "\t$message $perc_formated %    \t(processing:$id)\r";
 }
 
 =head2 out_clusterfile
@@ -3692,7 +3695,7 @@ sub run_alignments {
 	my $a = 0;
 	my $t = scalar(keys %clusters);
 
-	foreach my $cluster_id (keys %clusters) {
+	foreach my $cluster_id (sort keys %clusters) {
 	 
 	    $a++;
 
@@ -3716,7 +3719,9 @@ sub run_alignments {
 	
 		if (exists $args_href->{'report_status'}) {
 		    print_parsing_status($a, $t, 
-				       "\t\tPercentage of alignments produced");
+				       "\t\tPercentage of alignments produced",
+					 $cluster_id,
+			);
 		}
 
 		my $alignobj = $factory->align(\@seq_members);
@@ -3830,8 +3835,9 @@ sub run_distances {
     my %clusters = %{$self->get_clusters()};
 
     my $t = scalar( keys %clusters);
+    my $a = 0;
     
-    foreach my $cluster_id (keys %clusters) {
+    foreach my $cluster_id (sort keys %clusters) {
 
 	my $alignobj = $clusters{$cluster_id}->alignment();
 	my @members = $clusters{$cluster_id}->get_members();
@@ -3882,7 +3888,9 @@ sub run_distances {
 
 	    if (exists $arghref->{'report_status'}) {
 		print_parsing_status($a, $t, 
-				     "\t\tPercentage of distances calculated");
+				     "\t\tPercentage of distances calculated",
+				     $cluster_id,
+		    );
 	    }
 
 	    if ($skip_distance == 0) {
@@ -4089,7 +4097,7 @@ sub run_bootstrapping {
     my $a = 0;
     my $t = scalar( keys %clusters );
 
-    foreach my $cluster_id (keys %clusters) {
+    foreach my $cluster_id (sort keys %clusters) {
 	$a++;
 	my $seqfam = $clusters{$cluster_id};
 	my $align = $seqfam->alignment();
@@ -4103,7 +4111,9 @@ sub run_bootstrapping {
 
 	    if (exists $args_href->{'report_status'}) {
 		print_parsing_status($a, $t, 
-				 "\t\tPercentage of bootstrapping calculated");
+				 "\t\tPercentage of bootstrapping calculated",
+				     $cluster_id,
+		    );
 	    }
 
 	    my $phygeboots = PhyGeBoots->new(\%args);
@@ -4217,7 +4227,7 @@ sub run_njtrees {
     my $a = 0;
     my $t = scalar( keys %dists );
 
-    foreach my $cluster_id (keys %dists) {
+    foreach my $cluster_id (sort keys %dists) {
 
 	$a++;
 	## After check, create the array and the factory
@@ -4286,7 +4296,9 @@ sub run_njtrees {
 
 	    if (defined $repstatus) {
 		print_parsing_status($a, $t, 
-				     "\t\tPercentage of tree calculated");
+				     "\t\tPercentage of tree calculated", 
+				     $cluster_id,
+		    );
 	    }
 
 	    my ($tree) = $factory->run($distobj);
@@ -4406,7 +4418,7 @@ sub run_mltrees {
     my $a = 0;
     my $t = scalar( keys %clusters );
 
-    foreach my $cluster_id (keys %clusters) {
+    foreach my $cluster_id (sort keys %clusters) {
 
 	$a++;
 	my $seqfam = $clusters{$cluster_id};
@@ -4463,7 +4475,9 @@ sub run_mltrees {
 
 		if (exists $args_href->{'report_status'}) {
 		    print_parsing_status($a, $t, 
-					 "\t\tPercentage of tree calculated");
+					 "\t\tPercentage of tree calculated",
+					 $cluster_id,
+			);
 		}
 
 		my ($tree) = $factory->run($align);	
