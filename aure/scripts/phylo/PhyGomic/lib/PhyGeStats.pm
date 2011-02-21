@@ -475,7 +475,6 @@ sub _compare_phygetopos {
     my %phygt = %{$self->get_phygetopo()};
 
     foreach my $phygename (sort keys %phygt) {
-
 	my %topotypes = %{$phygt{$phygename}->get_topotypes()};	
 	$maxph += scalar(keys %topotypes);
     }
@@ -510,8 +509,8 @@ sub _compare_phygetopos {
 	    }
 	
 	    if (ref($topo_match) eq 'Bio::Tree::Tree') {  ## if exists add old
-		$phygt_keep{$comp_match} = { $phygename => $topology };
-		$phygt_comp{$comp_match} = { $phygename => $topo_id };
+		$phygt_keep{$comp_match}->{$phygename} = $topology;
+		$phygt_comp{$comp_match}->{$phygename} = $topo_id;
 	    }
 	    else {                                  ## if doesnt exist, to new
 		my $n = scalar(keys %phygt_comp) + 1;
@@ -521,6 +520,7 @@ sub _compare_phygetopos {
 	    }
 	}
     }
+   
     return %phygt_comp;
 }
 
@@ -635,7 +635,8 @@ sub _phygt2matrix {
 	my %datah = %{$comp_phygt{$rowname}};
 	foreach my $colname (@colnames) {
 	    if (defined $datah{$colname}) {
-		my $topo_id = $datah{$colname};
+
+		my $topo_id = $datah{$colname};		
 		my %topoty = %{$phygt{$colname}->get_topotypes()};
 		my @members = @{$topoty{$topo_id}->get_members()};
 		push @data, scalar(@members);
@@ -985,11 +986,11 @@ sub create_tree_graph {
     ## 4) Get size and par according stack
 
     my $stack = $grhref->{stack} || "horizontal";
-    my $size = { width => 150 * $tree_n, height => 200 };
+    my $size = { width => 300 * $tree_n, height => 400 };
     my $mfrow = { mfrow => [1, $tree_n] };
 
     if ($stack eq 'vertical') {
-	$size = { width => 200, height => 150 * $tree_n };
+	$size = { width => 400, height => 300 * $tree_n };
 	$mfrow = { mfrow => [$tree_n, 1] };
     }
     elsif ($stack eq 'matrix') {
@@ -1001,7 +1002,7 @@ sub create_tree_graph {
 	if ($div - $col > 0) {
 	    $col++;
 	}
-	$size = { width => 150 * $col, height => 150 * $row };
+	$size = { width => 300 * $col, height => 300 * $row };
 	$mfrow = { mfrow => [$row, $col] };
     }
 
@@ -1018,7 +1019,7 @@ sub create_tree_graph {
     ## 6) Add par arguments
 
     my $defpar = { par => $mfrow };
-    $defpar->{par}->{cex} = 1.5;
+    $defpar->{par}->{cex} = 1;
 
     my $parhref = $grhref->{grparam} || $defpar;
     
@@ -1038,7 +1039,7 @@ sub create_tree_graph {
 	    f          => 0.5, 
 	    cnod       => 2, 
 	    cleav      => 2, 
-	    'clabel.l' => 3,
+	    'clabel.l' => 2,
 	    csub       => 3,
 	    possub     => "bottomright",
 	} 
