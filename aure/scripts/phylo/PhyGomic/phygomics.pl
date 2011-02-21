@@ -264,7 +264,7 @@ if ($opt_O) {
     
     my $clf_n = scalar(keys %clfiles);
     print STDERR "\tOPTION -O enabled: $clf_n prepath clusters files have been";
-    print STDERR "created with basename:\n\t$clbasename\n\n";
+    print STDERR " created with basename:\n\t$clbasename\n\n";
 }
 
 
@@ -801,37 +801,54 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
 print STDERR "\t3) RUNING STATISTICAL ANALISIS (" .  date() . "):\n\n";
 
-## Create the R base object
+## Check the number of phygetopo
 
-my $rbase = YapRI::Base->new();
+my $phytopo_count = 0;
+foreach my $method (keys %topostats) {
+    my $phygtp = $topostats{$method};
+    if (defined $phygtp) {
+        $phytopo_count += scalar(keys (%{$phygtp->get_topotypes()}));
+    }
+}
 
-## Create the PhyGeStat object.
+if ($phytopo_count > 0) {
 
-my $phygestats = PhyGeStats->new( { rbase     => $rbase, 
-				    phygetopo => \%topostats,
-				  } );
+    ## Create the R base object
 
-## Create the result dir
+    my $rbase = YapRI::Base->new();
 
-my $statsdir = $outdir . '/9_Results';
-mkdir($statsdir);
+    ## Create the PhyGeStat object.
 
-my $filetable = $statsdir . '/topology_composition.tab';
-my $barplot = $statsdir . '/topology_composition.bmp';
-my $treeplot = $statsdir . '/topology_trees.bmp';
+    my $phygestats = PhyGeStats->new( { rbase     => $rbase, 
+	  			        phygetopo => \%topostats,
+				      } );
 
-## Create the matrix with the phygetopo data
+    ## Create the result dir
 
-$phygestats->create_matrix(); 
+    my $statsdir = $outdir . '/9_Results';
+    mkdir($statsdir);
 
-$phygestats->create_composition_table($filetable);
-$phygestats->create_composition_graph($barplot);
-$phygestats->create_tree_graph($treeplot);
+    my $filetable = $statsdir . '/topology_composition.tab';
+    my $barplot = $statsdir . '/topology_composition.bmp';
+    my $treeplot = $statsdir . '/topology_trees.bmp';
 
-print STDERR "\t\tDONE. 3 files have been created:\n\n";
-print STDERR "\t\t\t$filetable\n\t\t\t$barplot\n\t\t\t$treeplot\n\n";
+    ## Create the matrix with the phygetopo data
 
+    $phygestats->create_matrix(); 
 
+    $phygestats->create_composition_table($filetable);
+    $phygestats->create_composition_graph($barplot);
+    $phygestats->create_tree_graph($treeplot);
+
+    print STDERR "\t\tDONE. 3 files have been created:\n\n";
+    print STDERR "\t\t\t$filetable\n\t\t\t$barplot\n\t\t\t$treeplot\n\n";
+
+}
+else {
+    print STDERR "\t\tNO TOPOLOGIES WERE PRODUCED BY ANY PATH.\n";
+    print STDERR "\t\tCHECK PRUNNING ARGUMENTS AND INITIAL DATASET.\n\n";
+   
+}
 
 ############################################
 ## 4) Print end message
@@ -1244,8 +1261,8 @@ sub print_config {
 ##
 ## List of arguments to use with the tree calculation
 ##
-## format:  [{argument}{space}{=}or{=>}{space}{value}{semicolon}...]
-## example: [quiet = 1; outgroup_strain = Sly] for NJ
+## format:  [{argument}{space}{=>}{space}{value}{semicolon}...]
+## example: [quiet => 1; outgroup_strain => Sly] for NJ
 ##          [ phyml => -b=1000, -m=JC69]
 ## arguments for NJ or UPGMA: lowtri (0 or 1), uptri (0 or 1), subrep (0 or 1)
 ##                            jumble (integer), quiet (0 or 1) or 
@@ -1748,7 +1765,7 @@ sub parse_njtrees_args {
     if (exists $pargs{tr_arg}) {
 	my @trargs = split(/;/, $pargs{tr_arg});
 	foreach my $trarg (@trargs) {
-	    if  ($trarg =~ m/(.+?)\s*=\s*(.+?)/) {
+	    if  ($trarg =~ m/(.+?)\s*=>\s*(.+?)/) {
 		$njtrees{$1} = $2;
 	    }
 	}
