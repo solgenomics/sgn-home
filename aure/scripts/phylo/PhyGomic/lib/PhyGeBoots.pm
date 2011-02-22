@@ -20,10 +20,16 @@ use Bio::Tools::Run::Phylo::Phylip::SeqBoot;
 use Bio::Tools::Run::Phylo::Phylip::Neighbor;
 use Bio::Tools::Run::Phylo::Phyml;
 use Bio::Tools::Run::Phylo::Phylip::Consense;
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use Bio::Tools::Run::Phylo::Phylip::Dnaml; ## A PhyGoMics module
 
 use Bio::Matrix::IO;
 use Bio::Matrix::Generic;
+
+
+
 
 ###############
 ### PERLDOC ###
@@ -660,22 +666,25 @@ sub run_bootstrap {
     ## Checking args.
 
     my @bootstrargs = ();
+    my %args;
+
     unless (ref($args_href) eq 'HASH') {
 	croak("ARG. ERROR: Arg. supplied to run_bootstrapping() arent hashref");
     }
     else {
-	foreach my $argkey (keys %{$args_href}) {
+	%args = %{$args_href};
+	foreach my $argkey (keys %args) {
 
-	    if (exists $args_href->{quiet}) {
-		if ($args_href->{quiet} =~ m/^0$/) {
-		    $args_href->{quiet} = 'no';
+	    if (exists $args{quiet}) {
+		if ($args{quiet} =~ m/^0$/) {
+		    $args{quiet} = 'no';
 		}
-		elsif ($args_href->{quiet} =~ m/^1$/) {
-		    $args_href->{quiet} = 'yes';
+		elsif ($args{quiet} =~ m/^1$/) {
+		    $args{quiet} = 'yes';
 		}
 	    }
 
-	    my $val = $args_href->{$argkey};
+	    my $val = $args{$argkey};
 	    unless (exists $perm_args{$argkey}) {
 		my $err = "ARG. ERROR: $argkey is not a permited arg. for ";
 		$err .= "run_bootstrapping() function";
@@ -939,17 +948,19 @@ sub run_njtrees {
 		      outgroup_strain => '\w+', 
 	);
 
+    my %args;
     if (defined $args_href) {
 	unless (ref($args_href) eq 'HASH') {
 	    croak("ARG. ERROR: Arg. supplied to run_njtrees() arent hashref");
 	}
 
-	foreach my $arg (keys %{$args_href}) {
+	%args = %{$args_href};
+	foreach my $arg (keys %args) {
 	    unless (exists $perm_args{$arg}) {
 		croak("ARG. ERROR: $arg isnt permited arg. for run_njtrees()");
 	    }
 	    else {
-		my $val = $args_href->{$arg};
+		my $val = $args{$arg};
 		my $regexp = '^' . $perm_args{$arg} . '$';
 		if ($val !~ m/$regexp/i) {
 		    croak("ARG. ERROR: $arg has a non-permited value ($val)")
@@ -961,21 +972,21 @@ sub run_njtrees {
     ## Get outgroup if it is defined and delete from arguments
 
     my $outgroup;
-    if (defined $args_href->{outgroup_strain}) {	
-	$outgroup = delete($args_href->{outgroup_strain});    	
+    if (defined $args{outgroup_strain}) {	
+	$outgroup = delete($args{outgroup_strain});    	
     }
 
     ## But outgroup can not be used for UPGMA
 
-    if (defined $args_href->{type}) {
-	if ($args_href->{type} =~ m/UPGMA/i) {
+    if (defined $args{type}) {
+	if ($args{type} =~ m/UPGMA/i) {
 	    undef($outgroup);
 	}
     }
 
     my @args = ();
-    foreach my $key (keys %{$args_href}) {
-	push @args, ($key, $args_href->{$key});
+    foreach my $key (keys %args) {
+	push @args, ($key, $args{$key});
     }
 
     ## After check, create the array and the factory
@@ -1296,24 +1307,27 @@ sub run_consensus {
 	 );
 
     my $norm = 0;
+    my %args;
+
     if (defined $args_href) {
 	unless (ref($args_href) eq 'HASH') {
 	    croak("ARG. ERROR: Arg. supplied to run_consensus() arent hashref");
 	}
 
-	foreach my $arg (keys %{$args_href}) {
+	%args = %{$args_href};
+	foreach my $arg (keys %args) {
 	    unless (exists $perm_args{$arg}) {
 		croak("ARG. ERROR: $arg isnt permited arg.for run_consensus()");
 	    }
 	    else {
-		my $val = $args_href->{$arg};
+		my $val = $args{$arg};
 		my $regexp = '^' . $perm_args{$arg} . '$';
 		if ($val !~ m/$regexp/i) {
 		    croak("ARG. ERROR: $arg has a non-permited value ($val)")
 		}
 		if ($arg eq 'normalized' && $val == 1) {
 		    $norm = 1;
-		    delete($args_href->{'normalized'});
+		    delete($args{'normalized'});
 		}
 	    }
 	}
@@ -1324,15 +1338,15 @@ sub run_consensus {
     
     my $midpoint_root;
 
-    if (defined $args_href->{'root_by_midpoint'}) {
-	$midpoint_root = delete($args_href->{'root_by_midpoint'});
+    if (defined $args{'root_by_midpoint'}) {
+	$midpoint_root = delete($args{'root_by_midpoint'});
     }
 
     my $selected_strainroot;
     my $strain_root;
 
-    if (defined $args_href->{'root_by_strain'}) {
-	$selected_strainroot = delete($args_href->{'root_by_strain'});
+    if (defined $args{'root_by_strain'}) {
+	$selected_strainroot = delete($args{'root_by_strain'});
     }
     
 
@@ -1342,8 +1356,8 @@ sub run_consensus {
     my $seqfam = $self->get_seqfam;
 
     my $outgroup_id;
-    if (defined $args_href->{outgroup_strain}) {	
-	my $outgroup = delete($args_href->{outgroup_strain});
+    if (defined $args{outgroup_strain}) {	
+	my $outgroup = delete($args{outgroup_strain});
     	$outgroup_id = PhyGeCluster::_get_outgroup_id(
 	    {
 		seqfam    => $seqfam,
@@ -1356,8 +1370,8 @@ sub run_consensus {
     ## Pass the rest of the arguments
 
     my @args = ();
-    foreach my $key (keys %{$args_href}) {
-	push @args, ($key, $args_href->{$key});
+    foreach my $key (keys %args) {
+	push @args, ($key, $args{$key});
     }
 
     ## After check, create the array and the factory
