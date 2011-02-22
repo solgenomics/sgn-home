@@ -566,7 +566,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     }
 
     my $cls_n = scalar( keys %{$paphyg->get_clusters()});
-    print STDERR "\t\t$cls_n clusters remain after prunning.\n\n";
+    print STDERR "\t\t\t$cls_n clusters remain after prunning.\n\n";
     
     if ($opt_O && $prune == 1) {
 
@@ -686,9 +686,9 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	        ## Print files
 	        my $retreebase = $retreedir . '/tree_rerooted';
 	        my %retreefiles = $paphyg->out_treefile({ 
-	            rootname     => $retreebase,
-	            distribution => 'single',
-	            format       => 'newick',
+	            'rootname'     => $retreebase,
+	            'distribution' => 'single',
+	            'format'       => 'newick',
 		      				      });
 
   	        my $retree_n = scalar(keys %retreefiles);
@@ -712,7 +712,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
             if ($opt_S) {
 	        $boots_args->{report_status} = 1;
             }
-
+            
 	    $paphyg->run_bootstrapping($boots_args);
 
 	    my %boots = %{$paphyg->get_bootstrapping()};
@@ -2035,7 +2035,7 @@ sub parse_boots_args {
 	    $boots{run_consensus}->{root_by_midpoint} = 1;
 	}
     }
-    
+
     return \%boots;
 }
 
