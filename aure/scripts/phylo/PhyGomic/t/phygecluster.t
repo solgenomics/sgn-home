@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 232;
+use Test::More tests => 233;
 use Test::Exception;
 
 use IO::Scalar;
@@ -260,11 +260,14 @@ my %clusters4 = PhyGeCluster::parse_blastfile({ blastfile => $blastfile});
 
 ## So it will create them and compare with the obtained number
 
-my $cl4_number = scalar(keys %clusters4);;
+my $cl4_number = scalar(keys %clusters4);
+my $lcl4 = length($cl4_number);
+
 my $cl4_count = 1;
 my @expected_cluster_names = ();
 while ($cl4_count < $cl4_number+1) {
-    push @expected_cluster_names, 'cluster_' . $cl4_count;
+    push @expected_cluster_names, 
+    'cluster_' . sprintf('%0' . $lcl4 . 's', $cl4_count);
     $cl4_count++;
 }
 
@@ -340,10 +343,13 @@ my %clusters5 = PhyGeCluster::parse_blastfile(
 ## So it will create them and compare with the obtained number
 
 my $cl5_n = scalar(keys %clusters5);
+my $lcl5 = length($cl5_n);
+
 my $cl5_count = 1;
 my @expected_cluster_names5 = ();
 while ($cl5_count < $cl5_n+1) {
-    push @expected_cluster_names5, 'cluster_' . $cl5_count;
+    push @expected_cluster_names5,
+	'cluster_' . sprintf('%0' . $lcl5 . 's', $cl5_count);
     $cl5_count++;
 }
 
@@ -1775,46 +1781,78 @@ my %overlaps = $phygecluster3->calculate_overlaps();
 ## Define some expected values (counted by other methods), TEST 184 to 186
 
 my %ov_expval = ( 
-    'cluster_1' => { 
-	'Sly_01101' => {
-	    'Sly_01101' => {'start' => 0,    'end' => 0,    'length'=> 0    },
-	    'Nsy_31457' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
-	    'Nsy_05034' => {'start' => 1195, 'end' => 2400, 'length'=> 1205 },
-	    'Nto_10658' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
+    'cluster_04' => { 
+	'Nto_10503' => {
+	    'Nto_10503' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nsy_04259' => {'start' => 836,  'end' => 1650, 'length'=> 814  },
+	    'Sly_33576' => {'start' => 570,  'end' => 1650, 'length'=> 1080 },
+	    'Nsy_23257' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+            'Nto_13186' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Nto_12172' => {'start' => 864,  'end' => 1628, 'length'=> 764  },
 	},
-	'Nsy_31457' => {
-	    'Sly_01101' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
-	    'Nsy_31457' => {'start' => 0,    'end' => 0,    'length'=> 0    },
-	    'Nsy_05034' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
-	    'Nto_10658' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
+	'Nsy_04259' => {
+	    'Nto_10503' => {'start' => 836,  'end' => 1650, 'length'=> 814  },
+	    'Nsy_04259' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Sly_33576' => {'start' => 836,  'end' => 1777, 'length'=> 941  },
+	    'Nsy_23257' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+            'Nto_13186' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Nto_12172' => {'start' => 864,  'end' => 1628, 'length'=> 764  },
 	},
-	'Nsy_05034' => {
-	    'Sly_01101' => {'start' => 1195, 'end' => 2400, 'length'=> 1205 },
-	    'Nsy_31457' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
-	    'Nsy_05034' => {'start' => 0,    'end' => 0,    'length'=> 0    },
-	    'Nto_10658' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
+	'Sly_33576' => {
+	    'Nto_10503' => {'start' => 570,  'end' => 1650, 'length'=> 1080 },
+	    'Nsy_04259' => {'start' => 836,  'end' => 1777, 'length'=> 941  },
+	    'Sly_33576' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nsy_23257' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+            'Nto_13186' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Nto_12172' => {'start' => 864,  'end' => 1628, 'length'=> 764  },
 	},
-	'Nto_10658' => {
-	    'Sly_01101' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
-	    'Nsy_31457' => {'start' => 1408, 'end' => 1490, 'length'=> 82   },
-	    'Nsy_05034' => {'start' => 1317, 'end' => 1778, 'length'=> 461  },
-	    'Nto_10658' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	'Nsy_23257' => {
+	    'Nto_10503' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+	    'Nsy_04259' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+	    'Sly_33576' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+	    'Nsy_23257' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+            'Nto_13186' => {'start' => 1109, 'end' => 1566, 'length'=> 457  },
+	    'Nto_12172' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+	},
+	'Nto_13186' => {
+	    'Nto_10503' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Nsy_04259' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Sly_33576' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Nsy_23257' => {'start' => 1109, 'end' => 1566, 'length'=> 457  },
+            'Nto_13186' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nto_12172' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	},
+	'Nto_12172' => {
+	    'Nto_10503' => {'start' => 864,  'end' => 1628, 'length'=> 764  },
+	    'Nsy_04259' => {'start' => 864,  'end' => 1628, 'length'=> 764  },
+	    'Sly_33576' => {'start' => 864,  'end' => 1628, 'length'=> 764  },
+	    'Nsy_23257' => {'start' => 1109, 'end' => 1567, 'length'=> 458  },
+            'Nto_13186' => {'start' => 1105, 'end' => 1566, 'length'=> 461  },
+	    'Nto_12172' => {'start' => 0,    'end' => 0,    'length'=> 0    }, 
 	},	
     },
-    'cluster_2' => {
-	'Sly_01219' => {
-	    'Sly_01219' => {'start' => 0,    'end' => 0,    'length'=> 0    },
-	    'Nta_08736' => {'start' => 136,  'end' => 1011, 'length'=> 875  },
+    'cluster_27' => {
+	'Sly_13535' => {
+	    'Sly_13535' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nta_21248' => {'start' => 558,  'end' => 933,  'length'=> 375  },
+	    'Nsy_11897' => {'start' => 521,  'end' => 1018, 'length'=> 497  },
 	},
-	'Nta_08736' => {
-	    'Sly_01219' => {'start' => 136,  'end' => 1011, 'length'=> 875  },
-	    'Nta_08736' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	'Nta_21248' => {
+	    'Sly_13535' => {'start' => 558,  'end' => 933,  'length'=> 375  },
+	    'Nta_21248' => {'start' => 0,    'end' => 0,    'length'=> 0    },
+	    'Nsy_11897' => {'start' => 558,  'end' => 933,  'length'=> 375  },
+	},
+	'Nsy_11897' => {
+	    'Sly_13535' => {'start' => 521,  'end' => 1018, 'length'=> 497  },
+	    'Nta_21248' => {'start' => 558,  'end' => 933,  'length'=> 375  },
+	    'Nsy_11897' => {'start' => 0,    'end' => 0,    'length'=> 0    },
 	},
     }
     );
 
 my $wrong_ovvalues = 0;
-foreach my $clid_o (keys %overlaps) {
+foreach my $clid_o (sort keys %overlaps) {
+
     my $mtx = $overlaps{$clid_o};
     my @rownames = $mtx->row_names();
     my @colnames = $mtx->column_names();
@@ -1823,8 +1861,9 @@ foreach my $clid_o (keys %overlaps) {
 	    my $entry = $mtx->get_entry($row, $col);
 	    my @vars = ('start', 'end', 'length');
 	    foreach my $v (@vars) {
+
 		if (defined $ov_expval{$clid_o}) {
-		    my %ovlp = %{$ov_expval{$clid_o}};
+		    my %ovlp = %{$ov_expval{$clid_o}};		   
 		    if ($ovlp{$row}->{$col}->{$v} ne $entry->{$v}) {
 			$wrong_ovvalues++;
 		    }
@@ -1835,20 +1874,21 @@ foreach my $clid_o (keys %overlaps) {
 }
 
 is($wrong_ovvalues, 0, 
-    "Testing calculate_overlaps, checking know values for cluster_1 and _2")
+    "Testing calculate_overlaps, checking know values for cluster_04 and _27")
     or diag("Looks like this has failed");
 
 my %best_overlaps = $phygecluster3->best_overlaps();
 
-my $best_ovcluster1 = join(',', sort @{$best_overlaps{'cluster_1'}});
-my $best_ovcluster2 = join(',', sort @{$best_overlaps{'cluster_2'}});
 
-is($best_ovcluster1, 'Nsy_05034,Sly_01101',
-   "Testing best_overlaps, checking best overlap for cluster_1")
+my $best_ovcluster1 = join(',', sort @{$best_overlaps{'cluster_04'}});
+my $best_ovcluster2 = join(',', sort @{$best_overlaps{'cluster_27'}});
+
+is($best_ovcluster1, 'Nto_10503,Sly_33576',
+   "Testing best_overlaps, checking best overlap for cluster_04")
     or diag("Looks like this has failed");
 
-is($best_ovcluster2, 'Nta_08736,Sly_01219',
-   "Testing best_overlaps, checking best overlap for cluster_2")
+is($best_ovcluster2, 'Nsy_11897,Sly_13535',
+   "Testing best_overlaps, checking best overlap for cluster_27")
     or diag("Looks like this has failed");
 
 
@@ -1856,7 +1896,7 @@ is($best_ovcluster2, 'Nta_08736,Sly_01219',
 ## prune_by_overlaps ## 
 #######################
 
-## TEST 187 to 197
+## TEST 187 to 198
 
 my $phygecluster_c3 = $phygecluster3->clone();
 my ($rm_ovcl1href, $rm_ovmb1href) = $phygecluster_c3->prune_by_overlaps(
@@ -1943,6 +1983,11 @@ foreach my $ov_clid2 (keys %rmovl_cluster2) {
     }
 }
 
+my $rmovlc = scalar(keys %rmovl_cluster2);
+is($rmovlc <=> 0, 1, 
+    "testing prune_by_overlaps(comp,trim), checking returns clusters ($rmovlc)")
+    or diag("Looks like this has failed");
+
 is($wrong_memb_count2, 0, 
     "Testing prune_by_overlaps(comp,trim), checking clusters with 5 members")
     or diag("Looks like this has failed");
@@ -1967,7 +2012,7 @@ is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
     "Testing prune_by_overlaps(composition), checking removed member count")
     or diag("Looks like this has failed");
 
-## Test the croak functions for prune_by_overlapings, TEST 198 to 203
+## Test the croak functions for prune_by_overlapings, TEST 199 to 204
 
 throws_ok { $phygecluster_c3->prune_by_overlaps() } qr/ARG. ERROR: No hash/,
     "TESTING DIE ERROR when none arg. is supplied to prune_by_overlaps";
@@ -2000,7 +2045,7 @@ throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ARG. ERROR: 'tr/,
 ## TREE TOOLS FUNCTIONS ##
 ##########################
 
-## First create a clone, TEST 204 and 205
+## First create a clone, TEST 205 and 206
 
 my $phygecl_tr1 = $phygecluster3->clone();
 $phygecl_tr1->run_njtrees({ quiet => 1 });
@@ -2031,7 +2076,7 @@ is(scalar(@njtrees) <=> 0, 1,
     "Testing run_njtrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 206 to 208
+## Test the croak, TEST 207 to 209
 
 throws_ok { $phygecl_tr1->run_njtrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_njtrees() arg. supplied isnt a HASHREF';
@@ -2042,7 +2087,7 @@ throws_ok { $phygecl_tr1->run_njtrees({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygecl_tr1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_njtrees() when value used is not permited';
 
-## First create a clone, TEST 209 and 210
+## First create a clone, TEST 210 and 211
 
 my $phygecl_tr2 = $phygecluster3->clone();
 $phygecl_tr2->run_mltrees({ phyml => {} });
@@ -2074,7 +2119,7 @@ is(scalar(@mltrees) <=> 0, 1,
     "Testing run_mltrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 211 to 213
+## Test the croak, TEST 212 to 214
 
 throws_ok { $phygecl_tr2->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_mltrees() arg. supplied isnt a HASHREF';
@@ -2133,7 +2178,7 @@ while(<$MTFH>) {
 }
 
 ## Finally it will check that there are two pairs of the same tree
-## TEST 214 to 216
+## TEST 215 to 217
 
 is($midroot_pairs, 3, 
     "Testing _set_midpoint_root, checking midpoint root trees")
@@ -2146,7 +2191,7 @@ throws_ok { PhyGeCluster::_set_midpoint_root('fake') } qr/ERROR: fake/,
     'TESTING DIE ERROR when arg. supplied to _set_midpoint_root isnt Bio::Tree';
 
 
-## Test reroot_trees function, TEST 217 to 225
+## Test reroot_trees function, TEST 218 to 226
 
 
 my %reroot_opts = ( midpoint => 1, strainref => 'Sly', longestref => 1 );
@@ -2218,7 +2263,7 @@ foreach my $keyopt (keys %reroot_opts) {
 	or diag("Looks like this has failed");
 }
 
-## TEST 226 to 230
+## TEST 227 to 231
 
 throws_ok { $phygecl_tr1->reroot_trees() } qr/ARG. ERROR: No argument/, 
     'TESTING DIE ERROR when no argument was supplied to reroot_trees()';
@@ -2241,7 +2286,7 @@ throws_ok { $phygecl_tr1->reroot_trees($freroothref) } qr/ARG. ERROR: Only/,
 ## TEST OUTGROUP FOR TREES ##
 #############################
 
-## TEST 231
+## TEST 232
 
 my $phygecl_tr3 = $phygecluster3->clone();
 $phygecl_tr3->run_njtrees({ quiet => 1 , outgroup_strain => 'Sly' });
@@ -2290,7 +2335,7 @@ is($outgr_nj <=> 0, 1,
     or diag("Looks like this has failed");
 
 
-## TEST 232
+## TEST 233
 
 my $phygecl_tr4 = $phygecluster3->clone();
 $phygecl_tr4->run_mltrees({dnaml => { quiet => 1 }});

@@ -919,6 +919,7 @@ sub parse_blastfile {
     
     my %clusters = ();
     my %cluster_members = ();
+    my %pclusters = ();
 
     ## Define the permited blast variables according the 
     ## HSP methods
@@ -1021,7 +1022,7 @@ sub parse_blastfile {
 
 			## define the last cluster n
 			    
-			$cluster_n = scalar(keys(%clusters));
+			$cluster_n = scalar(keys(%pclusters));
 
 			## Define the cluster name according the q_name
 		
@@ -1029,8 +1030,8 @@ sub parse_blastfile {
 			my $member_n = 0;
 
 			if (defined $cluster_name) {
-			    if (exists $clusters{$cluster_name}) {
-				my @members = @{$clusters{$cluster_name}};
+			    if (exists $pclusters{$cluster_name}) {
+				my @members = @{$pclusters{$cluster_name}};
 				$member_n = scalar(@members);
 			    }
 			}
@@ -1113,11 +1114,11 @@ sub parse_blastfile {
 				    . '_' . ($cluster_n+1);
 				}
 				
-				unless (exists $clusters{$cluster_name}) {
-				    $clusters{$cluster_name} = [$s_name];
+				unless (exists $pclusters{$cluster_name}) {
+				    $pclusters{$cluster_name} = [$s_name];
 				}
 				else {
-				    push @{$clusters{$cluster_name}}, 
+				    push @{$pclusters{$cluster_name}}, 
 				    $s_name;
 				}
 				$cluster_members{$s_name} = $cluster_name;
@@ -1134,11 +1135,11 @@ sub parse_blastfile {
 				    '_' . 
 				    ($cluster_n+1);
 				    
-				unless (exists $clusters{$cluster_name}) {
-				    $clusters{$cluster_name} = [$q_name];
+				unless (exists $pclusters{$cluster_name}) {
+				    $pclusters{$cluster_name} = [$q_name];
 				}
 				else {
-				    push @{$clusters{$cluster_name}}, 
+				    push @{$pclusters{$cluster_name}}, 
 				    $q_name;
 				}
 				$cluster_members{$q_name} = $cluster_name;
@@ -1155,10 +1156,26 @@ sub parse_blastfile {
     else {
 	croak("ARG. ERROR: No argument was used for parse_blast function\n");
     }
-    foreach my $cl_id (keys %clusters) {
+
+    ## Now it knows how many clusters there are, so it will change the names
+    ## and the nre names to the new cluster hash
+
+    my $cluster_n = scalar(keys %pclusters);
+    my $name_l = length($cluster_n);
+
+    my %clmemb = ();
+    foreach my $cl_id (keys %pclusters) {
+	my $memb_n = scalar(@{$pclusters{$cl_id}});
+	$clmemb{$cl_id} = $memb_n;
+    }
+    
+    my $n = 0;
+    foreach my $clid (sort { $clmemb{$b} <=> $clmemb{$a} } keys %clmemb) {
+	$n++;
+	my $new_clid = $arg_href->{'rootname'}.'_'.sprintf('%0'.$name_l.'s',$n);
 
 	my @seqs = ();
-	foreach my $seq_id (@{$clusters{$cl_id}}) {
+	foreach my $seq_id (@{$pclusters{$clid}}) {
 	    my $seq = Bio::Seq->new(
 		-id => $seq_id,
 		);
@@ -1166,10 +1183,10 @@ sub parse_blastfile {
 	}
 	
 	my $seqfam = Bio::Cluster::SequenceFamily->new(
-	    -family_id => $cl_id,
+	    -family_id => $new_clid,
 	    -members   => \@seqs,
 	    );
-	$clusters{$cl_id} = $seqfam;
+	$clusters{$new_clid} = $seqfam;
     } 
     return %clusters;
 }
@@ -1212,6 +1229,7 @@ sub fastparse_blastfile {
     
     my %clusters = ();
     my %cluster_members = ();
+    my %pclusters = ();
 
     ## Define the possible clustervalues
 
@@ -1309,7 +1327,7 @@ sub fastparse_blastfile {
 		
 		## define the last cluster n
 		
-		my $cluster_n = scalar(keys(%clusters));
+		my $cluster_n = scalar(keys(%pclusters));
 
 		## Define the cluster name according the q_name
 		
@@ -1317,7 +1335,7 @@ sub fastparse_blastfile {
 		
 		my $member_n = 0;
 		if (defined $cluster_name) {
-		    $member_n = scalar(@{$clusters{$cluster_name}});
+		    $member_n = scalar(@{$pclusters{$cluster_name}});
 		}
 
 
@@ -1411,11 +1429,11 @@ sub fastparse_blastfile {
 			    }
 			}
 
-			unless (exists $clusters{$cluster_name}) {
-			    $clusters{$cluster_name} = [$s_name];
+			unless (exists $pclusters{$cluster_name}) {
+			    $pclusters{$cluster_name} = [$s_name];
 			}
 			else {
-			    push @{$clusters{$cluster_name}}, $s_name;
+			    push @{$pclusters{$cluster_name}}, $s_name;
 			}
 			$cluster_members{$s_name} = $cluster_name;
 		    }
@@ -1431,11 +1449,11 @@ sub fastparse_blastfile {
 			    '_' . 
 			    ($cluster_n+1);
 
-			unless (exists $clusters{$cluster_name}) {
-			    $clusters{$cluster_name} = [$q_name];
+			unless (exists $pclusters{$cluster_name}) {
+			    $pclusters{$cluster_name} = [$q_name];
 			}
 			else {
-			    push @{$clusters{$cluster_name}}, $q_name;
+			    push @{$pclusters{$cluster_name}}, $q_name;
 			}
 			$cluster_members{$q_name} = $cluster_name;
 		    }
@@ -1454,10 +1472,25 @@ sub fastparse_blastfile {
     ## Finally it will convert all the cluster data into key=cluster_id and
     ## value=Bio::Cluster::SequenceFamily object
 
-    foreach my $cl_id (keys %clusters) {
+    ## Now it knows how many clusters there are, so it will change the names
+    ## and the nre names to the new cluster hash
+
+    my $cluster_n = scalar(keys %pclusters);
+    my $name_l = length($cluster_n);
+
+    my %clmemb = ();
+    foreach my $cl_id (keys %pclusters) {
+	my $memb_n = scalar(@{$pclusters{$cl_id}});
+	$clmemb{$cl_id} = $memb_n;
+    }
+    
+    my $n = 0;
+    foreach my $clid (sort { $clmemb{$b} <=> $clmemb{$a} } keys %clmemb) {
+	$n++;
+	my $new_clid = $arg_href->{'rootname'}.'_'.sprintf('%0'.$name_l.'s',$n);
 
 	my @seqs = ();
-	foreach my $seq_id (@{$clusters{$cl_id}}) {
+	foreach my $seq_id (@{$pclusters{$clid}}) {
 	    my $seq = Bio::Seq->new(
 		-id => $seq_id,
 		);
@@ -1465,12 +1498,11 @@ sub fastparse_blastfile {
 	}
 	
 	my $seqfam = Bio::Cluster::SequenceFamily->new(
-	    -family_id => $cl_id,
+	    -family_id => $new_clid,
 	    -members   => \@seqs,
 	    );
-	$clusters{$cl_id} = $seqfam;
-    }
-
+	$clusters{$new_clid} = $seqfam;
+    } 
     return %clusters;
 }
 
@@ -1647,7 +1679,6 @@ sub parse_acefile {
     my $L = `cut -f1 $acefile | wc -l`;
     chomp($L);
     my $l = 0;
-    
     
     ## Define the catching variables
     
