@@ -707,10 +707,10 @@ sub set_distances {
 
   Usage: my $bootstrapping_href = $phygecluster->get_bootstrapping();
 
-  Desc: Get distance data from PhyGeCluster object
+  Desc: Get distance data from Bio::Tree::Tree consensus object
 
   Ret: A hash reference: 
-       my $href = { $cluster_id => PhyGeBoots object }
+       my $href = { $cluster_id => Bio::Tree::Tree object }
  
   Args: None
  
@@ -736,7 +736,7 @@ sub get_bootstrapping {
   Ret: None
  
   Args: A hash reference: 
-        my $href = { $cluster_id => PhyGeBoots object }
+        my $href = { $cluster_id => Bio::Tree::Tree object }
  
   Side_Effects: Die if the argument is not a hash reference, if the values for
                 this hash reference are not array reference and if the members
@@ -756,8 +756,8 @@ sub set_bootstrapping {
 	}
 	else {
 	    foreach my $cl_id (keys %{$bootstrap_href}) {
-		unless (ref($bootstrap_href->{$cl_id}) eq 'PhyGeBoots') {
-		    my $err = "VAL. ERROR: value for $cl_id isnt a PhyGeBoots ";
+		unless (ref($bootstrap_href->{$cl_id}) eq 'Bio::Tree::Tree') {
+		    my $err = "VAL. ERROR: value for $cl_id isnt a Bio::Tree";
 		    $err .= "object for set_bootstrapping() function.";
 		    croak($err);
 		}
@@ -2193,18 +2193,8 @@ sub out_alignfile {
   Args: A hash reference with the following options:
          rootname     => $basename ('alignment' by default),
          distribution => $distribution (two options: single or multiple),
-         type         => $type (bootstrapping has four different datatypes
-                         alignment, distances, trees and consensus).
-                         (consensus by default)
          format       => $format (depending for the type:
-                         * Alignment => bl2seq, clustalw, emboss, fasta, maf, 
-                                        mase, mega, meme, metafasta, msf, 
-                                        nexus, pfam, phylip, po, prodom, psi, 
-                                        selex, stockholm, XMFA, arp)
-                         (see bioperl Bio::AlignIO for more details)
-                         ('clustalw' by default)
-                         * Distances => phylip,
-                         * Trees and consensus => newick, nexus
+                         * consensus => newick, nexus
          extension    => $fileextension ('aln' by default)
 
   Side_Effects: None
@@ -2220,10 +2210,9 @@ sub out_bootstrapfile {
     ## Check variables and complete with default arguments
     
     my $def_argshref = { 'rootname'     => 'bootstrap',
-			 'type'         => 'consensus',
 			 'distribution' => 'single',			 
 			 'format'       => 'newick',
-                         'extension'    => 'aln',
+                         'extension'    => 'txt',
     };
 
     if (defined $argshref) {
@@ -2269,58 +2258,16 @@ sub out_bootstrapfile {
                        $argshref->{'extension'};
 	$outfiles{'multiple'} = $outname1;
 	
-	my ($alignio, $distsio, $treeio, $consensusio) = ('', '', '', '');
-
-	if ($type eq 'alignment') {
-	    $alignio = Bio::AlignIO->new( -format => $argshref->{'format'},
-					  -file   => ">$outname1",
-		);
-	}
-	elsif ($type eq 'distances') {
-	    $distsio = Bio::Matrix::IO->new( -format => 'phylip',
-					     -file   => ">$outname1",
-		); 
-	}
-	elsif ($type eq 'trees') {
-	    $treeio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
-					-file   => ">$outname1",
-		);
-	}
-	elsif ($type eq 'consensus') {
-	    $consensusio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
-					     -file   => ">$outname1",
-		);
-	}
-	else {
-	    croak("ERROR: Type not permited for out_bootstrapfile function");
-	}
+        my $consensusio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
+					    -file   => ">$outname1",
+	    );
 
 	foreach my $cluster_id (sort keys %bootstrap) {
-	    my $phygeboots = $bootstrap{$cluster_id};
-	    my @aligns = @{$phygeboots->get_aligns()};
-	    my @dists = @{$phygeboots->get_dists()};
-	    my @trees = @{$phygeboots->get_trees()};
-	    my $consensus = $phygeboots->get_consensus();
-
-	    if ($type eq 'alignment') {
-		foreach my $align (@aligns) {
-		    $alignio->write_aln($align);
-		}
-	    }
-	    elsif ($type eq 'distances') {
-		foreach my $dists (@dists) {
-		    $distsio->write_matrix($dists);
-		}
-	    }
-	    elsif ($type eq 'trees') {
-		foreach my $tree (@trees) {
-		    $treeio->write_tree($tree);
-		}
-	    }
-	    elsif ($type eq 'consensus') {
-		if (defined $consensus) {
-		    $consensusio->write_tree($consensus);
-		}
+	    
+	    my $consensus = $bootstrap{$cluster_id};
+	   
+	    if (defined $consensus) {
+		$consensusio->write_tree($consensus);
 	    }
 	}	
     }
@@ -2331,56 +2278,14 @@ sub out_bootstrapfile {
                            $argshref->{'extension'};
 	    my $phygeboots = $bootstrap{$cluster_id};
 	    
-	   my ($alignio, $distsio, $treeio, $consenio) = ('', '', '', '');
+	  
+	    my $consenio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
+					     -file   => ">$outname2",
+		);
 
-	    if ($type eq 'alignment') {
-		$alignio = Bio::AlignIO->new( -format => $argshref->{'format'},
-					      -file   => ">$outname2",
-		    );
-	    }
-	    elsif ($type eq 'distances') {
-		$distsio = Bio::Matrix::IO->new( -format => 'phylip',
-						 -file   => ">$outname2",
-		    ); 
-	    }
-	    elsif ($type eq 'trees') {
-		$treeio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
-					    -file   => ">$outname2",
-		    );
-	    }
-	    elsif ($type eq 'consensus') {
-		$consenio = Bio::TreeIO->new( -format => $argshref->{'format'}, 
-					      -file   => ">$outname2",
-		    );
-	    }
-	    else {
-		croak("ERROR: Type not permited for out_bootstrapfile funct.");
-	    }
-
-	    my @aligns = $phygeboots->get_aligns();
-	    my @dists = $phygeboots->get_dists();
-	    my @trees = $phygeboots->get_trees();
-	    my $consensus = $phygeboots->get_consensus();
-
-	    if ($type eq 'alignment') {
-		foreach my $align (@aligns) {
-		    $alignio->write_aln($align);
-		}
-	    }
-	    elsif ($type eq 'distances') {
-		foreach my $dists (@dists) {
-		    $distsio->write_matrix($dists);
-		}
-	    }
-	    elsif ($type eq 'trees') {
-		foreach my $tree (@trees) {
-		    $treeio->write_tree($tree);
-		}
-	    }
-	    elsif ($type eq 'consensus') {
-		if (defined $consensus) {
-		    $consenio->write_tree($consensus);
-		}
+	    my $consensus = $bootstrap{$cluster_id};
+	    if (defined $consensus) {
+		$consenio->write_tree($consensus);
 	    }
 	}
     }
@@ -4036,7 +3941,7 @@ sub run_distances {
         the bootstrapping alignments into the object, as a hash, key=cluster_id
         and value=array reference of alignments. It use PhyGeBoots object.
 
-  Ret: none (it loads %bootstrap as keys=cluster_id and value=PhyGeBoots object)
+  Ret: none (it loads %bootstrap as keys=cluster_id and value=consensus object)
 
   Args: $args_href, a hash reference with the following options:
          + run_bootstrap => a hash ref. with args. (datatype, permute, 
@@ -4173,8 +4078,12 @@ sub run_bootstrapping {
 	    }
 
 	    my $phygeboots = PhyGeBoots->new(\%args);
+	    my $consensus = $phygeboots->get_consensus();
 	    my $trees_n = scalar( $phygeboots->get_trees());
-	    $bootstr{$cluster_id} = $phygeboots;
+
+	    if (defined $consensus) {
+		$bootstr{$cluster_id} = $consensus;
+	    }
 	}
     }
     
@@ -5510,7 +5419,7 @@ sub prune_by_bootstrap {
 
     foreach my $clid (sort keys %boots) {
 	
-	my $consensus = $boots{$clid}->get_consensus();
+	my $consensus = $boots{$clid};
 	my @nodes = $consensus->get_nodes();
 
 	my $nopass = 0;
