@@ -1099,7 +1099,7 @@ sub parse_blastfile {
 			    ## than that change conditions
 			    
 			    if (defined $max_mb) {
-				if ($member_n > $max_mb) {
+				if ($member_n >= $max_mb) {
 				    $conditions_n = 1;
 				}
 			    }
@@ -1405,7 +1405,7 @@ sub fastparse_blastfile {
                     ## than that change conditions                      
 
 		    if (defined $max_mb) {
-			if ($member_n > $max_mb) {
+			if ($member_n >= $max_mb) {
 			    $conditions_n = 1;
 			}
 		    }
