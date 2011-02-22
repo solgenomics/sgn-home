@@ -422,11 +422,11 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    $alig_n++;
 	}
     }
-
+    
     print STDERR "\n\t\t\tDONE. $alig_n alignments have been added.\n\n";
-
+    
     if ($opt_O) {
-
+	
 	## Create a folder:
 	my $alndir = $pathoutdir . '/2_alignments';
 	mkdir($alndir);
@@ -434,11 +434,11 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	## Print files
 	my $alnbase = $alndir . '/alignments';
 	my %alnfiles = $paphyg->out_alignfile({ 
-	    rootname     => $alnbase,
-	    distribution => 'single',
-	    format       => 'clustalw',
+	    'rootname'     => $alnbase,
+	    'distribution' => 'single',
+	    'format'       => 'clustalw',
 						 });
-
+	
 	my $aln_n = scalar(keys %alnfiles);
 	print STDERR "\t\t\tOPTION -O enabled: ";
 	print STDERR "$aln_n alignment files have been created";
@@ -480,11 +480,11 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	## Print files
 	my $disbase = $disdir . '/distances';
 	my %disfiles = $paphyg->out_distancefile({ 
-	    rootname     => $disbase,
-	    distribution => 'single',
-	    format       => 'phylip',
+	    'rootname'     => $disbase,
+	    'distribution' => 'single',
+	    'format'       => 'phylip',
 						 });
-
+	
 	my $dis_n = scalar(keys %disfiles);
 	print STDERR "\t\t\tOPTION -O enabled: ";
 	print STDERR "$dis_n distance files have been created";
@@ -577,16 +577,16 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	## Print files
 	my $pr_alnbase = $prdir . '/ap.alignments';
 	my %pr_alnfiles = $paphyg->out_alignfile({ 
-	    rootname     => $pr_alnbase,
-	    distribution => 'single',
-	    format       => 'clustalw',
+	    'rootname'     => $pr_alnbase,
+	    'distribution' => 'single',
+	    'format'       => 'clustalw',
 						 });
 
         my $pr_disbase = $prdir . '/ap.distances';
 	my %pr_disfiles = $paphyg->out_distancefile({ 
-	    rootname     => $pr_disbase,
-	    distribution => 'single',
-	    format       => 'phylip',
+	    'rootname'     => $pr_disbase,
+	    'distribution' => 'single',
+	    'format'       => 'phylip',
 						 });
 	my $pr_aln_n = scalar(keys %pr_alnfiles);
         my $pr_dis_n = scalar(keys %pr_disfiles);
@@ -647,9 +647,9 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    ## Print files
 	    my $treebase = $treedir . '/tree';
 	    my %treefiles = $paphyg->out_treefile({ 
-	         rootname     => $treebase,
-	         distribution => 'single',
-	         format       => 'newick',
+	         'rootname'     => $treebase,
+	         'distribution' => 'single',
+	         'format'       => 'newick',
 		   				    });
 
 	    my $tree_n = scalar(keys %treefiles);
@@ -742,7 +742,6 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	        my %bootsfiles = $paphyg->out_bootstrapfile({ 
 	             rootname     => $bootsbase,
 	             distribution => 'single',
-                     type         => 'consensus',
 	             format       => 'newick',
 		   				      });
 
@@ -1517,7 +1516,9 @@ sub parse_homolog_args {
     if (exists $pargs{hs_fil}) {
 	my @bfils = split(/;/, $pargs{hs_fil});
 	foreach my $bfil (@bfils) {
-	    if ($bfil =~ m/\s*(.+?)\s+(.+?)\s+(.+?)\s*/) {
+	    $bfil =~ s/\s+$//;
+	    $bfil =~ s/^\s+//;
+	    if ($bfil =~ m/\s*(.+)\s+(.+)\s+(.+)\s*/) {
 		my ($arg, $ope, $val) = ($1, $2, $3);
 		if (exists $hom_args{filter}) {
 		    $hom_args{filter}->{$arg} = [$2, $3];
@@ -1610,8 +1611,13 @@ sub parse_prune_aln_args {
     if (exists $pargs{pr_aln}) {
 	my @pr_alns = split(/;/, $pargs{pr_aln});
 	foreach my $pr_aln (@pr_alns) {
-	    if ($pr_aln =~ m/\s*(.+?)\s+(.+?)\s+(.+?)\s*/) {
-		$pr_aln{$1} = [$2, $3];
+
+	    $pr_aln =~ s/\s+$//;
+	    $pr_aln =~ s/^\s+//;
+
+	    if ($pr_aln =~ m/(.+)\s+(.+)\s+(.+)/) {
+		my ($arg, $cond, $val) = ($1, $2, $3);
+		$pr_aln{$arg} = [$cond, $val];
 	    }
 	}
     }
@@ -1657,8 +1663,13 @@ sub parse_prune_str_args {
 
 		my @comps = split(/,/, $1);
 		foreach my $comp (@comps) {
-		    if ($comp =~ m/(.+?)\s*=\s*(\d+?)/) {
-			$pr_str{composition}->{$1} = $2;
+		    $comp =~ s/^\s+//;
+		    $comp =~ s/\s+$//;
+		    if ($comp =~ m/(.+)\s*=\s*(\d+)/) {
+			my ($arg, $val) = ($1, $2);
+			$arg =~ s/\s+$//;
+			$val =~ s/^\s+//;
+			$pr_str{composition}->{$arg} = $val;
 		    }
 		}
 	    }
@@ -1668,8 +1679,13 @@ sub parse_prune_str_args {
 
 		my @dists = split(/,/, $1);
 		foreach my $dist (@dists) {
-		    if ($dist =~ m/(.+?)\s*=\s*(\.+?)/) {
-			push @{$pr_str{$arg}}, [$1, $2];
+		    $dist =~ s/^\s+//;
+		    $dist =~ s/\s+$//;
+		    if ($dist =~ m/(.+)\s*=\s*(\.+)/) {
+			my ($pair1, $pair2) = ($1, $2);
+			$pair1 =~ s/\s+$//;
+			$pair2 =~ s/^\s+//;
+			push @{$pr_str{$arg}}, [$pair1, $pair2];
 		    }
 		}
 	    }
@@ -1718,8 +1734,13 @@ sub parse_prune_ovl_args {
 
 		my @comps = split(/,/, $1);
 		foreach my $comp (@comps) {
-		    if ($comp =~ m/(.+?)\s*=\s*(\d+?)/) {
-			$pr_ovl{composition}->{$1} = $2;
+		    $comp =~ s/^\s+//;
+		    $comp =~ s/\s+$//;
+		    if ($comp =~ m/(.+)\s*=\s*(\d+)/) {
+			my ($arg, $val) = ($1, $2);
+			$arg =~ s/\s+$//;
+			$val =~ s/^\s+//;
+			$pr_ovl{composition}->{$arg} = $val;
 		    }
 		}
 	    }
@@ -1765,8 +1786,14 @@ sub parse_njtrees_args {
     if (exists $pargs{tr_arg}) {
 	my @trargs = split(/;/, $pargs{tr_arg});
 	foreach my $trarg (@trargs) {
-	    if  ($trarg =~ m/(.+?)\s*=>\s*(.+?)/) {
-		$njtrees{$1} = $2;
+	    $trarg =~ s/^\s+//;
+	    $trarg =~ s/\s+$//;
+	    if  ($trarg =~ m/(.+)\s*=>\s*(.+)/) {
+		my $arg = $1;
+		my $val = $2;
+		$arg =~ s/\s+$//;
+		$val =~ s/^\s+//;
+		$njtrees{$arg} = $val;
 	    }
 	}
     }
@@ -1820,8 +1847,13 @@ sub parse_mltrees_args {
 		if (defined $args1) {
 		    my @args1 = split(/,/, $args1);
 		    foreach my $arg1 (@args1) {
-			if ($arg1 =~ m/(.+?)\s*=\s*(.+?)/) {
-			    $mltrees{phyml}->{$1} = $2;
+			$arg1 =~ s/^\s+//;
+			$arg1 =~ s/\s+$//;
+			if ($arg1 =~ m/(.+)\s*=\s*(.+)/) {
+			    my ($arg, $val) = ($1, $2);
+			    $arg =~ s/\s+$//;
+			    $val =~ s/^\s+//;
+			    $mltrees{phyml}->{$arg} = $val;
 			}
 		    }
 		}
@@ -1834,8 +1866,13 @@ sub parse_mltrees_args {
 		if (defined $args2) {
 		    my @args2 = split(/,/, $args2);
 		    foreach my $arg2 (@args2) {
-			if ($arg2 =~ m/(.+?)\s*=\s*(.+?)/) {
-			    $mltrees{dnaml}->{$1} = $2;
+			$arg2 =~ s/^\s+//;
+			$arg2 =~ s/\s+$//;
+			if ($arg2 =~ m/(.+)\s*=\s*(.+)/) {
+			    my ($arg, $val) = ($1, $2);
+			    $arg =~ s/\s+$//;
+			    $val =~ s/^\s+//;
+			    $mltrees{dnaml}->{$arg} = $val;
 			}
 		    }
 		}
@@ -1887,8 +1924,13 @@ sub parse_reroot_args {
     if (exists $pargs{tr_rer}) {
 	my @trargs = split(/;/, $pargs{tr_rer});
 	foreach my $trarg (@trargs) {
+	    $trarg =~ s/^\s+//;
+	    $trarg =~ s/\s+$//;
 	    if  ($trarg =~ m/(.+?)\s*=\s*(.+?)/) {
-		$reroot{$1} = $2;
+		my ($arg, $val) = ($1, $2);
+		$arg =~ s/\s+$//;
+		$val =~ s/^\s+//;
+		$reroot{$arg} = $val;
 	    }
 	}
     }
@@ -1931,7 +1973,7 @@ sub parse_boots_args {
 	run_bootstrap => { datatype => 'Sequence' },
 	run_distances => { quiet => 1},
 	## Tree will depend of the tree_method
-	run_consensus => { quiet => 1, normalized => 1 }
+	run_consensus => { normalized => 1 }
 	);
 
     ## Bootstrap values
@@ -1940,8 +1982,13 @@ sub parse_boots_args {
 	my @boargs = split(/;/, $pargs{bo_run});
 	
 	foreach my $bo (@boargs) {
-	    if  ($bo =~ m/(.+?)\s*=\s*(.+?)/) {
-		$boots{run_bootstrap}->{$1} = $2;
+	    $bo =~ s/^\s+//;
+	    $bo =~ s/\s+$//;
+	    if  ($bo =~ m/(.+)\s*=\s*(.+)/) {
+		my ($arg, $val) = ($1, $2);
+		$arg =~ s/\s+$//;
+		$val =~ s/^s+//;
+		$boots{run_bootstrap}->{$arg} = $val;
 	    }
 	}
     }
@@ -2050,9 +2097,7 @@ sub parse_topo_args {
 	    }
 	}
     }
-    else {
-	$topo{branch_cutoffs} = { 0.1 => 1 };
-    }
+
     return \%topo;
 
 }
