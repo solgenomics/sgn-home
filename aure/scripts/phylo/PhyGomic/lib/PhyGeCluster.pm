@@ -1945,6 +1945,7 @@ sub out_clusterfile {
 
     my $def_argshref = { rootname     => 'clustercomp', 
 			 distribution => 'multiple',
+			 summary      => 1,
     };
 
     if (defined $argshref) {
@@ -1980,6 +1981,14 @@ sub out_clusterfile {
     ## one file for all the clusters, if not it will create one file per
     ## cluster.
 
+    my $sum_fh;
+    if (defined $argshref->{'summary'} && $argshref->{'summary'} =~ m/^(1|Y)/) {
+	my $sum_filename = $argshref->{'rootname'} . '.summary.txt';
+	$outfiles{summary} = $sum_filename;
+	open $sum_fh, '>', $sum_filename;
+    }
+
+
     if ($argshref->{'distribution'} eq 'multiple') {
 	my $outname1 = $argshref->{'rootname'} . '.multiplecluster.txt';
 	open my $outfh1, '>', $outname1;
@@ -1987,6 +1996,12 @@ sub out_clusterfile {
 	
 	foreach my $cluster_id (sort keys %clusters) {
 	    my @members = $clusters{$cluster_id}->get_members();
+	    my $memb_n = scalar(@members);
+
+	    if (defined $sum_fh) {
+		print $sum_fh "$cluster_id\t$memb_n\n";
+	    }
+	    
 	    foreach my $member (sort @members) {
 		my $member_id = $member->display_id();
 		print $outfh1 "$cluster_id\t$member_id\n";
@@ -2001,6 +2016,12 @@ sub out_clusterfile {
 	    $outfiles{$cluster_id} = $outname2;
 	    
 	    my @members = $clusters{$cluster_id}->get_members();
+	    my $memb_n = scalar(@members);
+
+	    if (defined $sum_fh) {
+		print $sum_fh "$cluster_id\t$memb_n\n";
+	    }
+
 	    foreach my $member (sort @members) {
 		my $member_id = $member->display_id();
 		print $outfh2 "$cluster_id\t$member_id\n";
@@ -2008,7 +2029,11 @@ sub out_clusterfile {
 	    close $outfh2;
 	}
     }
-    
+
+    if (defined $sum_fh) {
+	close($sum_fh);
+    }
+
     return %outfiles;
 }
 
