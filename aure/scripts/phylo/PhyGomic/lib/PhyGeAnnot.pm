@@ -429,7 +429,40 @@ sub parse_go_file {
 }
 
 
+=head2 load_go_file
 
+  Usage: $phygeannot->load_go_file($filename, $args_href);
+
+  Desc: Load a parsed go file into the phygeannot. object.
+
+  Ret: None
+
+  Args: $filename, filename with goterms to parse
+        $args_href, hash ref. with args. For now valid keys are:
+        report_status
+
+  Side_Effects: Die if no argument is supplied.
+
+  Example: $phygeannot->load_go_file($filename, $args_href);
+
+=cut
+
+sub load_go_file {
+    my $self = shift;
+    my $filename = shift ||
+	croak("ARG. ERROR: No arg. was used for load_go_file function");
+    my $arghref = shift;
+    
+    if (defined $arghref && ref($arghref) ne 'HASH') {
+	croak("ERROR: $arghref for load_go_file() isnt hashref.");
+    }
+
+    my %go = %{parse_go_file($filename, $arghref)};
+
+    foreach my $member (sort keys %go) {
+	$self->add_go_annot($member, $go{$member});
+    }
+}
 
 
 

@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 45;
+use Test::More tests => 48;
 use Test::Exception;
 
 use FindBin;
@@ -360,6 +360,26 @@ throws_ok { PhyGeAnnot::parse_go_file() } qr/ARG. ERROR: No arg./,
 throws_ok { PhyGeAnnot::parse_go_file('A', 'B') } qr/ERROR: B for parse/, 
     'TESTING DIE ERROR when no arg. href supplied to parse_go_file isnt HREF.';
 
+
+## parse_go_file, TEST 46 to 48
+
+## First set empty the go_terms
+
+$phannot0->set_go_annot({});
+
+$phannot0->load_go_file($gofile);
+
+my %go_annot3 = %{$phannot0->get_go_annot()};
+
+is(scalar(keys %go_annot3), 39,
+    "Testing load_go_file, checking number of annotations")
+    or diag("Looks like this has failed");
+
+throws_ok { $phannot0->load_go_file() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to load_go_file function';
+
+throws_ok { $phannot0->load_go_file('A', 'B') } qr/ERROR: B for load/, 
+    'TESTING DIE ERROR when no arg. href supplied to load_go_file isnt HREF.';
 
 
 
