@@ -351,6 +351,89 @@ sub add_go_annot {
     $self->{go_annot}->{$name} = $gohref;    
 }
 
+#######################
+## PARSING FUNCTIONS ##
+#######################
+
+=head2 parse_go_file
+
+  Usage: my $go_href = parse_go_file($filename, $args_href);
+
+  Desc: Parse a go annotation file and return a hash with key=member and
+        value=hash ref of GO terms.
+        It can parse the GO terms file in two ways:
+        1) <ID><tab><GOTERM1><semicolon><GOTERM2>...
+        2) <ID><tab><GOTERM1><=><description1><;><GOTERM2><=><description2>
+
+  Ret: $go_href, a hash ref.
+
+  Args: $filename, filename with goterms to parse
+        $args_href, hash ref. with args. For now valid keys are:
+        report_status
+
+  Side_Effects: Die if no argument is supplied.
+
+  Example: my $go_href = parse_go_file($filename, { report_status => 1 });
+
+=cut
+
+sub parse_go_file {
+    my $filename = shift ||
+	croak("ARG. ERROR: No arg. was used for parse_go_file function");
+    my $arghref = shift;
+    
+    if (defined $arghref && ref($arghref) ne 'HASH') {
+	croak("ERROR: $arghref for parse_go_file() isnt hashref.");
+    }
+
+    my %go = ();
+    
+    ## To report status
+
+    my $L = `cut -f1 $filename | wc -l`;
+    chomp($L);
+    my $l = 0;
+
+    my $rep_st = $arghref->{report_status} || 0;
+
+    open my $gofh, '<', $filename;
+    while (<$gofh>) {
+	$l++;
+	chomp($_);
+    
+	my @data = split(/\t/, $_);
+	if (defined $data[0]) {
+	    $go{$data[0]} = {};
+	    if (defined $data[1]) {
+		my @go = split(/;/, $data[1]);
+		foreach my $go (@go) {
+		    $go =~ s/^\s+//;
+		    $go =~ s/\s+$//;
+		    if ($go =~ m/(GO:\d+)=(.+)/) {
+			$go{$data[0]}->{$1} = $2;
+		    }
+		    else {
+			$go{$data[0]}->{$go} = '';
+		    }
+		}
+	    }
+	}
+	
+	if ($rep_st =~ m/^(1|Y)/i ) {
+	    PhyGeCluster::print_parsing_status($l, $L, 
+					       "Percentage of go file parsed:");
+	}
+    }
+
+    return \%go;    
+}
+
+
+
+
+
+
+
 
 
 ##########################

@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 41;
+use Test::More tests => 45;
 use Test::Exception;
 
 use FindBin;
@@ -78,6 +78,7 @@ my $seqfile = "$FindBin::Bin/testfiles/seq.test.fasta";
 my $strainfile = "$FindBin::Bin/testfiles/strains.test.tab";
 my $acefile = "$FindBin::Bin/testfiles/assembly_out.test.ace";
 my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
+my $gofile = "$FindBin::Bin/testfiles/go.test.tab";
 
 
 ## 1) PhyGeCluster:
@@ -334,6 +335,31 @@ throws_ok { $phannot0->add_go_annot('A') } qr/ERROR: No go href/,
 
 throws_ok { $phannot0->add_go_annot('A', 'B')} qr/ERROR: B for add_/, 
     'TESTING DIE ERROR when 2nd arg. supplied to add_go_annot. isnt HREF';
+
+
+## parse_go_file, TEST 42 to 45
+
+my $go_href = PhyGeAnnot::parse_go_file($gofile);
+
+my $gocount = 0;
+foreach my $memb (keys %{$go_href}) {
+    $gocount += scalar(keys %{$go_href->{$memb}});
+}
+
+is(scalar(keys %{$go_href}), 39, 
+   "Testing parse_go_file, checking number of members")
+   or diag("Looks like this has failed");
+
+is($gocount, 40, 
+   "Testing parse_go_file, checking number of GO terms")
+   or diag("Looks like this has failed");
+
+throws_ok { PhyGeAnnot::parse_go_file() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to parse_go_file function';
+
+throws_ok { PhyGeAnnot::parse_go_file('A', 'B') } qr/ERROR: B for parse/, 
+    'TESTING DIE ERROR when no arg. href supplied to parse_go_file isnt HREF.';
+
 
 
 
