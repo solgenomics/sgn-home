@@ -524,6 +524,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     	print STDERR "\t\t\t2.4.2) PRUNE BY STRAINS (" .  date() . "):\n\n";
 
 	my $pr_str_args = parse_prune_str_args(\%pargs);
+
 	my ($rem_p_cls, $rem_p_mbs)  = $paphyg->prune_by_strains($pr_str_args);
 	my $rem_p_c = scalar(keys %{$rem_p_cls});
 	my $rem_p_m = scalar(keys %{$rem_p_mbs});
@@ -1677,11 +1678,11 @@ sub parse_prune_str_args {
 		my $arg = $1;
 		$pr_str{$arg} = [];
 
-		my @dists = split(/,/, $1);
+		my @dists = split(/,/, $2);
 		foreach my $dist (@dists) {
 		    $dist =~ s/^\s+//;
 		    $dist =~ s/\s+$//;
-		    if ($dist =~ m/(.+)\s*=\s*(\.+)/) {
+		    if ($dist =~ m/(.+)\s*=\s*(.+)/) {
 			my ($pair1, $pair2) = ($1, $2);
 			$pair1 =~ s/\s+$//;
 			$pair2 =~ s/^\s+//;
