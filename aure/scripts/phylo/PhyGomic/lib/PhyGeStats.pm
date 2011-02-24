@@ -7,9 +7,9 @@ use autodie;
 
 use Carp qw| croak cluck |;
 use Math::BigFloat;
-use YapRI::Base qw/ r_var /;
-use YapRI::Data::Matrix;
-use YapRI::Graph::Simple;
+use R::YapRI::Base qw/ r_var /;
+use R::YapRI::Data::Matrix;
+use R::YapRI::Graph::Simple;
 
 use File::Temp qw/ tempfile tempdir/;
 use String::Random qw/ random_regex random_string/;
@@ -60,7 +60,7 @@ $VERSION = eval $VERSION;
 
   ## Create a rbase object:
 
-  my $rbase = YapRI::Base->new();
+  my $rbase = R::YapRI::Base->new();
 
 
   ## Create a PhyGeStats:
@@ -82,7 +82,7 @@ $VERSION = eval $VERSION;
 
 =head1 DESCRIPTION
 
- PhyGeStats is a wrapper for YapRI::Base with specific functions to
+ PhyGeStats is a wrapper for R::YapRI::Base with specific functions to
  analyze the data contained in a phygetopo object. 
 
  For example:
@@ -116,7 +116,7 @@ The following class methods are implemented:
 
   Args: A hash reference with the following key-value pairs: 
          + phygetopo    => a phygetopo object 
-         + rbase        => a YapRI::Base object
+         + rbase        => a R::YapRI::Base object
         
   Side_Effects: Die if the argument used is not a hash or there are argument
                 incompatibility (for example run_trees without run_distances).
@@ -139,7 +139,7 @@ sub new {
     
     my %permargs = ( 
 	phygetopo    => 'HASH',
-	rbase        => "YapRI::Base",
+	rbase        => "R::YapRI::Base",
 	);
 
     ## Check argument
@@ -173,7 +173,7 @@ sub new {
 
     my $srh = $args_href->{rbase};
     unless (defined $srh) {
-	$srh = YapRI::Base->new();
+	$srh = R::YapRI::Base->new();
     }
 
     my $matrix = $args_href->{matrix} || '';
@@ -309,9 +309,9 @@ sub delete_phygetopo {
 
   Usage: my $srh = $phygestats->get_rbase(); 
 
-  Desc: Get a YapRI::Base object contained into the PhyGeStats function
+  Desc: Get a R::YapRI::Base object contained into the PhyGeStats function
 
-  Ret: A YapRI::Base object
+  Ret: A R::YapRI::Base object
 
   Args: None
 
@@ -330,14 +330,14 @@ sub get_rbase {
 
   Usage: $phygestats->set_rbase($srh);
 
-  Desc: Set YapRI::Base object in the phygestats object
+  Desc: Set R::YapRI::Base object in the phygestats object
 
   Ret: None
 
-  Args: A YapRI::Base object
+  Args: A R::YapRI::Base object
 
-  Side_Effects: Die if no argument is used or if the object is not a YapRI::Base
-                object
+  Side_Effects: Die if no argument is used or if the object is not a 
+                R::YapRI::Base object
 
   Example: $phygestats->set_rbase($srh);
 
@@ -352,8 +352,8 @@ sub set_rbase {
     }
     else {
 	if ($srh =~ m/\w+/) {
-	    unless (ref($srh) eq 'YapRI::Base') {
-		croak("ERROR: $srh set_rbase() isnt YapRI::Base obj");
+	    unless (ref($srh) eq 'R::YapRI::Base') {
+		croak("ERROR: $srh set_rbase() isnt R::YapRI::Base obj");
 	    }	    
 	}
 	$self->{rbase} = $srh;    
@@ -365,9 +365,9 @@ sub set_rbase {
 
   Usage: my $matrix = $phygestats->get_matrix(); 
 
-  Desc: Get a YapRI::Data::Matrix object contained into the PhyGeStats function
+  Desc: Get a R::YapRI::Data::Matrix object contained into the PhyGeStats function
 
-  Ret: A YapRI::Data::Matrix
+  Ret: A R::YapRI::Data::Matrix
 
   Args: None
 
@@ -386,13 +386,13 @@ sub get_matrix {
 
   Usage: $phygestats->set_matrix($matrix);
 
-  Desc: Set YapRI::Data::Matrix object in the phygestats object
+  Desc: Set R::YapRI::Data::Matrix object in the phygestats object
 
   Ret: None
 
-  Args: A YapRI::Data::Matrix object
+  Args: A R::YapRI::Data::Matrix object
 
-  Side_Effects: Die if no argument is used or if it is not a YapRI::Data::Matrix
+  Side_Effects: Die if no argument is used or if it is not a R::YapRI::Data::Matrix
 
   Example: $phygestats->set_matrix($matrix);
 
@@ -407,8 +407,8 @@ sub set_matrix {
     }
     else {
 	if ($matrix =~ m/\w+/) {
-	    unless (ref($matrix) eq 'YapRI::Data::Matrix') {
-		croak("ERROR: $matrix set_matrix() isnt YapRI::Data::Matrix");
+	    unless (ref($matrix) eq 'R::YapRI::Data::Matrix') {
+		croak("ERROR: $matrix set_matrix() no R::YapRI::Data::Matrix");
 	    }	    
 	}
 	$self->{matrix} = $matrix;    
@@ -579,9 +579,9 @@ sub _tree_list {
 
   Usage: my $matrix = $self->_phygt2matrix($mtxname, $rownames); 
 
-  Desc: Creates a YapRI::Data::Matrix with the PhyGeTopo data
+  Desc: Creates a R::YapRI::Data::Matrix with the PhyGeTopo data
 
-  Ret: $matrix, a YapRI::Data::Matrix object
+  Ret: $matrix, a R::YapRI::Data::Matrix object
 
   Args: $mtxname, matrix name,
         $rownames, base for the rownames
@@ -625,7 +625,7 @@ sub _phygt2matrix {
 		rownames => \@rownames,
     };
 
-    my $matrix = YapRI::Data::Matrix->new($mtx);
+    my $matrix = R::YapRI::Data::Matrix->new($mtx);
 
     ## Get the data (sort always by names). If it is defined for the comparison
     ## hash it will get the members, if isnt defined, it will add 0.
@@ -658,8 +658,8 @@ sub _phygt2matrix {
 
   Usage: $phystats->create_matrix($mtxname, $rowbasename); 
 
-  Desc: Creates a YapRI::Data::Matrix with the PhyGeTopo data and load it into
-        the accessor.
+  Desc: Creates a R::YapRI::Data::Matrix with the PhyGeTopo data and load it
+        into the accessor.
 
   Ret: None
 
@@ -703,13 +703,13 @@ sub create_matrix {
 
   Args: $filename, name for the graph file (required)
         $graph_args, a hash reference with the arguments for the graph, 
-                     according YapRI::Graph::Simple accessors
+                     according R::YapRI::Graph::Simple accessors
 
   Side_Effects: Die if no filename argument is used.
                 Die if graph_args isnt a hash ref.
                 Die if no rbase was set before run this method.
                 Die if no matrix was set before run this method 
-                Use default YapRI::Graph::Simple accessors
+                Use default R::YapRI::Graph::Simple accessors
 
   Example: $phystats->create_composition_graph('MyFile.bmp');
 
@@ -731,12 +731,12 @@ sub create_composition_graph {
     ## Check is exists rbase and matrix.
 
     my $rbase = $self->get_rbase();
-    if (ref($rbase) ne 'YapRI::Base') {
+    if (ref($rbase) ne 'R::YapRI::Base') {
 	croak("ERROR: No rbase was set before run create_composition_graph.");
     }
     
     my $rmtx = $self->get_matrix();
-    if (ref($rmtx) ne 'YapRI::Data::Matrix') {
+    if (ref($rmtx) ne 'R::YapRI::Data::Matrix') {
 	croak("ERROR: No matrix was set before run create_composition_graph.");
     }
 
@@ -800,7 +800,7 @@ sub create_composition_graph {
 
     ## Run the graph commands
 
-    my $rgraph = YapRI::Graph::Simple->new(\%grargs);
+    my $rgraph = R::YapRI::Graph::Simple->new(\%grargs);
 
     my $block = $rgraph->build_graph();
 
@@ -961,7 +961,7 @@ sub create_tree_graph {
     ## Get rbase or die
 
     my $rbase = $self->get_rbase();
-    if (ref($rbase) ne 'YapRI::Base') {
+    if (ref($rbase) ne 'R::YapRI::Base') {
 	croak("ERROR: No rbase was set before run create_composition_graph.");
     }
 

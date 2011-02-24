@@ -45,7 +45,7 @@ BEGIN {
     use_ok('PhyGeStats');
     use_ok('PhyGeTopo');
     use_ok('PhyGeCluster');
-    use_ok('YapRI::Base');
+    use_ok('R::YapRI::Base');
 }
 
 
@@ -136,7 +136,7 @@ my %topotypes2 = $phygetopo2->run_topoanalysis();
 
 ## 3) Statistics::R
 
-my $srh0 = YapRI::Base->new();
+my $srh0 = R::YapRI::Base->new();
 
 
 
@@ -196,7 +196,7 @@ is(scalar(keys %phygetopo_4r), 0,
 $phstats0->set_rbase($srh0);
 my $srh1 = $phstats0->get_rbase();
 
-is(ref($srh1), 'YapRI::Base',
+is(ref($srh1), 'R::YapRI::Base',
    "Testing Get/Set_rbase, Checking object identity")
     or diag("Looks like this has failed");
 
@@ -204,16 +204,16 @@ throws_ok { $phstats0->set_rbase() } qr/ARG. ERROR: No arg./,
     'TESTING DIE ERROR when no arg. was supplied to set_rbase function';
 
 throws_ok { $phstats0->set_rbase(['fake']) } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg supplied set_rbase isnt YapRI::Base';
+    'TESTING DIE ERROR when arg supplied set_rbase isnt R::YapRI::Base';
 
 
 ## Get/Set_matrix, TEST 22 to 25
 
-my $mtx0 = YapRI::Data::Matrix->new({ name => 'mtx0' });
+my $mtx0 = R::YapRI::Data::Matrix->new({ name => 'mtx0' });
 $phstats0->set_matrix($mtx0);
 my $mtx1 = $phstats0->get_matrix();
 
-is(ref($mtx1), 'YapRI::Data::Matrix',
+is(ref($mtx1), 'R::YapRI::Data::Matrix',
    "Testing Get/Set_matrix, Checking object identity")
     or diag("Looks like this has failed");
 
@@ -226,7 +226,7 @@ throws_ok { $phstats0->set_matrix() } qr/ARG. ERROR: No arg./,
     'TESTING DIE ERROR when no arg. was supplied to set_matrix function';
 
 throws_ok { $phstats0->set_matrix(['fake']) } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg supplied set_matrix isnt YapRI::Data::Matrix';
+    'TESTING DIE ERROR when arg supplied set_matrix isnt R::YapRI::Data::Matrix';
 
 
 
@@ -258,7 +258,7 @@ my @exp_results = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		   21, 22, 23, 24, 25, 26, 27, 28, 29, 30 );
 
 is(join(',', @results), join(',', @exp_results), 
-   "Testing run_block for YapRI::Base object with an operation 1:30")
+   "Testing run_block for R::YapRI::Base object with an operation 1:30")
     or diag("Looks like this has failed");
 
 
@@ -382,8 +382,8 @@ my $match = 0;
 
 my %exptabfile = (
     1 => "\tML\tNJ",
-    2 => "cluster_10\ttopology_1\ttopology_3",
-    3 => "cluster_23\ttopology_1\ttopology_2",
+    2 => "cluster_03\ttopology_1\ttopology_2",
+    3 => "cluster_09\ttopology_1\ttopology_3",
     );
 
 my %obttabfile = ();
@@ -432,16 +432,16 @@ foreach my $tpid (sort keys %expected_trees) {
 
 my %treefile = (
     vertical   => { filename => $tempdir . '/TopoTreesVertical.bmp',
-		    width    => 200,
-		    height   => 450,
+		    width    => 400,
+		    height   => 900,
     },
     horizontal => { filename => $tempdir . '/TopoTreesHorizontal.bmp',
-		    width    => 450,
-		    height   => 200,
+		    width    => 900,
+		    height   => 400,
     },
     matrix     => { filename => $tempdir . '/TopoTreesMatrix.bmp',
-		    width    => 450,
-		    height   => 150,
+		    width    => 900,
+		    height   => 300,
     },
     );
 

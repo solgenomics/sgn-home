@@ -45,7 +45,7 @@ BEGIN {
     use_ok('PhyGeAnnot');
     use_ok('PhyGeTopo');
     use_ok('PhyGeCluster');
-    use_ok('YapRI::Base');
+    use_ok('R::YapRI::Base');
 }
 
 
@@ -136,7 +136,7 @@ my %topotypes2 = $phygetopo2->run_topoanalysis();
 
 ## 3) Statistics::R
 
-my $srh0 = YapRI::Base->new();
+my $srh0 = R::YapRI::Base->new();
 
 
 
@@ -196,7 +196,7 @@ is(scalar(keys %phygetopo_4r), 0,
 $phannot0->set_rbase($srh0);
 my $rbase1 = $phannot0->get_rbase();
 
-is(ref($rbase1), 'YapRI::Base',
+is(ref($rbase1), 'R::YapRI::Base',
    "Testing Get/Set_rbase, Checking object identity")
     or diag("Looks like this has failed");
 
@@ -204,7 +204,7 @@ throws_ok { $phannot0->set_rbase() } qr/ARG. ERROR: No arg./,
     'TESTING DIE ERROR when no arg. was supplied to set_rbase function';
 
 throws_ok { $phannot0->set_rbase(['fake']) } qr/ERROR: ARRAY/, 
-    'TESTING DIE ERROR when arg supplied set_rbase isnt YapRI::Base';
+    'TESTING DIE ERROR when arg supplied set_rbase isnt R::YapRI::Base';
 
 ## Get/Set_gene_annot, TEST 22 to 27
 

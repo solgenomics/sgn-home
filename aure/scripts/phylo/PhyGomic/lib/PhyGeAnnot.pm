@@ -7,9 +7,9 @@ use autodie;
 
 use Carp qw| croak cluck |;
 use Math::BigFloat;
-use YapRI::Base qw/ r_var /;
-use YapRI::Data::Matrix;
-use YapRI::Graph::Simple;
+use R::YapRI::Base qw/ r_var /;
+use R::YapRI::Data::Matrix;
+use R::YapRI::Graph::Simple;
 
 use File::Temp qw/ tempfile tempdir/;
 use String::Random qw/ random_regex random_string/;
@@ -82,7 +82,7 @@ The following class methods are implemented:
 
   Args: A hash reference with the following key-value pairs: 
          + phygetopo  => a hash ref. of phygetopo objects
-         + rbase      => a YapRI::Base object 
+         + rbase      => a R::YapRI::Base object 
          + gene_annot => a hash ref. with 
                               keys = member_ids, 
                               value = hashref with key = database.
@@ -105,7 +105,7 @@ sub new {
     my $self = bless( {}, $class );                         
     
     my %permargs = ( 
-	rbase        => 'YapRI::Base',
+	rbase        => 'R::YapRI::Base',
 	phygetopo    => 'HASH',
 	gene_annot   => 'HASH',
 	go_annot     => 'HASH',
@@ -138,7 +138,7 @@ sub new {
     my $phyget_href = $args_href->{phygetopo} || {};
     my $gene_annot_href = $args_href->{gene_annot} || {};
     my $go_annot_href = $args_href->{go_annot} || {};
-    my $rbase = $args_href->{phygetopo} || YapRI::Base->new();
+    my $rbase = $args_href->{phygetopo} || R::YapRI::Base->new();
         
     ## Set vars in the object
 
