@@ -4786,8 +4786,19 @@ sub prune_by_strains {
     my %clusters = %{$self->get_clusters()};
     foreach my $clid (keys %clusters) {
 	
-	## Get one new composition hash per cluster id
+	## Get one new composition hash per cluster id and create the list
 	my %cmp = %{$args_href->{'composition'}};
+	my %othercmp = %{$args_href->{'composition'}};
+	
+	my @cmplist = ();
+	foreach my $cmpstr (keys %othercmp) {
+	    while ($othercmp{$cmpstr} > 0) {
+		push @cmplist, $cmpstr;
+		$othercmp{$cmpstr}--;
+	    }
+	}
+	my $cmp_line = join(',', sort @cmplist);
+	
 
 	my $seqfam = $clusters{$clid};
 	
@@ -4945,7 +4956,23 @@ sub prune_by_strains {
 	##    not selected, if it has not, it will remove the SequenceFamily
 	##    objects from PhyGeCluster
 	   
+	my @selstr = ();
+	foreach my $selmb (keys %selected_mb) {
+	    push @selstr, $strains{$selmb};
+	}
+	my $selstr_list = join(',', sort @selstr);
+
+	## Two conditions to be selected: same member number and same line
+
+	my $selected_cluster = 0;
 	if (scalar(keys %selected_mb) == $expected_seq_n) {
+	    if ($selstr_list eq $cmp_line) {
+		
+		$selected_cluster = 1;
+	    }
+	}
+
+	if ($selected_cluster == 1) {
 
 	    my @rm_members = ();
 
@@ -4996,6 +5023,7 @@ sub prune_by_strains {
 	    }
 	}
 	else {
+
 	    my $cluster_removed = $self->remove_cluster($clid);
 	    my $rm_distmtx = delete($self->get_distances()->{$clid});
 	    my $rm_boots = delete($self->get_bootstrapping()->{$clid});
