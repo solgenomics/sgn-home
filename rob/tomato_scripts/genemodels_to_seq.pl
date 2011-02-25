@@ -90,21 +90,26 @@ sub protein_seq {
 
     my @nuc_seqs = map {
         my $f = $_;
-        use Data::Dump 'dump';
-        die dump( $f );
         my $s = $ref_seq->trunc( $f->start, $f->end );
-        $s = $s->revcom if $f->strand < 0;
-        $s = $s->trunc( $f->phase + 1, $s->length );
+        if( my $p = $f->phase ) {
+            if( $f->strand < 0 ) {
+                $s->subseq( 1, $s->length - $p );
+            } else {
+                $s->subseq( $p+1, $s->length );
+            }
+        } else {
+            $s->seq
+        }
     } @cds;
 
     my $seq = Bio::PrimarySeq->new(
         -id => ($feature->get_tag_values('Name'))[0],
-        -seq => join( '', map $_->seq, @nuc_seqs ),
+        -seq => join( '', @nuc_seqs ),
       );
 
-    $seq = $seq->translate;
+    $seq = $seq->revcom if $feature->strand < 0;
 
-    return $seq;
+    return $seq->translate;
 }
 
 __END__
