@@ -45,16 +45,14 @@ while( my @toplevel_features = $gff3_in->next_feature_group ) {
 
             for my $mrna ( @mrnas ) {
                 my $ref_seq = _fetch( $mrna->seq_id );
-                $seq_out->write_seq(
-                    $output_type eq 'protein'
-                        ? protein_seq( $mrna, $ref_seq )
-                        : splice_feature_seqs( $mrna, $ref_seq, $output_type )
-                  );
+                my $feature_type = $output_type eq 'protein' ? 'CDS' : $output_type;
+                my $seq = splice_feature_seqs( $mrna, $ref_seq, $feature_type );
+                $seq = $seq->translate if $output_type eq 'protein';
+                $seq_out->write_seq( $seq );
             }
         }
     }
 }
-
 
 sub _fetch {
     my $id = shift;
@@ -82,35 +80,6 @@ sub splice_feature_seqs {
     return $seq;
 }
 
-sub protein_seq {
-    my ( $feature, $ref_seq ) = @_;
-
-    my @cds = grep $_->primary_tag eq 'CDS', $feature->get_SeqFeatures
-        or die "no CDS subfeatures for ".($feature->get_tag_values('Name'))[0];
-
-    my @nuc_seqs = map {
-        my $f = $_;
-        my $s = $ref_seq->trunc( $f->start, $f->end );
-        if( my $p = $f->phase ) {
-            if( $f->strand < 0 ) {
-                $s->subseq( 1, $s->length - $p );
-            } else {
-                $s->subseq( $p+1, $s->length );
-            }
-        } else {
-            $s->seq
-        }
-    } @cds;
-
-    my $seq = Bio::PrimarySeq->new(
-        -id => ($feature->get_tag_values('Name'))[0],
-        -seq => join( '', @nuc_seqs ),
-      );
-
-    $seq = $seq->revcom if $feature->strand < 0;
-
-    return $seq->translate;
-}
 
 __END__
 
