@@ -8,7 +8,6 @@ use Getopt::Std;
 use Pod::Usage;
 
 use Bio::FeatureIO;
-use Bio::Index::Fasta;
 use Bio::SeqIO;
 use Bio::PrimarySeq;
 
@@ -28,7 +27,7 @@ my $seq_out = Bio::SeqIO->new(
   );
 
 my $tempfile = File::Temp->new;
-my $seq_index = Bio::Index::Fasta->new(
+my $seq_index = my_seq_index->new(
     -filename   => "$tempfile",
     -write_flag => 1 );
 $seq_index->make_index( $ARGV[1] );
@@ -72,14 +71,37 @@ sub splice_feature_seqs {
     my @sub = grep $_->primary_tag eq $subfeature_type, $feature->get_SeqFeatures
         or die "no $subfeature_type subfeatures for ".($feature->get_tag_values('Name'))[0];
 
+    my $id = $feature->has_tag('Name') ? ($feature->get_tag_values('Name'))[0] : $feature->primary_id;
+    $id =~ s/^[^:]+://;
+
     my $seq = Bio::PrimarySeq->new(
-        -id => ($feature->get_tag_values('Name'))[0],
+        -id  => $id,
         -seq => join( '', map $ref_seq->subseq( $_->start, $_->end ), @sub ),
       );
     $seq = $seq->revcom if $feature->strand < 0;
     return $seq;
 }
 
+BEGIN {
+    package my_seq_index;
+    use base 'Bio::Index::Fasta';
+
+    sub _get_SeqIO_object {
+        my( $self, $i ) = @_;
+
+        unless ($self->{'_seqio_cache'}[$i]) {
+            my $fh = $self->_file_handle($i);
+            # make a new SeqIO object
+            my $seqio = Bio::SeqIO->new(
+                -format => $self->_file_format,
+                -fh     => $fh,
+                -seqfactory => Bio::Seq::SeqFactory->new( -type => 'Bio::Seq::LargePrimarySeq' ),
+              );
+            $self->{'_seqio_cache'}[$i] = $seqio;
+        }
+        return $self->{'_seqio_cache'}[$i];
+    }
+}
 
 __END__
 
