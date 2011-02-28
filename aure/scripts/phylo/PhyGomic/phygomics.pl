@@ -815,7 +815,7 @@ if ($phytopo_count > 0) {
 
     ## Create the R base object
 
-    my $rbase = YapRI::Base->new();
+    my $rbase = R::YapRI::Base->new();
 
     ## Create the PhyGeStat object.
 
