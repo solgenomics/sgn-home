@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 57;
+use Test::More tests => 60;
 use Test::Exception;
 
 use FindBin;
@@ -447,9 +447,23 @@ throws_ok { PhyGeAnnot::parse_blast_file($bl, $wrong_args) } qr/ERROR: Defline/,
     'TESTING DIE ERROR when defline file supplied to parse_blast_file is 0';
 
 
+## load_blast_file, TEST 58 TO 60
 
+$phannot0->set_gene_annot({});
 
+$phannot0->load_blast_file($annotfile, \%parse_bl_args);
 
+my %gene_annot3 = %{$phannot0->get_gene_annot()};
+
+is(scalar(keys %gene_annot3), 107,
+    "Testing load_gene_file, checking number of annotations")
+    or diag("Looks like this has failed");
+
+throws_ok { $phannot0->load_blast_file() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to load_gene_file function';
+
+throws_ok { $phannot0->load_blast_file('A', 'B') } qr/ERROR: B for load/, 
+    'TESTING DIE ERROR when no arg. href supplied to load_go_file isnt HREF.';
 
 
 
