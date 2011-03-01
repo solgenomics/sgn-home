@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 48;
+use Test::More tests => 57;
 use Test::Exception;
 
 use FindBin;
@@ -79,7 +79,8 @@ my $strainfile = "$FindBin::Bin/testfiles/strains.test.tab";
 my $acefile = "$FindBin::Bin/testfiles/assembly_out.test.ace";
 my $blastdbfile = "$FindBin::Bin/testfiles/blastref.test.fasta";
 my $gofile = "$FindBin::Bin/testfiles/go.test.tab";
-
+my $annotfile = "$FindBin::Bin/testfiles/seq.annot.blastx.ath.m8";
+my $deflinefile = "$FindBin::Bin/testfiles/defline.test.tab";
 
 ## 1) PhyGeCluster:
 ## It will create two phygecluster for two methods to be able to compare them
@@ -346,11 +347,11 @@ foreach my $memb (keys %{$go_href}) {
     $gocount += scalar(keys %{$go_href->{$memb}});
 }
 
-is(scalar(keys %{$go_href}), 39, 
+is(scalar(keys %{$go_href}), 63, 
    "Testing parse_go_file, checking number of members")
    or diag("Looks like this has failed");
 
-is($gocount, 40, 
+is($gocount, 134, 
    "Testing parse_go_file, checking number of GO terms")
    or diag("Looks like this has failed");
 
@@ -371,7 +372,7 @@ $phannot0->load_go_file($gofile);
 
 my %go_annot3 = %{$phannot0->get_go_annot()};
 
-is(scalar(keys %go_annot3), 39,
+is(scalar(keys %go_annot3), 63,
     "Testing load_go_file, checking number of annotations")
     or diag("Looks like this has failed");
 
@@ -380,6 +381,78 @@ throws_ok { $phannot0->load_go_file() } qr/ARG. ERROR: No arg./,
 
 throws_ok { $phannot0->load_go_file('A', 'B') } qr/ERROR: B for load/, 
     'TESTING DIE ERROR when no arg. href supplied to load_go_file isnt HREF.';
+
+
+## parse_blast_file, TEST 49 to 57
+
+
+my %parse_bl_args = ( 
+    blastdb       => 'ath',
+    defline       => $deflinefile,
+    );
+
+my $blast_href = PhyGeAnnot::parse_blast_file( $annotfile, \%parse_bl_args );
+
+my %blannot = %{$blast_href};
+
+is(scalar(keys %blannot), 107, 
+    "Testing parse_blast_file, checking number of annotations")
+    or diag("Looks like this has failed");
+
+my $right_bldb = 0;
+my $right_params = 0;
+
+foreach my $id (keys %blannot) {
+    my %dbs = %{$blannot{$id}};
+    foreach my $bldb (keys %dbs) {
+	if ($bldb eq 'ath') {
+	    $right_bldb++;
+	}
+
+	my %bldata = %{$dbs{$bldb}};
+	my $test = join(',', keys %bldata);
+	if (scalar(keys %bldata) == 13) {
+	    $right_params++;
+	}
+    }
+}
+
+is($right_bldb, 107, 
+    "Testing parse_blast_file, checking number of right blastdb names")
+    or diag("Looks like this has failed");
+
+is($right_params, 107, 
+    "Testing parse_blast_file, checking number of right blast parameters")
+    or diag("Looks like this has failed");
+
+throws_ok { PhyGeAnnot::parse_blast_file() } qr/ARG. ERROR: No arg./, 
+    'TESTING DIE ERROR when no arg. was supplied to parse_blast_file function';
+
+throws_ok { PhyGeAnnot::parse_blast_file('A') } qr/ARG. ERROR: Blast result/, 
+    'TESTING DIE ERROR when blast result was supplied to parse_blast_file is 0';
+
+my $bl = $annotfile;
+
+throws_ok { PhyGeAnnot::parse_blast_file($bl, 'B') } qr/ERROR: B for parse/, 
+    'TESTING DIE ERROR when arg. href supplied to parse_blast_file isnt HREF.';
+
+throws_ok { PhyGeAnnot::parse_blast_file($bl, {}) } qr/ERROR: No blastdb/, 
+    'TESTING DIE ERROR when no blastdb supplied to parse_blast_file';
+
+throws_ok { PhyGeAnnot::parse_blast_file($bl,{blastdb =>'A'})} qr/ERROR: No de/,
+    'TESTING DIE ERROR when no defline supplied to parse_blast_file';
+
+my $wrong_args = {blastdb => 'A', defline => 'fake' };
+throws_ok { PhyGeAnnot::parse_blast_file($bl, $wrong_args) } qr/ERROR: Defline/,
+    'TESTING DIE ERROR when defline file supplied to parse_blast_file is 0';
+
+
+
+
+
+
+
+
 
 
 

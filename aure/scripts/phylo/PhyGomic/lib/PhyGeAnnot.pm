@@ -464,7 +464,164 @@ sub load_go_file {
     }
 }
 
+=head2 parse_blast_file
 
+  Usage: my $blast_href = parse_blast_file($blastresult, $args_href);
+
+  Desc: Parse blast file result.
+
+  Ret: $blast_href, a hash reference with: key=member_id and value=hashref. 
+       with key=database and value hashref. with blast results.
+
+  Args: $filename, filename with goterms to parse
+        $args_href, hash ref. with args. For now valid keys are:
+         blastdb       => name of the database used for the blast.
+         defline       => defline file with <ID><tab><description>
+         report_status => 1
+
+  Side_Effects: Die if no argument is supplied.
+                It always will get the best match.
+                Use fastacmd over the db to retrieve the description for
+                the better match.
+
+  Example: my $blast_href = parse_blast_file( $filename, 
+                                              { report_status => 1,
+                                                blastdb       => 'swissprot',
+                                                defline       => $file
+					      });
+
+=cut
+
+sub parse_blast_file {
+    my $filename = shift ||
+	croak("ARG. ERROR: No arg. was used for parse_blast_file function");
+    my $arghref = shift;
+ 
+    unless (defined -s $filename) {
+	croak("ARG. ERROR: Blast result file doesnt exists or has zero size.");
+    }
+
+    if (defined $arghref && ref($arghref) ne 'HASH') {
+	croak("ERROR: $arghref for parse_blast_file() isnt hashref.");
+    }
+
+    ## Check that exists defline and blastdb
+
+    my $blastdb = $arghref->{blastdb} ||
+	croak("ARG. ERROR: No blastdb arg. was supplied to parse_blast_file");
+
+    my $defline = $arghref->{defline} ||
+	croak("ARG. ERROR: No defline arg. was supplied to parse_blast_file");
+
+    unless (defined -s $defline) {
+	croak("ARG. ERROR: Defline file doesnt exists or has zero size.");
+    }
+
+    my %blast = ();
+    
+    ## To report status
+
+    my $L = `cut -f1 $filename | wc -l`;
+    chomp($L);
+    my $l = 0;
+
+    my $rep_st = $arghref->{report_status} || 0;
+
+
+    ## Open the file and get the descriptions
+
+    open my $blfh, '<', $filename;
+    while (<$blfh>) {
+	$l++;
+	chomp($_);
+    
+	my @fields = ('query_id', 'subject_id', 'percentage_identity',
+		      'alignment_length', 'mismatches', 'gap_openings',
+		      'q.start', 'q.end', 's.start', 's.end', 'e-value', 
+		      'bit_score');
+
+	my @data = split(/\t/, $_);
+
+	my $i = 0;
+	unless (exists $blast{$data[0]}) {
+	    my %data = ();
+	    foreach my $data (@data) {
+		$data{$fields[$i]} = $data;
+		$i++;
+	    }
+	    $blast{$data[0]} = { $blastdb => \%data };
+
+	    ## Get the description from defline
+
+	    my $syscmd = "grep '$data[1]' $defline";
+	    my $descr = `$syscmd`;
+
+	    if (defined $descr) {
+		
+		chomp($descr);
+		$descr =~ s/^>//;
+		if( $descr =~ m/^.+$data[1]\s(.+)$/) {
+		    my @descrs = split(/>/, $1);
+		    $blast{$data[0]}->{$blastdb}->{description} = $descrs[0];
+		}
+		else {
+		    $blast{$data[0]}->{$blastdb}->{description} = '';
+		}
+	    }
+	    else {
+		$blast{$data[0]}->{$blastdb}->{description} = '';
+	    }
+	}
+
+	if ($rep_st =~ m/^(1|Y)/i ) {
+	    PhyGeCluster::print_parsing_status($l, $L, 
+					       "Percentage of go file parsed:");
+	}
+    }
+
+
+    return \%blast;    
+}
+
+=head2 load_blast_file
+
+  Usage: $phygeannot->load_blast_file($filename, $args_href);
+
+  Desc: Load a parsed blast file into the phygeannot. object.
+
+  Ret: None
+
+  Args: $filename, filename with goterms to parse
+        $args_href, hash ref. with args. For now valid keys are:
+         blastdb       => name of the database used for the blast.
+         defline       => defline file with <ID><tab><description>
+         report_status => 1
+
+  Side_Effects: Die if no argument is supplied or they are wrong.
+
+  Example: $phygeannot->load_blast_file($filename, $args_href);
+
+=cut
+
+sub load_blast_file {
+    my $self = shift;
+    my $filename = shift ||
+	croak("ARG. ERROR: No arg. was used for load_blast_file function");
+    my $arghref = shift;
+    
+    if (defined $arghref && ref($arghref) ne 'HASH') {
+	croak("ERROR: $arghref for load_blast_file() isnt hashref.");
+    }
+
+    my %blast = %{parse_blast_file($filename, $arghref)};
+
+    foreach my $member (sort keys %blast) {
+	my %bldbs = %{$blast{$member}};
+	foreach my $db (keys %bldbs) {
+	    $self->add_gene_annot($member, $db, $bldbs{$db});
+	}
+    }
+}
 
 
 

@@ -1,0 +1,1125 @@
+>gnl|BL_ORD_ID|10101 AT2G47500.1 | Symbols:  | ATP binding / microtubule motor | chr2:19493247-19497882 FORWARD
+>gnl|BL_ORD_ID|10107 AT2G41970.1 | Symbols:  | protein kinase, putative | chr2:17520517-17522304 REVERSE
+>gnl|BL_ORD_ID|10176 AT2G46050.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:18939262-18941034 FORWARD
+>gnl|BL_ORD_ID|10188 AT2G33170.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr2:14056371-14059829 REVERSE
+>gnl|BL_ORD_ID|10206 AT2G25580.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: 21 plant structures; EXPRESSED DURING: 12 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT4G32450.1); Has 7881 Blast hits to 3723 proteins in 97 species: Archae - 0; Bacteria - 6; Metazoa - 6; Fungi - 16; Plants - 7829; Viruses - 0; Other Eukaryotes - 24 (source: NCBI BLink). | chr2:10888102-10889949 FORWARD
+>gnl|BL_ORD_ID|10369 AT2G45810.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr2:18859836-18862318 FORWARD
+>gnl|BL_ORD_ID|10387 AT2G40750.1 | Symbols: WRKY54, ATWRKY54 | WRKY54; transcription factor | chr2:17000636-17002354 REVERSE
+>gnl|BL_ORD_ID|10393 AT2G19130.1 | Symbols:  | S-locus lectin protein kinase family protein | chr2:8293789-8296275 FORWARD
+>gnl|BL_ORD_ID|10436 AT2G23200.1 | Symbols:  | protein kinase family protein | chr2:9879351-9881855 FORWARD
+>gnl|BL_ORD_ID|10455 AT2G40720.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:16987269-16989851 FORWARD
+>gnl|BL_ORD_ID|10459 AT2G18940.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:8203873-8206341 REVERSE
+>gnl|BL_ORD_ID|10462 AT2G37460.1 | Symbols:  | nodulin MtN21 family protein | chr2:15726667-15729010 REVERSE
+>gnl|BL_ORD_ID|10477 AT2G37450.1 | Symbols:  | nodulin MtN21 family protein | chr2:15722828-15724851 REVERSE
+>gnl|BL_ORD_ID|10489 AT2G19190.1 | Symbols: FRK1 | FRK1 (FLG22-INDUCED RECEPTOR-LIKE KINASE 1); kinase | chr2:8326067-8329893 REVERSE
+>gnl|BL_ORD_ID|10501 AT2G02220.1 | Symbols: ATPSKR1, PSKR1 | PSKR1 (PHYTOSULFOKIN RECEPTOR 1); ATP binding / peptide receptor/ protein serine/threonine kinase | chr2:584098-587124 REVERSE
+>gnl|BL_ORD_ID|10508 AT2G04860.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:1706787-1708535 REVERSE
+>gnl|BL_ORD_ID|10516 AT2G25220.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr2:10742918-10745540 REVERSE
+>gnl|BL_ORD_ID|10520 AT2G18470.1 | Symbols:  | protein kinase family protein | chr2:8005285-8007767 REVERSE
+>gnl|BL_ORD_ID|10525 AT2G40830.2 | Symbols: RHC1A | RHC1A; protein binding / zinc ion binding | chr2:17043642-17044628 FORWARD
+>gnl|BL_ORD_ID|10533 AT2G30730.1 | Symbols:  | serine/threonine protein kinase, putative | chr2:13093145-13094677 FORWARD
+>gnl|BL_ORD_ID|10551 AT2G30740.1 | Symbols:  | serine/threonine protein kinase, putative | chr2:13096399-13098285 FORWARD
+>gnl|BL_ORD_ID|10557 AT2G19210.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:8335639-8339307 REVERSE
+>gnl|BL_ORD_ID|1060 AT1G16120.1 | Symbols: WAKL1 | WAKL1 (wall associated kinase-like 1); kinase | chr1:5522639-5524983 FORWARD
+>gnl|BL_ORD_ID|10643 AT2G47330.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr2:19429083-19431617 REVERSE
+>gnl|BL_ORD_ID|10657 AT2G23950.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr2:10187204-10189969 REVERSE
+>gnl|BL_ORD_ID|10671 AT2G37420.1 | Symbols:  | kinesin motor protein-related | chr2:15700550-15705165 FORWARD
+>gnl|BL_ORD_ID|10687 AT2G30860.1 | Symbols: ATGSTF9, GLUTTR, ATGSTF7 | ATGSTF9 (GLUTATHIONE S-TRANSFERASE PHI 9); copper ion binding / glutathione binding / glutathione peroxidase/ glutathione transferase | chr2:13139132-13140057 FORWARD
+>gnl|BL_ORD_ID|10699 AT2G30870.1 | Symbols: ATGSTF10, ERD13, ATGSTF4, GSTF10 | GSTF10 (HALIANA GLUTATHIONE S-TRANSFERASE PHI 10); copper ion binding / glutathione binding / glutathione transferase | chr2:13141490-13142392 FORWARD
+>gnl|BL_ORD_ID|10707 AT2G47730.1 | Symbols: ATGSTF8, ATGSTF5, GST6, GSTF8 | ATGSTF8 (ARABIDOPSIS THALIANA GLUTATHIONE S-TRANSFERASE PHI 8); glutathione binding / glutathione transferase | chr2:19558213-19559266 FORWARD
+>gnl|BL_ORD_ID|1080 AT1G09170.1 | Symbols:  | kinesin motor protein-related | chr1:2956589-2962207 REVERSE
+>gnl|BL_ORD_ID|10857 AT2G40700.1 | Symbols:  | DEAD/DEAH box helicase, putative (RH17) | chr2:16976783-16979392 FORWARD
+>gnl|BL_ORD_ID|10897 AT2G21300.1 | Symbols:  | kinesin motor family protein | chr2:9114396-9118292 REVERSE
+>gnl|BL_ORD_ID|1091 AT1G44800.1 | Symbols:  | nodulin MtN21 family protein | chr1:16914342-16916858 REVERSE
+>gnl|BL_ORD_ID|10981 AT2G39360.1 | Symbols:  | protein kinase family protein | chr2:16437592-16440039 REVERSE
+>gnl|BL_ORD_ID|10988 AT2G34430.1 | Symbols: LHB1B1, LHCB1.4 | LHB1B1; chlorophyll binding | chr2:14524818-14525618 FORWARD
+>gnl|BL_ORD_ID|10989 AT2G39640.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:16525171-16527012 REVERSE
+>gnl|BL_ORD_ID|11020 AT2G32800.1 | Symbols: AP4.3A | AP4.3A; ATP binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr2:13916478-13919033 FORWARD
+>gnl|BL_ORD_ID|11061 AT2G01510.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:230752-232506 REVERSE
+>gnl|BL_ORD_ID|11064 AT2G34400.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:14516238-14518186 FORWARD
+>gnl|BL_ORD_ID|11075 AT2G34370.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:14510482-14511891 FORWARD
+>gnl|BL_ORD_ID|11086 AT2G14835.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr2:6367238-6370610 FORWARD
+>gnl|BL_ORD_ID|11094 AT2G02980.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:868468-870279 FORWARD
+>gnl|BL_ORD_ID|11136 AT2G07750.1 | Symbols:  | DEAD box RNA helicase, putative | chr2:3576483-3580396 FORWARD
+>gnl|BL_ORD_ID|11168 AT2G28620.1 | Symbols:  | kinesin motor protein-related | chr2:12265167-12270020 REVERSE
+>gnl|BL_ORD_ID|11195 AT2G04300.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:1493009-1496914 FORWARD
+>gnl|BL_ORD_ID|11226 AT2G37050.1 | Symbols:  | kinase | chr2:15569290-15573477 FORWARD
+>gnl|BL_ORD_ID|11261 AT2G27610.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:11783927-11786533 REVERSE
+>gnl|BL_ORD_ID|11266 AT2G31400.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:13387201-13390550 REVERSE
+>gnl|BL_ORD_ID|11272 AT2G29960.1 | Symbols: CYP5, ATCYP5, CYP19-4 | CYP5 (CYCLOPHILIN 5); peptidyl-prolyl cis-trans isomerase | chr2:12769183-12770528 REVERSE
+>gnl|BL_ORD_ID|11278 AT2G05790.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:2199450-2201293 FORWARD
+>gnl|BL_ORD_ID|11279 AT2G35620.1 | Symbols: FEI2 | FEI2 (FEI 2); kinase | chr2:14961187-14964640 REVERSE
+>gnl|BL_ORD_ID|11342 AT2G33760.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:14275800-14277551 FORWARD
+>gnl|BL_ORD_ID|11356 AT2G01630.1 | Symbols:  | glycosyl hydrolase family 17 protein / beta-1,3-glucanase, putative | chr2:279541-281955 REVERSE
+>gnl|BL_ORD_ID|11445 AT2G27500.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:11752364-11753844 REVERSE
+>gnl|BL_ORD_ID|11465 AT2G03880.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:1181560-1183452 FORWARD
+>gnl|BL_ORD_ID|11509 AT2G11520.1 | Symbols: CRCK3 | CRCK3; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr2:4619145-4621448 FORWARD
+>gnl|BL_ORD_ID|11554 AT2G36730.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:15405068-15406573 REVERSE
+>gnl|BL_ORD_ID|1156 AT1G29710.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:10387673-10389100 FORWARD
+>gnl|BL_ORD_ID|11590 AT2G29760.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:12712884-12715100 FORWARD
+>gnl|BL_ORD_ID|11724 AT2G39660.1 | Symbols: BIK1 | BIK1 (BOTRYTIS-INDUCED KINASE1); kinase | chr2:16531943-16533601 FORWARD
+>gnl|BL_ORD_ID|11739 AT2G20540.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:8844160-8845764 FORWARD
+>gnl|BL_ORD_ID|11783 AT2G02930.1 | Symbols: ATGSTF3, GST16 | ATGSTF3 (GLUTATHIONE S-TRANSFERASE F3); glutathione transferase | chr2:851348-852106 REVERSE
+>gnl|BL_ORD_ID|11785 AT2G33730.1 | Symbols:  | DEAD box RNA helicase, putative | chr2:14265679-14267880 REVERSE
+>gnl|BL_ORD_ID|1179 AT1G63640.1 | Symbols:  | kinesin motor protein-related | chr1:23589234-23595139 REVERSE
+>gnl|BL_ORD_ID|11849 AT2G28960.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:12438058-12442347 REVERSE
+>gnl|BL_ORD_ID|11857 AT2G17220.1 | Symbols:  | protein kinase, putative | chr2:7487866-7489768 REVERSE
+>gnl|BL_ORD_ID|11881 AT2G01820.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:357664-360681 REVERSE
+>gnl|BL_ORD_ID|11939 AT2G33680.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:14249608-14251791 FORWARD
+>gnl|BL_ORD_ID|11956 AT2G28970.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:12443919-12448163 FORWARD
+>gnl|BL_ORD_ID|1202 AT1G11460.1 | Symbols:  | nodulin MtN21 family protein | chr1:3857005-3859268 FORWARD
+>gnl|BL_ORD_ID|12034 AT2G36200.1 | Symbols:  | kinesin motor protein-related | chr2:15179739-15185189 REVERSE
+>gnl|BL_ORD_ID|1206 AT1G60800.1 | Symbols: NIK3 | NIK3 (NSP-INTERACTING KINASE 3); kinase | chr1:22383601-22386931 REVERSE
+>gnl|BL_ORD_ID|12084 AT2G39720.1 | Symbols: RHC2A | RHC2A; protein binding / zinc ion binding | chr2:16567506-16568711 REVERSE
+>gnl|BL_ORD_ID|12096 AT2G22610.1 | Symbols:  | kinesin motor protein-related | chr2:9599550-9604626 FORWARD
+>gnl|BL_ORD_ID|12132 AT2G17210.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:7485398-7487602 REVERSE
+>gnl|BL_ORD_ID|12170 AT2G29000.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr2:12460781-12465037 FORWARD
+>gnl|BL_ORD_ID|12176 AT2G42920.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:17858705-17860384 FORWARD
+>gnl|BL_ORD_ID|12220 AT2G14510.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:6171133-6175052 REVERSE
+>gnl|BL_ORD_ID|12228 AT2G07180.1 | Symbols:  | protein kinase, putative | chr2:2981082-2983271 REVERSE
+>gnl|BL_ORD_ID|12232 AT2G14440.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:6143073-6147419 FORWARD
+>gnl|BL_ORD_ID|12245 AT2G28990.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr2:12455055-12459541 FORWARD
+>gnl|BL_ORD_ID|12248 AT2G36980.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:15531161-15533038 FORWARD
+>gnl|BL_ORD_ID|12258 AT2G34930.1 | Symbols:  | disease resistance family protein | chr2:14737169-14739886 REVERSE
+>gnl|BL_ORD_ID|12277 AT2G42960.1 | Symbols:  | protein kinase family protein | chr2:17868597-17870630 REVERSE
+>gnl|BL_ORD_ID|12294 AT2G35030.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:14761080-14762963 REVERSE
+>gnl|BL_ORD_ID|12299 AT2G27830.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; EXPRESSED IN: 22 plant structures; EXPRESSED DURING: 13 growth stages; BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT4G22760.1); Has 68 Blast hits to 68 proteins in 11 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 68; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr2:11860734-11861306 FORWARD
+>gnl|BL_ORD_ID|1234 AT1G11450.1 | Symbols:  | nodulin MtN21 family protein | chr1:3854005-3855259 FORWARD
+>gnl|BL_ORD_ID|12386 AT2G28930.1 | Symbols: APK1B | APK1B; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr2:12424957-12426565 FORWARD
+>gnl|BL_ORD_ID|12392 AT2G21480.1 | Symbols:  | protein kinase family protein | chr2:9202753-9205368 REVERSE
+>gnl|BL_ORD_ID|1239 AT1G34420.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:12584587-12587570 FORWARD
+>gnl|BL_ORD_ID|12470 AT2G05940.1 | Symbols:  | protein kinase, putative | chr2:2287514-2289270 REVERSE
+>gnl|BL_ORD_ID|12513 AT2G28940.1 | Symbols:  | protein kinase family protein | chr2:12426853-12428314 REVERSE
+>gnl|BL_ORD_ID|1253 AT1G11410.1 | Symbols:  | S-locus protein kinase, putative | chr1:3841286-3844284 FORWARD
+>gnl|BL_ORD_ID|12579 AT2G28590.1 | Symbols:  | protein kinase family protein | chr2:12249835-12251490 FORWARD
+>gnl|BL_ORD_ID|12603 AT2G39620.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:16518968-16521478 REVERSE
+>gnl|BL_ORD_ID|12626 AT2G20110.1 | Symbols:  | tesmin/TSO1-like CXC domain-containing protein | chr2:8684496-8686870 FORWARD
+>gnl|BL_ORD_ID|12634 AT2G34420.1 | Symbols: LHB1B2, LHCB1.5 | LHB1B2; chlorophyll binding | chr2:14522716-14523513 REVERSE
+>gnl|BL_ORD_ID|12703 AT2G40830.1 | Symbols: RHC1A | RHC1A; protein binding / zinc ion binding | chr2:17043642-17044628 FORWARD
+>gnl|BL_ORD_ID|12715 AT2G27500.2 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:11752615-11753844 REVERSE
+>gnl|BL_ORD_ID|12716 AT2G40830.3 | Symbols: RHC1A | RHC1A; protein binding / zinc ion binding | chr2:17043642-17044628 FORWARD
+>gnl|BL_ORD_ID|12796 AT2G28940.2 | Symbols:  | protein kinase family protein | chr2:12426853-12428678 REVERSE
+>gnl|BL_ORD_ID|12803 AT2G38280.2 | Symbols: FAC1, ATAMPD | FAC1 (EMBRYONIC FACTOR1); AMP deaminase | chr2:16033767-16038793 REVERSE
+>gnl|BL_ORD_ID|12893 AT2G17220.2 | Symbols:  | protein kinase, putative | chr2:7487866-7489768 REVERSE
+>gnl|BL_ORD_ID|12902 AT2G14835.2 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr2:6367238-6370610 FORWARD
+>gnl|BL_ORD_ID|12937 AT2G47060.2 | Symbols:  | serine/threonine protein kinase, putative | chr2:19333116-19334759 REVERSE
+>gnl|BL_ORD_ID|12979 AT2G02800.2 | Symbols: APK2B | APK2B (PROTEIN KINASE 2B); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr2:796889-799250 REVERSE
+>gnl|BL_ORD_ID|12988 AT2G26600.2 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:11317214-11318215 FORWARD
+>gnl|BL_ORD_ID|1303 AT1G11300.1 | Symbols:  | ATP binding / carbohydrate binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase/ sugar binding | chr1:3794389-3800719 FORWARD
+>gnl|BL_ORD_ID|1320 AT1G62670.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:23204773-23206665 REVERSE
+>gnl|BL_ORD_ID|13211 AT2G27500.3 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:11752364-11753514 REVERSE
+>gnl|BL_ORD_ID|13214 AT2G28250.2 | Symbols: NCRK | NCRK; kinase | chr2:12044004-12046339 FORWARD
+>gnl|BL_ORD_ID|13216 AT2G28930.2 | Symbols: APK1B | APK1B; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr2:12424551-12426565 FORWARD
+>gnl|BL_ORD_ID|1321 AT1G11290.1 | Symbols: CRR22 | CRR22 (CHLORORESPIRATORY REDUCTION22); endonuclease | chr1:3791454-3793883 REVERSE
+>gnl|BL_ORD_ID|13304 AT2G21300.2 | Symbols:  | kinesin motor family protein | chr2:9114396-9118292 REVERSE
+>gnl|BL_ORD_ID|13320 AT2G28930.3 | Symbols: APK1B | APK1B; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr2:12424551-12426565 FORWARD
+>gnl|BL_ORD_ID|13344 AT2G37050.3 | Symbols:  | kinase | chr2:15569290-15573477 FORWARD
+>gnl|BL_ORD_ID|13361 AT2G47060.3 | Symbols:  | serine/threonine protein kinase, putative | chr2:19333116-19334393 REVERSE
+>gnl|BL_ORD_ID|13362 AT2G47060.4 | Symbols:  | serine/threonine protein kinase, putative | chr2:19333116-19334759 REVERSE
+>gnl|BL_ORD_ID|13448 AT2G29960.2 | Symbols: CYP5, ATCYP5, CYP19-4 | CYP5 (CYCLOPHILIN 5); peptidyl-prolyl cis-trans isomerase | chr2:12769183-12770528 REVERSE
+>gnl|BL_ORD_ID|13453 AT2G30860.2 | Symbols: ATGSTF9, GLUTTR, ATGSTF7 | ATGSTF9 (GLUTATHIONE S-TRANSFERASE PHI 9); glutathione peroxidase/ glutathione transferase | chr2:13139132-13140079 FORWARD
+>gnl|BL_ORD_ID|13472 AT2G37450.2 | Symbols:  | nodulin MtN21 family protein | chr2:15722828-15724851 REVERSE
+>gnl|BL_ORD_ID|1348 AT1G62680.1 | Symbols:  | LOCATED IN: chloroplast; EXPRESSED IN: shoot apex, leaf whorl, flower, seed; EXPRESSED DURING: F mature embryo stage, petal differentiation and expansion stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT1G63130.1); Has 26421 Blast hits to 6237 proteins in 192 species: Archae - 5; Bacteria - 22; Metazoa - 845; Fungi - 755; Plants - 23373; Viruses - 0; Other Eukaryotes - 1421 (source: NCBI BLink). | chr1:23208247-23209893 REVERSE
+>gnl|BL_ORD_ID|13525 AT2G01630.2 | Symbols:  | glycosyl hydrolase family 17 protein / beta-1,3-glucanase, putative | chr2:279564-281955 REVERSE
+>gnl|BL_ORD_ID|13550 AT2G16600.2 | Symbols: ROC3 | ROC3; peptidyl-prolyl cis-trans isomerase | chr2:7200862-7201383 FORWARD
+>gnl|BL_ORD_ID|1359 AT1G56570.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:21195804-21197721 FORWARD
+>gnl|BL_ORD_ID|1367 AT1G29740.1 | Symbols:  | kinase | chr1:10407379-10412997 REVERSE
+>gnl|BL_ORD_ID|1373 AT1G26970.1 | Symbols:  | protein kinase, putative | chr1:9359826-9361666 FORWARD
+>gnl|BL_ORD_ID|1392 AT1G29730.1 | Symbols:  | ATP binding / kinase/ protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:10400710-10405874 REVERSE
+>gnl|BL_ORD_ID|13987 AT3G51740.1 | Symbols: IMK2 | IMK2 (INFLORESCENCE MERISTEM RECEPTOR-LIKE KINASE 2); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr3:19189248-19191842 FORWARD
+>gnl|BL_ORD_ID|13992 AT3G06980.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr3:2201531-2204662 FORWARD
+>gnl|BL_ORD_ID|139 AT1G49730.1 | Symbols:  | protein kinase family protein | chr1:18402618-18405638 REVERSE
+>gnl|BL_ORD_ID|14018 AT3G43210.1 | Symbols: TES, ATNACK2, NACK2 | TES (TETRASPORE); microtubule motor | chr3:15191429-15196021 FORWARD
+>gnl|BL_ORD_ID|14020 AT3G04750.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:1301391-1303376 REVERSE
+>gnl|BL_ORD_ID|14054 AT3G10700.1 | Symbols:  | GHMP kinase family protein | chr3:3346789-3350863 REVERSE
+>gnl|BL_ORD_ID|14069 AT3G14330.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:4779688-4782451 REVERSE
+>gnl|BL_ORD_ID|14095 AT3G20530.1 | Symbols:  | protein kinase family protein | chr3:7166318-7167806 FORWARD
+>gnl|BL_ORD_ID|14105 AT3G55430.1 | Symbols:  | glycosyl hydrolase family 17 protein / beta-1,3-glucanase, putative | chr3:20549806-20552004 REVERSE
+>gnl|BL_ORD_ID|14161 AT3G49740.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:18447788-18450001 FORWARD
+>gnl|BL_ORD_ID|14189 AT3G13065.1 | Symbols: SRF4 | SRF4 (STRUBBELIG-RECEPTOR FAMILY 4); ATP binding / kinase/ protein serine/threonine kinase | chr3:4187510-4190863 FORWARD
+>gnl|BL_ORD_ID|14194 AT3G49710.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:18437845-18440010 FORWARD
+>gnl|BL_ORD_ID|14212 AT3G07320.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:2332324-2333925 REVERSE
+>gnl|BL_ORD_ID|14234 AT3G46620.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:17178837-17180024 REVERSE
+>gnl|BL_ORD_ID|14281 AT3G08760.1 | Symbols: ATSIK | ATSIK; ATP binding / kinase/ protein kinase/ protein tyrosine kinase | chr3:2658129-2659984 REVERSE
+>gnl|BL_ORD_ID|1428 AT1G26900.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:9319756-9321474 REVERSE
+>gnl|BL_ORD_ID|14328 AT3G19300.1 | Symbols:  | protein kinase family protein | chr3:6690242-6693210 REVERSE
+>gnl|BL_ORD_ID|14336 AT3G62760.1 | Symbols: ATGSTF13 | ATGSTF13; glutathione transferase | chr3:23217425-23218246 REVERSE
+>gnl|BL_ORD_ID|14356 AT3G56400.1 | Symbols: WRKY70, ATWRKY70 | WRKY70; transcription factor/ transcription repressor | chr3:20909082-20910409 REVERSE
+>gnl|BL_ORD_ID|14362 AT3G49670.1 | Symbols: BAM2 | BAM2 (BARELY ANY MERISTEM 2); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase | chr3:18417741-18420836 FORWARD
+>gnl|BL_ORD_ID|14371 AT3G29230.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:11188803-11190605 FORWARD
+>gnl|BL_ORD_ID|14388 AT3G03580.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:860695-863343 REVERSE
+>gnl|BL_ORD_ID|1438 AT1G59720.1 | Symbols: CRR28 | CRR28 (CHLORORESPIRATORY REDUCTION28); endonuclease | chr1:21939868-21941784 REVERSE
+>gnl|BL_ORD_ID|14398 AT3G49650.1 | Symbols:  | kinesin motor protein-related | chr3:18405260-18409402 REVERSE
+>gnl|BL_ORD_ID|1442 AT1G11350.1 | Symbols: CBRLK1, SD1-13, RKS2 | SD1-13 (S-DOMAIN-1 13); kinase/ protein kinase/ protein serine/threonine kinase | chr1:3817725-3820752 REVERSE
+>gnl|BL_ORD_ID|1445 AT1G11330.1 | Symbols:  | S-locus lectin protein kinase family protein | chr1:3810372-3813416 FORWARD
+>gnl|BL_ORD_ID|1451 AT1G29750.1 | Symbols: RKF1 | RKF1 (RECEPTOR-LIKE KINASE IN FLOWERS 1); ATP binding / kinase/ protein serine/threonine kinase/ receptor signaling protein serine/threonine kinase | chr1:10414071-10419813 REVERSE
+>gnl|BL_ORD_ID|14544 AT3G08820.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:2677122-2679179 REVERSE
+>gnl|BL_ORD_ID|14575 AT3G51550.1 | Symbols: FER | FER (FERONIA); kinase/ protein kinase | chr3:19117877-19120564 REVERSE
+>gnl|BL_ORD_ID|14621 AT3G16030.1 | Symbols: CES101 | CES101 (CALLUS EXPRESSION OF RBCS 101); ATP binding / carbohydrate binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase/ sugar binding | chr3:5439609-5442802 FORWARD
+>gnl|BL_ORD_ID|14633 AT3G09830.1 | Symbols:  | protein kinase, putative | chr3:3017199-3018696 FORWARD
+>gnl|BL_ORD_ID|14636 AT3G02010.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:337965-340442 FORWARD
+>gnl|BL_ORD_ID|14641 AT3G22780.1 | Symbols: TSO1, ATTSO1 | TSO1 (CHINESE FOR 'UGLY'); transcription factor | chr3:8048927-8052058 FORWARD
+>gnl|BL_ORD_ID|14757 AT3G16060.1 | Symbols:  | kinesin motor family protein | chr3:5447503-5451196 FORWARD
+>gnl|BL_ORD_ID|14783 AT3G09620.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr3:2949152-2952205 REVERSE
+>gnl|BL_ORD_ID|1478 AT1G53430.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:19935298-19940959 FORWARD
+>gnl|BL_ORD_ID|14790 AT3G55450.1 | Symbols:  | protein kinase, putative | chr3:20558129-20559963 FORWARD
+>gnl|BL_ORD_ID|14845 AT3G45870.1 | Symbols:  | integral membrane family protein / nodulin MtN21-related | chr3:16867246-16868838 FORWARD
+>gnl|BL_ORD_ID|1484 AT1G63250.1 | Symbols:  | DEAD box RNA helicase, putative | chr1:23463284-23466451 REVERSE
+>gnl|BL_ORD_ID|14860 AT3G15800.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:5345051-5346988 FORWARD
+>gnl|BL_ORD_ID|14897 AT3G09720.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr3:2980483-2983268 REVERSE
+>gnl|BL_ORD_ID|1491 AT1G53420.1 | Symbols:  | serine/threonine protein kinase-related | chr1:19926626-19931494 REVERSE
+>gnl|BL_ORD_ID|14936 AT3G45860.1 | Symbols:  | receptor-like protein kinase, putative | chr3:16863401-16866041 REVERSE
+>gnl|BL_ORD_ID|14979 AT3G16160.1 | Symbols:  | transcription factor | chr3:5473366-5475090 REVERSE
+>gnl|BL_ORD_ID|14996 AT3G25970.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:9500116-9502056 REVERSE
+>gnl|BL_ORD_ID|15009 AT3G24790.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr3:9052996-9054531 FORWARD
+>gnl|BL_ORD_ID|15012 AT3G18200.1 | Symbols:  | nodulin MtN21 family protein | chr3:6234509-6236059 REVERSE
+>gnl|BL_ORD_ID|15050 AT3G20560.1 | Symbols: ATPDIL5-3, PDI12, ATPDI12 | ATPDIL5-3 (PDI-LIKE 5-3); protein disulfide isomerase | chr3:7182182-7186390 FORWARD
+>gnl|BL_ORD_ID|15059 AT3G53840.1 | Symbols:  | protein kinase family protein | chr3:19945571-19947719 FORWARD
+>gnl|BL_ORD_ID|15082 AT3G62890.1 | Symbols:  | binding | chr3:23246168-23247973 FORWARD
+>gnl|BL_ORD_ID|15093 AT3G50420.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:18710871-18713649 REVERSE
+>gnl|BL_ORD_ID|15108 AT3G45850.1 | Symbols:  | kinesin motor protein-related | chr3:16855814-16860950 REVERSE
+>gnl|BL_ORD_ID|15115 AT3G13920.1 | Symbols: EIF4A1, RH4, TIF4A1 | EIF4A1 (EUKARYOTIC TRANSLATION INITIATION FACTOR 4A1); ATP-dependent helicase/ translation initiation factor | chr3:4592635-4594128 REVERSE
+>gnl|BL_ORD_ID|15136 AT3G59700.1 | Symbols: ATHLECRK, LECRK1 | ATHLECRK (ARABIDOPSIS THALIANA LECTIN-RECEPTOR KINASE); kinase | chr3:22052146-22054131 FORWARD
+>gnl|BL_ORD_ID|15137 AT3G46400.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr3:17073196-17077328 FORWARD
+>gnl|BL_ORD_ID|15167 AT3G59750.1 | Symbols:  | receptor lectin kinase, putative | chr3:22069855-22071821 REVERSE
+>gnl|BL_ORD_ID|15169 AT3G59740.1 | Symbols:  | receptor lectin kinase 3 (lecRK3) | chr3:22067079-22069058 REVERSE
+>gnl|BL_ORD_ID|15188 AT3G13380.1 | Symbols: BRL3 | BRL3 (BRI1-LIKE 3); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase | chr3:4347240-4350734 FORWARD
+>gnl|BL_ORD_ID|15194 AT3G53700.1 | Symbols: MEE40 | MEE40 (maternal effect embryo arrest 40) | chr3:19900303-19902567 FORWARD
+>gnl|BL_ORD_ID|15202 AT3G13770.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:4519647-4521533 FORWARD
+>gnl|BL_ORD_ID|15203 AT3G10310.1 | Symbols:  | ATP binding / microtubule motor | chr3:3190208-3195005 FORWARD
+>gnl|BL_ORD_ID|15218 AT3G46420.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr3:17082108-17086534 FORWARD
+>gnl|BL_ORD_ID|15219 AT3G11460.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:3608250-3610121 FORWARD
+>gnl|BL_ORD_ID|15269 AT3G46350.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr3:17036427-17041680 FORWARD
+>gnl|BL_ORD_ID|1526 AT1G19720.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:6819926-6822610 REVERSE
+>gnl|BL_ORD_ID|15318 AT3G46340.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr3:17026658-17031842 FORWARD
+>gnl|BL_ORD_ID|15345 AT3G46370.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr3:17051955-17055514 FORWARD
+>gnl|BL_ORD_ID|15360 AT3G09040.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:2761195-2764281 REVERSE
+>gnl|BL_ORD_ID|15367 AT3G13430.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:4367754-4368701 FORWARD
+>gnl|BL_ORD_ID|15376 AT3G54870.1 | Symbols: MRH2, ARK1, CAE1 | MRH2 (MORPHOGENESIS OF ROOT HAIR 2); actin binding / microtubule binding / microtubule motor | chr3:20330806-20335823 FORWARD
+>gnl|BL_ORD_ID|15392 AT3G62030.1 | Symbols: ROC4 | peptidyl-prolyl cis-trans isomerase, chloroplast / cyclophilin / rotamase / cyclosporin A-binding protein (ROC4) | chr3:22973708-22975139 FORWARD
+>gnl|BL_ORD_ID|15396 AT3G46790.1 | Symbols: CRR2 | CRR2 (CHLORORESPIRATORY REDUCTION 2) | chr3:17231975-17233948 REVERSE
+>gnl|BL_ORD_ID|15397 AT3G12020.1 | Symbols:  | kinesin motor protein-related | chr3:3827016-3834146 FORWARD
+>gnl|BL_ORD_ID|15412 AT3G16710.1 | Symbols:  | INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: 10 plant structures; EXPRESSED DURING: LP.10 ten leaves visible, petal differentiation and expansion stage, D bilateral stage, E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT5G41170.1); Has 25882 Blast hits to 6002 proteins in 187 species: Archae - 3; Bacteria - 22; Metazoa - 744; Fungi - 522; Plants - 23419; Viruses - 0; Other Eukaryotes - 1172 (source: NCBI BLink). | chr3:5690020-5691543 FORWARD
+>gnl|BL_ORD_ID|15437 AT3G46570.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:17145797-17146867 REVERSE
+>gnl|BL_ORD_ID|15471 AT3G07070.1 | Symbols:  | protein kinase family protein | chr3:2238455-2240074 FORWARD
+>gnl|BL_ORD_ID|15477 AT3G09010.1 | Symbols:  | protein kinase family protein | chr3:2750285-2752086 FORWARD
+>gnl|BL_ORD_ID|1555 AT1G17630.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:6064525-6066720 FORWARD
+>gnl|BL_ORD_ID|15587 AT3G02810.1 | Symbols:  | protein kinase family protein | chr3:608729-610785 REVERSE
+>gnl|BL_ORD_ID|15644 AT3G61410.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; BEST Arabidopsis thaliana protein match is: protein kinase family protein / U-box domain-containing protein (TAIR:AT2G45910.1); Has 146 Blast hits to 144 proteins in 9 species: Archae - 0; Bacteria - 0; Metazoa - 13; Fungi - 0; Plants - 132; Viruses - 0; Other Eukaryotes - 1 (source: NCBI BLink). | chr3:22721112-22722452 FORWARD
+>gnl|BL_ORD_ID|15731 AT3G04850.1 | Symbols:  | tesmin/TSO1-like CXC domain-containing protein | chr3:1332269-1335851 REVERSE
+>gnl|BL_ORD_ID|15760 AT3G59350.1 | Symbols:  | serine/threonine protein kinase, putative | chr3:21932930-21934883 FORWARD
+>gnl|BL_ORD_ID|15786 AT3G53810.1 | Symbols:  | lectin protein kinase, putative | chr3:19933153-19935186 REVERSE
+>gnl|BL_ORD_ID|15896 AT3G22920.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase, putative / cyclophilin, putative / rotamase, putative | chr3:8122713-8123411 REVERSE
+>gnl|BL_ORD_ID|15974 AT3G14350.2 | Symbols: SRF7 | SRF7 (STRUBBELIG-RECEPTOR FAMILY 7); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr3:4783115-4786397 REVERSE
+>gnl|BL_ORD_ID|15 AT1G50950.1 | Symbols:  | thioredoxin-related | chr1:18880465-18884043 FORWARD
+>gnl|BL_ORD_ID|16032 AT3G13690.1 | Symbols:  | protein kinase family protein | chr3:4486920-4490011 FORWARD
+>gnl|BL_ORD_ID|16048 AT3G04010.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:1036879-1039263 REVERSE
+>gnl|BL_ORD_ID|16050 AT3G45410.1 | Symbols:  | lectin protein kinase family protein | chr3:16654019-16656013 REVERSE
+>gnl|BL_ORD_ID|16068 AT3G11080.1 | Symbols: AtRLP35 | AtRLP35 (Receptor Like Protein 35); kinase/ protein binding | chr3:3470481-3473312 FORWARD
+>gnl|BL_ORD_ID|1607 AT1G53440.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:19945959-19951562 FORWARD
+>gnl|BL_ORD_ID|16118 AT3G16610.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:5656371-5658335 REVERSE
+>gnl|BL_ORD_ID|16137 AT3G14730.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:4949385-4951346 REVERSE
+>gnl|BL_ORD_ID|16141 AT3G16630.1 | Symbols: ATKINESIN-13A, KINESIN-13A | KINESIN-13A; ATP binding / microtubule motor | chr3:5662660-5667261 REVERSE
+>gnl|BL_ORD_ID|16155 AT3G46330.1 | Symbols: MEE39 | MEE39 (maternal effect embryo arrest 39); kinase | chr3:17020887-17024884 REVERSE
+>gnl|BL_ORD_ID|16198 AT3G20150.1 | Symbols:  | kinesin motor family protein | chr3:7031412-7036499 FORWARD
+>gnl|BL_ORD_ID|16200 AT3G03190.1 | Symbols: ATGSTF11, ATGSTF6 | ATGSTF11 (GLUTATHIONE S-TRANSFERASE F11); glutathione transferase | chr3:735071-735877 FORWARD
+>gnl|BL_ORD_ID|16230 AT3G62220.1 | Symbols:  | serine/threonine protein kinase, putative | chr3:23029276-23030864 REVERSE
+>gnl|BL_ORD_ID|16280 AT3G59420.1 | Symbols: ACR4 | ACR4 (ARABIDOPSIS CRINKLY4); kinase/ transmembrane receptor protein kinase | chr3:21959871-21962558 REVERSE
+>gnl|BL_ORD_ID|16334 AT3G46290.1 | Symbols:  | protein kinase, putative | chr3:17013009-17015501 FORWARD
+>gnl|BL_ORD_ID|16357 AT3G61170.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:22638691-22641237 REVERSE
+>gnl|BL_ORD_ID|16428 AT3G22470.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:7966066-7967925 REVERSE
+>gnl|BL_ORD_ID|16437 AT3G24330.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:8830336-8831838 FORWARD
+>gnl|BL_ORD_ID|16458 AT3G28040.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:10435139-10438268 FORWARD
+>gnl|BL_ORD_ID|16470 AT3G28050.1 | Symbols:  | nodulin MtN21 family protein | chr3:10442984-10445216 FORWARD
+>gnl|BL_ORD_ID|16481 AT3G09780.1 | Symbols: CCR1, ATCRR1 | CCR1 (ARABIDOPSIS THALIANA CRINKLY4 RELATED 1); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ receptor | chr3:3000838-3003165 REVERSE
+>gnl|BL_ORD_ID|16485 AT3G55780.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:20705627-20707021 FORWARD
+>gnl|BL_ORD_ID|16486 AT3G12770.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:4056900-4059193 REVERSE
+>gnl|BL_ORD_ID|16530 AT3G57430.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:21255731-21258403 REVERSE
+>gnl|BL_ORD_ID|16534 AT3G01540.2 | Symbols: DRH1, ATDRH1 | DRH1 (DEAD BOX RNA HELICASE 1); ATP-dependent RNA helicase/ ATPase | chr3:213077-216142 REVERSE
+>gnl|BL_ORD_ID|16538 AT3G18970.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:6543699-6545117 REVERSE
+>gnl|BL_ORD_ID|16553 AT3G26630.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:9791572-9792939 REVERSE
+>gnl|BL_ORD_ID|16581 AT3G04690.1 | Symbols:  | protein kinase family protein | chr3:1273386-1275938 REVERSE
+>gnl|BL_ORD_ID|16638 AT3G63370.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:23402080-23405991 FORWARD
+>gnl|BL_ORD_ID|16746 AT3G02330.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:473881-476592 REVERSE
+>gnl|BL_ORD_ID|16761 AT3G02340.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:477032-478261 FORWARD
+>gnl|BL_ORD_ID|16766 AT3G01300.1 | Symbols:  | protein kinase, putative | chr3:90817-93335 REVERSE
+>gnl|BL_ORD_ID|16823 AT3G47090.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:17341512-17344645 REVERSE
+>gnl|BL_ORD_ID|16847 AT3G17360.1 | Symbols: POK1 | POK1 (PHRAGMOPLAST ORIENTING KINESIN 1); ATP binding / microtubule motor | chr3:5936108-5946205 FORWARD
+>gnl|BL_ORD_ID|16891 AT3G25560.1 | Symbols: NIK2 | NIK2 (NSP-INTERACTING KINASE 2); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase | chr3:9279682-9282560 REVERSE
+>gnl|BL_ORD_ID|16937 AT3G47110.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:17347103-17350296 REVERSE
+>gnl|BL_ORD_ID|16954 AT3G26940.1 | Symbols: CDG1 | CDG1 (CONSTITUTIVE DIFFERENTIAL GROWTH 1); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr3:9936707-9938936 REVERSE
+>gnl|BL_ORD_ID|17019 AT3G05340.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:1524071-1526047 REVERSE
+>gnl|BL_ORD_ID|17056 AT3G19760.1 | Symbols:  | eukaryotic translation initiation factor 4A, putative / eIF-4A, putative / DEAD box RNA helicase, putative | chr3:6863790-6866242 FORWARD
+>gnl|BL_ORD_ID|17060 AT3G26540.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:9744542-9746644 REVERSE
+>gnl|BL_ORD_ID|17073 AT3G44050.1 | Symbols:  | kinesin motor protein-related | chr3:15818738-15824792 FORWARD
+>gnl|BL_ORD_ID|17080 AT3G47530.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:17517382-17519157 REVERSE
+>gnl|BL_ORD_ID|1709 AT1G03540.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:883782-885611 FORWARD
+>gnl|BL_ORD_ID|17106 AT3G55550.1 | Symbols:  | lectin protein kinase, putative | chr3:20600019-20602073 REVERSE
+>gnl|BL_ORD_ID|17107 AT3G59110.1 | Symbols:  | protein kinase family protein | chr3:21855673-21857847 FORWARD
+>gnl|BL_ORD_ID|17109 AT3G18810.1 | Symbols:  | protein kinase family protein | chr3:6480701-6483593 REVERSE
+>gnl|BL_ORD_ID|17116 AT3G53380.1 | Symbols:  | lectin protein kinase family protein | chr3:19789204-19791351 REVERSE
+>gnl|BL_ORD_ID|17130 AT3G17420.1 | Symbols: GPK1 | GPK1; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr3:5959462-5961313 REVERSE
+>gnl|BL_ORD_ID|17139 AT3G22330.1 | Symbols: PMH2 | PMH2 (putative mitochondrial RNA helicase 2); ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding | chr3:7892641-7895145 FORWARD
+>gnl|BL_ORD_ID|1713 AT1G55550.1 | Symbols:  | ATP binding / microtubule motor | chr1:20748915-20752862 FORWARD
+>gnl|BL_ORD_ID|1719 AT1G03510.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:876258-877547 REVERSE
+>gnl|BL_ORD_ID|17214 AT3G47580.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:17532687-17535810 FORWARD
+>gnl|BL_ORD_ID|17235 AT3G47570.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:17527611-17530748 FORWARD
+>gnl|BL_ORD_ID|172 AT1G09380.1 | Symbols:  | integral membrane family protein / nodulin MtN21-related | chr1:3026351-3029322 REVERSE
+>gnl|BL_ORD_ID|17300 AT3G53360.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:19784502-19786808 FORWARD
+>gnl|BL_ORD_ID|17311 AT3G61810.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:22877168-22878469 FORWARD
+>gnl|BL_ORD_ID|17319 AT3G17410.1 | Symbols:  | serine/threonine protein kinase, putative | chr3:5956601-5958882 FORWARD
+>gnl|BL_ORD_ID|17332 AT3G63480.1 | Symbols:  | kinesin heavy chain, putative | chr3:23441065-23443809 REVERSE
+>gnl|BL_ORD_ID|17345 AT3G63400.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase cyclophilin-type family protein | chr3:23412449-23415435 FORWARD
+>gnl|BL_ORD_ID|1734 AT1G60050.1 | Symbols:  | nodulin-related | chr1:22121550-22123702 REVERSE
+>gnl|BL_ORD_ID|17353 AT3G10180.1 | Symbols:  | kinesin motor protein-related | chr3:3143474-3154644 REVERSE
+>gnl|BL_ORD_ID|17371 AT3G28080.1 | Symbols:  | nodulin MtN21 family protein | chr3:10451567-10455071 FORWARD
+>gnl|BL_ORD_ID|1738 AT1G56145.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:21008225-21013934 REVERSE
+>gnl|BL_ORD_ID|17395 AT3G18600.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr3:6399724-6403007 REVERSE
+>gnl|BL_ORD_ID|17421 AT3G28640.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:10731518-10732723 REVERSE
+>gnl|BL_ORD_ID|17422 AT3G53110.1 | Symbols: LOS4 | LOS4 (LOW EXPRESSION OF OSMOTICALLY RESPONSIVE GENES 4); ATP-dependent helicase/ RNA helicase/ RNA-dependent ATPase | chr3:19687968-19690423 FORWARD
+>gnl|BL_ORD_ID|17425 AT3G28660.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:10739400-10740914 REVERSE
+>gnl|BL_ORD_ID|17439 AT3G28890.1 | Symbols: AtRLP43 | AtRLP43 (Receptor Like Protein 43); kinase/ protein binding | chr3:10896706-10898841 REVERSE
+>gnl|BL_ORD_ID|17452 AT3G05240.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:1493684-1495381 REVERSE
+>gnl|BL_ORD_ID|17482 AT3G28070.1 | Symbols:  | nodulin MtN21 family protein | chr3:10447964-10450845 FORWARD
+>gnl|BL_ORD_ID|1748 AT1G56140.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:21001708-21007725 REVERSE
+>gnl|BL_ORD_ID|17518 AT3G22310.1 | Symbols: PMH1, ATRH9 | PMH1 (PUTATIVE MITOCHONDRIAL RNA HELICASE 1); ATP-dependent helicase/ DNA binding / RNA binding | chr3:7887382-7889806 FORWARD
+>gnl|BL_ORD_ID|17521 AT3G03860.1 | Symbols: ATAPRL5 | ATAPRL5 (APR-like 5) | chr3:992465-994315 FORWARD
+>gnl|BL_ORD_ID|17531 AT3G28130.1 | Symbols:  | nodulin MtN21 family protein | chr3:10465987-10468704 FORWARD
+>gnl|BL_ORD_ID|17535 AT3G24240.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:8780551-8784150 FORWARD
+>gnl|BL_ORD_ID|17564 AT3G28690.1 | Symbols:  | protein kinase, putative | chr3:10756002-10757494 FORWARD
+>gnl|BL_ORD_ID|17593 AT3G49140.1 | Symbols:  | EXPRESSED IN: 23 plant structures; EXPRESSED DURING: 13 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: EMB2758 (embryo defective 2758) (TAIR:AT4G33990.1); Has 45368 Blast hits to 16108 proteins in 635 species: Archae - 60; Bacteria - 10333; Metazoa - 8211; Fungi - 3499; Plants - 14806; Viruses - 492; Other Eukaryotes - 7967 (source: NCBI BLink). | chr3:18212187-18217848 REVERSE
+>gnl|BL_ORD_ID|17621 AT3G53210.1 | Symbols:  | nodulin MtN21 family protein | chr3:19720182-19721764 FORWARD
+>gnl|BL_ORD_ID|17622 AT3G28100.1 | Symbols:  | nodulin MtN21 family protein | chr3:10456151-10460813 FORWARD
+>gnl|BL_ORD_ID|17652 AT3G58590.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:21666262-21668487 FORWARD
+>gnl|BL_ORD_ID|17658 AT3G56580.2 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:20962563-20963525 FORWARD
+>gnl|BL_ORD_ID|17671 AT3G58570.1 | Symbols:  | DEAD box RNA helicase, putative | chr3:21657099-21660352 FORWARD
+>gnl|BL_ORD_ID|1769 AT1G56130.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:20994931-21000887 REVERSE
+>gnl|BL_ORD_ID|17782 AT3G22690.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:8020757-8024534 REVERSE
+>gnl|BL_ORD_ID|17798 AT3G56550.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:20952896-20954641 REVERSE
+>gnl|BL_ORD_ID|1784 AT1G79670.1 | Symbols: RFO1, WAKL22 | RFO1 (RESISTANCE TO FUSARIUM OXYSPORUM 1); kinase | chr1:29976887-29979337 REVERSE
+>gnl|BL_ORD_ID|17875 AT3G51150.1 | Symbols:  | kinesin motor family protein | chr3:19002006-19006509 FORWARD
+>gnl|BL_ORD_ID|17900 AT3G58690.1 | Symbols:  | protein kinase family protein | chr3:21709369-21711246 FORWARD
+>gnl|BL_ORD_ID|17991 AT3G56620.1 | Symbols:  | integral membrane family protein / nodulin MtN21-related | chr3:20972696-20974495 REVERSE
+>gnl|BL_ORD_ID|18002 AT3G58510.1 | Symbols:  | DEAD box RNA helicase, putative (RH11) | chr3:21640608-21643464 FORWARD
+>gnl|BL_ORD_ID|1804 AT1G53730.1 | Symbols: SRF6 | SRF6 (STRUBBELIG-RECEPTOR FAMILY 6); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:20061771-20065475 FORWARD
+>gnl|BL_ORD_ID|18054 AT3G20730.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:7247095-7248878 FORWARD
+>gnl|BL_ORD_ID|18072 AT3G25060.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:9128516-9130321 FORWARD
+>gnl|BL_ORD_ID|18078 AT3G27690.1 | Symbols: LHCB2.4, LHCB2.3, LHCB2 | LHCB2.3; chlorophyll binding | chr3:10256002-10256921 FORWARD
+>gnl|BL_ORD_ID|18080 AT3G13560.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:4425484-4427284 REVERSE
+>gnl|BL_ORD_ID|18086 AT3G23750.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr3:8558332-8561263 FORWARD
+>gnl|BL_ORD_ID|18117 AT3G23770.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:8565556-8567196 FORWARD
+>gnl|BL_ORD_ID|18123 AT3G44730.1 | Symbols:  | kinesin motor protein-related | chr3:16285888-16290852 FORWARD
+>gnl|BL_ORD_ID|18153 AT3G22760.1 | Symbols: SOL1 | SOL1; transcription factor | chr3:8044622-8047381 FORWARD
+>gnl|BL_ORD_ID|18169 AT3G24540.1 | Symbols:  | protein kinase family protein | chr3:8952903-8955621 FORWARD
+>gnl|BL_ORD_ID|18173 AT3G19950.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:6942853-6943839 FORWARD
+>gnl|BL_ORD_ID|18182 AT3G30340.1 | Symbols:  | nodulin MtN21 family protein | chr3:11956626-11958969 FORWARD
+>gnl|BL_ORD_ID|18233 AT3G02065.2 | Symbols:  | DEAD/DEAH box helicase family protein | chr3:359136-360734 FORWARD
+>gnl|BL_ORD_ID|18236 AT3G51320.1 | Symbols:  | INVOLVED IN: biological_process unknown; EXPRESSED IN: 16 plant structures; EXPRESSED DURING: 6 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: binding (TAIR:AT3G62890.1); Has 12158 Blast hits to 4373 proteins in 95 species: Archae - 0; Bacteria - 0; Metazoa - 23; Fungi - 18; Plants - 12009; Viruses - 0; Other Eukaryotes - 108 (source: NCBI BLink). | chr3:19049853-19051445 REVERSE
+>gnl|BL_ORD_ID|18255 AT3G23670.1 | Symbols: PAKRP1L, KINESIN-12B | KINESIN-12B; microtubule motor/ plus-end-directed microtubule motor | chr3:8519290-8525055 FORWARD
+>gnl|BL_ORD_ID|18283 AT3G13880.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:4572180-4574426 FORWARD
+>gnl|BL_ORD_ID|18308 AT3G24550.1 | Symbols: ATPERK1 | ATPERK1 (PROLINE EXTENSIN-LIKE RECEPTOR KINASE 1); ATP binding / protein kinase | chr3:8960411-8963303 FORWARD
+>gnl|BL_ORD_ID|18330 AT3G18520.1 | Symbols: HDA15, ATHDA15 | HDA15; histone deacetylase | chr3:6361605-6365367 FORWARD
+>gnl|BL_ORD_ID|18361 AT3G15130.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:5097153-5099222 REVERSE
+>gnl|BL_ORD_ID|18392 AT3G11010.1 | Symbols: AtRLP34 | AtRLP34 (Receptor Like Protein 34); kinase/ protein binding | chr3:3450988-3453672 REVERSE
+>gnl|BL_ORD_ID|18467 AT3G19840.1 | Symbols:  | FF domain-containing protein / WW domain-containing protein | chr3:6891850-6897227 FORWARD
+>gnl|BL_ORD_ID|18477 AT3G06480.1 | Symbols:  | DEAD box RNA helicase, putative | chr3:1985697-1989666 REVERSE
+>gnl|BL_ORD_ID|18485 AT3G50240.1 | Symbols: KICP-02 | KICP-02; ATP binding / microtubule motor | chr3:18623380-18628784 REVERSE
+>gnl|BL_ORD_ID|1850 AT1G79620.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:29957633-29962174 REVERSE
+>gnl|BL_ORD_ID|18557 AT3G23330.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:8347200-8349347 FORWARD
+>gnl|BL_ORD_ID|18568 AT3G24000.1 | Symbols:  | INVOLVED IN: biological_process unknown; EXPRESSED IN: shoot apex, carpel; EXPRESSED DURING: petal differentiation and expansion stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT3G23330.1); Has 15874 Blast hits to 5333 proteins in 187 species: Archae - 1; Bacteria - 6; Metazoa - 100; Fungi - 81; Plants - 15349; Viruses - 0; Other Eukaryotes - 337 (source: NCBI BLink). | chr3:8672774-8674881 FORWARD
+>gnl|BL_ORD_ID|18590 AT3G01580.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:223529-225454 REVERSE
+>gnl|BL_ORD_ID|18624 AT3G21340.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr3:7511848-7515937 REVERSE
+>gnl|BL_ORD_ID|1863 AT1G74490.1 | Symbols:  | protein kinase, putative | chr1:27994760-27996496 REVERSE
+>gnl|BL_ORD_ID|18640 AT3G22150.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:7813028-7815490 FORWARD
+>gnl|BL_ORD_ID|18674 AT3G55920.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase, putative / cyclophilin, putative / rotamase, putative | chr3:20743529-20745049 REVERSE
+>gnl|BL_ORD_ID|18676 AT3G53590.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr3:19867379-19871651 REVERSE
+>gnl|BL_ORD_ID|18696 AT3G21470.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:7563746-7565074 FORWARD
+>gnl|BL_ORD_ID|18708 AT3G49170.1 | Symbols: EMB2261 | EMB2261 (embryo defective 2261) | chr3:18226954-18229600 REVERSE
+>gnl|BL_ORD_ID|1871 AT1G77280.1 | Symbols:  | protein kinase family protein | chr1:29031468-29035882 REVERSE
+>gnl|BL_ORD_ID|18728 AT3G15930.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:5387444-5389690 FORWARD
+>gnl|BL_ORD_ID|18748 AT3G47840.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:17651912-17654032 FORWARD
+>gnl|BL_ORD_ID|18751 AT3G56070.1 | Symbols: ROC2 | ROC2 (ROTAMASE CYCLOPHILIN 2); cyclosporin A binding / peptidyl-prolyl cis-trans isomerase | chr3:20806987-20807517 REVERSE
+>gnl|BL_ORD_ID|18793 AT3G57240.1 | Symbols: BG3 | BG3 (BETA-1,3-GLUCANASE 3); cellulase/ hydrolase, hydrolyzing O-glycosyl compounds | chr3:21181916-21183045 REVERSE
+>gnl|BL_ORD_ID|18804 AT3G57270.1 | Symbols: BG1 | BG1 (BETA-1,3-GLUCANASE 1); catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr3:21191336-21193118 REVERSE
+>gnl|BL_ORD_ID|18811 AT3G57260.1 | Symbols: BGL2, PR2, BG2, PR-2 | BGL2 (BETA-1,3-GLUCANASE 2); cellulase/ glucan 1,3-beta-glucosidase/ hydrolase, hydrolyzing O-glycosyl compounds | chr3:21188709-21189822 REVERSE
+>gnl|BL_ORD_ID|18878 AT3G01210.1 | Symbols:  | nucleic acid binding / oxidoreductase | chr3:72182-73159 FORWARD
+>gnl|BL_ORD_ID|18923 AT3G19050.1 | Symbols: POK2 | POK2 (PHRAGMOPLAST ORIENTING KINESIN 2); ATP binding / microtubule motor | chr3:6578047-6590106 FORWARD
+>gnl|BL_ORD_ID|1897 AT1G11050.1 | Symbols:  | protein kinase family protein | chr1:3681892-3683769 FORWARD
+>gnl|BL_ORD_ID|19008 AT3G61240.1 | Symbols:  | DEAD/DEAH box helicase, putative (RH12) | chr3:22666590-22669154 FORWARD
+>gnl|BL_ORD_ID|19022 AT3G09830.2 | Symbols:  | protein kinase, putative | chr3:3017199-3018696 FORWARD
+>gnl|BL_ORD_ID|19027 AT3G01540.1 | Symbols: DRH1, ATDRH1 | DRH1 (DEAD BOX RNA HELICASE 1); ATP-dependent RNA helicase/ ATPase | chr3:213077-216142 REVERSE
+>gnl|BL_ORD_ID|19029 AT3G18520.2 | Symbols: HDA15, ATHDA15 | HDA15; histone deacetylase | chr3:6361605-6365399 FORWARD
+>gnl|BL_ORD_ID|19031 AT3G14350.1 | Symbols: SRF7 | SRF7 (STRUBBELIG-RECEPTOR FAMILY 7); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr3:4783115-4786999 REVERSE
+>gnl|BL_ORD_ID|19043 AT3G25560.2 | Symbols: NIK2 | NIK2 (NSP-INTERACTING KINASE 2); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase | chr3:9279682-9282560 REVERSE
+>gnl|BL_ORD_ID|19053 AT3G14350.3 | Symbols: SRF7 | SRF7 (STRUBBELIG-RECEPTOR FAMILY 7); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr3:4783115-4786999 REVERSE
+>gnl|BL_ORD_ID|19057 AT3G16630.2 | Symbols: ATKINESIN-13A, KINESIN-13A | KINESIN-13A; ATP binding / microtubule motor | chr3:5662660-5667261 REVERSE
+>gnl|BL_ORD_ID|19114 AT3G28080.2 | Symbols:  | nodulin MtN21 family protein | chr3:10451567-10455071 FORWARD
+>gnl|BL_ORD_ID|19116 AT3G59350.2 | Symbols:  | serine/threonine protein kinase, putative | chr3:21933392-21934883 FORWARD
+>gnl|BL_ORD_ID|19119 AT3G13560.3 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:4425484-4427284 REVERSE
+>gnl|BL_ORD_ID|19120 AT3G28070.2 | Symbols:  | nodulin MtN21 family protein | chr3:10448455-10450845 FORWARD
+>gnl|BL_ORD_ID|19125 AT3G13560.2 | Symbols:  | glycosyl hydrolase family 17 protein | chr3:4425484-4427284 REVERSE
+>gnl|BL_ORD_ID|19141 AT3G28130.2 | Symbols:  | nodulin MtN21 family protein | chr3:10465587-10468704 FORWARD
+>gnl|BL_ORD_ID|19161 AT3G58510.2 | Symbols:  | DEAD box RNA helicase, putative (RH11) | chr3:21640608-21643464 FORWARD
+>gnl|BL_ORD_ID|1917 AT1G54270.1 | Symbols: EIF4A-2 | EIF4A-2; ATP-dependent helicase/ translation initiation factor | chr1:20260495-20262018 FORWARD
+>gnl|BL_ORD_ID|1921 AT1G34160.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:12441393-12443256 FORWARD
+>gnl|BL_ORD_ID|1927 AT1G77170.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:28998133-28999536 REVERSE
+>gnl|BL_ORD_ID|19295 AT3G63480.2 | Symbols:  | kinesin heavy chain, putative | chr3:23441065-23443809 REVERSE
+>gnl|BL_ORD_ID|19299 AT3G63400.2 | Symbols:  | peptidyl-prolyl cis-trans isomerase cyclophilin-type family protein | chr3:23412449-23415435 FORWARD
+>gnl|BL_ORD_ID|19340 AT3G02065.1 | Symbols:  | DEAD/DEAH box helicase family protein | chr3:359628-360734 FORWARD
+>gnl|BL_ORD_ID|1938 AT1G77150.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT1G77170.1); Has 1851 Blast hits to 1843 proteins in 27 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 1851; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr1:28992876-28993170 REVERSE
+>gnl|BL_ORD_ID|19391 AT3G61240.2 | Symbols:  | DEAD/DEAH box helicase, putative (RH12) | chr3:22666590-22669154 FORWARD
+>gnl|BL_ORD_ID|19438 AT3G14840.2 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr3:4988271-4993891 FORWARD
+>gnl|BL_ORD_ID|19439 AT3G56580.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:20962563-20963525 FORWARD
+>gnl|BL_ORD_ID|19496 AT3G01540.3 | Symbols: DRH1, ATDRH1 | DRH1 (DEAD BOX RNA HELICASE 1); ATP-dependent RNA helicase/ ATPase | chr3:213077-216142 REVERSE
+>gnl|BL_ORD_ID|19571 AT3G01540.4 | Symbols: DRH1, ATDRH1 | DRH1 (DEAD BOX RNA HELICASE 1); ATP-dependent RNA helicase/ ATPase | chr3:213077-216142 REVERSE
+>gnl|BL_ORD_ID|19596 AT3G13430.2 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:4367754-4368701 FORWARD
+>gnl|BL_ORD_ID|19627 AT3G23670.2 | Symbols: PAKRP1L, KINESIN-12B | KINESIN-12B; microtubule motor/ plus-end-directed microtubule motor | chr3:8519290-8525055 FORWARD
+>gnl|BL_ORD_ID|19637 AT3G28690.2 | Symbols:  | protein kinase, putative | chr3:10755481-10757494 FORWARD
+>gnl|BL_ORD_ID|1964 AT1G66250.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:24693063-24695416 FORWARD
+>gnl|BL_ORD_ID|19677 AT3G56580.3 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr3:20962563-20963525 FORWARD
+>gnl|BL_ORD_ID|19687 AT3G59350.3 | Symbols:  | serine/threonine protein kinase, putative | chr3:21932930-21934883 FORWARD
+>gnl|BL_ORD_ID|19702 AT3G02065.3 | Symbols:  | DEAD/DEAH box helicase family protein | chr3:359136-360734 FORWARD
+>gnl|BL_ORD_ID|19733 AT3G13920.2 | Symbols: EIF4A1, RH4, TIF4A1 | EIF4A1 (EUKARYOTIC TRANSLATION INITIATION FACTOR 4A1); ATP-dependent helicase/ translation initiation factor | chr3:4592586-4594128 REVERSE
+>gnl|BL_ORD_ID|19740 AT3G18200.2 | Symbols:  | nodulin MtN21 family protein | chr3:6234509-6235531 REVERSE
+>gnl|BL_ORD_ID|19765 AT3G28070.3 | Symbols:  | nodulin MtN21 family protein | chr3:10447964-10450630 FORWARD
+>gnl|BL_ORD_ID|1977 AT1G62720.1 | Symbols:  | INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: unknown protein (TAIR:AT1G62680.1); Has 25425 Blast hits to 6071 proteins in 187 species: Archae - 4; Bacteria - 14; Metazoa - 596; Fungi - 591; Plants - 23031; Viruses - 0; Other Eukaryotes - 1189 (source: NCBI BLink). | chr1:23227574-23229031 FORWARD
+>gnl|BL_ORD_ID|19796 AT3G58510.3 | Symbols:  | DEAD box RNA helicase, putative (RH11) | chr3:21640608-21643464 FORWARD
+>gnl|BL_ORD_ID|19861 AT3G18840.2 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr3:6496198-6498940 FORWARD
+>gnl|BL_ORD_ID|1990 AT1G74580.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:28020777-28023068 FORWARD
+>gnl|BL_ORD_ID|19922 AT3G13920.3 | Symbols: EIF4A1, RH4, TIF4A1 | EIF4A1 (EUKARYOTIC TRANSLATION INITIATION FACTOR 4A1); ATP-dependent helicase/ translation initiation factor | chr3:4592635-4594094 REVERSE
+>gnl|BL_ORD_ID|20020 AT3G56070.2 | Symbols: ROC2 | ROC2 (ROTAMASE CYCLOPHILIN 2); cyclosporin A binding / peptidyl-prolyl cis-trans isomerase | chr3:20806987-20807517 REVERSE
+>gnl|BL_ORD_ID|20062 AT3G26782.1 | Symbols:  | LOCATED IN: mitochondrion; EXPRESSED IN: seed; EXPRESSED DURING: E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT3G23330.1); Has 13812 Blast hits to 4961 proteins in 140 species: Archae - 0; Bacteria - 2; Metazoa - 58; Fungi - 30; Plants - 13522; Viruses - 0; Other Eukaryotes - 200 (source: NCBI BLink). | chr3:9850594-9852682 FORWARD
+>gnl|BL_ORD_ID|2007 AT1G20920.1 | Symbols:  | DEAD box RNA helicase, putative | chr1:7285342-7288842 FORWARD
+>gnl|BL_ORD_ID|2019 AT1G31970.1 | Symbols: STRS1 | STRS1 (STRESS RESPONSE SUPPRESSOR 1); ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding | chr1:11479921-11482707 FORWARD
+>gnl|BL_ORD_ID|2021 AT1G22830.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:8076921-8079032 FORWARD
+>gnl|BL_ORD_ID|20446 AT3G28890.2 | Symbols: AtRLP43 | AtRLP43 (Receptor Like Protein 43); kinase/ protein binding | chr3:10896706-10898841 REVERSE
+>gnl|BL_ORD_ID|2045 AT1G31920.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:11461864-11463684 REVERSE
+>gnl|BL_ORD_ID|20481 AT3G28690.3 | Symbols:  | protein kinase, putative | chr3:10755412-10757494 FORWARD
+>gnl|BL_ORD_ID|20494 AT3G62030.2 | Symbols: ROC4 | peptidyl-prolyl cis-trans isomerase, chloroplast / cyclophilin / rotamase / cyclosporin A-binding protein (ROC4) | chr3:22973004-22975139 FORWARD
+>gnl|BL_ORD_ID|20511 AT3G49140.2 | Symbols:  | EXPRESSED IN: 22 plant structures; EXPRESSED DURING: 13 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: EMB2758 (embryo defective 2758) (TAIR:AT4G33990.1). | chr3:18213981-18217848 REVERSE
+>gnl|BL_ORD_ID|20524 AT4G23280.1 | Symbols:  | protein kinase, putative | chr4:12174740-12177471 FORWARD
+>gnl|BL_ORD_ID|20540 AT4G24980.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: endomembrane system; BEST Arabidopsis thaliana protein match is: nodulin MtN21 family protein (TAIR:AT5G13670.1); Has 563 Blast hits to 558 proteins in 21 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 562; Viruses - 0; Other Eukaryotes - 1 (source: NCBI BLink). | chr4:12846797-12848376 REVERSE
+>gnl|BL_ORD_ID|2054 AT1G56120.1 | Symbols:  | kinase | chr1:20987288-20993072 REVERSE
+>gnl|BL_ORD_ID|20555 AT4G23270.1 | Symbols:  | protein kinase family protein | chr4:12171133-12173794 FORWARD
+>gnl|BL_ORD_ID|20609 AT4G23290.1 | Symbols:  | protein kinase family protein | chr4:12177910-12180669 REVERSE
+>gnl|BL_ORD_ID|20670 AT4G23240.1 | Symbols:  | protein kinase family protein | chr4:12160502-12161954 REVERSE
+>gnl|BL_ORD_ID|20683 AT4G14590.1 | Symbols: emb2739 | emb2739 (embryo defective 2739) | chr4:8374391-8375962 FORWARD
+>gnl|BL_ORD_ID|20691 AT4G23250.1 | Symbols: EMB1290, DUF26-21 | EMB1290 (EMBRYO DEFECTIVE 1290); kinase/ protein kinase | chr4:12162004-12167026 REVERSE
+>gnl|BL_ORD_ID|20702 AT4G27180.1 | Symbols: ATK2, KATB | ATK2 (ARABIDOPSIS THALIANA KINESIN 2); microtubule binding / microtubule motor | chr4:13615057-13618689 REVERSE
+>gnl|BL_ORD_ID|20720 AT4G16470.1 | Symbols:  | INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: 14 plant structures; EXPRESSED DURING: 4 anthesis, C globular stage, petal differentiation and expansion stage, D bilateral stage, E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: CRR22 (CHLORORESPIRATORY REDUCTION22); endonuclease (TAIR:AT1G11290.1); Has 12729 Blast hits to 4676 proteins in 132 species: Archae - 0; Bacteria - 0; Metazoa - 31; Fungi - 25; Plants - 12474; Viruses - 0; Other Eukaryotes - 199 (source: NCBI BLink). | chr4:9287862-9289541 REVERSE
+>gnl|BL_ORD_ID|20744 AT4G23260.1 | Symbols:  | ATP binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr4:12167528-12170055 REVERSE
+>gnl|BL_ORD_ID|2074 AT1G34110.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:12417331-12421189 REVERSE
+>gnl|BL_ORD_ID|20797 AT4G05430.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: X8 (InterPro:IPR012946); BEST Arabidopsis thaliana protein match is: glucan endo-1,3-beta-glucosidase-related (TAIR:AT1G09460.1); Has 776 Blast hits to 740 proteins in 35 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 3; Plants - 770; Viruses - 0; Other Eukaryotes - 3 (source: NCBI BLink). | chr4:2753582-2754324 FORWARD
+>gnl|BL_ORD_ID|2079 AT1G09930.1 | Symbols: ATOPT2 | ATOPT2; oligopeptide transporter | chr1:3227490-3230043 REVERSE
+>gnl|BL_ORD_ID|20815 AT4G17180.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr4:9646541-9648045 FORWARD
+>gnl|BL_ORD_ID|20861 AT4G14820.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:8507794-8510038 REVERSE
+>gnl|BL_ORD_ID|20863 AT4G14850.1 | Symbols: LOI1 | LOI1 (lovastatin insensitive 1) | chr4:8513947-8516275 FORWARD
+>gnl|BL_ORD_ID|20882 AT4G37170.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:17498580-17500655 REVERSE
+>gnl|BL_ORD_ID|20904 AT4G14770.1 | Symbols: TCX2, ATTCX2 | TCX2 (TESMIN/TSO1-LIKE CXC 2); transcription factor | chr4:8481522-8484825 REVERSE
+>gnl|BL_ORD_ID|20917 AT4G22760.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:11958477-11962870 FORWARD
+>gnl|BL_ORD_ID|20949 AT4G05200.1 | Symbols:  | protein kinase family protein | chr4:2679793-2682309 REVERSE
+>gnl|BL_ORD_ID|20953 AT4G23310.1 | Symbols:  | receptor-like protein kinase, putative | chr4:12185737-12188763 FORWARD
+>gnl|BL_ORD_ID|20968 AT4G08850.1 | Symbols:  | kinase | chr4:5636693-5640496 REVERSE
+>gnl|BL_ORD_ID|2096 AT1G66150.1 | Symbols: TMK1 | TMK1 (TRANSMEMBRANE KINASE 1); transmembrane receptor protein serine/threonine kinase | chr1:24631503-24634415 FORWARD
+>gnl|BL_ORD_ID|21004 AT4G23300.1 | Symbols:  | protein kinase family protein | chr4:12182002-12184531 FORWARD
+>gnl|BL_ORD_ID|21007 AT4G05190.1 | Symbols: ATK5 | ATK5 (ARABIDOPSIS THALIANA KINESIN 5); microtubule motor | chr4:2675338-2679482 FORWARD
+>gnl|BL_ORD_ID|21054 AT4G37380.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:17572040-17573938 REVERSE
+>gnl|BL_ORD_ID|21058 AT4G09730.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr4:6136333-6139510 FORWARD
+>gnl|BL_ORD_ID|21142 AT4G26540.1 | Symbols:  | kinase | chr4:13394673-13398028 REVERSE
+>gnl|BL_ORD_ID|21156 AT4G39400.1 | Symbols: BRI1, CBB2, DWF2, BIN1, ATBRI1 | BRI1 (BRASSINOSTEROID INSENSITIVE 1); kinase/ protein binding / protein heterodimerization/ protein homodimerization/ protein kinase/ protein serine/threonine kinase | chr4:18324826-18328416 FORWARD
+>gnl|BL_ORD_ID|2115 AT1G74630.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:28030521-28032452 FORWARD
+>gnl|BL_ORD_ID|21188 AT4G03390.1 | Symbols: SRF3 | SRF3 (STRUBBELIG-RECEPTOR FAMILY 3); ATP binding / kinase/ protein serine/threonine kinase | chr4:1490912-1494553 REVERSE
+>gnl|BL_ORD_ID|21201 AT4G28350.1 | Symbols:  | lectin protein kinase family protein | chr4:14026577-14028622 FORWARD
+>gnl|BL_ORD_ID|21210 AT4G18340.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr4:10130245-10132019 REVERSE
+>gnl|BL_ORD_ID|21232 AT4G26400.2 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr4:13344953-13346023 REVERSE
+>gnl|BL_ORD_ID|21266 AT4G39530.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:18374736-18377240 REVERSE
+>gnl|BL_ORD_ID|21272 AT4G28040.1 | Symbols:  | nodulin MtN21 family protein | chr4:13940881-13942201 FORWARD
+>gnl|BL_ORD_ID|2127 AT1G74600.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:28025153-28027840 REVERSE
+>gnl|BL_ORD_ID|21347 AT4G28010.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:13930379-13932493 FORWARD
+>gnl|BL_ORD_ID|21368 AT4G03230.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase/ sugar binding | chr4:1419278-1422804 REVERSE
+>gnl|BL_ORD_ID|21370 AT4G19220.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:10505266-10508121 REVERSE
+>gnl|BL_ORD_ID|21373 AT4G21400.1 | Symbols:  | protein kinase family protein | chr4:11399218-11401709 REVERSE
+>gnl|BL_ORD_ID|21375 AT4G21390.1 | Symbols: B120 | B120; ATP binding / protein kinase/ protein serine/threonine kinase/ sugar binding | chr4:11394458-11397474 REVERSE
+>gnl|BL_ORD_ID|21378 AT4G21380.1 | Symbols: ARK3 | ARK3 (A. THALIANA RECEPTOR KINASE 3); kinase/ transmembrane receptor protein serine/threonine kinase | chr4:11389219-11393090 REVERSE
+>gnl|BL_ORD_ID|2137 AT1G73860.1 | Symbols:  | ATP binding / microtubule motor | chr1:27771188-27775977 REVERSE
+>gnl|BL_ORD_ID|21422 AT4G27080.1 | Symbols: ATPDIL5-4, ATPDI7, PDI7 | thioredoxin family protein | chr4:13589156-13593335 FORWARD
+>gnl|BL_ORD_ID|21429 AT4G21410.1 | Symbols:  | protein kinase family protein | chr4:11402463-11405025 REVERSE
+>gnl|BL_ORD_ID|21431 AT4G19185.1 | Symbols:  | integral membrane family protein | chr4:10489201-10491488 REVERSE
+>gnl|BL_ORD_ID|21440 AT4G26590.1 | Symbols: ATOPT5, OPT5 | OPT5 (OLIGOPEPTIDE TRANSPORTER 5); oligopeptide transporter | chr4:13414134-13416850 REVERSE
+>gnl|BL_ORD_ID|21499 AT4G18250.1 | Symbols:  | receptor serine/threonine kinase, putative | chr4:10087343-10091963 REVERSE
+>gnl|BL_ORD_ID|21538 AT4G22130.1 | Symbols: SRF8 | SRF8 (STRUBBELIG-RECEPTOR FAMILY 8); ATP binding / kinase/ protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr4:11723733-11727331 FORWARD
+>gnl|BL_ORD_ID|2160 AT1G20650.1 | Symbols:  | ATP binding / protein kinase/ protein serine/threonine kinase | chr1:7158422-7160022 REVERSE
+>gnl|BL_ORD_ID|21666 AT4G02750.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:1221116-1223461 REVERSE
+>gnl|BL_ORD_ID|21724 AT4G28490.1 | Symbols: RLK5, HAE | HAE (HAESA); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr4:14077894-14080965 FORWARD
+>gnl|BL_ORD_ID|21737 AT4G08300.1 | Symbols:  | nodulin MtN21 family protein | chr4:5245024-5248153 FORWARD
+>gnl|BL_ORD_ID|21741 AT4G08290.2 | Symbols:  | nodulin MtN21 family protein | chr4:5239088-5240398 FORWARD
+>gnl|BL_ORD_ID|21756 AT4G35600.1 | Symbols: CONNEXIN 32 | CONNEXIN 32; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr4:16896448-16898714 FORWARD
+>gnl|BL_ORD_ID|21830 AT4G29000.1 | Symbols:  | tesmin/TSO1-like CXC domain-containing protein | chr4:14293957-14296602 FORWARD
+>gnl|BL_ORD_ID|21891 AT4G39110.1 | Symbols:  | protein kinase family protein | chr4:18222483-18225119 REVERSE
+>gnl|BL_ORD_ID|21898 AT4G30700.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:14962617-14964995 REVERSE
+>gnl|BL_ORD_ID|21953 AT4G31070.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:15118696-15120537 REVERSE
+>gnl|BL_ORD_ID|21961 AT4G31100.1 | Symbols:  | wall-associated kinase, putative | chr4:15123862-15126426 FORWARD
+>gnl|BL_ORD_ID|21965 AT4G31110.1 | Symbols:  | kinase | chr4:15127257-15129880 FORWARD
+>gnl|BL_ORD_ID|21971 AT4G38950.1 | Symbols:  | kinesin motor family protein | chr4:18154606-18158461 REVERSE
+>gnl|BL_ORD_ID|22004 AT4G39050.1 | Symbols:  | kinesin-related protein (MKRP2) | chr4:18193462-18200148 FORWARD
+>gnl|BL_ORD_ID|22018 AT4G13650.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:7939611-7942898 REVERSE
+>gnl|BL_ORD_ID|2204 AT1G56690.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:21253817-21255931 FORWARD
+>gnl|BL_ORD_ID|22082 AT4G14150.1 | Symbols: PAKRP1, KINESIN-12A | PAKRP1 (PHRAGMOPLAST-ASSOCIATED KINESIN-RELATED PROTEIN 1); microtubule motor/ plus-end-directed microtubule motor | chr4:8158645-8165008 REVERSE
+>gnl|BL_ORD_ID|22141 AT4G16260.1 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr4:9200180-9201441 REVERSE
+>gnl|BL_ORD_ID|22159 AT4G02520.1 | Symbols: ATGSTF2, ATPM24.1, ATPM24, GST2 | ATGSTF2 (GLUTATHIONE S-TRANSFERASE PHI 2); glutathione binding / glutathione transferase | chr4:1110673-1111531 REVERSE
+>gnl|BL_ORD_ID|22179 AT4G14330.1 | Symbols:  | phragmoplast-associated kinesin-related protein 2 (PAKRP2) | chr4:8244228-8247286 FORWARD
+>gnl|BL_ORD_ID|22182 AT4G14170.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:8176709-8178085 REVERSE
+>gnl|BL_ORD_ID|22199 AT4G28650.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr4:14144155-14147276 REVERSE
+>gnl|BL_ORD_ID|22260 AT4G30520.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr4:14908193-14911040 REVERSE
+>gnl|BL_ORD_ID|22266 AT4G14050.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:8103645-8105483 REVERSE
+>gnl|BL_ORD_ID|22278 AT4G36180.1 | Symbols:  | leucine-rich repeat family protein | chr4:17120209-17123698 REVERSE
+>gnl|BL_ORD_ID|2229 AT1G77010.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:28942710-28944797 FORWARD
+>gnl|BL_ORD_ID|22332 AT4G33990.1 | Symbols: EMB2758 | EMB2758 (embryo defective 2758) | chr4:16290141-16292612 REVERSE
+>gnl|BL_ORD_ID|22344 AT4G14080.1 | Symbols: MEE48 | MEE48 (maternal effect embryo arrest 48); catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr4:8118697-8120292 REVERSE
+>gnl|BL_ORD_ID|22377 AT4G30420.1 | Symbols:  | nodulin MtN21 family protein | chr4:14877069-14878914 FORWARD
+>gnl|BL_ORD_ID|22404 AT4G01430.1 | Symbols:  | nodulin MtN21 family protein | chr4:585707-587846 FORWARD
+>gnl|BL_ORD_ID|22421 AT4G00340.1 | Symbols: RLK4 | RLK4 (RECEPTOR-LIKE PROTEIN KINASE 4); protein kinase/ sugar binding | chr4:148958-151496 FORWARD
+>gnl|BL_ORD_ID|22427 AT4G02630.1 | Symbols:  | protein kinase family protein | chr4:1151683-1153161 FORWARD
+>gnl|BL_ORD_ID|22429 AT4G25270.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:12937253-12938836 REVERSE
+>gnl|BL_ORD_ID|2242 AT1G29910.1 | Symbols: CAB3, AB180, LHCB1.2 | CAB3 (CHLOROPHYLL A/B BINDING PROTEIN 3); chlorophyll binding | chr1:10472443-10473246 REVERSE
+>gnl|BL_ORD_ID|22431 AT4G16370.1 | Symbols: ATOPT3, OPT3 | ATOPT3 (OLIGOPEPTIDE TRANSPORTER); oligopeptide transporter | chr4:9247514-9250071 REVERSE
+>gnl|BL_ORD_ID|22435 AT4G00330.1 | Symbols: CRCK2 | CRCK2; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr4:142787-144427 REVERSE
+>gnl|BL_ORD_ID|2243 AT1G29920.1 | Symbols: CAB2, AB165, LHCB1.1 | CAB2 (CHLOROPHYLL A/B-BINDING PROTEIN 2); chlorophyll binding | chr1:10475089-10475892 REVERSE
+>gnl|BL_ORD_ID|22443 AT4G00280.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: stamen; EXPRESSED DURING: 4 anthesis; BEST Arabidopsis thaliana protein match is: leucine-rich repeat protein kinase, putative (TAIR:AT2G19210.1); Has 18 Blast hits to 18 proteins in 2 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 18; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr4:122409-122851 REVERSE
+>gnl|BL_ORD_ID|22467 AT4G01450.1 | Symbols:  | nodulin MtN21 family protein | chr4:608586-610487 FORWARD
+>gnl|BL_ORD_ID|22474 AT4G01440.1 | Symbols:  | nodulin MtN21 family protein | chr4:596531-598512 FORWARD
+>gnl|BL_ORD_ID|22543 AT4G01330.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr4:550723-552847 FORWARD
+>gnl|BL_ORD_ID|2258 AT1G34300.1 | Symbols:  | lectin protein kinase family protein | chr1:12503450-12505939 FORWARD
+>gnl|BL_ORD_ID|2259 AT1G32415.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:11695611-11697896 FORWARD
+>gnl|BL_ORD_ID|22608 AT4G21300.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:11336479-11339052 FORWARD
+>gnl|BL_ORD_ID|22612 AT4G23160.1 | Symbols:  | protein kinase family protein | chr4:12129485-12134086 FORWARD
+>gnl|BL_ORD_ID|22623 AT4G23180.1 | Symbols: CRK10, RLK4 | CRK10 (CYSTEINE-RICH RLK10); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr4:12138171-12140780 FORWARD
+>gnl|BL_ORD_ID|22641 AT4G23230.1 | Symbols:  | protein kinase family protein | chr4:12157827-12159919 REVERSE
+>gnl|BL_ORD_ID|22645 AT4G23220.1 | Symbols:  | kinase | chr4:12154091-12157091 REVERSE
+>gnl|BL_ORD_ID|22650 AT4G25090.1 | Symbols:  | respiratory burst oxidase, putative / NADPH oxidase, putative | chr4:12878930-12883599 REVERSE
+>gnl|BL_ORD_ID|22651 AT4G23190.1 | Symbols: CRK11, AT-RLK3 | CRK11 (CYSTEINE-RICH RLK11); kinase/ protein kinase | chr4:12141197-12143710 REVERSE
+>gnl|BL_ORD_ID|22665 AT4G21270.1 | Symbols: ATK1, KATA, KATAP | ATK1 (ARABIDOPSIS THALIANA KINESIN 1); microtubule motor/ minus-end-directed microtubule motor | chr4:11329579-11333884 REVERSE
+>gnl|BL_ORD_ID|22667 AT4G23200.1 | Symbols:  | protein kinase family protein | chr4:12145380-12147934 REVERSE
+>gnl|BL_ORD_ID|22674 AT4G23150.1 | Symbols:  | protein kinase family protein | chr4:12125731-12128301 FORWARD
+>gnl|BL_ORD_ID|22682 AT4G04370.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:2134060-2136249 REVERSE
+>gnl|BL_ORD_ID|22721 AT4G20770.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:11130762-11132984 REVERSE
+>gnl|BL_ORD_ID|22726 AT4G23140.1 | Symbols: CRK6 | CRK6 (CYSTEINE-RICH RLK 6); kinase | chr4:12121397-12124037 FORWARD
+>gnl|BL_ORD_ID|22741 AT4G21230.1 | Symbols:  | protein kinase family protein | chr4:11319244-11321679 REVERSE
+>gnl|BL_ORD_ID|22749 AT4G23130.1 | Symbols: CRK5, RLK6 | CRK5 (CYSTEINE-RICH RLK5); kinase | chr4:12117688-12120134 REVERSE
+>gnl|BL_ORD_ID|22786 AT4G38830.1 | Symbols:  | protein kinase family protein | chr4:18122339-18124943 FORWARD
+>gnl|BL_ORD_ID|22797 AT4G20140.1 | Symbols: GSO1 | GSO1 (GASSHO1); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr4:10884220-10888045 FORWARD
+>gnl|BL_ORD_ID|22813 AT4G32710.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr4:15781362-15783242 FORWARD
+>gnl|BL_ORD_ID|22821 AT4G00960.1 | Symbols:  | protein kinase family protein | chr4:414361-416180 FORWARD
+>gnl|BL_ORD_ID|22824 AT4G00660.2 | Symbols:  | DEAD/DEAH box helicase, putative | chr4:274638-277438 FORWARD
+>gnl|BL_ORD_ID|22848 AT4G00970.1 | Symbols:  | protein kinase family protein | chr4:418437-421694 FORWARD
+>gnl|BL_ORD_ID|22858 AT4G20450.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr4:11024054-11029008 REVERSE
+>gnl|BL_ORD_ID|22870 AT4G20270.1 | Symbols: BAM3 | BAM3 (BARELY ANY MERISTEM 3); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase | chr4:10949822-10952924 FORWARD
+>gnl|BL_ORD_ID|22881 AT4G31140.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr4:15141581-15143188 FORWARD
+>gnl|BL_ORD_ID|22908 AT4G29180.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr4:14385631-14389524 FORWARD
+>gnl|BL_ORD_ID|2292 AT1G29930.1 | Symbols: CAB1, AB140, CAB140, LHCB1.3 | CAB1 (CHLOROPHYLL A/B BINDING PROTEIN 1); chlorophyll binding | chr1:10478071-10478874 FORWARD
+>gnl|BL_ORD_ID|22967 AT4G27290.1 | Symbols:  | ATP binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase/ sugar binding | chr4:13666281-13669202 FORWARD
+>gnl|BL_ORD_ID|23037 AT4G17660.1 | Symbols:  | protein kinase, putative | chr4:9831401-9833006 FORWARD
+>gnl|BL_ORD_ID|23054 AT4G01030.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:448336-449838 REVERSE
+>gnl|BL_ORD_ID|23110 AT4G38740.1 | Symbols: ROC1 | ROC1 (ROTAMASE CYP 1); peptidyl-prolyl cis-trans isomerase | chr4:18083620-18084138 REVERSE
+>gnl|BL_ORD_ID|23119 AT4G17720.1 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr4:9862660-9864498 REVERSE
+>gnl|BL_ORD_ID|2311 AT1G59540.1 | Symbols: ZCF125 | ZCF125; ATP binding / microtubule motor | chr1:21874083-21879382 FORWARD
+>gnl|BL_ORD_ID|23125 AT4G29360.2 | Symbols:  | glycosyl hydrolase family 17 protein | chr4:14451881-14453687 REVERSE
+>gnl|BL_ORD_ID|23128 AT4G27300.1 | Symbols:  | S-locus protein kinase, putative | chr4:13669308-13672348 REVERSE
+>gnl|BL_ORD_ID|23157 AT4G15540.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; BEST Arabidopsis thaliana protein match is: nodulin-related (TAIR:AT5G40230.1); Has 1698 Blast hits to 1688 proteins in 326 species: Archae - 14; Bacteria - 809; Metazoa - 6; Fungi - 0; Plants - 633; Viruses - 0; Other Eukaryotes - 236 (source: NCBI BLink). | chr4:8873394-8875186 FORWARD
+>gnl|BL_ORD_ID|23161 AT4G04490.1 | Symbols:  | protein kinase family protein | chr4:2231957-2234638 REVERSE
+>gnl|BL_ORD_ID|23165 AT4G10770.1 | Symbols: ATOPT7, OPT7 | OPT7 (OLIGOPEPTIDE TRANSPORTER 7); oligopeptide transporter | chr4:6628646-6632517 REVERSE
+>gnl|BL_ORD_ID|23179 AT4G13190.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr4:7659435-7661106 REVERSE
+>gnl|BL_ORD_ID|23188 AT4G34910.1 | Symbols:  | DEAD/DEAH box helicase, putative (RH16) | chr4:16631661-16634834 FORWARD
+>gnl|BL_ORD_ID|23229 AT4G18750.1 | Symbols: DOT4 | DOT4 (DEFECTIVELY ORGANIZED TRIBUTARIES 4) | chr4:10304850-10307465 FORWARD
+>gnl|BL_ORD_ID|23257 AT4G27730.1 | Symbols: ATOPT6, OPT6 | OPT6 (OLIGOPEPTIDE TRANSPORTER 1); oligopeptide transporter | chr4:13834024-13836468 REVERSE
+>gnl|BL_ORD_ID|23291 AT4G04510.1 | Symbols:  | protein kinase family protein | chr4:2242122-2244656 FORWARD
+>gnl|BL_ORD_ID|23321 AT4G04500.1 | Symbols:  | protein kinase family protein | chr4:2238411-2240767 FORWARD
+>gnl|BL_ORD_ID|23369 AT4G35130.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:16721084-16723498 REVERSE
+>gnl|BL_ORD_ID|23382 AT4G08210.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:5183813-5185873 REVERSE
+>gnl|BL_ORD_ID|23414 AT4G16620.1 | Symbols:  | integral membrane family protein / nodulin MtN21-related | chr4:9358185-9359871 REVERSE
+>gnl|BL_ORD_ID|23417 AT4G33370.1 | Symbols:  | DEAD-box protein abstrakt, putative | chr4:16069669-16071405 REVERSE
+>gnl|BL_ORD_ID|23426 AT4G10340.1 | Symbols: LHCB5 | LHCB5 (LIGHT HARVESTING COMPLEX OF PHOTOSYSTEM II 5); chlorophyll binding | chr4:6408200-6409496 FORWARD
+>gnl|BL_ORD_ID|23438 AT4G34960.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase, putative / cyclophilin, putative / rotamase, putative | chr4:16648865-16650646 FORWARD
+>gnl|BL_ORD_ID|23458 AT4G18840.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:10338719-10340356 REVERSE
+>gnl|BL_ORD_ID|23502 AT4G16835.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:9473021-9474803 FORWARD
+>gnl|BL_ORD_ID|23523 AT4G32420.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase cyclophilin-type family protein | chr4:15647550-15652103 REVERSE
+>gnl|BL_ORD_ID|2352 AT1G02950.1 | Symbols: ATGSTF4, GST31 | ATGSTF4 (GLUTATHIONE S-TRANSFERASE F4); glutathione transferase | chr1:665308-666420 REVERSE
+>gnl|BL_ORD_ID|2353 AT1G02920.1 | Symbols: ATGSTF7, GST11, ATGSTF8, GSTF7 | GSTF7; copper ion binding / glutathione binding / glutathione transferase | chr1:658886-659705 REVERSE
+>gnl|BL_ORD_ID|2354 AT1G02930.1 | Symbols: ATGSTF6, GST1, ERD11, ATGSTF3, GSTF6 | ATGSTF6 (GLUTATHIONE S-TRANSFERASE); copper ion binding / glutathione binding / glutathione transferase | chr1:661363-662191 REVERSE
+>gnl|BL_ORD_ID|23557 AT4G29450.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr4:14478837-14482626 REVERSE
+>gnl|BL_ORD_ID|23566 AT4G34480.1 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr4:16481147-16483988 REVERSE
+>gnl|BL_ORD_ID|2356 AT1G02940.1 | Symbols: ATGSTF5, GSTF5 | GSTF5 (GLUTATHIONE S-TRANSFERASE (CLASS PHI) 5); glutathione transferase | chr1:663079-664128 REVERSE
+>gnl|BL_ORD_ID|23615 AT4G33170.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:15995701-15998673 REVERSE
+>gnl|BL_ORD_ID|23616 AT4G34440.1 | Symbols:  | protein kinase family protein | chr4:16466008-16468748 FORWARD
+>gnl|BL_ORD_ID|23618 AT4G02420.1 | Symbols:  | lectin protein kinase, putative | chr4:1064363-1066372 REVERSE
+>gnl|BL_ORD_ID|23620 AT4G02410.1 | Symbols:  | lectin protein kinase family protein | chr4:1060086-1062110 REVERSE
+>gnl|BL_ORD_ID|23634 AT4G32430.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:15652982-15655273 FORWARD
+>gnl|BL_ORD_ID|23638 AT4G04960.1 | Symbols:  | lectin protein kinase, putative | chr4:2533096-2535156 FORWARD
+>gnl|BL_ORD_ID|2363 AT1G23540.1 | Symbols:  | protein kinase family protein | chr1:8346942-8349786 REVERSE
+>gnl|BL_ORD_ID|23652 AT4G04540.1 | Symbols:  | protein kinase family protein | chr4:2259580-2262138 FORWARD
+>gnl|BL_ORD_ID|23690 AT4G04570.1 | Symbols:  | protein kinase family protein | chr4:2290045-2292717 FORWARD
+>gnl|BL_ORD_ID|23716 AT4G11530.1 | Symbols:  | kinase | chr4:6987093-6989599 FORWARD
+>gnl|BL_ORD_ID|23741 AT4G29990.1 | Symbols:  | light repressible receptor protein kinase | chr4:14665802-14669438 REVERSE
+>gnl|BL_ORD_ID|23756 AT4G11460.1 | Symbols:  | protein kinase family protein | chr4:6964468-6967093 FORWARD
+>gnl|BL_ORD_ID|23766 AT4G24270.1 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr4:12581765-12587293 REVERSE
+>gnl|BL_ORD_ID|23781 AT4G16630.1 | Symbols:  | DEAD/DEAH box helicase, putative (RH28) | chr4:9362176-9366449 REVERSE
+>gnl|BL_ORD_ID|23810 AT4G34870.1 | Symbols: ROC5, ATCYP1 | ROC5 (ROTAMASE CYCLOPHILIN 5); peptidyl-prolyl cis-trans isomerase | chr4:16614451-16614969 FORWARD
+>gnl|BL_ORD_ID|23826 AT4G32000.1 | Symbols:  | protein kinase family protein | chr4:15474083-15476655 REVERSE
+>gnl|BL_ORD_ID|23848 AT4G24170.1 | Symbols:  | kinesin motor family protein | chr4:12543206-12546805 FORWARD
+>gnl|BL_ORD_ID|23860 AT4G11900.1 | Symbols:  | S-locus lectin protein kinase family protein | chr4:7150241-7153542 REVERSE
+>gnl|BL_ORD_ID|23866 AT4G34500.1 | Symbols:  | protein kinase family protein | chr4:16488005-16490792 REVERSE
+>gnl|BL_ORD_ID|2389 AT1G11130.1 | Symbols: SUB, SCM, SRF9 | SUB (STRUBBELIG); protein binding / receptor signaling protein serine/threonine kinase | chr1:3723135-3727178 FORWARD
+>gnl|BL_ORD_ID|23906 AT4G11490.1 | Symbols:  | protein kinase family protein | chr4:6978848-6981548 FORWARD
+>gnl|BL_ORD_ID|23922 AT4G32450.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:15661092-15662705 FORWARD
+>gnl|BL_ORD_ID|23960 AT4G11230.1 | Symbols:  | respiratory burst oxidase, putative / NADPH oxidase, putative | chr4:6840791-6845587 REVERSE
+>gnl|BL_ORD_ID|23963 AT4G32300.1 | Symbols: SD2-5 | SD2-5 (S-DOMAIN-2 5); carbohydrate binding / kinase/ protein kinase | chr4:15599970-15602435 FORWARD
+>gnl|BL_ORD_ID|24038 AT4G38010.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:17859582-17861261 REVERSE
+>gnl|BL_ORD_ID|24116 AT4G02010.1 | Symbols:  | protein kinase family protein | chr4:881457-885222 FORWARD
+>gnl|BL_ORD_ID|24126 AT4G15720.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:8949569-8951419 FORWARD
+>gnl|BL_ORD_ID|24131 AT4G33470.1 | Symbols: hda14, ATHDA14 | hda14 (histone deacetylase 14); histone deacetylase | chr4:16102774-16105439 REVERSE
+>gnl|BL_ORD_ID|24155 AT4G26830.1 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr4:13494726-13496487 REVERSE
+>gnl|BL_ORD_ID|2423 AT1G56720.1 | Symbols:  | protein kinase family protein | chr1:21263630-21265559 REVERSE
+>gnl|BL_ORD_ID|24262 AT4G39952.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr4:18527680-18530007 FORWARD
+>gnl|BL_ORD_ID|24275 AT4G18520.1 | Symbols:  | INVOLVED IN: biological_process unknown; EXPRESSED IN: 21 plant structures; EXPRESSED DURING: 9 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT4G39530.1); Has 16698 Blast hits to 4567 proteins in 114 species: Archae - 0; Bacteria - 4; Metazoa - 97; Fungi - 32; Plants - 16266; Viruses - 0; Other Eukaryotes - 299 (source: NCBI BLink). | chr4:10215250-10217103 REVERSE
+>gnl|BL_ORD_ID|2429 AT1G23450.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:8324698-8326697 FORWARD
+>gnl|BL_ORD_ID|2430 AT1G34210.1 | Symbols: SERK2, ATSERK2 | SERK2 (SOMATIC EMBRYOGENESIS RECEPTOR-LIKE KINASE 2); kinase | chr1:12459078-12462752 FORWARD
+>gnl|BL_ORD_ID|24326 AT4G33430.1 | Symbols: BAK1, RKS10, SERK3, ELG, ATSERK3, ATBAK1 | BAK1 (BRI1-ASSOCIATED RECEPTOR KINASE); kinase/ protein binding / protein heterodimerization/ protein serine/threonine kinase | chr4:16086654-16090288 REVERSE
+>gnl|BL_ORD_ID|24370 AT4G23130.2 | Symbols: CRK5, RLK6 | CRK5 (CYSTEINE-RICH RLK5); kinase | chr4:12117688-12120134 REVERSE
+>gnl|BL_ORD_ID|24381 AT4G01450.2 | Symbols:  | nodulin MtN21 family protein | chr4:608586-610487 FORWARD
+>gnl|BL_ORD_ID|2438 AT1G77030.1 | Symbols:  | ATP binding / ATP-dependent helicase/ RNA binding / helicase/ hydrolase, acting on acid anhydrides, in phosphorus-containing anhydrides / nucleic acid binding | chr1:28947492-28951526 REVERSE
+>gnl|BL_ORD_ID|24421 AT4G01450.3 | Symbols:  | nodulin MtN21 family protein | chr4:608586-610127 FORWARD
+>gnl|BL_ORD_ID|2444 AT1G30080.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:10551231-10553167 REVERSE
+>gnl|BL_ORD_ID|24467 AT4G24270.2 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr4:12581765-12587293 REVERSE
+>gnl|BL_ORD_ID|24468 AT4G23140.2 | Symbols: CRK6 | CRK6 (CYSTEINE-RICH RLK 6); kinase | chr4:12121397-12124037 FORWARD
+>gnl|BL_ORD_ID|24545 AT4G26400.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr4:13344953-13346023 REVERSE
+>gnl|BL_ORD_ID|24573 AT4G29360.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr4:14451562-14453687 REVERSE
+>gnl|BL_ORD_ID|24630 AT4G23290.2 | Symbols:  | protein kinase family protein | chr4:12177910-12180810 REVERSE
+>gnl|BL_ORD_ID|24658 AT4G28040.2 | Symbols:  | nodulin MtN21 family protein | chr4:13940881-13942201 FORWARD
+>gnl|BL_ORD_ID|24666 AT4G08290.1 | Symbols:  | nodulin MtN21 family protein | chr4:5239088-5240861 FORWARD
+>gnl|BL_ORD_ID|24709 AT4G08850.2 | Symbols:  | kinase | chr4:5637467-5640496 REVERSE
+>gnl|BL_ORD_ID|24730 AT4G00660.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr4:274638-277438 FORWARD
+>gnl|BL_ORD_ID|24904 AT4G28040.3 | Symbols:  | nodulin MtN21 family protein | chr4:13940881-13942201 FORWARD
+>gnl|BL_ORD_ID|24905 AT4G28040.4 | Symbols:  | nodulin MtN21 family protein | chr4:13940881-13942201 FORWARD
+>gnl|BL_ORD_ID|2496 AT1G51850.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:19252964-19256783 REVERSE
+>gnl|BL_ORD_ID|25033 AT4G21065.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: endomembrane system; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: CRR28 (CHLORORESPIRATORY REDUCTION28); endonuclease (TAIR:AT1G59720.1); Has 14270 Blast hits to 5372 proteins in 184 species: Archae - 1; Bacteria - 4; Metazoa - 153; Fungi - 82; Plants - 13714; Viruses - 0; Other Eukaryotes - 316 (source: NCBI BLink). | chr4:11245976-11247763 FORWARD
+>gnl|BL_ORD_ID|25034 AT4G21065.2 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT4G33170.1); Has 16184 Blast hits to 5257 proteins in 175 species: Archae - 0; Bacteria - 4; Metazoa - 118; Fungi - 47; Plants - 15742; Viruses - 0; Other Eukaryotes - 273 (source: NCBI BLink). | chr4:11246375-11247763 FORWARD
+>gnl|BL_ORD_ID|25057 AT4G04570.2 | Symbols:  | protein kinase family protein | chr4:2290045-2292255 FORWARD
+>gnl|BL_ORD_ID|25119 AT4G23210.3 | Symbols: CRK13 | protein kinase family protein | chr4:12148892-12151418 REVERSE
+>gnl|BL_ORD_ID|2513 AT1G51820.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:19237407-19241883 REVERSE
+>gnl|BL_ORD_ID|2529 AT1G04840.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:1362867-1364962 REVERSE
+>gnl|BL_ORD_ID|2531 AT1G51830.1 | Symbols:  | ATP binding / kinase/ protein serine/threonine kinase | chr1:19243025-19246010 REVERSE
+>gnl|BL_ORD_ID|25320 AT4G19191.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: mitochondrion; EXPRESSED IN: 13 plant structures; EXPRESSED DURING: 10 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: CRR22 (CHLORORESPIRATORY REDUCTION22); endonuclease (TAIR:AT1G11290.1); Has 16668 Blast hits to 5144 proteins in 160 species: Archae - 1; Bacteria - 6; Metazoa - 71; Fungi - 62; Plants - 16190; Viruses - 0; Other Eukaryotes - 338 (source: NCBI BLink). | chr4:10496228-10498192 FORWARD
+>gnl|BL_ORD_ID|25338 AT4G09784.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: Histone deacetylase superfamily (InterPro:IPR000286); BEST Arabidopsis thaliana protein match is: HDA15; histone deacetylase (TAIR:AT3G18520.2). | chr4:6162253-6162613 FORWARD
+>gnl|BL_ORD_ID|25347 AT4G29654.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: Protein kinase-like (InterPro:IPR011009); BEST Arabidopsis thaliana protein match is: TMK1 (TRANSMEMBRANE KINASE 1); transmembrane receptor protein serine/threonine kinase (TAIR:AT1G66150.1). | chr4:14531601-14532454 REVERSE
+>gnl|BL_ORD_ID|25386 AT4G22130.2 | Symbols: SRF8 | SRF8 (STRUBBELIG-RECEPTOR FAMILY 8); ATP binding / kinase/ protein binding / protein kinase | chr4:11724781-11727331 FORWARD
+>gnl|BL_ORD_ID|25402 AT4G28040.5 | Symbols:  | nodulin MtN21 family protein | chr4:13940881-13942201 FORWARD
+>gnl|BL_ORD_ID|2540 AT1G21590.1 | Symbols:  | protein kinase family protein | chr1:7566613-7569694 REVERSE
+>gnl|BL_ORD_ID|25425 AT4G38950.2 | Symbols:  | kinesin motor family protein | chr4:18154606-18158461 REVERSE
+>gnl|BL_ORD_ID|25462 AT4G11521.1 | Symbols:  | LOCATED IN: endomembrane system; CONTAINS InterPro DOMAIN/s: Protein of unknown function DUF26 (InterPro:IPR002902); BEST Arabidopsis thaliana protein match is: kinase (TAIR:AT4G11530.1). | chr4:6985622-6986419 FORWARD
+>gnl|BL_ORD_ID|25487 AT4G27080.2 | Symbols: ATPDIL5-4, ATPDI7, PDI7 | thioredoxin family protein | chr4:13589156-13593335 FORWARD
+>gnl|BL_ORD_ID|25547 AT5G27110.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:9538572-9540647 REVERSE
+>gnl|BL_ORD_ID|25582 AT5G66500.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:26548076-26549674 REVERSE
+>gnl|BL_ORD_ID|2560 AT1G51860.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:19257634-19261479 REVERSE
+>gnl|BL_ORD_ID|25623 AT5G65900.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr5:26358328-26361244 FORWARD
+>gnl|BL_ORD_ID|25671 AT5G16140.1 | Symbols:  | peptidyl-tRNA hydrolase family protein | chr5:5270308-5271517 REVERSE
+>gnl|BL_ORD_ID|2568 AT1G51880.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:19270193-19274068 REVERSE
+>gnl|BL_ORD_ID|25715 AT5G66520.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:26551879-26553741 FORWARD
+>gnl|BL_ORD_ID|25727 AT5G06540.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:1999181-2001049 REVERSE
+>gnl|BL_ORD_ID|2573 AT1G51870.1 | Symbols:  | protein kinase family protein | chr1:19262879-19267001 REVERSE
+>gnl|BL_ORD_ID|25767 AT5G58480.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:23641227-23642826 REVERSE
+>gnl|BL_ORD_ID|25779 AT5G01890.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:341661-344650 REVERSE
+>gnl|BL_ORD_ID|25806 AT5G01950.1 | Symbols:  | ATP binding / kinase/ protein serine/threonine kinase | chr5:365040-369532 REVERSE
+>gnl|BL_ORD_ID|25825 AT5G01980.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr5:375542-377023 FORWARD
+>gnl|BL_ORD_ID|25835 AT5G16000.1 | Symbols: NIK1 | NIK1 (NSP-INTERACTING KINASE 1); kinase | chr5:5224264-5227003 FORWARD
+>gnl|BL_ORD_ID|25859 AT5G61800.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:24830054-24831553 REVERSE
+>gnl|BL_ORD_ID|25891 AT5G08310.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:2670134-2675254 REVERSE
+>gnl|BL_ORD_ID|25940 AT5G51280.1 | Symbols:  | DEAD-box protein abstrakt, putative | chr5:20841456-20843645 FORWARD
+>gnl|BL_ORD_ID|26030 AT5G61990.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:24900186-24903110 REVERSE
+>gnl|BL_ORD_ID|26089 AT5G63710.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:25499475-25502598 FORWARD
+>gnl|BL_ORD_ID|26110 AT5G65700.1 | Symbols: BAM1 | BAM1 (BARELY ANY MERISTEM 1); ATP binding / kinase/ protein serine/threonine kinase | chr5:26281826-26284945 FORWARD
+>gnl|BL_ORD_ID|26170 AT5G56460.1 | Symbols:  | protein kinase, putative | chr5:22865509-22867866 FORWARD
+>gnl|BL_ORD_ID|26201 AT5G17520.1 | Symbols: RCP1, MEX1 | RCP1 (ROOT CAP 1); maltose transmembrane transporter | chr5:5772796-5775231 REVERSE
+>gnl|BL_ORD_ID|26207 AT5G16500.1 | Symbols:  | protein kinase family protein | chr5:5386733-5389003 REVERSE
+>gnl|BL_ORD_ID|2620 AT1G51800.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:19214203-19217833 FORWARD
+>gnl|BL_ORD_ID|26232 AT5G08139.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr5:2616487-2617617 FORWARD
+>gnl|BL_ORD_ID|26247 AT5G56590.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:22907521-22909436 FORWARD
+>gnl|BL_ORD_ID|26257 AT5G28680.1 | Symbols:  | protein kinase family protein | chr5:10719437-10722013 REVERSE
+>gnl|BL_ORD_ID|2626 AT1G51805.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:19221187-19225590 REVERSE
+>gnl|BL_ORD_ID|2627 AT1G51810.1 | Symbols:  | ATP binding / kinase/ protein binding / protein kinase/ protein serine/threonine kinase | chr1:19227119-19230584 REVERSE
+>gnl|BL_ORD_ID|26283 AT5G63630.1 | Symbols:  | DEAD box RNA helicase, putative | chr5:25472598-25475196 REVERSE
+>gnl|BL_ORD_ID|26324 AT5G58090.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:23505556-23507193 REVERSE
+>gnl|BL_ORD_ID|26340 AT5G56340.1 | Symbols: ATCRT1 | zinc finger (C3HC4-type RING finger) family protein | chr5:22818254-22819444 FORWARD
+>gnl|BL_ORD_ID|26352 AT5G65570.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:26203968-26206184 FORWARD
+>gnl|BL_ORD_ID|26358 AT5G65600.1 | Symbols:  | legume lectin family protein / protein kinase family protein | chr5:26216126-26218153 REVERSE
+>gnl|BL_ORD_ID|26360 AT5G65560.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:26201012-26203759 REVERSE
+>gnl|BL_ORD_ID|26377 AT5G56310.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:22802322-22803914 FORWARD
+>gnl|BL_ORD_ID|26395 AT5G02070.1 | Symbols:  | protein kinase-related | chr5:405895-408220 REVERSE
+>gnl|BL_ORD_ID|26408 AT5G40400.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT5G55840.1); Has 18933 Blast hits to 5737 proteins in 174 species: Archae - 4; Bacteria - 8; Metazoa - 352; Fungi - 335; Plants - 17540; Viruses - 0; Other Eukaryotes - 694 (source: NCBI BLink). | chr5:16166444-16168276 FORWARD
+>gnl|BL_ORD_ID|26409 AT5G40380.1 | Symbols:  | protein kinase family protein | chr5:16152301-16155038 FORWARD
+>gnl|BL_ORD_ID|26452 AT5G52850.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:21414935-21417616 REVERSE
+>gnl|BL_ORD_ID|26464 AT5G47470.1 | Symbols:  | nodulin MtN21 family protein | chr5:19254598-19256378 FORWARD
+>gnl|BL_ORD_ID|26475 AT5G11410.1 | Symbols:  | protein kinase family protein | chr5:3638431-3639883 REVERSE
+>gnl|BL_ORD_ID|26478 AT5G47460.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:19252463-19254193 REVERSE
+>gnl|BL_ORD_ID|26515 AT5G48740.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr5:19765324-19769314 REVERSE
+>gnl|BL_ORD_ID|26570 AT5G26742.1 | Symbols: emb1138 | emb1138 (embryo defective 1138); ATP binding / ATP-dependent helicase/ RNA binding / helicase/ nucleic acid binding / zinc ion binding | chr5:9285540-9288871 REVERSE
+>gnl|BL_ORD_ID|26581 AT5G48910.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:19832969-19834909 REVERSE
+>gnl|BL_ORD_ID|26588 AT5G54270.1 | Symbols: LHCB3, LHCB3*1 | LHCB3 (LIGHT-HARVESTING CHLOROPHYLL B-BINDING PROTEIN 3); structural molecule | chr5:22038424-22039383 FORWARD
+>gnl|BL_ORD_ID|26631 AT5G11500.1 | Symbols:  | unknown protein | chr5:3676747-3678946 FORWARD
+>gnl|BL_ORD_ID|26642 AT5G15080.1 | Symbols:  | protein kinase, putative | chr5:4886414-4888555 FORWARD
+>gnl|BL_ORD_ID|26649 AT5G61350.1 | Symbols:  | protein kinase family protein | chr5:24667973-24670501 FORWARD
+>gnl|BL_ORD_ID|26693 AT5G19830.1 | Symbols:  | aminoacyl-tRNA hydrolase | chr5:6703383-6705125 FORWARD
+>gnl|BL_ORD_ID|26727 AT5G42490.1 | Symbols:  | kinesin motor family protein | chr5:16988609-16992622 REVERSE
+>gnl|BL_ORD_ID|26741 AT5G45370.1 | Symbols:  | nodulin-related / integral membrane family protein | chr5:18388411-18390282 FORWARD
+>gnl|BL_ORD_ID|26750 AT5G18500.1 | Symbols:  | protein kinase family protein | chr5:6139263-6141283 FORWARD
+>gnl|BL_ORD_ID|26762 AT5G53890.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:21877235-21880345 FORWARD
+>gnl|BL_ORD_ID|26781 AT5G47740.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: root; CONTAINS InterPro DOMAIN/s: Rossmann-like alpha/beta/alpha sandwich fold (InterPro:IPR014729); BEST Arabidopsis thaliana protein match is: protein kinase family protein / U-box domain-containing protein (TAIR:AT2G45910.1); Has 196 Blast hits to 194 proteins in 7 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 196; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr5:19338688-19339683 FORWARD
+>gnl|BL_ORD_ID|26813 AT5G40240.1 | Symbols:  | nodulin MtN21 family protein | chr5:16082325-16084466 REVERSE
+>gnl|BL_ORD_ID|26821 AT5G40210.1 | Symbols:  | nodulin MtN21 family protein | chr5:16073725-16076088 REVERSE
+>gnl|BL_ORD_ID|26833 AT5G40230.1 | Symbols:  | nodulin-related | chr5:16079814-16081735 REVERSE
+>gnl|BL_ORD_ID|26873 AT5G39680.1 | Symbols: EMB2744 | EMB2744 (EMBRYO DEFECTIVE 2744) | chr5:15884236-15886368 REVERSE
+>gnl|BL_ORD_ID|26897 AT5G42450.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:16977660-16978850 FORWARD
+>gnl|BL_ORD_ID|26926 AT5G27000.1 | Symbols: ATK4, KATD | ATK4 (ARABIDOPSIS THALIANA KINESIN 4); ATPase/ microtubule binding / microtubule motor | chr5:9498099-9502951 FORWARD
+>gnl|BL_ORD_ID|26934 AT5G18610.1 | Symbols:  | protein kinase family protein | chr5:6192736-6195371 FORWARD
+>gnl|BL_ORD_ID|2703 AT1G18390.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:6325876-6329935 FORWARD
+>gnl|BL_ORD_ID|27061 AT5G02290.1 | Symbols: NAK | NAK; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr5:470387-472397 REVERSE
+>gnl|BL_ORD_ID|27195 AT5G39350.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:15750929-15752962 FORWARD
+>gnl|BL_ORD_ID|27207 AT5G02370.1 | Symbols:  | kinesin motor protein-related | chr5:503444-506388 FORWARD
+>gnl|BL_ORD_ID|27236 AT5G48940.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:19839785-19843744 FORWARD
+>gnl|BL_ORD_ID|27238 AT5G35580.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr5:13761980-13763851 FORWARD
+>gnl|BL_ORD_ID|27245 AT5G10530.1 | Symbols:  | lectin protein kinase, putative | chr5:3324978-3326933 REVERSE
+>gnl|BL_ORD_ID|27248 AT5G54380.1 | Symbols: THE1 | THE1 (THESEUS1); kinase/ protein kinase | chr5:22077313-22079880 REVERSE
+>gnl|BL_ORD_ID|27326 AT5G52630.1 | Symbols: MEF1 | MEF1 (MITOCHONDRIAL RNA EDITING FACTOR 1) | chr5:21350375-21352141 FORWARD
+>gnl|BL_ORD_ID|2732 AT1G18370.1 | Symbols: HIK, ATNACK1, NACK1 | HIK (HINKEL); ATP binding / microtubule motor | chr1:6319732-6323820 REVERSE
+>gnl|BL_ORD_ID|27336 AT5G03140.1 | Symbols:  | lectin protein kinase family protein | chr5:737750-739885 REVERSE
+>gnl|BL_ORD_ID|27344 AT5G10520.1 | Symbols: RBK1 | RBK1 (Rop Binding protein Kinases 1); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr5:3320584-3322649 REVERSE
+>gnl|BL_ORD_ID|27457 AT5G10470.1 | Symbols:  | kinesin motor protein-related | chr5:3290121-3297248 REVERSE
+>gnl|BL_ORD_ID|27505 AT5G54670.1 | Symbols: ATK3, KATC | ATK3 (ARABIDOPSIS THALIANA KINESIN 3); ATPase/ microtubule binding / microtubule motor | chr5:22209912-22213843 FORWARD
+>gnl|BL_ORD_ID|27516 AT5G62190.1 | Symbols: PRH75 | PRH75; ATP-dependent helicase/ DEAD/H-box RNA helicase binding | chr5:24980542-24983879 REVERSE
+>gnl|BL_ORD_ID|27560 AT5G10290.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr5:3235462-3238171 REVERSE
+>gnl|BL_ORD_ID|27610 AT5G62230.1 | Symbols: ERL1 | ERL1 (ERECTA-LIKE 1); kinase | chr5:24996433-25002130 FORWARD
+>gnl|BL_ORD_ID|2773 AT1G51940.1 | Symbols:  | protein kinase family protein / peptidoglycan-binding LysM domain-containing protein | chr1:19296092-19298941 REVERSE
+>gnl|BL_ORD_ID|27781 AT5G50160.1 | Symbols: ATFRO8, FRO8 | FRO8 (FERRIC REDUCTION OXIDASE 8); ferric-chelate reductase/ oxidoreductase | chr5:20415832-20418582 FORWARD
+>gnl|BL_ORD_ID|27819 AT5G25790.1 | Symbols:  | transcription factor | chr5:8977233-8979181 REVERSE
+>gnl|BL_ORD_ID|27856 AT5G46440.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: endomembrane system; BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT5G46460.1); Has 6 Blast hits to 6 proteins in 2 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 6; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr5:18834872-18835153 FORWARD
+>gnl|BL_ORD_ID|27861 AT5G46330.1 | Symbols: FLS2 | FLS2 (FLAGELLIN-SENSITIVE 2); ATP binding / kinase/ protein binding / protein serine/threonine kinase/ transmembrane receptor protein serine/threonine kinase | chr5:18791802-18795407 FORWARD
+>gnl|BL_ORD_ID|27882 AT5G22830.1 | Symbols: ATMGT10, GMN10 | ATMGT10 (MAGNESIUM (MG) TRANSPORTER 10); magnesium ion transmembrane transporter | chr5:7627676-7630633 FORWARD
+>gnl|BL_ORD_ID|27889 AT5G01560.1 | Symbols: LECRKA4.3 | LECRKA4.3 (LECTIN RECEPTOR KINASE A4.3); kinase | chr5:218170-220245 REVERSE
+>gnl|BL_ORD_ID|28017 AT5G13120.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase cyclophilin-type family protein | chr5:4162714-4164720 REVERSE
+>gnl|BL_ORD_ID|28029 AT5G07180.1 | Symbols: ERL2 | ERL2 (ERECTA-LIKE 2); kinase | chr5:2227787-2233232 REVERSE
+>gnl|BL_ORD_ID|28081 AT5G07280.1 | Symbols: EMS1, EXS | EMS1 (EXCESS MICROSPOROCYTES1); kinase/ transmembrane receptor protein kinase | chr5:2285088-2288666 FORWARD
+>gnl|BL_ORD_ID|28159 AT5G49760.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr5:20216679-20221052 FORWARD
+>gnl|BL_ORD_ID|28169 AT5G49770.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:20222860-20227267 FORWARD
+>gnl|BL_ORD_ID|28180 AT5G13270.1 | Symbols: RARE1 | pentatricopeptide (PPR) repeat-containing protein | chr5:4246954-4249212 REVERSE
+>gnl|BL_ORD_ID|28183 AT5G07050.1 | Symbols:  | LOCATED IN: membrane; CONTAINS InterPro DOMAIN/s: Protein of unknown function DUF6, transmembrane (InterPro:IPR000620); BEST Arabidopsis thaliana protein match is: nodulin MtN21 family protein (TAIR:AT2G40900.1); Has 2288 Blast hits to 2270 proteins in 280 species: Archae - 23; Bacteria - 774; Metazoa - 5; Fungi - 0; Plants - 641; Viruses - 0; Other Eukaryotes - 845 (source: NCBI BLink). | chr5:2191533-2193416 REVERSE
+>gnl|BL_ORD_ID|28184 AT5G49740.1 | Symbols: ATFRO7, FRO7 | ATFRO7 (FERRIC REDUCTION OXIDASE 7); ferric-chelate reductase/ oxidoreductase | chr5:20205549-20208628 REVERSE
+>gnl|BL_ORD_ID|28197 AT5G62710.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr5:25187438-25190325 FORWARD
+>gnl|BL_ORD_ID|28209 AT5G13230.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:4222514-4224982 FORWARD
+>gnl|BL_ORD_ID|28220 AT5G55180.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:22388834-22390550 FORWARD
+>gnl|BL_ORD_ID|28231 AT5G13160.1 | Symbols: PBS1 | PBS1 (avrPphB susceptible 1); kinase/ protein serine/threonine kinase | chr5:4176854-4179682 FORWARD
+>gnl|BL_ORD_ID|28256 AT5G49780.1 | Symbols:  | ATP binding / kinase/ protein serine/threonine kinase | chr5:20229499-20233095 FORWARD
+>gnl|BL_ORD_ID|28267 AT5G49730.1 | Symbols: ATFRO6, FRO6 | ATFRO6 (FERRIC REDUCTION OXIDASE 6); ferric-chelate reductase/ oxidoreductase | chr5:20201355-20204455 REVERSE
+>gnl|BL_ORD_ID|28355 AT5G04780.1 | Symbols:  | INVOLVED IN: biological_process unknown; LOCATED IN: chloroplast; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: MEF1 (MITOCHONDRIAL RNA EDITING FACTOR 1) (TAIR:AT5G52630.1); Has 13798 Blast hits to 4918 proteins in 150 species: Archae - 0; Bacteria - 4; Metazoa - 59; Fungi - 36; Plants - 13447; Viruses - 0; Other Eukaryotes - 252 (source: NCBI BLink). | chr5:1384564-1386447 FORWARD
+>gnl|BL_ORD_ID|28362 AT5G41310.1 | Symbols:  | kinesin motor protein-related | chr5:16516634-16522392 REVERSE
+>gnl|BL_ORD_ID|28368 AT5G01020.1 | Symbols:  | protein kinase family protein | chr5:6309-8270 REVERSE
+>gnl|BL_ORD_ID|28389 AT5G20870.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:7080037-7081739 REVERSE
+>gnl|BL_ORD_ID|28397 AT5G27950.1 | Symbols:  | kinesin motor protein-related | chr5:9984774-9987493 FORWARD
+>gnl|BL_ORD_ID|28487 AT5G54910.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr5:22298668-22301719 REVERSE
+>gnl|BL_ORD_ID|28553 AT5G42100.1 | Symbols: ATBG_PPAP, ATBG_PAP, BG_PPAP | ATBG_PAP; glucan endo-1,3-beta-D-glucosidase/ hydrolase, hydrolyzing O-glycosyl compounds | chr5:16829460-16831168 REVERSE
+>gnl|BL_ORD_ID|28570 AT5G38560.1 | Symbols:  | protein kinase family protein | chr5:15439844-15443007 FORWARD
+>gnl|BL_ORD_ID|2857 AT1G25270.1 | Symbols:  | LOCATED IN: endomembrane system, membrane; CONTAINS InterPro DOMAIN/s: Protein of unknown function DUF6, transmembrane (InterPro:IPR000620); BEST Arabidopsis thaliana protein match is: nodulin MtN21 family protein (TAIR:AT1G68170.1); Has 1288 Blast hits to 1274 proteins in 251 species: Archae - 4; Bacteria - 491; Metazoa - 4; Fungi - 8; Plants - 639; Viruses - 0; Other Eukaryotes - 142 (source: NCBI BLink). | chr1:8857726-8859909 FORWARD
+>gnl|BL_ORD_ID|28605 AT5G63120.2 | Symbols:  | ethylene-responsive DEAD box RNA helicase, putative (RH30) | chr5:25318967-25322071 REVERSE
+>gnl|BL_ORD_ID|28780 AT5G16860.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:5543834-5546386 FORWARD
+>gnl|BL_ORD_ID|28784 AT5G16840.1 | Symbols: BPA1 | BPA1 (BINDINGPARTNEROFACD11 1); nucleic acid binding / nucleotide binding / oxidoreductase | chr5:5536042-5538026 FORWARD
+>gnl|BL_ORD_ID|2878 AT1G31430.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:11254025-11255737 REVERSE
+>gnl|BL_ORD_ID|28795 AT5G16900.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr5:5555254-5559715 FORWARD
+>gnl|BL_ORD_ID|28848 AT5G38430.1 | Symbols:  | ribulose bisphosphate carboxylase small chain 1B / RuBisCO small subunit 1B (RBCS-1B) (ATS1B) | chr5:15384350-15385155 REVERSE
+>gnl|BL_ORD_ID|28866 AT5G56790.1 | Symbols:  | protein kinase family protein | chr5:22968610-22971391 FORWARD
+>gnl|BL_ORD_ID|28887 AT5G17220.1 | Symbols: ATGSTF12, GST26, TT19 | ATGSTF12 (ARABIDOPSIS THALIANA GLUTATHIONE S-TRANSFERASE PHI 12); glutathione transferase | chr5:5658528-5659322 FORWARD
+>gnl|BL_ORD_ID|28888 AT5G44230.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:17814336-17816309 FORWARD
+>gnl|BL_ORD_ID|28899 AT5G35960.1 | Symbols:  | protein kinase, putative | chr5:14108524-14110536 REVERSE
+>gnl|BL_ORD_ID|288 AT1G31790.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:11394744-11395973 REVERSE
+>gnl|BL_ORD_ID|28900 AT5G51350.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:20867860-20870621 REVERSE
+>gnl|BL_ORD_ID|28901 AT5G38420.1 | Symbols:  | ribulose bisphosphate carboxylase small chain 2B / RuBisCO small subunit 2B (RBCS-2B) (ATS2B) | chr5:15381203-15381978 REVERSE
+>gnl|BL_ORD_ID|28919 AT5G16640.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:5461031-5462545 FORWARD
+>gnl|BL_ORD_ID|28930 AT5G65930.2 | Symbols: ZWI, PKCBP, KCBP | ZWI (ZWICHEL); calmodulin binding / microtubule motor | chr5:26370369-26376394 REVERSE
+>gnl|BL_ORD_ID|28944 AT5G38410.1 | Symbols:  | ribulose bisphosphate carboxylase small chain 3B / RuBisCO small subunit 3B (RBCS-3B) (ATS3B) | chr5:15377501-15378306 REVERSE
+>gnl|BL_ORD_ID|28950 AT5G06670.1 | Symbols:  | ATP binding / microtubule motor | chr5:2048243-2055019 REVERSE
+>gnl|BL_ORD_ID|28980 AT5G13670.1 | Symbols:  | nodulin MtN21 family protein | chr5:4407205-4408955 REVERSE
+>gnl|BL_ORD_ID|28983 AT5G03320.1 | Symbols:  | protein kinase, putative | chr5:802759-804242 FORWARD
+>gnl|BL_ORD_ID|29001 AT5G56890.1 | Symbols:  | protein kinase family protein | chr5:23010801-23015559 REVERSE
+>gnl|BL_ORD_ID|29067 AT5G06740.1 | Symbols:  | lectin protein kinase family protein | chr5:2084094-2086052 FORWARD
+>gnl|BL_ORD_ID|2909 AT1G21730.1 | Symbols:  | kinesin-related protein (MKRP1) | chr1:7630365-7636247 FORWARD
+>gnl|BL_ORD_ID|29286 AT5G46460.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:18840305-18842398 FORWARD
+>gnl|BL_ORD_ID|29315 AT5G09950.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:3102877-3105864 REVERSE
+>gnl|BL_ORD_ID|29323 AT5G39000.1 | Symbols:  | protein kinase family protein | chr5:15611860-15614481 FORWARD
+>gnl|BL_ORD_ID|29335 AT5G39020.1 | Symbols:  | protein kinase family protein | chr5:15616917-15619358 FORWARD
+>gnl|BL_ORD_ID|29343 AT5G38990.1 | Symbols:  | protein kinase family protein | chr5:15608824-15611466 FORWARD
+>gnl|BL_ORD_ID|29355 AT5G39030.1 | Symbols:  | protein kinase family protein | chr5:15620066-15622486 FORWARD
+>gnl|BL_ORD_ID|29361 AT5G45780.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:18566946-18569625 REVERSE
+>gnl|BL_ORD_ID|2936 AT1G25360.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:8894428-8896800 FORWARD
+>gnl|BL_ORD_ID|29388 AT5G47070.1 | Symbols:  | protein kinase, putative | chr5:19118683-19120528 REVERSE
+>gnl|BL_ORD_ID|29440 AT5G53510.1 | Symbols: ATOPT9, OPT9 | ATOPT9 (ARABIDOPSIS THALIANA OLIGOPEPTIDE TRANSPORTER 9); oligopeptide transporter | chr5:21738849-21742082 FORWARD
+>gnl|BL_ORD_ID|29462 AT5G19210.2 | Symbols:  | DEAD/DEAH box helicase, putative | chr5:6461444-6463687 FORWARD
+>gnl|BL_ORD_ID|29466 AT5G53520.1 | Symbols: ATOPT8, OPT8 | ATOPT8 (ARABIDOPSIS THALIANA OLIGOPEPTIDE TRANSPORTER 8); oligopeptide transporter | chr5:21743450-21745981 FORWARD
+>gnl|BL_ORD_ID|29488 AT5G66310.1 | Symbols:  | kinesin motor family protein | chr5:26485786-26490304 REVERSE
+>gnl|BL_ORD_ID|29512 AT5G18910.1 | Symbols:  | protein kinase family protein | chr5:6306994-6309396 REVERSE
+>gnl|BL_ORD_ID|29521 AT5G50410.1 | Symbols:  | unknown protein | chr5:20528446-20529816 REVERSE
+>gnl|BL_ORD_ID|29549 AT5G46870.1 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr5:19015486-19016990 FORWARD
+>gnl|BL_ORD_ID|29552 AT5G50390.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:20520789-20522980 REVERSE
+>gnl|BL_ORD_ID|29582 AT5G19020.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:6352771-6357083 REVERSE
+>gnl|BL_ORD_ID|29645 AT5G37450.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:14852801-14857098 REVERSE
+>gnl|BL_ORD_ID|29687 AT5G63940.1 | Symbols:  | protein kinase family protein | chr5:25588254-25591229 FORWARD
+>gnl|BL_ORD_ID|29691 AT5G63930.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr5:25583006-25586392 FORWARD
+>gnl|BL_ORD_ID|29697 AT5G64790.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:25902713-25904559 FORWARD
+>gnl|BL_ORD_ID|29700 AT5G20480.1 | Symbols: EFR | EFR (EF-TU RECEPTOR); ATP binding / kinase/ protein serine/threonine kinase | chr5:6922497-6925679 FORWARD
+>gnl|BL_ORD_ID|29731 AT5G59400.1 | Symbols:  | unknown protein | chr5:23957756-23959518 FORWARD
+>gnl|BL_ORD_ID|29744 AT5G02860.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:654102-656561 FORWARD
+>gnl|BL_ORD_ID|29774 AT5G23980.1 | Symbols: ATFRO4, FRO4 | FRO4 (FERRIC REDUCTION OXIDASE 4); ferric-chelate reductase | chr5:8098167-8101282 REVERSE
+>gnl|BL_ORD_ID|29803 AT5G64410.1 | Symbols: ATOPT4, OPT4 | OPT4 (OLIGOPEPTIDE TRANSPORTER 4); oligopeptide transporter | chr5:25750921-25754974 REVERSE
+>gnl|BL_ORD_ID|29903 AT5G23990.1 | Symbols: ATFRO5, FRO5 | FRO5 (FERRIC REDUCTION OXIDASE 5); ferric-chelate reductase | chr5:8105565-8108590 REVERSE
+>gnl|BL_ORD_ID|29906 AT5G02800.1 | Symbols:  | protein kinase family protein | chr5:635545-637374 REVERSE
+>gnl|BL_ORD_ID|29936 AT5G08490.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:2745208-2747757 REVERSE
+>gnl|BL_ORD_ID|30050 AT5G11200.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr5:3567389-3570686 FORWARD
+>gnl|BL_ORD_ID|30068 AT5G60900.1 | Symbols: RLK1 | RLK1 (RECEPTOR-LIKE PROTEIN KINASE 1); ATP binding / carbohydrate binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase/ sugar binding | chr5:24498467-24501494 REVERSE
+>gnl|BL_ORD_ID|30105 AT5G27550.1 | Symbols:  | ATP binding / microtubule motor | chr5:9727634-9731323 REVERSE
+>gnl|BL_ORD_ID|30126 AT5G59900.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:24123983-24126706 REVERSE
+>gnl|BL_ORD_ID|30137 AT5G59700.1 | Symbols:  | protein kinase, putative | chr5:24052613-24055102 REVERSE
+>gnl|BL_ORD_ID|30140 AT5G20170.1 | Symbols:  | unknown protein | chr5:6807554-6810729 REVERSE
+>gnl|BL_ORD_ID|30173 AT5G38260.1 | Symbols:  | serine/threonine protein kinase, putative | chr5:15283692-15285837 REVERSE
+>gnl|BL_ORD_ID|30178 AT5G38280.1 | Symbols: PR5K | PR5K; kinase/ transmembrane receptor protein serine/threonine kinase | chr5:15293325-15295838 REVERSE
+>gnl|BL_ORD_ID|30180 AT5G65460.1 | Symbols:  | kinesin motor protein-related | chr5:26161831-26169001 REVERSE
+>gnl|BL_ORD_ID|30195 AT5G38240.1 | Symbols:  | serine/threonine protein kinase, putative | chr5:15277239-15279317 REVERSE
+>gnl|BL_ORD_ID|30209 AT5G38250.1 | Symbols:  | serine/threonine protein kinase, putative | chr5:15280643-15282709 REVERSE
+>gnl|BL_ORD_ID|30218 AT5G64700.1 | Symbols:  | nodulin MtN21 family protein | chr5:25865190-25866845 REVERSE
+>gnl|BL_ORD_ID|30229 AT5G59670.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr5:24041538-24045478 FORWARD
+>gnl|BL_ORD_ID|30254 AT5G59270.1 | Symbols:  | lectin protein kinase family protein | chr5:23911151-23913235 REVERSE
+>gnl|BL_ORD_ID|30261 AT5G55930.1 | Symbols: ATOPT1, OPT1 | OPT1 (OLIGOPEPTIDE TRANSPORTER 1); oligopeptide transporter | chr5:22652988-22655827 FORWARD
+>gnl|BL_ORD_ID|30265 AT5G61060.1 | Symbols: HDA05, HDA5, ATHDA5 | HDA05 (HISTONE DEACETYLASE 5); histone deacetylase | chr5:24567137-24570917 REVERSE
+>gnl|BL_ORD_ID|30269 AT5G59260.1 | Symbols:  | lectin protein kinase, putative | chr5:23907901-23909925 REVERSE
+>gnl|BL_ORD_ID|30321 AT5G20330.1 | Symbols: BETAG4 | BETAG4; catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr5:6871620-6872657 FORWARD
+>gnl|BL_ORD_ID|30332 AT5G38210.1 | Symbols:  | serine/threonine protein kinase family protein | chr5:15261035-15265376 FORWARD
+>gnl|BL_ORD_ID|30334 AT5G20340.1 | Symbols: BG5 | BG5 (beta-1,3-glucanase 5); glucan 1,3-beta-glucosidase/ hydrolase, hydrolyzing O-glycosyl compounds | chr5:6874787-6875851 FORWARD
+>gnl|BL_ORD_ID|30380 AT5G58940.1 | Symbols: CRCK1 | CRCK1 (CALMODULIN-BINDING RECEPTOR-LIKE CYTOPLASMIC KINASE 1); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr5:23798659-23800716 FORWARD
+>gnl|BL_ORD_ID|30388 AT5G43790.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:17592099-17593481 REVERSE
+>gnl|BL_ORD_ID|30394 AT5G59680.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr5:24046792-24050801 FORWARD
+>gnl|BL_ORD_ID|30413 AT5G59200.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:23888793-23890565 REVERSE
+>gnl|BL_ORD_ID|30430 AT5G61070.1 | Symbols: HDA18, ATHDA18 | HDA18; H3/H4 histone acetyltransferase/ histone deacetylase | chr5:24571297-24574372 REVERSE
+>gnl|BL_ORD_ID|3043 AT1G01950.1 | Symbols: ARK2 | armadillo/beta-catenin repeat family protein / kinesin motor family protein | chr1:325473-330403 FORWARD
+>gnl|BL_ORD_ID|30467 AT5G37570.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:14924494-14926146 REVERSE
+>gnl|BL_ORD_ID|30482 AT5G59650.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr5:24031346-24035100 FORWARD
+>gnl|BL_ORD_ID|30488 AT5G18220.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:6018914-6020453 REVERSE
+>gnl|BL_ORD_ID|30510 AT5G18120.1 | Symbols: ATAPRL7 | ATAPRL7 (APR-like 7) | chr5:5991385-5993696 FORWARD
+>gnl|BL_ORD_ID|30564 AT5G60930.1 | Symbols:  | chromosome-associated kinesin, putative | chr5:24515398-24522511 REVERSE
+>gnl|BL_ORD_ID|30610 AT5G44700.1 | Symbols: EDA23, GSO2 | GSO2 (GASSHO 2); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr5:18033049-18036894 REVERSE
+>gnl|BL_ORD_ID|30634 AT5G20390.1 | Symbols:  | beta-1,3-glucanase, putative | chr5:6892982-6894016 REVERSE
+>gnl|BL_ORD_ID|30640 AT5G38290.2 | Symbols:  | peptidyl-tRNA hydrolase family protein | chr5:15303491-15305381 FORWARD
+>gnl|BL_ORD_ID|30668 AT5G64320.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:25723247-25725439 REVERSE
+>gnl|BL_ORD_ID|30677 AT5G24080.1 | Symbols:  | protein kinase family protein | chr5:8139334-8141014 REVERSE
+>gnl|BL_ORD_ID|30683 AT5G24010.1 | Symbols:  | protein kinase family protein | chr5:8113910-8116384 FORWARD
+>gnl|BL_ORD_ID|30701 AT5G05450.1 | Symbols:  | DEAD/DEAH box helicase, putative (RH18) | chr5:1612077-1615195 FORWARD
+>gnl|BL_ORD_ID|30723 AT5G47910.1 | Symbols: RBOHD, ATRBOHD | RBOHD (RESPIRATORY BURST OXIDASE HOMOLOGUE D); NAD(P)H oxidase | chr5:19397585-19401768 FORWARD
+>gnl|BL_ORD_ID|30739 AT5G51060.1 | Symbols: RHD2, ATRBOHC, RBOHC | RHD2 (ROOT HAIR DEFECTIVE 2); NAD(P)H oxidase | chr5:20757484-20762175 REVERSE
+>gnl|BL_ORD_ID|30740 AT5G15300.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:4968384-4970030 REVERSE
+>gnl|BL_ORD_ID|30745 AT5G14610.1 | Symbols:  | ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding / protein binding | chr5:4711271-4714713 FORWARD
+>gnl|BL_ORD_ID|3075 AT1G23020.1 | Symbols: ATFRO3, FRO3 | FRO3; ferric-chelate reductase | chr1:8150187-8153357 REVERSE
+>gnl|BL_ORD_ID|30786 AT5G55740.1 | Symbols: CRR21 | CRR21 (chlororespiratory reduction 21) | chr5:22561941-22564433 REVERSE
+>gnl|BL_ORD_ID|30795 AT5G37790.1 | Symbols:  | protein kinase family protein | chr5:15008433-15011025 REVERSE
+>gnl|BL_ORD_ID|30797 AT5G08610.1 | Symbols:  | DEAD box RNA helicase (RH26) | chr5:2790341-2794059 FORWARD
+>gnl|BL_ORD_ID|30801 AT5G32450.1 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr5:12079707-12081317 FORWARD
+>gnl|BL_ORD_ID|30805 AT5G60990.1 | Symbols:  | DEAD/DEAH box helicase, putative (RH10) | chr5:24546601-24549148 REVERSE
+>gnl|BL_ORD_ID|30881 AT5G55840.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:22598398-22602499 FORWARD
+>gnl|BL_ORD_ID|30891 AT5G08620.1 | Symbols: STRS2, ATRH25 | STRS2 (STRESS RESPONSE SUPPRESSOR 2); ATP-dependent helicase/ RNA binding | chr5:2794540-2797548 FORWARD
+>gnl|BL_ORD_ID|30900 AT5G55830.1 | Symbols:  | lectin protein kinase, putative | chr5:22594655-22596700 FORWARD
+>gnl|BL_ORD_ID|30914 AT5G03800.1 | Symbols: EMB175, emb1899, EMB166 | EMB175 (EMBRYO DEFECTIVE 175); catalytic | chr5:1010894-1013584 REVERSE
+>gnl|BL_ORD_ID|30980 AT5G20560.1 | Symbols:  | beta-1,3-glucanase, putative | chr5:6955368-6956381 FORWARD
+>gnl|BL_ORD_ID|30989 AT5G47820.1 | Symbols: FRA1 | FRA1 (FRAGILE FIBER 1); microtubule motor | chr5:19366505-19372229 FORWARD
+>gnl|BL_ORD_ID|309 AT1G65800.1 | Symbols: ARK2 | ARK2 (A. THALIANA RECEPTOR KINASE 2); kinase/ protein kinase/ transmembrane receptor protein serine/threonine kinase | chr1:24473166-24476523 FORWARD
+>gnl|BL_ORD_ID|30 AT1G09410.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:3035443-3037560 FORWARD
+>gnl|BL_ORD_ID|31009 AT5G65240.1 | Symbols:  | kinase | chr5:26074980-26077650 REVERSE
+>gnl|BL_ORD_ID|3100 AT1G55200.1 | Symbols:  | protein kinase family protein | chr1:20589309-20592049 REVERSE
+>gnl|BL_ORD_ID|31047 AT5G65530.1 | Symbols:  | protein kinase, putative | chr5:26190844-26192826 REVERSE
+>gnl|BL_ORD_ID|31062 AT5G47850.1 | Symbols: CCR4 | CCR4 (ARABIDOPSIS THALIANA CRINKLY4 RELATED 4); kinase | chr5:19378803-19381058 REVERSE
+>gnl|BL_ORD_ID|31085 AT5G50990.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: 6 plant structures; EXPRESSED DURING: F mature embryo stage, petal differentiation and expansion stage, D bilateral stage, E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: binding (TAIR:AT3G62890.1); Has 13116 Blast hits to 4886 proteins in 160 species: Archae - 0; Bacteria - 0; Metazoa - 67; Fungi - 72; Plants - 12769; Viruses - 0; Other Eukaryotes - 208 (source: NCBI BLink). | chr5:20739453-20741281 FORWARD
+>gnl|BL_ORD_ID|31112 AT5G59550.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr5:23998422-23999645 REVERSE
+>gnl|BL_ORD_ID|3115 AT1G24650.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:8734570-8737315 FORWARD
+>gnl|BL_ORD_ID|31225 AT5G11170.2 | Symbols:  | ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding | chr5:3554272-3556646 FORWARD
+>gnl|BL_ORD_ID|31226 AT5G58710.1 | Symbols: ROC7 | ROC7; peptidyl-prolyl cis-trans isomerase | chr5:23717840-23719495 FORWARD
+>gnl|BL_ORD_ID|31238 AT5G15730.1 | Symbols:  | serine/threonine protein kinase, putative | chr5:5131284-5133046 FORWARD
+>gnl|BL_ORD_ID|31259 AT5G20050.1 | Symbols:  | protein kinase family protein | chr5:6774381-6775739 FORWARD
+>gnl|BL_ORD_ID|31309 AT5G08510.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:2753099-2754731 FORWARD
+>gnl|BL_ORD_ID|3132 AT1G31420.1 | Symbols: FEI1 | FEI1 (FEI 1); ATP binding / kinase/ protein serine/threonine kinase | chr1:11250360-11253516 FORWARD
+>gnl|BL_ORD_ID|31370 AT5G11020.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr5:3486439-3488983 REVERSE
+>gnl|BL_ORD_ID|31371 AT5G15340.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:4982273-4984144 REVERSE
+>gnl|BL_ORD_ID|3137 AT1G10620.1 | Symbols:  | protein kinase family protein | chr1:3509001-3511975 REVERSE
+>gnl|BL_ORD_ID|31381 AT5G59600.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr5:24011315-24012919 REVERSE
+>gnl|BL_ORD_ID|31387 AT5G60320.1 | Symbols:  | lectin protein kinase family protein | chr5:24270808-24272835 FORWARD
+>gnl|BL_ORD_ID|3138 AT1G55150.1 | Symbols:  | DEAD box RNA helicase, putative (RH20) | chr1:20574634-20577141 FORWARD
+>gnl|BL_ORD_ID|313 AT1G65790.1 | Symbols: ARK1 | ARK1 (A. THALIANA RECEPTOR KINASE 1); kinase/ protein kinase/ protein serine/threonine kinase/ transmembrane receptor protein kinase | chr1:24468932-24472329 FORWARD
+>gnl|BL_ORD_ID|31413 AT5G35370.1 | Symbols:  | ATP binding / carbohydrate binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase/ sugar binding | chr5:13588564-13591182 REVERSE
+>gnl|BL_ORD_ID|31424 AT5G56040.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr5:22695050-22697911 FORWARD
+>gnl|BL_ORD_ID|31440 AT5G42720.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:17130535-17132763 FORWARD
+>gnl|BL_ORD_ID|31445 AT5G15820.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr5:5161787-5162833 FORWARD
+>gnl|BL_ORD_ID|31517 AT5G59400.2 | Symbols:  | unknown protein | chr5:23957756-23959518 FORWARD
+>gnl|BL_ORD_ID|31578 AT5G45370.2 | Symbols:  | nodulin-related / integral membrane family protein | chr5:18388411-18390282 FORWARD
+>gnl|BL_ORD_ID|31639 AT5G42100.2 | Symbols: ATBG_PPAP, ATBG_PAP | ATBG_PAP; glucan endo-1,3-beta-D-glucosidase/ hydrolase, hydrolyzing O-glycosyl compounds | chr5:16829897-16831168 REVERSE
+>gnl|BL_ORD_ID|31642 AT5G02290.2 | Symbols: NAK | NAK; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr5:470387-472397 REVERSE
+>gnl|BL_ORD_ID|31675 AT5G38290.1 | Symbols:  | peptidyl-tRNA hydrolase family protein | chr5:15303603-15305381 FORWARD
+>gnl|BL_ORD_ID|31769 AT5G65930.1 | Symbols: ZWI, PKCBP, KCBP | ZWI (ZWICHEL); calmodulin binding / microtubule motor | chr5:26370369-26376394 REVERSE
+>gnl|BL_ORD_ID|31777 AT5G47820.2 | Symbols: FRA1 | FRA1 (FRAGILE FIBER 1); microtubule motor | chr5:19366505-19372229 FORWARD
+>gnl|BL_ORD_ID|31829 AT5G63120.1 | Symbols:  | ethylene-responsive DEAD box RNA helicase, putative (RH30) | chr5:25319798-25322071 REVERSE
+>gnl|BL_ORD_ID|31937 AT5G11170.1 | Symbols:  | ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding | chr5:3553334-3556646 FORWARD
+>gnl|BL_ORD_ID|32020 AT5G54590.2 | Symbols:  | protein kinase family protein | chr5:22180480-22182698 FORWARD
+>gnl|BL_ORD_ID|3206 AT1G61550.1 | Symbols:  | S-locus protein kinase, putative | chr1:22704866-22707826 REVERSE
+>gnl|BL_ORD_ID|32100 AT5G24318.1 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr5:8282285-8283956 REVERSE
+>gnl|BL_ORD_ID|32159 AT5G40410.1 | Symbols:  | INVOLVED IN: biological_process unknown; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT1G08070.1); Has 12213 Blast hits to 4641 proteins in 127 species: Archae - 0; Bacteria - 0; Metazoa - 61; Fungi - 12; Plants - 12006; Viruses - 0; Other Eukaryotes - 134 (source: NCBI BLink). | chr5:16171385-16173211 FORWARD
+>gnl|BL_ORD_ID|32160 AT5G40405.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT5G66520.1); Has 12548 Blast hits to 5076 proteins in 168 species: Archae - 0; Bacteria - 2; Metazoa - 87; Fungi - 66; Plants - 12146; Viruses - 0; Other Eukaryotes - 247 (source: NCBI BLink). | chr5:16169315-16171153 FORWARD
+>gnl|BL_ORD_ID|32208 AT5G26742.2 | Symbols: emb1138 | emb1138 (embryo defective 1138); ATP binding / ATP-dependent helicase/ RNA binding / helicase/ nucleic acid binding / zinc ion binding | chr5:9285540-9288871 REVERSE
+>gnl|BL_ORD_ID|32327 AT5G18500.2 | Symbols:  | protein kinase family protein | chr5:6139263-6141283 FORWARD
+>gnl|BL_ORD_ID|32358 AT5G38410.2 | Symbols:  | ribulose bisphosphate carboxylase small chain 3B / RuBisCO small subunit 3B (RBCS-3B) (ATS3B) | chr5:15377501-15378306 REVERSE
+>gnl|BL_ORD_ID|32393 AT5G56040.2 | Symbols:  | leucine-rich repeat protein kinase, putative | chr5:22695050-22698410 FORWARD
+>gnl|BL_ORD_ID|32436 AT5G57250.1 | Symbols:  | EXPRESSED IN: 9 plant structures; EXPRESSED DURING: F mature embryo stage, 4 leaf senescence stage, petal differentiation and expansion stage, D bilateral stage, E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT1G62910.1); Has 30133 Blast hits to 5951 proteins in 186 species: Archae - 6; Bacteria - 22; Metazoa - 601; Fungi - 543; Plants - 27743; Viruses - 0; Other Eukaryotes - 1218 (source: NCBI BLink). | chr5:23195609-23198524 REVERSE
+>gnl|BL_ORD_ID|32553 AT5G10470.2 | Symbols:  | kinesin motor protein-related | chr5:3290121-3297248 REVERSE
+>gnl|BL_ORD_ID|32565 AT5G15730.2 | Symbols:  | serine/threonine protein kinase, putative | chr5:5131284-5133046 FORWARD
+>gnl|BL_ORD_ID|32566 AT5G16140.2 | Symbols:  | peptidyl-tRNA hydrolase family protein | chr5:5270308-5271517 REVERSE
+>gnl|BL_ORD_ID|32568 AT5G16840.2 | Symbols: BPA1 | BPA1 (BINDINGPARTNEROFACD11 1); nucleic acid binding / nucleotide binding / oxidoreductase | chr5:5536042-5538026 FORWARD
+>gnl|BL_ORD_ID|32569 AT5G16840.3 | Symbols: BPA1 | BPA1 (BINDINGPARTNEROFACD11 1); nucleic acid binding / nucleotide binding / oxidoreductase | chr5:5536042-5538026 FORWARD
+>gnl|BL_ORD_ID|3284 AT1G08460.1 | Symbols: HDA08, HDA8, ATHDA8 | HDA08; histone deacetylase | chr1:2672527-2674469 FORWARD
+>gnl|BL_ORD_ID|32909 AT5G17523.1 | Symbols:  | Similar to Maltose excess protein 1 | chr5:5776244-5777231 REVERSE
+>gnl|BL_ORD_ID|32976 AT5G24318.2 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr5:8282390-8283956 REVERSE
+>gnl|BL_ORD_ID|32996 AT5G38410.3 | Symbols:  | ribulose bisphosphate carboxylase small chain 3B / RuBisCO small subunit 3B (RBCS-3B) (ATS3B) | chr5:15377501-15378306 REVERSE
+>gnl|BL_ORD_ID|3305 AT1G13630.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT3G22470.1); Has 23967 Blast hits to 5877 proteins in 185 species: Archae - 3; Bacteria - 26; Metazoa - 708; Fungi - 595; Plants - 21695; Viruses - 0; Other Eukaryotes - 940 (source: NCBI BLink). | chr1:4669784-4672826 REVERSE
+>gnl|BL_ORD_ID|33188 AT5G55180.2 | Symbols:  | glycosyl hydrolase family 17 protein | chr5:22388834-22390561 FORWARD
+>gnl|BL_ORD_ID|33213 ATCG01010.1 | Symbols: NDHF | Chloroplast encoded  NADH dehydrogenase unit. | chrC:110398-112638 REVERSE
+>gnl|BL_ORD_ID|33290 ATMG00060.1 | Symbols: NAD5C, NAD5.3, NAD5 | Mitochondrial NADH dehydrogenase subunit 5. The gene is trans-spliced from the three different pre-cursors, NAD5a, NAD5b and NAD5c. | chrM:20571-22086 REVERSE
+>gnl|BL_ORD_ID|33293 ATMG00513.1 | Symbols: NAD5A, NAD5.1, NAD5 | Mitochondrial NADH dehydrogenase subunit 5. The gene is trans-spliced from three different pre-cursors, NAD5a, NAD5b and NAD5c. | chrM:140724-142998 REVERSE
+>gnl|BL_ORD_ID|33295 ATMG00665.1 | Symbols: NAD5B, NAD5.2, NAD5 | Mitochondrial NADH dehydrogenase subunit 5. The gene is trans-spliced from three different pre-cursors, NAD5a, NAD5b and NAD5c. | chrM:190740-190761 REVERSE
+>gnl|BL_ORD_ID|3348 AT1G61610.1 | Symbols:  | S-locus lectin protein kinase family protein | chr1:22733472-22736509 FORWARD
+>gnl|BL_ORD_ID|3408 AT1G69790.1 | Symbols:  | protein kinase, putative | chr1:26266838-26268818 FORWARD
+>gnl|BL_ORD_ID|3412 AT1G69730.1 | Symbols:  | protein kinase family protein | chr1:26228703-26231339 REVERSE
+>gnl|BL_ORD_ID|3419 AT1G35710.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:13220940-13224386 FORWARD
+>gnl|BL_ORD_ID|3454 AT1G61590.1 | Symbols:  | protein kinase, putative | chr1:22723691-22726022 REVERSE
+>gnl|BL_ORD_ID|3515 AT1G61370.1 | Symbols:  | S-locus lectin protein kinase family protein | chr1:22642096-22645147 REVERSE
+>gnl|BL_ORD_ID|3519 AT1G61390.1 | Symbols:  | S-locus protein kinase, putative | chr1:22650338-22653639 REVERSE
+>gnl|BL_ORD_ID|3522 AT1G61360.1 | Symbols:  | S-locus lectin protein kinase family protein | chr1:22637867-22640974 REVERSE
+>gnl|BL_ORD_ID|3548 AT1G18485.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:6363172-6366084 FORWARD
+>gnl|BL_ORD_ID|3559 AT1G18550.1 | Symbols:  | ATP binding / microtubule motor | chr1:6381656-6384340 REVERSE
+>gnl|BL_ORD_ID|3577 AT1G28690.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:10080042-10081604 REVERSE
+>gnl|BL_ORD_ID|3579 AT1G08590.1 | Symbols:  | CLAVATA1 receptor kinase (CLV1) | chr1:2718859-2721948 FORWARD
+>gnl|BL_ORD_ID|3595 AT1G18410.1 | Symbols:  | kinesin motor protein-related | chr1:6336528-6342460 REVERSE
+>gnl|BL_ORD_ID|362 AT1G31840.1 | Symbols:  | LOCATED IN: endomembrane system; EXPRESSED IN: 21 plant structures; EXPRESSED DURING: 11 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT3G22470.1); Has 23098 Blast hits to 5773 proteins in 180 species: Archae - 3; Bacteria - 16; Metazoa - 407; Fungi - 450; Plants - 21304; Viruses - 0; Other Eukaryotes - 918 (source: NCBI BLink). | chr1:11424006-11426528 FORWARD
+>gnl|BL_ORD_ID|3660 AT1G18440.1 | Symbols:  | peptidyl-tRNA hydrolase family protein | chr1:6345994-6347686 FORWARD
+>gnl|BL_ORD_ID|3670 AT1G64760.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:24054220-24056194 REVERSE
+>gnl|BL_ORD_ID|3685 AT1G61480.1 | Symbols:  | S-locus protein kinase, putative | chr1:22681420-22684404 REVERSE
+>gnl|BL_ORD_ID|3737 AT1G54820.1 | Symbols:  | protein kinase family protein | chr1:20447370-20450761 FORWARD
+>gnl|BL_ORD_ID|3745 AT1G13570.1 | Symbols:  | F-box family protein | chr1:4642528-4643930 REVERSE
+>gnl|BL_ORD_ID|374 AT1G55610.1 | Symbols: BRL1 | BRL1 (BRI 1 LIKE); kinase | chr1:20779874-20783374 REVERSE
+>gnl|BL_ORD_ID|3819 AT1G61430.1 | Symbols:  | S-locus protein kinase, putative | chr1:22664669-22667769 REVERSE
+>gnl|BL_ORD_ID|3835 AT1G61420.1 | Symbols:  | S-locus lectin protein kinase family protein | chr1:22660557-22663596 REVERSE
+>gnl|BL_ORD_ID|3836 AT1G61860.1 | Symbols:  | protein kinase, putative | chr1:22863079-22864619 REVERSE
+>gnl|BL_ORD_ID|3859 AT1G75500.1 | Symbols:  | nodulin MtN21 family protein | chr1:28338282-28340091 REVERSE
+>gnl|BL_ORD_ID|3870 AT1G16670.1 | Symbols:  | protein kinase family protein | chr1:5697846-5699492 FORWARD
+>gnl|BL_ORD_ID|3893 AT1G49100.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:18166147-18170105 REVERSE
+>gnl|BL_ORD_ID|3898 AT1G08070.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:2514374-2516599 REVERSE
+>gnl|BL_ORD_ID|3900 AT1G19230.1 | Symbols:  | respiratory burst oxidase protein E (RbohE) / NADPH oxidase | chr1:6644189-6649149 FORWARD
+>gnl|BL_ORD_ID|3978 AT1G19290.1 | Symbols:  | LOCATED IN: mitochondrion; EXPRESSED IN: 12 plant structures; EXPRESSED DURING: 6 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT5G55840.1); Has 31003 Blast hits to 6161 proteins in 194 species: Archae - 6; Bacteria - 22; Metazoa - 935; Fungi - 736; Plants - 27904; Viruses - 0; Other Eukaryotes - 1400 (source: NCBI BLink). | chr1:6666249-6668963 FORWARD
+>gnl|BL_ORD_ID|4006 AT1G47580.1 | Symbols:  | lipoyltransferase, putative | chr1:17484753-17486387 FORWARD
+>gnl|BL_ORD_ID|4034 AT1G78530.1 | Symbols:  | protein kinase family protein | chr1:29539274-29540681 REVERSE
+>gnl|BL_ORD_ID|4116 AT1G64310.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:23866053-23867711 FORWARD
+>gnl|BL_ORD_ID|4169 AT1G72540.1 | Symbols:  | protein kinase, putative | chr1:27314932-27316669 REVERSE
+>gnl|BL_ORD_ID|4187 AT1G70250.1 | Symbols:  | receptor serine/threonine kinase, putative | chr1:26452975-26456088 FORWARD
+>gnl|BL_ORD_ID|4198 AT1G16480.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: shoot apex; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT4G13650.1). | chr1:5625843-5628656 REVERSE
+>gnl|BL_ORD_ID|4206 AT1G75820.1 | Symbols: CLV1, FAS3, FLO5 | CLV1 (CLAVATA 1); ATP binding / kinase/ protein serine/threonine kinase/ receptor signaling protein serine/threonine kinase | chr1:28463631-28466652 REVERSE
+>gnl|BL_ORD_ID|4208 AT1G70260.1 | Symbols:  | nodulin MtN21 family protein | chr1:26457067-26459338 REVERSE
+>gnl|BL_ORD_ID|4254 AT1G72250.1 | Symbols:  | kinesin motor protein-related | chr1:27192902-27198118 FORWARD
+>gnl|BL_ORD_ID|4265 AT1G69270.1 | Symbols: RPK1 | RPK1 (RECEPTOR-LIKE PROTEIN KINASE 1); kinase/ protein binding / receptor signaling protein serine/threonine kinase | chr1:26040877-26042499 REVERSE
+>gnl|BL_ORD_ID|4272 AT1G72180.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:27164074-27167204 FORWARD
+>gnl|BL_ORD_ID|4273 AT1G14340.1 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr1:4897709-4898776 FORWARD
+>gnl|BL_ORD_ID|4279 AT1G49270.1 | Symbols:  | protein kinase family protein | chr1:18227334-18230227 REVERSE
+>gnl|BL_ORD_ID|4292 AT1G14370.1 | Symbols: APK2A | APK2A (PROTEIN KINASE 2A); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr1:4915859-4917959 FORWARD
+>gnl|BL_ORD_ID|4302 AT1G07650.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:2359817-2366423 REVERSE
+>gnl|BL_ORD_ID|4305 AT1G13410.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: 17 plant structures; EXPRESSED DURING: 8 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT4G02750.1); Has 13539 Blast hits to 4793 proteins in 111 species: Archae - 0; Bacteria - 0; Metazoa - 25; Fungi - 35; Plants - 13298; Viruses - 0; Other Eukaryotes - 181 (source: NCBI BLink). | chr1:4601526-4603174 FORWARD
+>gnl|BL_ORD_ID|4359 AT1G07870.1 | Symbols:  | protein kinase family protein | chr1:2429933-2431843 REVERSE
+>gnl|BL_ORD_ID|4385 AT1G75640.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:28403600-28407022 REVERSE
+>gnl|BL_ORD_ID|4464 AT1G69350.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:26069882-26072245 FORWARD
+>gnl|BL_ORD_ID|4480 AT1G64060.1 | Symbols: ATRBOH F, ATRBOHF, RBOHAP108, RBOHF | ATRBOH F (ARABIDOPSIS THALIANA RESPIRATORY BURST OXIDASE PROTEIN F); NAD(P)H oxidase | chr1:23770266-23776317 FORWARD
+>gnl|BL_ORD_ID|4485 AT1G72300.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:27217679-27220966 REVERSE
+>gnl|BL_ORD_ID|4522 AT1G10330.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:3388747-3390150 FORWARD
+>gnl|BL_ORD_ID|4571 AT1G49860.1 | Symbols: ATGSTF14 | ATGSTF14; glutathione transferase | chr1:18458710-18459730 FORWARD
+>gnl|BL_ORD_ID|457 AT1G16280.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr1:5568482-5570487 REVERSE
+>gnl|BL_ORD_ID|4585 AT1G21890.1 | Symbols:  | nodulin MtN21 family protein | chr1:7682808-7685581 REVERSE
+>gnl|BL_ORD_ID|4600 AT1G26150.1 | Symbols: ATPERK10, PERK10 | PERK10 (PROLINE-RICH EXTENSIN-LIKE RECEPTOR KINASE 10); ATP binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:9039790-9042873 REVERSE
+>gnl|BL_ORD_ID|4723 AT1G25390.1 | Symbols:  | protein kinase family protein | chr1:8906640-8908800 REVERSE
+>gnl|BL_ORD_ID|475 AT1G70530.1 | Symbols:  | protein kinase family protein | chr1:26588750-26591379 REVERSE
+>gnl|BL_ORD_ID|4760 AT1G01540.1 | Symbols:  | protein kinase family protein | chr1:195980-197973 FORWARD
+>gnl|BL_ORD_ID|4808 AT1G80640.1 | Symbols:  | protein kinase family protein | chr1:30311979-30314238 FORWARD
+>gnl|BL_ORD_ID|4824 AT1G01580.1 | Symbols: FRO2, FRD1, ATFRO2 | FRO2 (FERRIC REDUCTION OXIDASE 2); ferric-chelate reductase | chr1:209395-212810 FORWARD
+>gnl|BL_ORD_ID|4839 AT1G01590.1 | Symbols: FRO1, ATFRO1 | FRO1 (FERRIC REDUCTION OXIDASE 1); ferric-chelate reductase | chr1:214229-217304 FORWARD
+>gnl|BL_ORD_ID|483 AT1G70520.1 | Symbols:  | protein kinase family protein | chr1:26584888-26587334 REVERSE
+>gnl|BL_ORD_ID|4919 AT1G72730.1 | Symbols:  | eukaryotic translation initiation factor 4A, putative / eIF-4A, putative | chr1:27378040-27379593 REVERSE
+>gnl|BL_ORD_ID|4959 AT1G09970.1 | Symbols: LRR XI-23 | LRR XI-23; ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr1:3252408-3255428 FORWARD
+>gnl|BL_ORD_ID|4962 AT1G01070.2 | Symbols:  | nodulin MtN21 family protein | chr1:38898-40597 REVERSE
+>gnl|BL_ORD_ID|4994 AT1G30570.1 | Symbols:  | protein kinase family protein | chr1:10828933-10831482 FORWARD
+>gnl|BL_ORD_ID|5051 AT1G33350.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:12090071-12091687 REVERSE
+>gnl|BL_ORD_ID|5056 AT1G52290.1 | Symbols:  | protein kinase family protein | chr1:19470251-19472362 REVERSE
+>gnl|BL_ORD_ID|5070 AT1G16830.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: mitochondrion; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: MEE40 (maternal effect embryo arrest 40) (TAIR:AT3G53700.1); Has 16848 Blast hits to 5324 proteins in 149 species: Archae - 2; Bacteria - 6; Metazoa - 176; Fungi - 119; Plants - 16112; Viruses - 0; Other Eukaryotes - 433 (source: NCBI BLink). | chr1:5760793-5762619 FORWARD
+>gnl|BL_ORD_ID|5095 AT1G80500.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: transport, ER to Golgi vesicle-mediated transport; LOCATED IN: intracellular; EXPRESSED IN: 24 plant structures; EXPRESSED DURING: 15 growth stages; CONTAINS InterPro DOMAIN/s: Sedlin (InterPro:IPR006722), Longin-like (InterPro:IPR011012); BEST Arabidopsis thaliana protein match is: unknown protein (TAIR:AT2G20930.1); Has 437 Blast hits to 435 proteins in 138 species: Archae - 0; Bacteria - 0; Metazoa - 248; Fungi - 75; Plants - 53; Viruses - 0; Other Eukaryotes - 61 (source: NCBI BLink). | chr1:30271195-30272431 FORWARD
+>gnl|BL_ORD_ID|5183 AT1G24030.1 | Symbols:  | protein kinase family protein | chr1:8503394-8505195 FORWARD
+>gnl|BL_ORD_ID|5197 AT1G66920.1 | Symbols:  | serine/threonine protein kinase, putative | chr1:24965410-24967432 REVERSE
+>gnl|BL_ORD_ID|5213 AT1G67000.1 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr1:25004217-25007604 REVERSE
+>gnl|BL_ORD_ID|5228 AT1G74400.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:27963953-27965341 FORWARD
+>gnl|BL_ORD_ID|5232 AT1G62910.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:23299060-23303162 FORWARD
+>gnl|BL_ORD_ID|5238 AT1G66930.1 | Symbols:  | serine/threonine protein kinase family protein | chr1:24970523-24973069 FORWARD
+>gnl|BL_ORD_ID|5240 AT1G79680.1 | Symbols:  | wall-associated kinase, putative | chr1:29980188-29982749 REVERSE
+>gnl|BL_ORD_ID|5252 AT1G05750.1 | Symbols: PDE247, CLB19 | PDE247 (pigment defective 247) | chr1:1721523-1723025 FORWARD
+>gnl|BL_ORD_ID|5261 AT1G66910.1 | Symbols:  | protein kinase, putative | chr1:24961634-24963941 REVERSE
+>gnl|BL_ORD_ID|5277 AT1G68170.1 | Symbols:  | nodulin MtN21 family protein | chr1:25551925-25554258 FORWARD
+>gnl|BL_ORD_ID|5344 AT1G66980.1 | Symbols:  | protein kinase family protein / glycerophosphoryl diester phosphodiesterase family protein | chr1:24997491-25001961 REVERSE
+>gnl|BL_ORD_ID|5346 AT1G11820.1 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr1:3991259-3993327 REVERSE
+>gnl|BL_ORD_ID|5404 AT1G76370.1 | Symbols:  | protein kinase, putative | chr1:28648660-28650239 REVERSE
+>gnl|BL_ORD_ID|5413 AT1G62930.1 | Symbols:  | INVOLVED IN: biological_process unknown; EXPRESSED IN: 21 plant structures; EXPRESSED DURING: 14 growth stages; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT1G63130.1); Has 29147 Blast hits to 6292 proteins in 192 species: Archae - 8; Bacteria - 22; Metazoa - 1258; Fungi - 858; Plants - 25291; Viruses - 0; Other Eukaryotes - 1710 (source: NCBI BLink). | chr1:23306534-23308423 FORWARD
+>gnl|BL_ORD_ID|5417 AT1G76360.1 | Symbols:  | protein kinase, putative | chr1:28643242-28646483 REVERSE
+>gnl|BL_ORD_ID|542 AT1G17230.1 | Symbols:  | ATP binding / protein binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:5891375-5894855 FORWARD
+>gnl|BL_ORD_ID|5465 AT1G28440.1 | Symbols: HSL1 | HSL1 (HAESA-Like 1); ATP binding / kinase/ protein serine/threonine kinase | chr1:9996914-10000171 FORWARD
+>gnl|BL_ORD_ID|5471 AT1G67025.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; BEST Arabidopsis thaliana protein match is: ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase (TAIR:AT1G18390.1); Has 101 Blast hits to 88 proteins in 6 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 101; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr1:25013344-25014435 REVERSE
+>gnl|BL_ORD_ID|5508 AT1G71460.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:26928247-26930316 REVERSE
+>gnl|BL_ORD_ID|5614 AT1G67950.4 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr1:25478884-25479778 REVERSE
+>gnl|BL_ORD_ID|5665 AT1G06140.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:1864796-1866472 FORWARD
+>gnl|BL_ORD_ID|5681 AT1G06700.1 | Symbols:  | serine/threonine protein kinase, putative | chr1:2052750-2054552 REVERSE
+>gnl|BL_ORD_ID|5766 AT1G33220.1 | Symbols:  | beta-1,3-glucanase, putative | chr1:12044872-12045879 FORWARD
+>gnl|BL_ORD_ID|5828 AT1G17910.1 | Symbols:  | wall-associated kinase, putative | chr1:6159126-6161615 FORWARD
+>gnl|BL_ORD_ID|5874 AT1G71280.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr1:26870262-26872152 REVERSE
+>gnl|BL_ORD_ID|5923 AT1G67720.1 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:25386494-25390856 FORWARD
+>gnl|BL_ORD_ID|6004 AT1G53600.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:20001263-20005795 FORWARD
+>gnl|BL_ORD_ID|6007 AT1G48220.1 | Symbols:  | ATP binding / protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:17802863-17804882 FORWARD
+>gnl|BL_ORD_ID|6041 AT1G78980.1 | Symbols: SRF5 | SRF5 (STRUBBELIG-RECEPTOR FAMILY 5); ATP binding / kinase/ protein serine/threonine kinase | chr1:29707923-29711266 REVERSE
+>gnl|BL_ORD_ID|6051 AT1G71490.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:26933326-26935371 REVERSE
+>gnl|BL_ORD_ID|6074 AT1G32860.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:11907308-11908803 REVERSE
+>gnl|BL_ORD_ID|6099 AT1G48210.1 | Symbols:  | serine/threonine protein kinase, putative | chr1:17799551-17801798 FORWARD
+>gnl|BL_ORD_ID|6160 AT1G43650.1 | Symbols:  | integral membrane family protein / nodulin MtN21-related | chr1:16443861-16446814 REVERSE
+>gnl|BL_ORD_ID|6162 AT1G68690.1 | Symbols:  | ATP binding / protein kinase/ protein serine/threonine kinase | chr1:25789192-25791886 FORWARD
+>gnl|BL_ORD_ID|6172 AT1G63130.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:23412854-23414746 FORWARD
+>gnl|BL_ORD_ID|6180 AT1G67090.1 | Symbols: RBCS1A | RBCS1A (RIBULOSE BISPHOSPHATE CARBOXYLASE SMALL CHAIN 1A); copper ion binding / ribulose-bisphosphate carboxylase | chr1:25048465-25049249 REVERSE
+>gnl|BL_ORD_ID|6211 AT1G71420.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:26917822-26920059 REVERSE
+>gnl|BL_ORD_ID|6236 AT1G62260.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:22997826-22999796 REVERSE
+>gnl|BL_ORD_ID|6249 AT1G66880.1 | Symbols:  | serine/threonine protein kinase family protein | chr1:24946928-24955438 FORWARD
+>gnl|BL_ORD_ID|6341 AT1G06840.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr1:2097854-2103479 REVERSE
+>gnl|BL_ORD_ID|6363 AT1G15530.1 | Symbols:  | receptor lectin kinase, putative | chr1:5339961-5341931 REVERSE
+>gnl|BL_ORD_ID|6380 AT1G55530.1 | Symbols:  | zinc finger (C3HC4-type RING finger) family protein | chr1:20729472-20730527 REVERSE
+>gnl|BL_ORD_ID|6450 AT1G50270.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:18622044-18623834 FORWARD
+>gnl|BL_ORD_ID|6475 AT1G50350.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: cellular_component unknown; EXPRESSED IN: 21 plant structures; EXPRESSED DURING: 14 growth stages; BEST Arabidopsis thaliana protein match is: zinc finger (C3HC4-type RING finger) family protein (TAIR:AT3G19950.1); Has 18 Blast hits to 18 proteins in 6 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 18; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr1:18648756-18649227 FORWARD
+>gnl|BL_ORD_ID|647 AT1G07550.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:2322709-2326512 REVERSE
+>gnl|BL_ORD_ID|6490 AT1G28180.1 | Symbols:  | ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding | chr1:9843084-9845002 REVERSE
+>gnl|BL_ORD_ID|6509 AT1G66870.1 | Symbols:  | glycosyl hydrolase family protein 17 | chr1:24945542-24945877 REVERSE
+>gnl|BL_ORD_ID|652 AT1G07560.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:2327320-2331096 FORWARD
+>gnl|BL_ORD_ID|6531 AT1G12430.1 | Symbols: PAK, ARK3 | ARK3 (ARMADILLO REPEAT KINESIN 3); ATP binding / binding / microtubule motor | chr1:4234122-4238552 REVERSE
+>gnl|BL_ORD_ID|6549 AT1G20230.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:7009570-7011852 FORWARD
+>gnl|BL_ORD_ID|6550 AT1G63080.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:23388884-23390728 REVERSE
+>gnl|BL_ORD_ID|6555 AT1G71830.1 | Symbols: SERK1, ATSERK1 | SERK1 (SOMATIC EMBRYOGENESIS RECEPTOR-LIKE KINASE 1); kinase/ transmembrane receptor protein serine/threonine kinase | chr1:27018575-27021842 FORWARD
+>gnl|BL_ORD_ID|655 AT1G07570.2 | Symbols: APK1A, APK1 | APK1A; kinase/ protein serine/threonine kinase | chr1:2331369-2333210 REVERSE
+>gnl|BL_ORD_ID|6564 AT1G05700.1 | Symbols:  | leucine-rich repeat protein kinase, putative | chr1:1709796-1713245 FORWARD
+>gnl|BL_ORD_ID|6585 AT1G71370.1 | Symbols:  | DEAD/DEAH box helicase, putative | chr1:26897235-26899381 REVERSE
+>gnl|BL_ORD_ID|6599 AT1G15510.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:5329111-5331711 FORWARD
+>gnl|BL_ORD_ID|65 AT1G43980.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:16685832-16689502 REVERSE
+>gnl|BL_ORD_ID|6605 AT1G76570.1 | Symbols:  | chlorophyll A-B binding family protein | chr1:28729132-28730754 FORWARD
+>gnl|BL_ORD_ID|6649 AT1G56720.2 | Symbols:  | protein kinase family protein | chr1:21263630-21265559 REVERSE
+>gnl|BL_ORD_ID|6768 AT1G01540.2 | Symbols:  | protein kinase family protein | chr1:195980-198383 FORWARD
+>gnl|BL_ORD_ID|6801 AT1G67950.3 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr1:25478884-25480420 REVERSE
+>gnl|BL_ORD_ID|6898 AT1G67090.2 | Symbols: RBCS1A | RBCS1A (RIBULOSE BISPHOSPHATE CARBOXYLASE SMALL CHAIN 1A); copper ion binding / ribulose-bisphosphate carboxylase | chr1:25048590-25049249 REVERSE
+>gnl|BL_ORD_ID|6959 AT1G69230.2 | Symbols: SP1L2 | SP1L2 (SPIRAL1-LIKE2) | chr1:26026543-26027085 REVERSE
+>gnl|BL_ORD_ID|6971 AT1G07570.1 | Symbols: APK1A, APK1 | APK1A; kinase/ protein serine/threonine kinase | chr1:2331369-2333210 REVERSE
+>gnl|BL_ORD_ID|7000 AT1G67950.1 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr1:25478884-25480420 REVERSE
+>gnl|BL_ORD_ID|7026 AT1G67950.2 | Symbols:  | RNA recognition motif (RRM)-containing protein | chr1:25478884-25480072 REVERSE
+>gnl|BL_ORD_ID|7053 AT1G02950.2 | Symbols: ATGSTF4, GST31 | ATGSTF4 (GLUTATHIONE S-TRANSFERASE F4); glutathione transferase | chr1:665308-666420 REVERSE
+>gnl|BL_ORD_ID|7061 AT1G29750.2 | Symbols: RKF1 | RKF1 (RECEPTOR-LIKE KINASE IN FLOWERS 1); ATP binding / kinase/ protein serine/threonine kinase/ receptor signaling protein serine/threonine kinase | chr1:10414071-10420469 REVERSE
+>gnl|BL_ORD_ID|7072 AT1G79670.2 | Symbols: RFO1, WAKL22 | RFO1 (RESISTANCE TO FUSARIUM OXYSPORUM 1); kinase | chr1:29976887-29979337 REVERSE
+>gnl|BL_ORD_ID|708 AT1G77780.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:29248437-29249528 REVERSE
+>gnl|BL_ORD_ID|710 AT1G70460.1 | Symbols:  | protein kinase, putative | chr1:26556155-26558994 FORWARD
+>gnl|BL_ORD_ID|714 AT1G70450.1 | Symbols:  | protein kinase family protein | chr1:26552576-26554437 FORWARD
+>gnl|BL_ORD_ID|7253 AT1G63640.2 | Symbols:  | kinesin motor protein-related | chr1:23589234-23595139 REVERSE
+>gnl|BL_ORD_ID|7263 AT1G01070.1 | Symbols:  | nodulin MtN21 family protein | chr1:38898-40877 REVERSE
+>gnl|BL_ORD_ID|7336 AT1G06145.1 | Symbols: EMB1444 | EMB1444 (EMBRYO DEFECTIVE 1444) | chr1:1867129-1868862 REVERSE
+>gnl|BL_ORD_ID|7404 AT1G02950.3 | Symbols: ATGSTF4, GST31 | ATGSTF4 (GLUTATHIONE S-TRANSFERASE F4); glutathione transferase | chr1:665308-666420 REVERSE
+>gnl|BL_ORD_ID|7414 AT1G06700.2 | Symbols:  | serine/threonine protein kinase, putative | chr1:2052750-2054552 REVERSE
+>gnl|BL_ORD_ID|752 AT1G77790.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:29250692-29251976 REVERSE
+>gnl|BL_ORD_ID|7537 AT1G64760.2 | Symbols:  | glycosyl hydrolase family 17 protein | chr1:24054220-24056194 REVERSE
+>gnl|BL_ORD_ID|7541 AT1G66855.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: endomembrane system; CONTAINS InterPro DOMAIN/s: X8 (InterPro:IPR012946); BEST Arabidopsis thaliana protein match is: glycosyl hydrolase family protein 17 (TAIR:AT1G66870.1); Has 726 Blast hits to 690 proteins in 30 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 726; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr1:24939676-24940011 REVERSE
+>gnl|BL_ORD_ID|754 AT1G69230.1 | Symbols: SP1L2 | SP1L2 (SPIRAL1-LIKE2) | chr1:26026543-26027085 REVERSE
+>gnl|BL_ORD_ID|756 AT1G14470.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:4954080-4955702 FORWARD
+>gnl|BL_ORD_ID|75 AT1G09440.1 | Symbols:  | protein kinase family protein | chr1:3045513-3047393 REVERSE
+>gnl|BL_ORD_ID|7803 AT1G11450.2 | Symbols:  | nodulin MtN21 family protein | chr1:3853470-3855259 FORWARD
+>gnl|BL_ORD_ID|7853 AT1G20920.2 | Symbols:  | DEAD box RNA helicase, putative | chr1:7286356-7288842 FORWARD
+>gnl|BL_ORD_ID|7859 AT1G22830.2 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:8076921-8079032 FORWARD
+>gnl|BL_ORD_ID|7865 AT1G24030.2 | Symbols:  | protein kinase family protein | chr1:8503394-8505195 FORWARD
+>gnl|BL_ORD_ID|7930 AT1G48210.2 | Symbols:  | serine/threonine protein kinase, putative | chr1:17799551-17801798 FORWARD
+>gnl|BL_ORD_ID|7954 AT1G53730.2 | Symbols: SRF6 | SRF6 (STRUBBELIG-RECEPTOR FAMILY 6); ATP binding / protein binding / protein kinase/ protein serine/threonine kinase | chr1:20061771-20065475 FORWARD
+>gnl|BL_ORD_ID|7970 AT1G56720.3 | Symbols:  | protein kinase family protein | chr1:21263630-21265559 REVERSE
+>gnl|BL_ORD_ID|8246 AT1G26355.1 | Symbols: SP1L1 | SP1L1 (SPIRAL1-LIKE1) | chr1:9117950-9118611 REVERSE
+>gnl|BL_ORD_ID|8301 AT1G73066.1 | Symbols:  | protein binding | chr1:27481785-27483581 FORWARD
+>gnl|BL_ORD_ID|8304 AT1G66852.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: endomembrane system; CONTAINS InterPro DOMAIN/s: X8 (InterPro:IPR012946); BEST Arabidopsis thaliana protein match is: glycosyl hydrolase family protein 17 (TAIR:AT1G66870.1); Has 719 Blast hits to 683 proteins in 29 species: Archae - 0; Bacteria - 0; Metazoa - 0; Fungi - 0; Plants - 719; Viruses - 0; Other Eukaryotes - 0 (source: NCBI BLink). | chr1:24938500-24938832 REVERSE
+>gnl|BL_ORD_ID|8350 AT1G02950.4 | Symbols: ATGSTF4, GST31 | ATGSTF4 (GLUTATHIONE S-TRANSFERASE F4); glutathione transferase | chr1:665308-666244 REVERSE
+>gnl|BL_ORD_ID|836 AT1G09220.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:2977952-2978968 REVERSE
+>gnl|BL_ORD_ID|8402 AT1G53430.2 | Symbols:  | leucine-rich repeat family protein / protein kinase family protein | chr1:19936073-19940959 FORWARD
+>gnl|BL_ORD_ID|8415 AT1G55610.2 | Symbols: BRL1 | BRL1 (BRI 1 LIKE); kinase | chr1:20779874-20783374 REVERSE
+>gnl|BL_ORD_ID|8424 AT1G59540.2 | Symbols: ZCF125 | ZCF125; ATP binding / microtubule motor | chr1:21874578-21879382 FORWARD
+>gnl|BL_ORD_ID|8553 AT1G29720.2 | Symbols:  | protein kinase family protein | chr1:10393894-10396326 REVERSE
+>gnl|BL_ORD_ID|8562 AT1G61360.2 | Symbols:  | S-locus lectin protein kinase family protein | chr1:22637867-22640731 REVERSE
+>gnl|BL_ORD_ID|8563 AT1G61390.2 | Symbols:  | S-locus protein kinase, putative | chr1:22650338-22653135 REVERSE
+>gnl|BL_ORD_ID|8594 AT1G18390.2 | Symbols:  | ATP binding / kinase/ protein kinase/ protein serine/threonine kinase/ protein tyrosine kinase | chr1:6327463-6329935 FORWARD
+>gnl|BL_ORD_ID|8597 AT1G01950.2 | Symbols: ARK2 | armadillo/beta-catenin repeat family protein / kinesin motor family protein | chr1:325473-330403 FORWARD
+>gnl|BL_ORD_ID|8598 AT1G01950.3 | Symbols: ARK2 | armadillo/beta-catenin repeat family protein / kinesin motor family protein | chr1:325473-330403 FORWARD
+>gnl|BL_ORD_ID|8711 AT2G44880.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:18505239-18506906 FORWARD
+>gnl|BL_ORD_ID|8727 AT2G47060.1 | Symbols:  | serine/threonine protein kinase, putative | chr2:19333116-19334759 REVERSE
+>gnl|BL_ORD_ID|8752 AT2G13790.1 | Symbols: ATSERK4, SERK4, BKK1 | SERK4 (SOMATIC EMBRYOGENESIS RECEPTOR-LIKE KINASE 4); protein binding / protein kinase/ transmembrane receptor protein serine/threonine kinase | chr2:5741979-5746581 FORWARD
+>gnl|BL_ORD_ID|8769 AT2G41080.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:17132857-17134554 FORWARD
+>gnl|BL_ORD_ID|8773 AT2G13800.1 | Symbols: ATSERK5, SERK5 | SERK5 (SOMATIC EMBRYOGENESIS RECEPTOR-LIKE KINASE 5); ATP binding / protein kinase/ transmembrane receptor protein serine/threonine kinase | chr2:5753276-5757065 FORWARD
+>gnl|BL_ORD_ID|8776 AT2G21090.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:9045695-9047488 REVERSE
+>gnl|BL_ORD_ID|878 AT1G09190.1 | Symbols:  | FUNCTIONS IN: molecular_function unknown; INVOLVED IN: biological_process unknown; LOCATED IN: mitochondrion; EXPRESSED IN: shoot apex, sperm cell, embryo, flower, seed; EXPRESSED DURING: petal differentiation and expansion stage, D bilateral stage, E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT5G56310.1); Has 12606 Blast hits to 4809 proteins in 101 species: Archae - 0; Bacteria - 0; Metazoa - 13; Fungi - 33; Plants - 12368; Viruses - 0; Other Eukaryotes - 192 (source: NCBI BLink). | chr1:2966263-2967717 REVERSE
+>gnl|BL_ORD_ID|8821 AT2G16600.1 | Symbols: ROC3 | ROC3; peptidyl-prolyl cis-trans isomerase | chr2:7200862-7201383 FORWARD
+>gnl|BL_ORD_ID|8856 AT2G15690.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:6831855-6833594 REVERSE
+>gnl|BL_ORD_ID|8858 AT2G38730.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase, putative / cyclophilin, putative / rotamase, putative | chr2:16192579-16194038 REVERSE
+>gnl|BL_ORD_ID|8914 AT2G43230.1 | Symbols:  | serine/threonine protein kinase, putative | chr2:17966475-17968446 FORWARD
+>gnl|BL_ORD_ID|8921 AT2G26330.1 | Symbols: ER, QRP1 | ER (ERECTA); transmembrane receptor protein kinase | chr2:11208367-11213895 REVERSE
+>gnl|BL_ORD_ID|8922 AT2G40900.1 | Symbols:  | nodulin MtN21 family protein | chr2:17063396-17065514 REVERSE
+>gnl|BL_ORD_ID|8937 AT2G48010.1 | Symbols: RKF3 | RKF3 (RECEPTOR-LIKE KINASE IN IN FLOWERS 3); kinase/ receptor signaling protein serine/threonine kinase | chr2:19641465-19643318 FORWARD
+>gnl|BL_ORD_ID|8943 AT2G15790.1 | Symbols: SQN, CYP40 | SQN (SQUINT); peptidyl-prolyl cis-trans isomerase | chr2:6878144-6880743 REVERSE
+>gnl|BL_ORD_ID|8985 AT2G19230.1 | Symbols:  | kinase | chr2:8343452-8348431 REVERSE
+>gnl|BL_ORD_ID|8 AT1G51380.1 | Symbols:  | eukaryotic translation initiation factor 4A, putative / eIF-4A, putative | chr1:19047960-19049967 FORWARD
+>gnl|BL_ORD_ID|9042 AT2G21130.1 | Symbols:  | peptidyl-prolyl cis-trans isomerase / cyclophilin (CYP2) / rotamase | chr2:9055619-9056143 REVERSE
+>gnl|BL_ORD_ID|9068 AT2G26290.1 | Symbols: ARSK1 | ARSK1 (root-specific kinase 1); kinase | chr2:11192237-11194259 REVERSE
+>gnl|BL_ORD_ID|9135 AT2G03380.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:1028292-1030361 FORWARD
+>gnl|BL_ORD_ID|9157 AT2G42520.1 | Symbols:  | DEAD box RNA helicase, putative | chr2:17705382-17708744 FORWARD
+>gnl|BL_ORD_ID|9164 AT2G20300.1 | Symbols: ALE2 | ALE2 (Abnormal Leaf Shape 2); kinase | chr2:8756475-8759845 REVERSE
+>gnl|BL_ORD_ID|9182 AT2G43690.1 | Symbols:  | lectin protein kinase, putative | chr2:18112589-18114583 FORWARD
+>gnl|BL_ORD_ID|9185 AT2G28250.1 | Symbols: NCRK | NCRK; kinase | chr2:12044004-12046339 FORWARD
+>gnl|BL_ORD_ID|919 AT1G70740.1 | Symbols:  | protein kinase family protein | chr1:26673847-26675687 REVERSE
+>gnl|BL_ORD_ID|9240 AT2G05100.1 | Symbols: LHCB2.1, LHCB2 | LHCB2.1; chlorophyll binding | chr2:1823449-1824331 REVERSE
+>gnl|BL_ORD_ID|9269 AT2G43700.1 | Symbols:  | lectin protein kinase family protein | chr2:18116523-18118499 FORWARD
+>gnl|BL_ORD_ID|929 AT1G12770.1 | Symbols: EMB1586 | EMB1586 (embryo defective 1586); ATP binding / ATP-dependent helicase/ helicase/ nucleic acid binding | chr1:4351888-4353543 FORWARD
+>gnl|BL_ORD_ID|9316 AT2G01950.1 | Symbols: VH1, BRL2 | BRL2 (BRI1-LIKE 2); ATP binding / protein serine/threonine kinase/ transmembrane receptor protein serine/threonine kinase | chr2:440805-444236 REVERSE
+>gnl|BL_ORD_ID|9343 AT2G20850.1 | Symbols: SRF1 | SRF1 (strubbelig receptor family 1); kinase | chr2:8975670-8979182 REVERSE
+>gnl|BL_ORD_ID|9351 AT2G38280.1 | Symbols: FAC1, ATAMPD | FAC1 (EMBRYONIC FACTOR1); AMP deaminase | chr2:16033767-16038793 REVERSE
+>gnl|BL_ORD_ID|9447 AT2G05070.1 | Symbols: LHCB2.2, LHCB2 | LHCB2.2; chlorophyll binding | chr2:1799436-1800329 REVERSE
+>gnl|BL_ORD_ID|9469 AT2G39110.1 | Symbols:  | protein kinase, putative | chr2:16319770-16321568 FORWARD
+>gnl|BL_ORD_ID|9501 AT2G37710.1 | Symbols: RLK | RLK (receptor lectin kinase); kinase | chr2:15814934-15816961 REVERSE
+>gnl|BL_ORD_ID|9547 AT2G19440.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:8418164-8419806 REVERSE
+>gnl|BL_ORD_ID|9551 AT2G39260.1 | Symbols:  | RNA binding / binding / protein binding | chr2:16392288-16399588 REVERSE
+>gnl|BL_ORD_ID|959 AT1G09090.2 | Symbols: ATRBOHB | ATRBOHB (respiratory burst oxidase homolog B); FAD binding / calcium ion binding / electron carrier/ iron ion binding / oxidoreductase/ oxidoreductase, acting on NADH or NADPH, with oxygen as acceptor / peroxidase | chr1:2932743-2936495 FORWARD
+>gnl|BL_ORD_ID|9633 AT2G35360.1 | Symbols:  | ubiquitin family protein | chr2:14889311-14890799 REVERSE
+>gnl|BL_ORD_ID|9635 AT2G22070.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:9383602-9385962 FORWARD
+>gnl|BL_ORD_ID|9666 AT2G22410.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:9509035-9511080 FORWARD
+>gnl|BL_ORD_ID|976 AT1G68930.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr1:25918314-25920545 FORWARD
+>gnl|BL_ORD_ID|9772 AT2G02750.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:771641-773482 REVERSE
+>gnl|BL_ORD_ID|9785 AT2G16230.1 | Symbols:  | catalytic/ cation binding / hydrolase, hydrolyzing O-glycosyl compounds | chr2:7035463-7038326 REVERSE
+>gnl|BL_ORD_ID|978 AT1G16130.1 | Symbols: WAKL2 | WAKL2 (wall associated kinase-like 2); kinase | chr1:5525634-5528047 FORWARD
+>gnl|BL_ORD_ID|9827 AT2G13600.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:5671493-5673586 FORWARD
+>gnl|BL_ORD_ID|9894 AT2G45910.1 | Symbols:  | protein kinase family protein / U-box domain-containing protein | chr2:18894520-18898212 FORWARD
+>gnl|BL_ORD_ID|9896 AT2G17140.1 | Symbols:  | EXPRESSED IN: 7 plant structures; EXPRESSED DURING: F mature embryo stage, C globular stage, petal differentiation and expansion stage, D bilateral stage, E expanded cotyledon stage; CONTAINS InterPro DOMAIN/s: Pentatricopeptide repeat (InterPro:IPR002885); BEST Arabidopsis thaliana protein match is: pentatricopeptide (PPR) repeat-containing protein (TAIR:AT1G62910.1); Has 25910 Blast hits to 6027 proteins in 187 species: Archae - 6; Bacteria - 20; Metazoa - 625; Fungi - 635; Plants - 23410; Viruses - 0; Other Eukaryotes - 1214 (source: NCBI BLink). | chr2:7462820-7465740 FORWARD
+>gnl|BL_ORD_ID|9907 AT2G21380.1 | Symbols:  | kinesin motor protein-related | chr2:9141833-9148883 FORWARD
+>gnl|BL_ORD_ID|9935 AT2G20110.2 | Symbols:  | tesmin/TSO1-like CXC domain-containing protein | chr2:8684496-8686870 FORWARD
+>gnl|BL_ORD_ID|9947 AT2G37320.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:15667223-15668725 FORWARD
+>gnl|BL_ORD_ID|9951 AT2G41820.1 | Symbols:  | leucine-rich repeat transmembrane protein kinase, putative | chr2:17447170-17449914 FORWARD
+>gnl|BL_ORD_ID|9962 AT2G37310.1 | Symbols:  | pentatricopeptide (PPR) repeat-containing protein | chr2:15665102-15667075 REVERSE
+>gnl|BL_ORD_ID|9982 AT2G39510.1 | Symbols:  | nodulin MtN21 family protein | chr2:16491358-16493085 REVERSE
+>gnl|BL_ORD_ID|9989 AT2G02800.1 | Symbols: APK2B | APK2B (PROTEIN KINASE 2B); ATP binding / kinase/ protein kinase/ protein serine/threonine kinase | chr2:796889-799250 REVERSE
+>gnl|BL_ORD_ID|9991 AT2G26600.1 | Symbols:  | glycosyl hydrolase family 17 protein | chr2:11316727-11318215 FORWARD
+>gnl|BL_ORD_ID|9998 AT2G45350.1 | Symbols: CRR4 | CRR4 (CHLORORESPIRATORY REDUCTION 4) | chr2:18694816-18696636 REVERSE
