@@ -1,7 +1,35 @@
 
+=head1 NAME
+
+TraitBlast.pm - a Perl script to determine genes that are missing from contrast groups
+
+=head1 DESCRIPTION
+
+Synopsis:
+
+mx-run TraitBlast --blast_file <blast-m8-file>
+
+Options:
+
+--blast_file: A blast file in m8 format
+
+Output: A list of gene identifiers
+
+=head1 AUTHOR
+
+Lukas Mueller <lam87@cornell.edu>
+
+=cut
+
+
 package TraitBlast;
 
 use Moose;
+use Config::Any;
+
+##my $conf = Config::Any->read_files(files=> [ 'traitblast.conf' ]);
+
+
 
 with 'MooseX::Runnable';
 with 'MooseX::Getopt';
@@ -33,7 +61,7 @@ has 'min_ingroups' => (is=>'rw',
 
 has 'min_outgroups' => (is=>'rw',
 			isa =>'Int',
-			default => 4,
+			default => 5,
     );
 
 
@@ -72,9 +100,9 @@ sub is_in_list {
 sub run { 
     my $self = shift;
 
-    $self->outgroup( [ qw | rice maize brachypodium sorghum | ]);
+    $self->outgroup( [ qw | rice maize brachypodium sorghum selginella | ]);
     $self->ingroup( [ qw | tomato poplar vitis papaya soybean castorbean cucumber | ]);
-    $self->contrast_group ([ qw | arabidopsis |]);
+    $self->contrast_group ([ qw | arabidopsis lyrata |]);
     
     my $old_q = "";
 
@@ -85,6 +113,8 @@ sub run {
 
     my %outgroups = ();
     my %ingroups  = ();
+
+    my %species = ();
 
     my $min_score = 10000;
     my $max_score = 0;
@@ -126,6 +156,8 @@ sub run {
 	#print STDERR "$q, $s, $score\n";
 	my $species = $self->id2species($s);
 
+	$species{$species}++;
+
 	if ($self->is_in_contrast_group($species)) { 
 	    $contrast_flag =1;
 	}
@@ -151,6 +183,8 @@ sub run {
 	$old_max_score = $max_score;
     }
     
+
+    print STDERR "Species detected in dataset: ".(join ", ", (map { "$_ ($species{$_})" } sort(keys(%species))))."\n";
 }
 
 
@@ -159,8 +193,7 @@ sub id2species {
     my $id = shift;
 
     if ($id =~ /At[1-5CM]g\d+/i) { return "arabidopsis"; }
-    if ($id =~ /^SL_.*/)   { return "tomato"; }
-    if ($id =~ /plant_protein/) { return "poplar"; }
+    if ($id =~ /^SL2\..*/)   { return "tomato"; }
     if ($id =~ /^GSVIV/)   { return "vitis"; }
     if ($id =~ /^GRMZM/ || $id=~ /^\w{2}.*\d+\_FGP\d+/)   { return "maize"; }
     if ($id =~ /evm.TU/i)  { return "papaya"; }
@@ -168,8 +201,11 @@ sub id2species {
     if ($id =~ /^Sb/)      { return "sorghum"; }
     if ($id =~ /Glyma/i)   { return "soybean"; }
     if ($id =~ /Bradi/)    { return "brachypodium"; }
-    if ($id =~ /\d{5}\.m\d{5,6}/) { return "castorbean"; }
+    if ($id =~ /\d{5}\_?\.?m\d{5,6}/) { return "castorbean"; }
     if ($id =~ /^Csa/) { return "cucumber"; }
+    if ($id =~ /Selmo1/)   { return "selginella"; }
+    if ($id =~ /Araly1/i)   { return "lyrata"; }
+    if ($id =~ /Poptr1_1/) { return "poplar"; }
     
     die "don't know $id\n";
 }
