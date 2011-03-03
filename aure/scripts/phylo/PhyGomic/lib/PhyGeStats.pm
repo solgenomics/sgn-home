@@ -7,7 +7,8 @@ use autodie;
 
 use Carp qw| croak cluck |;
 use Math::BigFloat;
-use R::YapRI::Base qw/ r_var /;
+use R::YapRI::Base;
+use R::YapRI::Interpreter::Perl qw( r_var );
 use R::YapRI::Data::Matrix;
 use R::YapRI::Graph::Simple;
 
@@ -82,12 +83,12 @@ $VERSION = eval $VERSION;
 
 =head1 DESCRIPTION
 
- PhyGeStats is a wrapper for R::YapRI::Base with specific functions to
- analyze the data contained in a phygetopo object. 
+PhyGeStats is a wrapper for R::YapRI::Base with specific functions to
+analyze the data contained in a phygetopo object. 
 
- For example:
+For example:
 
- my $phygestats = PhyGeStats->new();
+my $phygestats = PhyGeStats->new();
 
 =head1 AUTHOR
 
@@ -762,13 +763,14 @@ sub create_composition_graph {
 				 height => 600,
 		    } 
 	},
-	grparams => { par => { cex => 1.5 }, 
+	grparams => { par => { cex => 1.5, mar => [10, 4, 4, 3] }, 
 	},
 	sgraph => { barplot => { beside => 'TRUE',
 				 main   => 'Topotypes Abundance',
 				 xlab   => 'Topotype',
 				 ylab   => 'Count',
-				 col    => { $barcols => '' }, 
+				 col    => { $barcols => '' },
+				 las    => 2,
 		    }
 	},
 	gritems => [ 
@@ -1061,7 +1063,7 @@ sub create_tree_graph {
 
     ## 9) Run commands
 
-    $rbase->run_block($block);
+    $rbase->run_commands($block);
     
 }
 

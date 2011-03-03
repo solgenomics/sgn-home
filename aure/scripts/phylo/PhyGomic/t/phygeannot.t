@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 60;
+use Test::More tests => 64;
 use Test::Exception;
 
 use FindBin;
@@ -466,13 +466,51 @@ throws_ok { $phannot0->load_blast_file('A', 'B') } qr/ERROR: B for load/,
     'TESTING DIE ERROR when no arg. href supplied to load_go_file isnt HREF.';
 
 
+## go_conservative_annotation, TEST 61 to 64
+
+$phannot0->set_phygetopo({'ML' => $phygetopo1});
+
+my $phyg_annot = 0;
+my %phygetopo2 = %{$phannot0->get_phygetopo()};
+foreach my $method (keys %phygetopo2) {
+    my $phygtp = $phygetopo2{$method};
+    my %phygtp_annot = %{$phygtp->get_annotations()};
+    $phyg_annot += scalar(%phygtp_annot);
+}
+
+is($phyg_annot, 0, 
+    "Testing go_conservative_annotation, check annotations previous method.")
+    or diag("Looks like this has failed");
 
 
+$phannot0->go_conservative_annotation();
+
+my %phygetopo3 = %{$phannot0->get_phygetopo()};
+foreach my $method (keys %phygetopo3) {
+    my $phygtp = $phygetopo3{$method};
+    my %phygtp_annot = %{$phygtp->get_annotations()};
+    $phyg_annot += scalar(keys %phygtp_annot);
+
+    foreach my $id (keys %phygtp_annot) {
+	my %go = %{$phygtp_annot{$id}->{'GO'}};
+    }
+}
+
+is($phyg_annot, 2, 
+    "Testing go_conservative_annotation, check annotations after method.")
+    or diag("Looks like this has failed");
+
+$phannot0->set_go_annot({});
+
+throws_ok { $phannot0->go_conservative_annotation() } qr/No GO /, 
+    'TESTING DIE ERROR when no GO was set for go_conservative_annotat.';
+
+$phannot0->delete_phygetopo();
+
+throws_ok { $phannot0->go_conservative_annotation() } qr/No phygetopo /, 
+    'TESTING DIE ERROR when no phygetopo was set for go_conservative_annotat.';
 
 
-## Clean the R dirs
-
-$srh0->cleanup();
 
 ####
 1; #

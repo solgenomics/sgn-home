@@ -34,6 +34,8 @@ use Data::Dumper;
 use Test::More tests => 58;
 use Test::Exception;
 
+use R::YapRI::Interpreter::Perl qw( r_var );
+
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
@@ -241,8 +243,8 @@ my $srh2 = $phystats1->get_rbase();
 
 $srh2->create_block('PHYGEBLOCK1');
 $srh2->add_command('print(1:30)', 'PHYGEBLOCK1');
-$srh2->run_block('PHYGEBLOCK1');
-my $result2 = $srh2->get_resultfiles('PHYGEBLOCK1');
+$srh2->run_commands('PHYGEBLOCK1');
+my $result2 = $srh2->get_result_file('PHYGEBLOCK1');
 
 my @results = ();
 open my $rfh2, '<', $result2;
@@ -475,10 +477,6 @@ throws_ok { $phstats0->create_tree_graph('test') } qr/ERROR: No rbase/,
 $phstats0->set_rbase($srh0);
 
 
-
-## Clean the R dirs
-
-$srh0->cleanup();
 
 ####
 1; #

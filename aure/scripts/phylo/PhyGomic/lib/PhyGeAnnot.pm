@@ -41,7 +41,9 @@ $VERSION = eval $VERSION;
   use PhyGeAnnot;
 
   my $phygeannot = PhyGeAnnot->new({ topotypes => $hashref });
-  $phygeannot->load_gene_annot($dbname, $blastfile, $defline_file);
+  $phygeannot->load_blast_annot( $blastfile, 
+                                 { defline =>$defline_file, blastdb => 'swp' } 
+                               );
   $phygeannot->load_go_annot($gofile);
 
   $phygeannot->generate_annot();
@@ -630,6 +632,71 @@ sub load_blast_file {
 ## ANALYTICAL FUNCTIONS ##
 ##########################
 
+=head2 go_conservative_annotation
+
+  Usage: $phygeannot->go_conservative_annotation();
+
+  Desc: Run conservative annotation over members of the phygetopo object.
+        Get the annotation for each of the members of the cluster of each
+        topology and add to the cluster removing the redundance.
+        It will store the annotation as 'annotation' for each PhyGeTopo object.
+
+  Ret: None
+
+  Args: None
+
+  Side_Effects: Die if go terms are not set
+
+  Example: $phygeannot->go_conservative_annotation();
+
+=cut
+
+sub go_conservative_annotation {
+    my $self = shift;
+
+    my %phygetopo = %{$self->get_phygetopo()};
+    if (scalar(keys %phygetopo) == 0) {
+	croak("No phygetopo was set. Aborting go_conservative_annotation");
+    }
+
+    my %go = %{$self->get_go_annot()};
+    if (scalar(keys %go) == 0) {
+	croak("No GO was set. Aborting go_conservative_annotation");
+    }
+
+    foreach my $method (keys %phygetopo) {
+	my $phygetopo = $phygetopo{$method};
+
+	
+	my $annotation_href = $phygetopo->get_annotations();
+	my %seqfams = %{$phygetopo->get_seqfams()};
+	
+	foreach my $id (keys %seqfams) {
+	    
+	    my %go_seqfam = ();
+	    my @members = $seqfams{$id}->get_members();
+	    foreach my $member (@members) {
+		my $memb_id = $member->id();
+		
+		if (exists $go{$memb_id}) {
+		    my %go_memb = %{$go{$memb_id}};
+		    foreach my $go (keys %go_memb) {
+			unless (exists $go_seqfam{$go}) {
+			    $go_seqfam{$go} = $go_memb{$go};
+			}
+		    }
+		}
+	    }
+
+	    if (exists $annotation_href->{$id}) {
+		$annotation_href->{$id}->{'GO'} = \%go_seqfam;
+	    }
+	    else {
+		$annotation_href->{$id} = {'GO' => \%go_seqfam };
+	    }
+	}
+    }
+}
 
 
 
