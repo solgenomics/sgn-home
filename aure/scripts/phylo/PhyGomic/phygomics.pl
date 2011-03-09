@@ -387,7 +387,10 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     }
     else {
 	
-	print STDERR "\t\t\tNo HOMOLOGOUS SEARCH arguments. SKIP STEP.\n\n";
+	print STDERR "\t\t\tNo HOMOLOGOUS SEARCH arguments were set:\n";
+	print STDERR "\t\t\t\tHOMOLOGOUS_SEARCH_STRAIN\n";
+	print STDERR "\t\t\t\tHOMOLOGOUS_SEARCH_DATASET\n";
+	print STDERR "SKIP STEP.\n\n";
     }
 
     ## 2.2) Run alignments
@@ -413,7 +416,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     ## Run the alignment
 
-    $paphyg->run_alignments($align_args);
+    my @failed_align = $paphyg->run_alignments($align_args);
 
     my $alig_n = 0;
     my %a_cls = %{$paphyg->get_clusters()};
@@ -443,6 +446,14 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\tOPTION -O enabled: ";
 	print STDERR "$aln_n alignment files have been created";
 	print STDERR " with basename:\n\t\t\t$alnbase\n\n";
+
+	if (scalar(@failed_align) > 0) {
+	    open my $ffh_aln, '>', $alndir . '/failed_alignments.err';
+	    foreach my $f_align (@failed_align) {
+		print $ffh_aln "$f_align\n";
+	    }
+	    close($ffh_aln);
+	}
     }
 
     ## 2.3) Run distances
@@ -466,7 +477,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     ## And now use the Run distances method
 
-    $paphyg->run_distances($dist_args);
+    my @failed_dist = $paphyg->run_distances($dist_args);
 
     my $dist_n = scalar( keys %{$paphyg->get_distances()});    
     print STDERR "\n\t\t\tDONE. $dist_n distance matrices have been added.\n\n";
@@ -489,14 +500,25 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\tOPTION -O enabled: ";
 	print STDERR "$dis_n distance files have been created";
 	print STDERR " with basename:\n\t\t\t$disbase\n\n";
+	
+	if (scalar(@failed_dist) > 0) {
+	    open my $ffh_dist, '>', $disdir . '/failed_distances.err';
+	    foreach my $f_dist (@failed_dist) {
+		print $ffh_dist "$f_dist\n";
+	    }
+	    close($ffh_dist);
+	}	
     }
-
+	
 
     ## 2.4) Run prune member methods
 
     print STDERR "\t\t2.4) PRUNING METHODS (" .  date() . "):\n\n";
-
+		
     my $prune = 0;
+    my @failed_praln = ();
+    my @failed_prdst = ();
+
     if (defined $pargs{pr_aln}) {
 
 	print STDERR "\t\t\t2.4.1) PRUNE BY ALIGNMENTS (" .  date() . "):\n\n";
@@ -508,10 +530,14 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\t\tDONE. $rem_c clusters have been removed.\n\n";
 	
 	print STDERR "\t\t\t\tRERUNING alignments.\n\n";
-	$paphyg->run_alignments($align_args);
+	my @failed_pr_aln = $paphyg->run_alignments($align_args);
+	push @failed_praln, @failed_pr_aln;
+ 
 	print STDERR "\n\t\t\t\tRERUNING distances.\n\n";
-	$paphyg->run_distances($dist_args);
-        print STDERR "\n";
+	my @failed_pr_dist = $paphyg->run_distances($dist_args);
+        push @failed_prdst, @failed_pr_dist;
+
+	print STDERR "\n";
 
         $prune = 1;
     }
@@ -532,10 +558,13 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\t\tDONE. $rem_p_c clusters and $rem_p_m members ";
 	print STDERR "have been removed.\n\n";
 	
-	print STDERR "\t\t\t\tRERUNNING alignments.\n\n";
-	$paphyg->run_alignments($align_args);
-	print STDERR "\n\t\t\t\tRERUNNING distances.\n\n";
-	$paphyg->run_distances($dist_args);
+	print STDERR "\t\t\t\tRERUNING alignments.\n\n";
+	my @failed_pr_aln = $paphyg->run_alignments($align_args);
+	push @failed_praln, @failed_pr_aln;
+ 
+	print STDERR "\n\t\t\t\tRERUNING distances.\n\n";
+	my @failed_pr_dist = $paphyg->run_distances($dist_args);
+        push @failed_prdst, @failed_pr_dist;
         print STDERR "\n";
         $prune = 1;
     }
@@ -555,10 +584,13 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\t\tDONE. $rem_o_c clusters and $rem_o_m members ";
 	print STDERR "have been removed.\n\n";
 	
-	print STDERR "\t\t\t\tRERUNNING alignments.\n\n";
-	$paphyg->run_alignments($align_args);
-	print STDERR "\n\t\t\t\tRERUNNING distances.\n\n";
-	$paphyg->run_distances($dist_args);
+	print STDERR "\t\t\t\tRERUNING alignments.\n\n";
+	my @failed_pr_aln = $paphyg->run_alignments($align_args);
+	push @failed_praln, @failed_pr_aln;
+ 
+	print STDERR "\n\t\t\t\tRERUNING distances.\n\n";
+	my @failed_pr_dist = $paphyg->run_distances($dist_args);
+        push @failed_prdst, @failed_pr_dist;
         print STDERR "\n";
         $prune = 1;
     }
@@ -594,6 +626,21 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\tOPTION -O enabled: $pr_aln_n align. and $pr_dis_n ";
 	print STDERR "distance files (after prunning) have been created ";
 	print STDERR "with basename:\n\t\t\t$pr_alnbase\n\t\t\t$pr_disbase\n\n";
+    
+	if (scalar(@failed_praln) > 0) {
+	    open my $ffh_praln, '>', $prdir . '/ap.failed_distances.err';
+	    foreach my $f_praln (@failed_praln) {
+		print $ffh_praln "$f_praln\n";
+	    }
+	    close($ffh_praln);
+	}
+	if (scalar(@failed_prdst) > 0) {
+	    open my $ffh_prdist, '>', $prdir . '/ap.failed_distances.err';
+	    foreach my $f_prdist (@failed_prdst) {
+		print $ffh_prdist "$f_prdist\n";
+	    }
+	    close($ffh_prdist);
+	}
     }
 
 
@@ -605,6 +652,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	
 	print STDERR "\t\t2.5) RUN TREES (" .  date() . "):\n\n";
 
+	my @failed_trees = ();
 	my $tree_mth = $pargs{tr_met} || 'ML';
 	if ($tree_mth =~ m/^(NJ|UPGMA)$/) {
 
@@ -614,7 +662,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	        $njtree_args->{report_status} = 1;
             }
 
-	    $paphyg->run_njtrees($njtree_args);
+	    @failed_trees = $paphyg->run_njtrees($njtree_args);
 	}
 	else {
 
@@ -624,7 +672,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	        $mltree_args->{report_status} = 1;
             }
 
-	    $paphyg->run_mltrees($mltree_args);
+	    @failed_trees = $paphyg->run_mltrees($mltree_args);
 	}
 
 	## Get number of trees
@@ -657,7 +705,13 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    print STDERR "\t\t\tOPTION -O enabled: ";
 	    print STDERR "$tree_n tree files have been created ";
 	    print STDERR "with basename:\n\t\t\t$treebase\n\n";
-        }
+        
+	    open my $ffh_trees, '>', $treedir . '/failed_trees.err';
+	    foreach my $f_tree (@failed_trees) {
+		print $ffh_trees "$f_tree\n";
+	    }
+	    close($ffh_trees);
+	}
 
 
 	## 2.6) Reroot tree
@@ -1408,7 +1462,7 @@ sub parse_config {
 			    $config{paths}->{$path}->{$match_k} = $match_v;
 			}
 			else {
-			    $config{paths}->{$path} = { $match_k => $match_v };
+			    $config{paths}->{$path} = { $match_k => $match_v };	
 			}
 		    }
 		    else {
