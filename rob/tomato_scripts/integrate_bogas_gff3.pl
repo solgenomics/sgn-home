@@ -96,6 +96,7 @@ while( my $line = <$bogas_fh> ) {
             $attrs->{Parent} ||= [ $attrs->{ID}[0] ];
             $attrs->{Parent}[0] =~ s/\.\d+$//;
             $attrs->{Parent}[0] =~ s/^mRNA:/gene:/;
+            $attrs->{Name} ||= [ $attrs->{ID}[0] ];
         }
         elsif( $f[$type] eq 'CDS'               ) {
         }
