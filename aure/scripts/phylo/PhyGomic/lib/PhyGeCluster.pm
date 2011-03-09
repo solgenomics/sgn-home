@@ -2286,6 +2286,7 @@ sub out_bootstrapfile {
 	    my $consensus = $bootstrap{$cluster_id};
 	    if (defined $consensus) {
 		$consenio->write_tree($consensus);
+		$outfiles{$cluster_id} = $outname2;
 	    }
 	}
     }
@@ -2585,11 +2586,11 @@ sub cluster_sizes {
         alignment and return a hash with key=cluster_id and 
         value=Bio::Matrix::Generic with member_ids as columns and row names.
         The matrix will have as element { start => $val1, end => $val2, 
-        length => $val3}
+        length => $val3, ident => $val4 }
 
   Ret: %hash = ( $cluster_id => Bio::Matrix::Generic object );   
 
-  Args: None.
+  Args: None
 
   Side_Effects: Return overlaps only for clusters with alignments
 
@@ -2613,9 +2614,12 @@ sub calculate_overlaps {
 	    ## the start and the end of each sequence.
 	    
 	    my %post = ();
+	    my %seqobjs = ();
 	    my @member_ids = ();
 	    foreach my $seq ($align->each_seq()) {
 		my $id = $seq->display_id();
+		$seqobjs{$id} = $seq;
+		
 		push @member_ids, $id;
 
 		my $seqstr = $seq->seq();
@@ -2646,7 +2650,11 @@ sub calculate_overlaps {
 		-rownames          => \@member_ids,
 		-colnames          => \@member_ids, 
 		-matrix_id         => $cluster_id,
-		-matrix_init_value => { start => 0, end => 0, length => 0 },
+		-matrix_init_value => { start  => 0, 
+					end    => 0, 
+					length => 0,
+					ident  => 0,
+		},
 		);
 
 	    ## Now it will compare pairs of sequences to get the 
@@ -2690,19 +2698,39 @@ sub calculate_overlaps {
 			    my $val = { start  => $start, 
 					end    => $end, 
 					length => $end-$start };
+			    
+                            ## It will create an aln object with this
+			    ## two sequences to calculate the identity
+			    ## It will get the slide for start and end
+			    ## and also it will remove all the sequences
+			    ## different from $id_a and $id_b
+
+			    my $newaln = $align->slice($start, $end);
+			    foreach my $newseq ( $newaln->each_seq() ) {
+				if ($newseq->id() !~ m/^($id_a|$id_b)$/) {
+				    $newaln->remove_seq($newseq);
+				}
+			    }
 		
+			    my $ident = $newaln->percentage_identity();
+			    $val->{ident} = $ident;
+
 			    push @row_values, $val;
 			}
 			else {
 			    push @row_values, { start  => 0, 
 						end    => 0, 
-						length => 0 };
+						length => 0,
+						ident  => 0,
+			    };
 			}
 		    }
 		    else {
 			push @row_values, { start  => 0, 
 					    end    => 0, 
-					    length => 0 };
+					    length => 0,
+					    ident  => 0,
+			};
 		    }
 		}
 		## Now it will add this row_values to the matrix
@@ -2758,6 +2786,57 @@ sub best_overlaps {
     }
     return %best_overlaps;
 }
+
+=head2 best_ovlscore
+
+  Usage: my %best_ovlscore = $phygecluster->best_ovlscore();
+
+  Desc: Get the pair of sequences with a high score based in
+        overlap_length * (identity_perc/100)^2
+
+  Ret: %hash = ( $cluster_id => [$member_id1, $member_id2] );   
+
+  Args: None.
+
+  Side_Effects: Return overlaps only for clusters with alignments
+
+  Example: my %ovlscore = $phygecluster->best_overlaps();
+           
+
+=cut
+
+sub best_ovlscore {
+    my $self = shift;
+
+    my %best_overlaps = ();
+    my %overlaps = $self->calculate_overlaps();
+
+    foreach my $cluster_id (keys %overlaps) {
+
+	## Define a hash with key=length and value=pair, It will order the
+	## hash and get the longer
+	my %ovlength = ();
+
+	my $mtx = $overlaps{$cluster_id};
+	my @rownames = $mtx->row_names();
+	my @colnames = $mtx->column_names();
+	foreach my $row (@rownames) {
+	    foreach my $col (@colnames) {
+		my $entry = $mtx->get_entry($row, $col);
+		my $length = $entry->{length};
+		my $ident = $entry->{ident};
+		my $ovlscore = $length * ($ident / 100) * ($ident / 100);
+		
+		$ovlength{$ovlscore} = [$row, $col];
+	    }
+	}
+	my @ovlength_desc = sort { $b <=> $a } keys %ovlength;
+	$best_overlaps{$cluster_id} = $ovlength{$ovlength_desc[0]};
+    }
+    return %best_overlaps;
+}
+
+
 
 =head2 homologous_search
 
@@ -3573,13 +3652,14 @@ sub _get_outgroup_id {
 
 =head2 run_alignments
 
-  Usage: phygecluster->run_alignments({ program => $prog, 
-                                        parameters => $parameters_href});
+  Usage: my @failed = phygecluster->run_alignments({ program => $prog, 
+                                             parameters => $parameters_href});
 
   Desc: Create the sequence aligns for each cluster and load it into the
         Bio::Cluster::SequenceFamily object
 
-  Ret: none (load the alignments into the Bio::Cluster::SequenceFamily object)
+  Ret: @failed, an array with the cluster_id of the failed alignments.
+       (load the alignments into the Bio::Cluster::SequenceFamily object)
 
   Args: $args_href, a hash reference with the following permited keys:
         program => $scalar, parameters => $array_ref with program parameters
@@ -3649,6 +3729,8 @@ sub run_alignments {
 	}	    
     }
 
+    my @failed = ();
+
     if (defined $factory) {
  
 	my %clusters = %{$self->get_clusters()};
@@ -3695,38 +3777,45 @@ sub run_alignments {
 		## Remove members from Bio::Cluster::SequenceFamily to add
 		## the seqs with the right id (align creates a new seq objects) 
 
-		$clusters{$cluster_id}->remove_members();
-		foreach my $seq2 (@seq_members) {
-		    $seq2->display_id($seqids{$seq2->display_id()});
-		    $clusters{$cluster_id}->add_members([$seq2]);
-		}
-
-		foreach my $seqobj ($alignobj->each_seq()) {
-		    my $index = $seqobj->display_id();
-		    $alignobj->remove_seq($seqobj);
-		    $seqobj->display_id($seqids{$index});
-		    $alignobj->add_seq($seqobj);
+		if (defined $alignobj) {
+		    $clusters{$cluster_id}->remove_members();
+		    foreach my $seq2 (@seq_members) {
+			$seq2->display_id($seqids{$seq2->display_id()});
+			$clusters{$cluster_id}->add_members([$seq2]);
+		    }
 		    
-		}
+		    foreach my $seqobj ($alignobj->each_seq()) {
+			my $index = $seqobj->display_id();
+			$alignobj->remove_seq($seqobj);
+			$seqobj->display_id($seqids{$index});
+			$alignobj->add_seq($seqobj);
+			
+		    }
 
-		## Also it will set the alinments into the SequenceFamily 
-		## object
+		    ## Also it will set the alinments into the SequenceFamily 
+		    ## object
 		
 
-		$clusters{$cluster_id}->alignment($alignobj);
+		    $clusters{$cluster_id}->alignment($alignobj);
+		}
+		else {
+		    push @failed, $cluster_id;
+		}
 	    }
 	}
     }
+    return @failed;
 }
 
 =head2 run_distances
 
-  Usage: $phygecluster->run_distances($method);
+  Usage: my @failed = $phygecluster->run_distances($method);
 
   Desc: Calculates a distance matrix for all pairwise distances of
         sequences in an alignment using Bio::Align::DNAStatistics object
 
-  Ret: none (it loads %distances, a hash with keys=cluster_id and 
+  Ret: @failed, an array with the failed cluster_id
+       (it loads %distances, a hash with keys=cluster_id and 
        value=Bio::Matrix::PhylipDis object into the phyGeCluster object)
 
   Args: A hash reference with following keys:
@@ -3798,6 +3887,8 @@ sub run_distances {
     my $t = scalar( keys %clusters);
     my $a = 0;
     
+    my @failed = ();
+
     foreach my $cluster_id (sort keys %clusters) {
 
 	my $alignobj = $clusters{$cluster_id}->alignment();
@@ -3869,7 +3960,7 @@ sub run_distances {
 		    $i++;
 		}
 
-		my $distmatrix = '';
+		my $distmatrix;
 		try {
 		    if ($quiet == 1) {
 			local $SIG{__WARN__} = sub {};
@@ -3900,6 +3991,7 @@ sub run_distances {
 		    if (@_) {
 			unless ($quiet == 0) {
 			    print STDERR "ERROR for run_distances.\n@_\n";
+			    push @failed, $cluster_id;
 			}
 		    }
 		    else {
@@ -3907,29 +3999,33 @@ sub run_distances {
 			## Before set the matrix it will replace the 
 			## matrix headers, in names and in the matrix too
 			
-			my @oldnames = ();
+			if (defined $distmatrix) {
 
-			foreach my $name (@{$distmatrix->names()}) {
-			    push @oldnames, $seqids{$name};
+			    my @oldnames = ();
 
-			    my $vals_href = $distmatrix->_matrix()->{$name};
-			    foreach my $key2 (keys %{$vals_href}) {
-				$vals_href->{$seqids{$key2}} = 
-				    delete($vals_href->{$key2});
+			    foreach my $name (@{$distmatrix->names()}) {
+				push @oldnames, $seqids{$name};
+
+				my $vals_href = $distmatrix->_matrix()->{$name};
+				foreach my $key2 (keys %{$vals_href}) {
+				    $vals_href->{$seqids{$key2}} = 
+					delete($vals_href->{$key2});
+				}
+				
+				$distmatrix->_matrix()->{$seqids{$name}} =
+				    delete($distmatrix->_matrix()->{$name});
 			    }
+			    $distmatrix->names(\@oldnames);
 
-			    $distmatrix->_matrix()->{$seqids{$name}} =
-				delete($distmatrix->_matrix()->{$name});
+			    $dist{$cluster_id} = $distmatrix;
 			}
-			$distmatrix->names(\@oldnames);
-
-			$dist{$cluster_id} = $distmatrix;
 		    }
 		};		
 	    }	    
 	}
     }
     $self->set_distances(\%dist);
+    return @failed;
 }
 
 
@@ -4192,6 +4288,10 @@ sub run_njtrees {
     my $a = 0;
     my $t = scalar( keys %dists );
 
+    ## Define the failed array
+    
+    my @failed = ();
+
     foreach my $cluster_id (sort keys %dists) {
 
 	$a++;
@@ -4281,6 +4381,9 @@ sub run_njtrees {
 
 		$seqfam->tree($tree);
 	    }
+	    else {
+		push @failed, $cluster_id;
+	    }
 
 	    ## Forth, replace the matrix names by the originals.
 	
@@ -4299,6 +4402,7 @@ sub run_njtrees {
 	    $distobj->names(\@oldnames_list);
 	}
     }
+    return @failed;
 }
 
 
@@ -4380,6 +4484,10 @@ sub run_mltrees {
     my %clusters = %{$self->get_clusters()};
     my %strains = %{$self->get_strains()};
 
+    ## Define failed array
+
+    my @failed = ();
+
     my $a = 0;
     my $t = scalar( keys %clusters );
 
@@ -4460,6 +4568,9 @@ sub run_mltrees {
 		    
 		    $seqfam->tree($tree);
 		}
+		else {
+		    push @failed, $cluster_id;
+		}
 	    }
 
 	    ## Finally it will replace the ids of the alignments back 
@@ -4472,6 +4583,7 @@ sub run_mltrees {
 
 	}
     }
+    return @failed;
 }
 
 
@@ -5058,6 +5170,8 @@ sub prune_by_strains {
         composition  => $href with key=strain, value=count.
         random       => $int, an integer to get this number of sequences
         trim         => $enable (1) or $disable (0)... disable by default.
+        ovlscore     => enable(1) or disable (0) ... disable by default
+                        (use a ovlscore based in: length * (identity/100)^2
         (to cut the alignment and get the region defined by the overlap)
         
   Side_Effects: Died if some of the parameters are wrong.
@@ -5099,11 +5213,20 @@ sub prune_by_overlaps {
     }
     my $trim = 0;
     if (defined $args_href->{'trim'}) {
-	if ($args_href->{'trim'} !~ m/^[0|1]$/) {
+	if ($args_href->{'trim'} !~ m/^(0|1)$/) {
 	    croak("ARG. ERROR: 'trim' arg. only can be an 1 (en.) or 0 (dis.)");
 	}
 	else {
 	    $trim = $args_href->{'trim'};
+	}
+    }
+    my $ovlscore = 0;
+    if (defined $args_href->{'ovlscore'}) {
+	if ($args_href->{'ovlscore'} !~ m/^(0|1)$/) {
+	    croak("ARG. ERROR: 'ovlscore' only can be an 1 (en.) or 0 (dis.)");
+	}
+	else {
+	    $ovlscore = $args_href->{'ovlscore'};
 	}
     }
 
@@ -5144,7 +5267,15 @@ sub prune_by_overlaps {
 			my $entry = $mtx->get_entry($row, $col);
 			my $pair = join(';', sort(($row, $col)));
 			unless (defined $le_pair{$pair}) {
-			    $le_pair{$pair} = $entry->{length};
+			    if ($ovlscore == 1) {
+				my $len = $entry->{length};
+				my $ide = $entry->{ident};
+				my $ovlsc = $len * ($ide/100) * ($ide/100);
+				$le_pair{$pair} = $ovlsc;
+			    }
+			    else {
+				$le_pair{$pair} = $entry->{length};
+			    }
 			}
 		    }
 		}
@@ -5204,7 +5335,16 @@ sub prune_by_overlaps {
 			unless (defined $seed{$col2}) {
 			    my $entry2 = $mtx->get_entry($row2, $col2);
 			    unless (defined $seedp{$col2}) {
-				$seedp{$col2} = $entry2->{length};
+				if ($ovlscore == 1) {
+				    my $len2 = $entry2->{length};
+				    my $ide2 = $entry2->{ident};
+				    my $ovlsc2 = $len2 * 
+					         ($ide2/100) * ($ide2/100);
+				    $seedp{$col2} = $ovlsc2;
+				}
+				else {
+				    $seedp{$col2} = $entry2->{length};
+				}	
 			    }
 			}
 		    }
