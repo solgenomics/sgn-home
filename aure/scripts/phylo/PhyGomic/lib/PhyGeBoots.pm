@@ -842,7 +842,7 @@ sub run_distances {
     my $c = 0;
     foreach my $align (@aligns) {
 	$c++;
-	my $dists = '';
+	my $dists;
 
 	## Some tools trim the sequence id, so it is better to replace
 	## them for some index and rereplace after run the alignment
@@ -884,23 +884,26 @@ sub run_distances {
 	     else {
 		 if (defined $dists && ref($dists) =~ m/Bio::Matrix/) {
 
-		     my @oldnames = ();
+		     if (defined $dists) {
 
-		     foreach my $name (@{$dists->names()}) {
-			 push @oldnames, $seqids{$name};
+			 my @oldnames = ();
 			 
-			 my $vals_href = $dists->_matrix()->{$name};
-			 foreach my $key2 (keys %{$vals_href}) {
-			     $vals_href->{$seqids{$key2}} = 
-				 delete($vals_href->{$key2});
+			 foreach my $name (@{$dists->names()}) {
+			     push @oldnames, $seqids{$name};
+			     
+			     my $vals_href = $dists->_matrix()->{$name};
+			     foreach my $key2 (keys %{$vals_href}) {
+				 $vals_href->{$seqids{$key2}} = 
+				     delete($vals_href->{$key2});
+			     }
+			     
+			     $dists->_matrix()->{$seqids{$name}} =
+				 delete($dists->_matrix()->{$name});
 			 }
-			 
-			 $dists->_matrix()->{$seqids{$name}} =
-			     delete($dists->_matrix()->{$name});
-		     }
-		     $dists->names(\@oldnames);
+			 $dists->names(\@oldnames);
 		     
-		     push @dists, $dists;
+			 push @dists, $dists;
+		     }
 		 }
 	     }
 	};
