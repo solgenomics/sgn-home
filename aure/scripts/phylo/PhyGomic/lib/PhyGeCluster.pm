@@ -5170,6 +5170,7 @@ sub prune_by_strains {
 			my $pair_name = join(',', @{$pair_aref});
 			my $str1 = $pair_aref->[0];
 			my $str2 = $pair_aref->[1];
+			
 			if (exists $pair_strains{$pair_name}) {
 			    my %dp = %{$pair_strains{$pair_name}};
 
@@ -5185,17 +5186,24 @@ sub prune_by_strains {
 			    ## Now it will get one pair and decrease the
 			    ## composition
 			
+			    my $n = 1;
 			    while($cmp{$str1} > 0 || $cmp{$str2} > 0) {
 				my $pairname = shift(@pairs);
+				$n++;
+
 				if (defined $pairname) {
+				   
 				    my @seqpair = @{$seqpair_names{$pairname}};
-				    my $test = join(',', @seqpair);
+
 				    my $new = 0;
 				    my $singlenew = '';
 				    foreach my $seqid (@seqpair) {
+					my $strseq = $strains{$seqid};
 					unless (exists $selected_mb{$seqid}) {
-					    $new++;
-					    $singlenew = $seqid;
+					    if ($cmp{$strseq} > 0) {
+						$new++;
+						$singlenew = $seqid;
+					    }
 					}
 				    }
 				    if ($new == 2) {
