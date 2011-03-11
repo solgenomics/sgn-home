@@ -898,6 +898,10 @@ if ($phytopo_count > 0) {
     ## Create the R base object
 
     my $rbase = R::YapRI::Base->new();
+    
+    ## UNCOMMENT TO TRACE ERRORS INTO R 
+    ## $rbase->enable_debug();
+    ## $rbase->enable_keepfiles();
 
     ## Create the PhyGeStat object.
 
