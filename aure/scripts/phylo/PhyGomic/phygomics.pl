@@ -454,6 +454,13 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    }
 	    close($ffh_aln);
 	}
+
+	## Print alignments stats
+	my $alnstatbase = $alndir . '/stats_aln.tab';
+	my $stats = $paphyg->out_alignstats({basename => $alnstatbase});
+	print STDERR "\t\t\tOPTION -O enabled: ";
+	print STDERR "a stats alignment file have been created";
+	print STDERR " with filename:\n\t\t\t$stats\n\n";
     }
 
     ## 2.3) Run distances
@@ -621,6 +628,13 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    'distribution' => 'single',
 	    'format'       => 'clustalw',
 						 });
+	
+	## Print alignments stats
+	my $pralnstatbase = $prdir . '/ap.stats_aln.tab';
+	my $prstats = $paphyg->out_alignstats({ basename => $pralnstatbase});
+	print STDERR "\t\t\tOPTION -O enabled: ";
+	print STDERR "a stats alignment file have been created";
+	print STDERR " with filename:\n\t\t\t$prstats\n\n";
 
         my $pr_disbase = $prdir . '/ap.distances';
 	my %pr_disfiles = $paphyg->out_distancefile({ 

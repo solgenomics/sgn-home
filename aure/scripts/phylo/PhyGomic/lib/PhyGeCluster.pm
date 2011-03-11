@@ -1944,7 +1944,7 @@ sub print_parsing_status {
     my $perc_obj = Math::BigFloat->new($perc);
     my $perc_formated = $perc_obj->bfround(-2);
 
-    print STDERR "\t$message $perc_formated %    \t(processing:$id)\r";
+    print STDERR "\t$message $perc_formated %    \t(processing:$id)       \r";
 }
 
 =head2 out_clusterfile
@@ -2178,6 +2178,115 @@ sub out_alignfile {
 
     return %outfiles;
 }
+
+=head2 out_alignstats
+    
+  Usage: my $statfile = $phygecluster->out_alignstats($basename);
+
+  Desc: Print into one file the summary of the stats file as the following
+        columns:
+        <cluster_id>
+        <member_count>
+        <align_length>
+        <align_ident_average>
+        <composition_by_strain>
+        <members_ids>
+
+  Ret: $statsfile, a filename
+
+  Args: $basename, a basename for the new file.
+
+  Side_Effects: Use a default basename of 'alignstats.tab'
+
+  Example: my $stats = $phygecluster->out_alignstats();
+
+=cut
+
+sub out_alignstats {
+    my $self = shift;
+    my $argshref = shift;
+    
+    ## Check variables and complete with default arguments
+    
+    my $def_argshref = { 'basename' => 'alignstats.tab' };
+
+    if (defined $argshref) {
+	unless (ref($argshref) eq 'HASH') {
+	    croak("ARG.ERROR: $argshref isn't a hashref in out_alignstats");
+	}
+	else {
+	    foreach my $key (keys %{$argshref}) {
+		unless (exists $def_argshref->{$key}) {
+		    croak("ARG.ERROR: $key isn't a valid arg. out_alignstats");
+		}
+	    }
+	    foreach my $defkey (keys %{$def_argshref}) {
+		unless (exists $argshref->{$defkey}) {
+		    $argshref->{$defkey} = $def_argshref->{$defkey}
+		}
+	    }
+	}
+    }
+    else {
+	$argshref = $def_argshref;
+    }
+
+    ## Define the output hash
+
+    my $filestats =  $argshref->{'basename'};
+    open my $stfh, '>', $filestats;
+
+    ## Get the clusters and the alignments.
+
+    my %clusters = %{$self->get_clusters()};
+    my %strains = %{$self->get_strains()};
+
+    foreach my $cluster_id (sort keys %clusters) {
+
+	my @line = ($cluster_id);
+
+	my $align = $clusters{$cluster_id}->alignment();	    
+	if (defined $align && ref($align) eq 'Bio::SimpleAlign') {
+	    
+	    my @members = $align->each_seq();
+	    my @members_ids = ();
+
+	    push @line, scalar(@members);              ## Add member number
+	    push @line, $align->length();              ## Add align length
+
+	    my $idperc = $align->percentage_identity();
+	    my $idperc_obj = Math::BigFloat->new($idperc);
+	    push @line, $idperc_obj->bfround(-2);        ## Add ident.% rounded
+	    
+	    my %comp = ();                             ## Get composition
+	    foreach my $seq (@members) {
+		push @members_ids, $seq->id();
+		my $str = $strains{$seq->id()} || 'NA';
+		if (exists $comp{$str}) {
+		    $comp{$str}++;
+		}
+		else {
+		    $comp{$str} = 1;
+		}
+	    }
+	    my @compline = ();
+	    foreach my $strkey (sort keys %comp) {
+		push @compline, $strkey . '=' . $comp{$strkey};
+	    }
+	    push @line, join(',', @compline);          ## Add composition.
+	    push @line, join(',', sort @members_ids);  ## Add members
+	}
+	else {
+	    push @line, ('NA', 'NA', 'NA', 'NA', 'NA');
+	}
+	my $line = join("\t", @line);
+	print $stfh "$line\n";
+    }	
+    close($stfh);
+    
+    return $filestats;
+}
+
 
 =head2 out_bootstrapfile
     
