@@ -406,7 +406,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     else {
 	 print STDERR "\t\t\t USING DEFAULT ALIGNMENT (clustalw)\n\n";
 	 $align_args = { program    => 'clustalw', 
-			 parameters => [ quiet => 'yes', matrix => 'BLOSUM'],
+			 parameters => { quiet => undef, matrix => 'BLOSUM'},
 	 };
     }
     
@@ -584,9 +584,16 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\t\t\tDONE. $rem_o_c clusters and $rem_o_m members ";
 	print STDERR "have been removed.\n\n";
 	
-	print STDERR "\t\t\t\tRERUNING alignments.\n\n";
-	my @failed_pr_aln = $paphyg->run_alignments($align_args);
-	push @failed_praln, @failed_pr_aln;
+	unless (exists $pr_ovl_args->{trim}) {
+
+	    print STDERR "\t\t\t\tRERUNING alignments.\n\n";
+	    my @failed_pr_aln = $paphyg->run_alignments($align_args);
+	    push @failed_praln, @failed_pr_aln;
+	}
+	else {
+	     print STDERR "\t\t\t\tTRIM option ENABLED. ";
+	     print STDERR "SKIPPING  rerun alignments.\n\n";
+	}
  
 	print STDERR "\n\t\t\t\tRERUNING distances.\n\n";
 	my @failed_pr_dist = $paphyg->run_distances($dist_args);
@@ -836,14 +843,21 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
             mkdir($topodir);
 	
             ## Print files
-            my $topobase = $topodir . '/topology_analysis';
-            my $topofile = $phygetopo->out_topoanalysis( 
-                                                      {basename => $topobase }
+            my $topobase1 = $topodir . '/topology_analysis';
+            my $topofile1 = $phygetopo->out_topoanalysis( 
+                                                      {basename => $topobase1 }
                                                        );
 
+            my $topobase2 = $topodir . '/topology_composition';
+            my $topofile2 = $phygetopo->out_topocomposition(
+                                                     {basename => $topobase2}
+                                                      );
+
             print STDERR "\t\t\tOPTION -O enabled: ";
-            print STDERR "a topoanalysis file have been";
-            print STDERR " created with basename:\n\t\t\t$topobase\n\n";
+            print STDERR "topoanalysis and topocomposition files have been";
+            print STDERR " created with basename:\n\t\t\t$topobase1\n";
+            print STDERR "\t\t\t$topobase2\n\n";
+
          }	 
     }
 
@@ -1293,10 +1307,10 @@ sub print_config {
 ##
 ## format:   [composition => {strain}={value}{comma}...{semicolon}...]
 ##           [random => {integer}]
-             [trim   => {1}]
+##           [trim   => {1}]
 ## example:  [composition => Sly=1,Nta=2,Nto=1,Nsy=1]
 ##           [trim => 1 ]
-## arguments: composition, random, trim
+## arguments: composition, random, trim, ovlscore
 
 
 ######################
@@ -1619,15 +1633,27 @@ sub parse_align_args {
 	
     if (exists $pargs{al_arg}) {
 	
-	$align_args{parameters} = [];
+	$align_args{parameters} = {};
 
 	my @aargs = split(/;/, $pargs{al_arg});
 	foreach my $aarg (@aargs) {
-	    if ($aarg =~ m/\s*(.+)\s*=\s*(.+)\s*/) {
+	    $aarg =~ s/^\s+//;  ## Clean the spaces
+	    $aarg =~ s/\s+$//;
+	    if ($aarg =~ m/(.+)=(.+)/) {
+		my $func = $1;
+		my $val = $2;
+		$func =~ s/\s+$//;  ## Clean the spaces
+		$val =~ s/^\s+//;
 		
-		push @{$align_args{parameters}}, ($1 => $2); 
+		$align_args{parameters}->{$func} = $val; 
+	    }
+	    else {
+		$align_args{parameters}->{$aarg} = undef;
 	    }
 	}
+    }
+    else {
+	$align_args{parameters} = {};
     }
     
     return \%align_args;
@@ -1799,8 +1825,8 @@ sub parse_prune_ovl_args {
 		    }
 		}
 	    }
-	    elsif ($pr_ovl =~ m/(random|trim)\s+=>\s+(\s+)/) {
-		$pr_ovl{$1} = $2;
+	    elsif ($pr_ovl =~ m/(random|trim|ovlscore)/i) {
+		$pr_ovl{lc($1)} = 1;
 	    }
 	}
     }
@@ -2025,10 +2051,10 @@ sub parse_boots_args {
     ## Define the bootstrapping args
 
     my %boots = ( 
-	run_bootstrap => { datatype => 'Sequence' },
+	run_bootstrap => { datatype => 'Sequence', quiet => 1 },
 	run_distances => { quiet => 1},
 	## Tree will depend of the tree_method
-	run_consensus => { normalized => 1 }
+	run_consensus => { normalized => 1, quiet => 1  }
 	);
 
     ## Bootstrap values
