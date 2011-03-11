@@ -1054,7 +1054,7 @@ sub create_tree_graph {
 	## It will overwrite each command with x = newick2phylog($topo_id)
 	## and sub = $topo_id
 
-	my $obj = 'newick2phylog(' . $topo_id . ')';
+	my $obj = 'newick2phylog(' . $topo_id . ', FALSE)';
 	$plot->{'plot.phylog'}->{x} = { $obj => '' };
 	$plot->{'plot.phylog'}->{'sub'} = $topo_id;
 	
