@@ -983,11 +983,11 @@ throws_ok { $phygecluster3->run_alignments($run_href3) } qr/ARG. ERROR: 'par/,
     'TESTING DIE ERROR when parameters supplied to run_alignments is not valid';
 
 
-my @parameters1 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
+my %parameters1 = (quiet => undef, matrix => 'BLOSUM');
 $phygecluster3->run_alignments(
     {
 	program    => 'clustalw',
-	parameters => \@parameters1,
+	parameters => \%parameters1,
     }
     );
 

@@ -2607,16 +2607,21 @@ sub calculate_overlaps {
 
     foreach my $cluster_id (keys %clusters) {
 	my $align = $clusters{$cluster_id}->alignment();
+	my @members = ();
 
-	if (defined $align) {
-	    
+	if (defined $align && ref($align) eq 'Bio::SimpleAlign') {
+	    @members = $align->each_seq();
+	}	    
+
+	if (scalar(@members) > 1) {
+
 	    ## Get the member ids to create the empty matrix, and get also
 	    ## the start and the end of each sequence.
 	    
 	    my %post = ();
 	    my %seqobjs = ();
 	    my @member_ids = ();
-	    foreach my $seq ($align->each_seq()) {
+	    foreach my $seq (@members) {
 		my $id = $seq->display_id();
 		$seqobjs{$id} = $seq;
 		
@@ -2642,6 +2647,7 @@ sub calculate_overlaps {
 		if ($end == 0) {
 		    $end = $pos;
 		}
+
 		$post{$id} = [$start, $end, $end-$start];
 	    }
 
@@ -2673,19 +2679,19 @@ sub calculate_overlaps {
 		    my $bs = $post{$id_b}->[0];
 		    my $be = $post{$id_b}->[1];
 		    
-		    my ($start, $end) = (0, 0);
+		    my ($nstart, $nend) = (0, 0);
 		    if ($as <= $bs && $as < $be && $ae > $bs) {
-			$start = $bs;
-			$end = $ae;
+			$nstart = $bs;
+			$nend = $ae;
 			if ($ae > $be) {
-			    $end = $be;
+			    $nend = $be;
 			}
 		    }
 		    elsif ($as >= $bs && $as < $be && $ae > $bs) {
-			$start = $as;
-			$end = $be;
+			$nstart = $as;
+			$nend = $be;
 			if ($ae < $be) {
-			    $end = $ae;
+			    $nend = $ae;
 			}
 		    }
 
@@ -2694,10 +2700,10 @@ sub calculate_overlaps {
 		    ## always will have start,end and length = 0.
 		    
 		    if ($id_a ne $id_b) {
-			if ($start > 0 && $end > 0) {
-			    my $val = { start  => $start, 
-					end    => $end, 
-					length => $end-$start };
+			if ($nstart > 0 && $nend > 0) {
+			    my $val = { start  => $nstart, 
+					end    => $nend, 
+					length => $nend-$nstart };
 			    
                             ## It will create an aln object with this
 			    ## two sequences to calculate the identity
@@ -2705,12 +2711,19 @@ sub calculate_overlaps {
 			    ## and also it will remove all the sequences
 			    ## different from $id_a and $id_b
 
-			    my $newaln = $align->slice($start, $end);
-			    foreach my $newseq ( $newaln->each_seq() ) {
+			    my $seqn = scalar($align->each_seq());
+			    my $copyaln = $align->select(1, $seqn);
+			    
+			    foreach my $newseq ( $copyaln->each_seq() ) {
 				if ($newseq->id() !~ m/^($id_a|$id_b)$/) {
-				    $newaln->remove_seq($newseq);
+				    $copyaln->remove_seq($newseq);
 				}
 			    }
+			    
+			    ## Use of slice before return errors for
+			    ## sequences that dont have chars there.
+
+			    my $newaln = $copyaln->slice($nstart, $nend);
 		
 			    my $ident = $newaln->percentage_identity();
 			    $val->{ident} = $ident;
@@ -2737,8 +2750,9 @@ sub calculate_overlaps {
 		$matrix->row($id_a, \@row_values);
 	    }
 	    $overlaps{$cluster_id} = $matrix;
-	}    
+	}
     }
+
     return %overlaps;
 }
 
@@ -3700,6 +3714,39 @@ sub run_alignments {
 		tcoffee  => 'Bio::Tools::Run::Alignment::TCoffee',
 		);
 
+	    my %perm_progargs = (
+		clustalw => [ 
+		    @Bio::Tools::Run::Alignment::Clustalw::CLUSTALW_PARAMS,
+		    @Bio::Tools::Run::Alignment::Clustalw::CLUSTALW_SWITCHES,
+		    @Bio::Tools::Run::Alignment::Clustalw::OTHER_SWITCHES,
+		],
+		kalign   => [
+		    @Bio::Tools::Run::Alignment::Kalign::KALIGN_PARAMS,
+		    @Bio::Tools::Run::Alignment::Kalign::KALIGN_SWITCHES,
+		],
+		mafft    => [ 
+		    @Bio::Tools::Run::Alignment::MAFFT::MAFFT_PARAMS,
+		    @Bio::Tools::Run::Alignment::MAFFT::MAFFT_SWITCHES,
+		    @Bio::Tools::Run::Alignment::MAFFT::OTHER_SWITCHES,
+		],
+		muscle   => [
+		    @Bio::Tools::Run::Alignment::Muscle::MUSCLE_PARAMS,
+		    @Bio::Tools::Run::Alignment::Muscle::MUSCLE_SWITCHES,
+		],
+		tcoffee  => [
+		    @Bio::Tools::Run::Alignment::TCoffee::TCOFFEE_PARAMS,
+		    @Bio::Tools::Run::Alignment::TCoffee::TCOFFEE_SWITCHES,
+		    @Bio::Tools::Run::Alignment::TCoffee::OTHER_SWITCHES,
+		],
+		);
+
+	    
+
+	    ## Define the permited params and switches that will be 
+	    ## extracted from the program module
+
+	    my %perm_progparam = ();
+
 	    ## Check the program
 
 	    my $pprog = join(',', sort(keys %perm_prog));
@@ -3708,6 +3755,15 @@ sub run_alignments {
 		$er1 .= "is not in the list of permited programs ($pprog)";
 		croak($er1);
 	    }
+	    else {
+		## Get the parameters and the switches for that program
+		## And check if they are right
+		## Change to lowercase everything
+		
+	        foreach my $pr_param ( @{$perm_progargs{$args{program}}} ) {
+		    $perm_progparam{lc($pr_param)} = 1;
+		}		
+	    }
 
 	    unless (exists $args{parameters}) {
 		my $er3 = "ARG. ERROR: Args. supplied to run_alignments ";
@@ -3715,15 +3771,35 @@ sub run_alignments {
 		croak($er3);
 	    }
 	    else {
-		unless (ref($args{parameters}) eq 'ARRAY') {
+		unless (ref($args{parameters}) eq 'HASH') {
 		    my $er4 = "ARG. ERROR: 'parameters' args. supplied to ";
 		    $er4 .= "run_alignments()";
 		    $er4 .= "doesn't contains 'parameters' specification";
 		    croak($er4);
 		}
 		else {
-		    my @parameters = @{$args{parameters}};
+
 		    $factory = $perm_prog{$args{program}}->new();
+
+		    foreach my $par ( keys %{$args{parameters}} ) {
+			unless (exists $perm_progparam{lc($par)}) {
+			    my $er5 = "ERROR: $par is not a valid ";
+			    $er5 .= "parameter/switch for $args{program}.\n";
+			    my $valid = join("\n", keys %perm_progparam);
+			    $er5 .= "$valid\n\n";
+			    croak($er5);
+			}
+			else {
+			    my $val = $args{parameters}->{$par};
+			    my $program_param = lc($par);
+			    if (defined $val && length($val) > 0) {
+				$factory->$program_param($val);
+			    }
+			    else {
+				$factory->$program_param(1);
+			    }
+			}
+		    }
 		}
 	    }
 	}	    
@@ -3745,6 +3821,8 @@ sub run_alignments {
 	    my @seq_members = $clusters{$cluster_id}->get_members();
 
 	    ## Only make sense if the cluster has more than one member
+	    
+	    my $test = scalar(@seq_members);
 
 	    if (scalar(@seq_members) > 1) {
 
@@ -3772,7 +3850,7 @@ sub run_alignments {
 		## Come back to old ids. It require to change the name
 		## in the object and reset the sequence object in the alignment
 		## object with the new names... to let the object get all the
-		## variables thta it need it
+		## variables that it need it
 
 		## Remove members from Bio::Cluster::SequenceFamily to add
 		## the seqs with the right id (align creates a new seq objects) 
@@ -4177,7 +4255,7 @@ sub run_bootstrapping {
 	    my $consensus = $phygeboots->get_consensus();
 	    my $trees_n = scalar( $phygeboots->get_trees());
 
-	    if (defined $consensus) {
+	    if (defined $consensus && ref($consensus) =~ m/Bio::Tree/) {
 		$bootstr{$cluster_id} = $consensus;
 	    }
 	}
@@ -5243,7 +5321,7 @@ sub prune_by_overlaps {
     my %str = %{$self->get_strains()};
 
     foreach my $clid (keys %{$cls_href}) {
-	if (defined $ovl{$clid}) {
+	if (exists $ovl{$clid}) {
 	
 	    ## Get the rand variable from random. It should be regenerate
 	    ## each cluster_id
@@ -5256,7 +5334,8 @@ sub prune_by_overlaps {
 	    my $mtx = $ovl{$clid};
 	    
 	    ## Transform the matrix in a hash with key=pair and value=length
-	    
+	    ## GET THE ORDERED LIST OF PAIRS
+
 	    my %le_pair = ();
 	    my %members = ();
 	    my @rownames = $mtx->row_names();
@@ -5285,19 +5364,35 @@ sub prune_by_overlaps {
 	    ## detailed in the composition... or simply the best overlap if
 	    ## is not defined 'composition' argument.
 
-	    my %seed = ();
+	    my %seed = ();	    
+
+	    ## FIND A OVERLAP SEED 
+
 	    foreach my $op (sort {$le_pair{$b} <=> $le_pair{$a}} keys %le_pair){
-				
-		my @pars = split(/;/, $op);
+		
+		my %ckcp = %comp;            ## Copy comp hash to use as check
+		my @pars = split(/;/, $op);  ## Get the pair
 
 		if (scalar(keys %comp) > 0) { ## That means that exists comp
 		    
-		    my $str_match = 0;  ## Create strain match variable
+		    my $str_match = 0;        ## Create strain match variable
+		    
 		    foreach my $par (@pars) {
-			if (exists $comp{$str{$par}}) {
+
+			my @testcomp = ();
+			foreach my $t (keys %ckcp) {
+			    push @testcomp, $t . '=' . $ckcp{$t};
+			}
+			my $lt = join(',', @testcomp);
+
+			if (exists $ckcp{$str{$par}} && $ckcp{$str{$par}} > 0) {
+			    $ckcp{$str{$par}}--;
 			    $str_match++;
 			}
 		    }
+
+		    ## Selected only if the two elements match.
+
 		    if ($str_match == 2 && scalar(keys %seed) == 0) {
 	
 			## Reduce the composition requs. and create the seed
@@ -5328,46 +5423,99 @@ sub prune_by_overlaps {
 	    ## the pairs of the seed.
 
 	    my %seedp = ();
-	    foreach my $row2 (@rownames) {
-		if (defined $seed{$row2}) {
-		    foreach my $col2 (@colnames) {
-			## Skip the other seeds, and add the new member
-			unless (defined $seed{$col2}) {
-			    my $entry2 = $mtx->get_entry($row2, $col2);
-			    unless (defined $seedp{$col2}) {
-				if ($ovlscore == 1) {
-				    my $len2 = $entry2->{length};
-				    my $ide2 = $entry2->{ident};
-				    my $ovlsc2 = $len2 * 
-					         ($ide2/100) * ($ide2/100);
-				    $seedp{$col2} = $ovlsc2;
+	    my %seedline = ();
+
+	    ## GET THE REST OF OVELAPS FOR THE SEED
+	    ## Skip if there are no seed.
+
+	    if (scalar(keys %seed) == 2) {
+
+		foreach my $row2 (@rownames) {
+		    
+		    if (defined $seed{$row2}) {  ## Get ovl. elements for seed
+		    
+			foreach my $col2 (@colnames) {
+			    
+			    ## Skip the selfmatrix, and add the new member
+			    unless (defined $seed{$col2}) {
+
+				my $entry2 = $mtx->get_entry($row2, $col2);
+			    
+				## Add to seed pairs only if $length > 0.
+				## It means, there is an overlap
+			    
+				my $len2 = $entry2->{length};
+				my $ide2 = $entry2->{ident};
+				my $ovlsc2 = $len2 * ($ide2/100) * ($ide2/100);
+
+				if ($len2 > 0) {
+				    
+				    unless (defined $seedp{$col2}) {
+					if ($ovlscore == 1) { 
+					    $seedp{$col2} = $ovlsc2;
+					    $seedline{$col2} = $row2;
+					}
+					else {
+					    $seedp{$col2} = $len2;
+					    $seedline{$col2} = $row2;
+					}	
+				    }
 				}
-				else {
-				    $seedp{$col2} = $entry2->{length};
-				}	
 			    }
 			}
 		    }
 		}
-	    }
-	    
-	    ## It will take the new members order by distance
-
-	    foreach my $newel (sort {$seedp{$b} <=> $seedp{$a}} keys %seedp) {
 		
-		if (scalar(keys %comp) > 0) {
-		    my $currcomp = $comp{$str{$newel}};
-		    if (defined $currcomp && $currcomp > 0 ) {
-			$comp{$str{$newel}}--;
-			$members{$newel} = 1;
-			delete($seedp{$newel});
+		## It will take the new members order by distance and it will
+		## compare with the curr overlapping region.If it is in, it will
+		## keep it and edit the curr_ovl regions.
+
+		## SELECT THE OVERLAPS
+
+		my @seeds = keys %seed;
+
+		my $seedentry = $mtx->get_entry($seeds[0], $seeds[1]);
+		my $curr_start = $seedentry->{start};
+		my $curr_end = $seedentry->{end};
+		
+		foreach my $nw (sort {$seedp{$b} <=> $seedp{$a}} keys %seedp) {
+		
+		    if (scalar(keys %comp) > 0) {
+			my $currcomp = $comp{$str{$nw}};
+			if (defined $currcomp && $currcomp > 0 ) {
+
+			    ## It will take the new element only if 
+			    ## the overlapping region is in the delimited ovl
+			    ## region
+
+			    my $seedpair = $seedline{$nw};
+			    my $pairentry = $mtx->get_entry($seedpair, $nw);
+			    my $pair_start = $pairentry->{start};
+			    my $pair_end = $pairentry->{end};
+
+			    if ($pair_start >= $curr_start) {
+				if ($pair_end <= $curr_end) {
+				    $comp{$str{$nw}}--;
+				    $members{$nw} = 1;
+				    delete($seedp{$nw});
+				    my $curr_start = $pair_start;
+				    my $curr_end = $pair_end;
+				}
+				else {
+				    delete($seedp{$nw});
+				}
+			    }
+			    else {
+				delete($seedp{$nw});
+			    }			
+			}
 		    }
-		}
-		else {
-		    if ($rand > 0) {
-			$members{$newel} = 1;
-			$rand--;
-			delete($seedp{$newel});
+		    else {
+			if ($rand > 0) {
+			    $members{$nw} = 1;
+			    $rand--;
+			    delete($seedp{$nw});
+			}
 		    }
 		}
 	    }
@@ -5387,6 +5535,7 @@ sub prune_by_overlaps {
 		    $rmcls{$clid} = $rmseqfam;
 		}
 		else {  ## Remove only the elements
+
 		    my @rmmemb = ();
 		    my $seqfam = $cls_href->{$clid};
 		    
@@ -5403,6 +5552,7 @@ sub prune_by_overlaps {
 		    ##     get the common overlap region and trim the seqs
 
 		    if ($trim == 1) {
+
 			my $max_st = 0;
 			my $min_en = $align->length();
 			foreach my $rw3 (@rownames) {
@@ -5422,8 +5572,11 @@ sub prune_by_overlaps {
 				}
 			    }
 			}
+
 			if ($max_st < $min_en) {
 			    my $trim_align = $align->slice($max_st, $min_en);
+			    my $ltest1 = $align->length();
+			    my $ltest2 = $trim_align->length();
 			    $seqfam->alignment($trim_align);
 			}
 		    }
@@ -5442,6 +5595,7 @@ sub prune_by_overlaps {
 		    }
 		    $seqfam->remove_members();
 		    $seqfam->add_members(\@select_members);
+		    my $testaln = $seqfam->alignment();
 		    
 		    ## And finally add to the hash 
 		    $rmmem{$clid} = \@rmmemb;
@@ -5529,8 +5683,6 @@ sub prune_by_overlaps {
 		    $rmcls{$clid} = $rmseqfam;		
 		}
 	    }
-
-
 	}
 	else {
 	    

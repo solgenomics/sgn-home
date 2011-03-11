@@ -320,9 +320,9 @@ $phygecluster->homologous_search(
     }
     );
 
-my @parameters1 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
+my %parameters1 = (quiet => undef, matrix => 'BLOSUM');
 $phygecluster->run_alignments({ program    => 'clustalw', 
-				parameters => \@parameters1 });
+				parameters => \%parameters1 });
 
 $phygecluster->run_distances({ method => 'Kimura' });
 

@@ -90,8 +90,8 @@ my $phygecluster1 = PhyGeCluster->new({ blastfile => $blastfile,
 $phygecluster1->load_seqfile({ sequencefile => $seqfile });
 $phygecluster1->load_strainfile({ strainfile => $strainfile });
 
-my @align0 = ('quiet' => 'yes', 'matrix' => 'BLOSUM');
-$phygecluster1->run_alignments({program => 'clustalw', parameters => \@align0});
+my %align0 = (quiet => undef, matrix => 'BLOSUM');
+$phygecluster1->run_alignments({program => 'clustalw', parameters => \%align0});
 
 $phygecluster1->run_distances({ method => 'Kimura' });
 
@@ -107,7 +107,7 @@ my ($rm_clusters_href, $rm_members_href) = $phygecluster1->prune_by_strains({
         ],
 									    });
 
-$phygecluster1->run_alignments({program => 'clustalw', parameters => \@align0});
+$phygecluster1->run_alignments({program => 'clustalw', parameters => \%align0});
 
 $phygecluster1->run_distances({ method => 'Kimura' });
 
