@@ -22,7 +22,8 @@ my $func = load_functional_files( $specific_csv, $general_csv, $descriptions_fil
 
 open my $gff3_fh, '<', $gff3_file;
 while( <$gff3_fh> ) {
-    next if /^#/ || ! m{ \t ITAG_eugene \t mRNA \t }x;
+    next if /^#/;
+    next unless m{ \t ITAG_eugene \t mRNA \t }x;
     s/([^\t]+)$/add_func_attrs($func,$1)/e;
 } continue {
     print;
