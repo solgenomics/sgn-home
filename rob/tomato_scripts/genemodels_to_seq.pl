@@ -47,6 +47,18 @@ while( my @toplevel_features = $gff3_in->next_feature_group ) {
                 my $feature_type = $output_type eq 'protein' ? 'CDS' : $output_type;
                 my $seq = splice_feature_seqs( $mrna, $ref_seq, $feature_type );
                 $seq = $seq->translate if $output_type eq 'protein';
+                $seq->desc( join ' ',
+                            'genomic_reference:'.$ref_seq->id,
+                            'gene_region:'
+                              .$feature->start
+                              .'-'.$feature->end,
+                            'transcript_region:'
+                              .$ref_seq->id
+                              .':'.$mrna->start
+                              .'..'.$mrna->end
+                              .( $mrna->strand == -1 ? '-' : '+' )
+                            );
+
                 $seq_out->write_seq( $seq );
             }
         }
