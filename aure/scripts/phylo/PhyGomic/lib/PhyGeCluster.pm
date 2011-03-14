@@ -329,6 +329,13 @@ sub new {
 
 sub clone {
     my $self = shift;
+    my $report_status = shift;
+
+    ## Undef debug if it is not equal to 1 or yes.
+
+    unless (defined $report_status && $report_status =~ m/^(1|yes)$/i) {
+	$report_status = undef;
+    }
 
     ## Create an empty object:
 
@@ -344,12 +351,23 @@ sub clone {
     ## Clone also the Bio::Cluster::SequenceFamily, Bio::SimpleAlign.
     ## It will have the same Bio::Seq objects
 
+    my $total_cluster = scalar(keys %clusters);
+    my $n_cluster = 0;
+
     my %new_clusters = ();
     foreach my $cluster_id (keys %clusters) {
 	my $old_seqfam = $clusters{$cluster_id};
 	my @members = $old_seqfam->get_members();
 	my $old_align = $old_seqfam->alignment();
 	my $old_tree = $old_seqfam->tree();
+
+	$n_cluster++;
+	if (defined $report_status) {
+	    print_parsing_status($n_cluster, $total_cluster, 
+				 "\t\tPercentage of clusters cloned",
+				 $cluster_id,
+		);
+	}
 
 	my $new_align = '';
 	if (defined $old_align) {

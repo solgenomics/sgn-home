@@ -332,7 +332,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     print STDERR "\t\t2.0) CLONING CLUSTER DATA (" .  date() . "):\n\n";
 
-    my $paphyg = $phyg->clone();
+    my $paphyg = $phyg->clone($opt_S);
 
     ## 2.1) Homologous search
 
