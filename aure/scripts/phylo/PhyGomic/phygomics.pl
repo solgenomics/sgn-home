@@ -334,6 +334,10 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     my $paphyg = $phyg->clone($opt_S);
 
+    if (defined $opt_S) {
+	priny STDERR "\n\n";
+    }
+
     ## 2.1) Homologous search
 
     print STDERR "\t\t2.1) HOMOLOGOUS SEARCH (" .  date() . "):\n\n";
