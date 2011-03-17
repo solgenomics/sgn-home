@@ -47,7 +47,64 @@ The following class methods are implemented:
 =cut 
 
 
+=head2 get_coordinates
 
+  Usage: my ($start, $end) = get_coordinates($seq);
+
+  Desc: Calculate where a sequence starts and ends in an alignment. It reads
+        the sequence and start to count the sequence when it doesnt find
+        a gap sign ('-' , '*' or '.').
+
+  Ret: $start, the start coordinates
+       $end, the end corrdinates
+
+  Args: $seq, a sequence object.
+        
+  Side_Effects: Die if no argument is supplied.
+                Die if the argument supplied is not a Bio::Seq object.
+
+  Example: my ($start, $end) = get_coordinates($seq);
+
+=cut
+
+sub get_coordinates {
+    my $seq = shift ||
+	croak("ERROR: No seq object was supplied to get_coordinates.");
+
+    if (ref($seq) !~ m/^Bio::(Seq::Meta|LocatableSeq)/) {
+	croak("ERROR: Object $seq supplied to get_coordinates isnt Bio::Seq");
+    }
+
+    ## Declare coordinates (position, start and end)
+
+    my ($po, $st, $en) = (0, 0, 0);
+
+    ## Split the sequence into nt and scan it
+
+    my $seqstr = $seq->seq();
+    my @nts = split(//, $seqstr);
+
+    foreach my $nt (@nts) {
+	$po++;
+	if ($nt !~ m/(-|\*|\.)/) {  ## If it is not a gap
+	    if ($st == 0) {
+		$st = $po;
+	    }
+	    $en = 0;
+	}
+	else {
+	    if ($st > 0 && $en == 0) {
+		$en = $po - 1;
+	    }
+	}
+    }
+    if ($en == 0) {
+	$en = $po;
+    }
+    
+    ## Return coordinates
+    return ($st, $en);
+}
 
 =head2 calculate_overlaps
 
@@ -204,66 +261,99 @@ sub calculate_overlaps {
     return $mtx
 }
 
+=head2 seed_list
 
-=head2 get_coordinates
+  Usage: my @seeds_href = seed_list($mtx, $method);
 
-  Usage: my ($start, $end) = get_coordinates($seq);
+  Desc: Calculate the seed list based in length, identity, or ovlscore
 
-  Desc: Calculate where a sequence starts and ends in an alignment. It reads
-        the sequence and start to count the sequence when it doesnt find
-        a gap sign ('-' , '*' or '.').
+  Ret: An array with arrayrefs. as elements. Each arrayref will have two 
+       elements (one per seed id)
 
-  Ret: $start, the start coordinates
-       $end, the end corrdinates
-
-  Args: $seq, a sequence object.
+  Args: $mtx, a Bio::Matrix::Generic object with the overlaps
+        $method, method to order the seeds. Permited values are 'length', 
+        'identity' or 'ovlscore'.
         
-  Side_Effects: Die if no argument is supplied.
-                Die if the argument supplied is not a Bio::Seq object.
+  Side_Effects: Die if no argument is used.
+                Die if first argument is not Bio::Matrix::Generic object.
+                If method is undef, or it doesnt match with length or identity
+                ovlscore will be used as default. 
 
-  Example: my ($start, $end) = get_coordinates($seq);
+  Example: my @seeds_href = seed_list($mtx);
 
 =cut
 
-sub get_coordinates {
-    my $seq = shift ||
-	croak("ERROR: No seq object was supplied to get_coordinates.");
+sub seed_list {
+    my $mtx = shift ||
+	croak("ERROR: No argument was supplied to seed_list.");
 
-    if (ref($seq) !~ m/^Bio::(Seq::Meta|LocatableSeq)/) {
-	croak("ERROR: Object $seq supplied to get_coordinates isnt Bio::Seq");
+    if (ref($mtx) ne 'Bio::Matrix::Generic') {
+	croak("ERROR: $mtx supplied to seed_list isnt a Bio::Matrix::Generic");
     }
 
-    ## Declare coordinates (position, start and end)
+    my $method = shift || 'ovlscore';
 
-    my ($po, $st, $en) = (0, 0, 0);
+    if ($method !~ m/^(length|identity)$/) {
+	$method = 'ovlscore';
+    }
 
-    ## Split the sequence into nt and scan it
+    ## Declare the hsh to store the pairs
 
-    my $seqstr = $seq->seq();
-    my @nts = split(//, $seqstr);
+    my %seedscoring = ();
 
-    foreach my $nt (@nts) {
-	$po++;
-	if ($nt !~ m/(-|\*|\.)/) {  ## If it is not a gap
-	    if ($st == 0) {
-		$st = $po;
-	    }
-	    $en = 0;
-	}
-	else {
-	    if ($st > 0 && $en == 0) {
-		$en = $po - 1;
+    ## First, it will get the list ids from the matrix
+
+    my @ids = $mtx->row_names();
+
+    ## It will ignore the redundant entries.
+
+    my $x = 0;
+    
+    foreach my $id_a (sort @ids) {
+	
+	$x++;
+	my $y = 0;
+	
+	foreach my $id_b (sort @ids) {
+	    
+	    $y++;
+
+	    if ($x < $y) {
+		my $entry = $mtx->entry($id_a, $id_b);
+
+		if ($entry->{length} > 0) {  ## ignore no-overlaps
+		
+		    if ($method eq 'length') {
+			$seedscoring{$id_a . ':' . $id_b} = $entry->{length};
+		    }
+		    elsif ($method eq 'identity') {
+			$seedscoring{$id_a . ':' . $id_b} = $entry->{identity};
+		    }
+		    else {
+			my $idenfrac = $entry->{identity} / 100;
+			my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
+			$seedscoring{$id_a . ':' . $id_b} = $ovlscore;
+		    }		
+		}
 	    }
 	}
     }
-    if ($en == 0) {
-	$en = $po;
+
+    ## Finally it will order the pairs based in the score
+
+    my @pairs = sort {$seedscoring{$b} <=> $seedscoring{$a}} keys %seedscoring;
+    
+    ## and to a new arrays as pairs
+    
+    my @seedlist = ();
+    foreach my $pair (@pairs) {
+
+	my @seed_ids = sort(split(/:/, $pair));
+	push @seedlist, \@seed_ids;
     }
     
-    ## Return coordinates
-    return ($st, $en);
+    return @seedlist;
 }
-
 
 
 

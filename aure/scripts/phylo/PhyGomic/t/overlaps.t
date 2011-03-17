@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 47;
+use Test::More tests => 57;
 use Test::Exception;
 
 use FindBin;
@@ -49,24 +49,24 @@ BEGIN {
 ## First create some sequences
 
 ############1---5----10---15---20---25---30---35---40---45---50---55---60---65
-my $seq1 = 'ATGCCGCGTGCTGGCAGTTCGGAATCGGACGTAGCACCAGCTTGGTCACGTGGCATGAC------';
+my $seq1 = 'ATGCCGCGTGCTGGCAGTTCGGAATCGGACGTAGCACCAGCTTGGTCACGTGGCATCCC------';
 my $seq2 = '-----GCGTGCTGGCAGTTCGGATTCGGCCGTAGC------------------------------';
-my $seq3 = '----------CTGGCAGTTCGGATAGGGACGTCGCACCAGCTT---CACGTGGCATGACCCGATA';
+my $seq3 = '---------CCTGGCAGTTCGGATAGGGACGTCGCACCAGCTT---CACGTGGCATGACCCGATA';
 my $seq4 = '----CGCGTGCTCCCAGTTCGGATTCGGACGTAGCACCAGCTTGGACACGTGGCATGACC-----';
-my $seq5 = '---------------------GATACGGACGTAGCACCAGCTTGGACACGTGGCATGACCCGATA';
-my $seq6 = '------------GGCAGTTCGGATTCGGACGTAGCACTAGCTTGGGCACCTGGCATGACCCGA--';
-my $seq7 = '-------------------------------------TAGCTTGGACACCTGGCATGACCCGC--';
-my $seq8 = '---CCGCGTGCTGCCAGTTCGGATTCGGACGTA--------------------------------';
-my $seq9 = '------------------------------------TCAGCATGTTTTCGTGGCATGACCCGA--';
+my $seq5 = '---------------------GATTCGGACGTAGCACCAGCTTGGACACGTGGCATGACCCGATA';
+my $seq6 = '----------CTGGCAGTTCGGATACGGACGTAGCACCAGCTTGGGCACCTGGCATGACCCGA--';
+my $seq7 = '-------------------------------------TAGCTTGGACACCTCGCATGACCCGC--';
+my $seq8 = '---CCGCGTGCTGCCAGTTCGGACTCGGACGTA--------------------------------';
+my $seq9 = '------------------------------------TCAGCATGTTTTCGTGGAAAGACCCGA--';
 ############1---5----10---15---20---25---30---35---40---45---50---55---60---65
 
 my %seqs = (
     seq1 => [ -id => 'seq1', -seq => $seq1, -start => 1,  -end => 59 ],
     seq2 => [ -id => 'seq2', -seq => $seq2, -start => 6,  -end => 35 ],
-    seq3 => [ -id => 'seq3', -seq => $seq3, -start => 11, -end => 62 ],
+    seq3 => [ -id => 'seq3', -seq => $seq3, -start => 10, -end => 62 ],
     seq4 => [ -id => 'seq4', -seq => $seq4, -start => 5,  -end => 60 ],
     seq5 => [ -id => 'seq5', -seq => $seq5, -start => 22, -end => 65 ],
-    seq6 => [ -id => 'seq6', -seq => $seq6, -start => 13, -end => 63 ],
+    seq6 => [ -id => 'seq6', -seq => $seq6, -start => 11, -end => 63 ],
     seq7 => [ -id => 'seq7', -seq => $seq7, -start => 38, -end => 63 ],
     seq8 => [ -id => 'seq8', -seq => $seq8, -start => 4,  -end => 33 ],
     seq9 => [ -id => 'seq9', -seq => $seq9, -start => 37, -end => 63 ],
@@ -133,7 +133,7 @@ is($val_seq56{length}, 42,
    "testing calculate_overlaps, checking length coord. for ovl type BBAB")
     or diag("Looks like this has failed");
 
-is($val_seq56{identity}, 90.4761904761905, 
+is($val_seq56{identity}, 92.8571428571429, 
    "testing calculate_overlaps, checking identity coord. for ovl type BBAB")
     or diag("Looks like this has failed");
 
@@ -142,7 +142,7 @@ is($val_seq56{identity}, 90.4761904761905,
 
 my %val_seq13 = %{$mtx->entry('seq1', 'seq3')};
 
-is($val_seq13{start}, 11, 
+is($val_seq13{start}, 10, 
    "testing calculate_overlaps, checking start coord. for ovl type AAAB")
     or diag("Looks like this has failed");
 
@@ -150,11 +150,11 @@ is($val_seq13{end}, 59,
    "testing calculate_overlaps, checking end coord. for ovl type AAAB")
     or diag("Looks like this has failed");
 
-is($val_seq13{length}, 49, 
+is($val_seq13{length}, 50, 
    "testing calculate_overlaps, checking length coord. for ovl type AAAB")
     or diag("Looks like this has failed");
 
-is($val_seq13{identity}, 91.304347826087, 
+is($val_seq13{identity}, 85.1063829787234, 
    "testing calculate_overlaps, checking identity coord. for ovl type AAAB")
     or diag("Looks like this has failed");
 
@@ -196,7 +196,7 @@ is($val_seq39{length}, 27,
    "testing calculate_overlaps, checking length coord. for ovl type ABAB")
     or diag("Looks like this has failed");
 
-is($val_seq39{identity}, 83.3333333333333, 
+is($val_seq39{identity}, 75, 
    "testing calculate_overlaps, checking identity coord. for ovl type ABAB")
     or diag("Looks like this has failed");
 
@@ -220,6 +220,52 @@ foreach my $par (keys %val_seq98) {
        "testing calculate_overlaps, checking $par coord. for ovl type AAAA")
 	or diag("Looks like this has failed");
 }
+
+## Throws test, TEST 48 and 49
+
+throws_ok { Bio::Align::Overlaps::calculate_overlaps() } qr/ERROR: No align/,
+    "TESTING DIE ERROR: when no argument is used with calculate_overlaps";
+
+throws_ok { Bio::Align::Overlaps::calculate_overlaps('fk') } qr/ERROR: fk/,
+    "TESTING DIE ERROR: when argument used for calculate_overlaps isnt alnobj.";
+
+
+## test seed_list, TEST 50 to 57
+
+my @seedlist1 = Bio::Align::Overlaps::seed_list($mtx);
+my @seedlist2= Bio::Align::Overlaps::seed_list($mtx, 'length');
+my @seedlist3 = Bio::Align::Overlaps::seed_list($mtx, 'identity');
+
+is(join(':', @{$seedlist1[0]}), 'seq3:seq6', 
+    "testing seed_list, checking first for ovlscore")
+    or diag("Looks like this has failed");
+
+is(join(':', @{$seedlist1[-1]}), 'seq1:seq9', 
+    "testing seed_list, checking last for ovlscore")
+    or diag("Looks like this has failed");
+
+is(join(':', @{$seedlist2[0]}), 'seq1:seq4', 
+    "testing seed_list, checking first for length")
+    or diag("Looks like this has failed");
+
+is(join(':', @{$seedlist2[-1]}), 'seq5:seq8', 
+    "testing seed_list, checking last for length")
+    or diag("Looks like this has failed");
+
+is(join(':', @{$seedlist3[0]}), 'seq4:seq5', 
+    "testing seed_list, checking first for identity")
+    or diag("Looks like this has failed");
+
+is(join(':', @{$seedlist3[-1]}), 'seq7:seq9', 
+    "testing seed_list, checking last for identity")
+    or diag("Looks like this has failed");
+
+
+throws_ok { Bio::Align::Overlaps::seed_list() } qr/ERROR: No argument/,
+    "TESTING DIE ERROR: when no argument is used with seed_list";
+
+throws_ok { Bio::Align::Overlaps::seed_list('fk') } qr/ERROR: fk/,
+    "TESTING DIE ERROR: when argument used for seed_list isnt mtxobj.";
 
 
 
