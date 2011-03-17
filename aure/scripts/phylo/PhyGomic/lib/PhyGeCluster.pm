@@ -168,6 +168,7 @@ The following class methods are implemented:
          + run_alignments, a hash reference argument (see run_alignments())  
          + run_distances, a hash reference argument (see run_distances())
          + run_bootstrapping, a hash reference arg. (see run_bootstrapping())
+         + reportstatus, a switch to enable/disable report status option.
 
   Side_Effects: Die if the argument used is not a hash or there are argument
                 incompatibility (such as use fastblast_parser without blastfile)
@@ -201,6 +202,18 @@ sub new {
 	    croak("ARGUMENT ERROR: $args_href used for new() is not HASH REF.");
 	}
     }
+
+    ## Enable/Disable report status
+
+    my $repstatus = $args_href->{reportstatus};
+    if (defined $repstatus && $repstatus =~ m/^(1|yes)$/i) {
+	$self->enable_reportstatus();
+    }
+    else {
+	$self->disable_reportstatus();
+    }
+
+    ## Check parser compatibility and run them
 
     my $err = "ARGUMENT INCOMPATIBILITY for new() function: ";
     unless(defined $args_href->{'blastfile'}) {
@@ -329,17 +342,16 @@ sub new {
 
 sub clone {
     my $self = shift;
-    my $report_status = shift;
-
-    ## Undef debug if it is not equal to 1 or yes.
-
-    unless (defined $report_status && $report_status =~ m/^(1|yes)$/i) {
-	$report_status = undef;
-    }
 
     ## Create an empty object:
 
     my $new_phygecluster = __PACKAGE__->new();
+
+    ## Switch report status for this object if it is enabled
+
+    if ($self->is_on_reportstatus) {
+	$new_phygecluster->enable_reportstatus();
+    }
 
     ## Get the data from the old object
 
@@ -355,14 +367,14 @@ sub clone {
     my $n_cluster = 0;
 
     my %new_clusters = ();
-    foreach my $cluster_id (keys %clusters) {
+    foreach my $cluster_id (sort keys %clusters) {
 	my $old_seqfam = $clusters{$cluster_id};
 	my @members = $old_seqfam->get_members();
 	my $old_align = $old_seqfam->alignment();
 	my $old_tree = $old_seqfam->tree();
 
 	$n_cluster++;
-	if (defined $report_status) {
+	if ($self->is_on_reportstatus) {
 	    print_parsing_status($n_cluster, $total_cluster, 
 				 "\t\tPercentage of clusters cloned",
 				 $cluster_id,
@@ -413,6 +425,60 @@ sub clone {
     return $new_phygecluster;
 }
 
+################
+### SWITCHES ###
+################
+
+=head2 enable/disable_reportstatus
+
+  Usage: $phygecluster->enable_reportstatus();
+         $phygecluster->disable_reportstatus();
+
+  Desc: Enable/disable the switch report status
+
+  Ret: none
+ 
+  Args: None
+ 
+  Side_Effects: None
+ 
+  Example: $phygecluster->enable_reportstatus();
+           $phygecluster->disable_reportstatus();
+
+=cut 
+
+sub enable_reportstatus {
+    my $self = shift;
+    $self->{reportstatus} = 1;
+}
+
+sub disable_reportstatus {
+    my $self = shift;
+    $self->{reportstatus} = 0;
+}
+
+=head2 is_on_reportstatus
+
+  Usage: my $boolean = $phygecluster->is_on_reportstatus();
+
+  Desc: Get 0 or 1 for reportstatus switch
+
+  Ret: a boolean, 0 or 1.
+ 
+  Args: None
+ 
+  Side_Effects: None
+ 
+  Example: if ($phygecluster->is_on_reportstatus() ) {
+               print STDERR "REPORT";
+           }
+
+=cut 
+
+sub is_on_reportstatus {
+    my $self = shift;
+    return $self->{reportstatus};
+}
 
 
 
@@ -826,6 +892,7 @@ sub load_seqfile {
 	    croak("ARG. ERROR: 'sequencefile' is not defined for $args_href\n");
 	}
 	else {
+
 	    ## First, get the sequences.
 
 	    my %seqs = parse_seqfile->($args_href);
@@ -873,7 +940,7 @@ sub load_seqfile {
 sub load_strainfile {
     my $self = shift;
     my $arg_href = shift;
-    
+
     my %strains = ();
     
     if (defined $arg_href) {
@@ -2687,9 +2754,19 @@ sub cluster_sizes {
     my %cluster_sizes = ();
 
     my %clusters = %{$self->get_clusters()};
+    my $CL = scalar(keys %clusters);
+    my $cl = 0;
 
     foreach my $cluster_name (keys %clusters) {
 	my $size = $clusters{$cluster_name}->size();
+
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($cl, $CL, 
+				 "\t\tPercentage of clusters sizes analyzed:",
+				 $cluster_name,
+		);
+	}
 
 	if (defined $min) {
 	    if ($min <= $size && $size <= $max) {
@@ -2727,18 +2804,30 @@ sub cluster_sizes {
 =cut
 
 sub calculate_overlaps {
-    my $self = shift;
+    my $self = shift;    
 
     my %overlaps = ();
     my %clusters = %{$self->get_clusters()};
+    my $CL = scalar( keys %clusters);
+    my $cl = 0;
 
-    foreach my $cluster_id (keys %clusters) {
+    open my $tfh, '>', 'testoverlaps.tab';
+
+    foreach my $cluster_id (sort keys %clusters) {
 	my $align = $clusters{$cluster_id}->alignment();
 	my @members = ();
 
 	if (defined $align && ref($align) eq 'Bio::SimpleAlign') {
 	    @members = $align->each_seq();
 	}	    
+
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($cl, $CL, 
+				 "\t\tPercentage of cluster overlaps analyzed:",
+				 $cluster_id,
+		);
+	}
 
 	if (scalar(@members) > 1) {
 
@@ -2778,16 +2867,14 @@ sub calculate_overlaps {
 		$post{$id} = [$start, $end, $end-$start];
 	    }
 
+	    my $default_vals = {start => 0, end => 0, length => 0, ident => 0};
+
 	    ## Create the matrix with the member ids.
 	    my $matrix = Bio::Matrix::Generic->new( 
 		-rownames          => \@member_ids,
 		-colnames          => \@member_ids, 
 		-matrix_id         => $cluster_id,
-		-matrix_init_value => { start  => 0, 
-					end    => 0, 
-					length => 0,
-					ident  => 0,
-		},
+		-matrix_init_value => $default_vals,
 		);
 
 	    ## Now it will compare pairs of sequences to get the 
@@ -2798,6 +2885,11 @@ sub calculate_overlaps {
 	    ## 4) As > Bs; As > Be; Ae > Bs; No overlap.
 	    ## Note: As=SeqA_start, Ae=SeqA_end, Bs=SeqB_start and Be=SeqB_end
 
+	    ## To avoid the redundance (row-col, col-row) it will put the
+	    ## pairs in a hash ref.
+
+	    my %entries = ();
+
 	    foreach my $id_a (@member_ids) {
 		my $as = $post{$id_a}->[0];
 		my $ae = $post{$id_a}->[1];
@@ -2806,75 +2898,72 @@ sub calculate_overlaps {
 		    my $bs = $post{$id_b}->[0];
 		    my $be = $post{$id_b}->[1];
 		    
-		    my ($nstart, $nend) = (0, 0);
-		    if ($as <= $bs && $as < $be && $ae > $bs) {
-			$nstart = $bs;
-			$nend = $ae;
-			if ($ae > $be) {
-			    $nend = $be;
-			}
-		    }
-		    elsif ($as >= $bs && $as < $be && $ae > $bs) {
-			$nstart = $as;
-			$nend = $be;
-			if ($ae < $be) {
+		    my $pair1 = $id_a . ':' . $id_b;
+		    my $pair2 = $id_b . ':' . $id_a;
+
+		    unless (exists $entries{$pair1} && exists $entries{$pair2}){
+
+			my ($nstart, $nend) = (0, 0);
+			if ($as <= $bs && $as < $be && $ae > $bs) {
+			    $nstart = $bs;
 			    $nend = $ae;
-			}
-		    }
-
-		    ## Any other posibility will be a non-overlapping. It will
-		    ## add to the matrix the overlapping regions. The diagonal
-		    ## always will have start,end and length = 0.
-		    
-		    if ($id_a ne $id_b) {
-			if ($nstart > 0 && $nend > 0) {
-			    my $val = { start  => $nstart, 
-					end    => $nend, 
-					length => $nend-$nstart };
-			    
-                            ## It will create an aln object with this
-			    ## two sequences to calculate the identity
-			    ## It will get the slide for start and end
-			    ## and also it will remove all the sequences
-			    ## different from $id_a and $id_b
-
-			    my $seqn = scalar($align->each_seq());
-			    my $copyaln = $align->select(1, $seqn);
-			    
-			    foreach my $newseq ( $copyaln->each_seq() ) {
-				if ($newseq->id() !~ m/^($id_a|$id_b)$/) {
-				    $copyaln->remove_seq($newseq);
-				}
+			    if ($ae > $be) {
+				$nend = $be;
 			    }
-			    
-			    ## Use of slice before return errors for
-			    ## sequences that dont have chars there.
+			}
+			elsif ($as >= $bs && $as < $be && $ae > $bs) {
+			    $nstart = $as;
+			    $nend = $be;
+			    if ($ae < $be) {
+				$nend = $ae;
+			    }
+			}
 
-			    my $newaln = $copyaln->slice($nstart, $nend);
+			## Any other posibility will be a non-overlapping. It 
+			## will add to the matrix the overlapping regions. 
+			## The diagonal always will have start,end and 
+			## length = 0.
+		    
+			if ($id_a ne $id_b) {
+			    if ($nstart > 0 && $nend > 0) {
+				my %val = ( start  => $nstart, 
+					    end    => $nend, 
+					    length => $nend-$nstart );
+				
+				## It will create an aln object with this
+				## two sequences to calculate the identity
+				## It will get the slide for start and end
+				## and also it will remove all the sequences
+				## different from $id_a and $id_b
+				
+				my $seq_a = $align->get_seq_by_id($id_a);
+				my $seq_b = $align->get_seq_by_id($id_b);
+				my $newaln = Bio::SimpleAlign->new( 
+				    -seqs => [$seq_a, $seq_b] );
+				my $slcaln = $newaln->slice($nstart, $nend);
 		
-			    my $ident = $newaln->percentage_identity();
-			    $val->{ident} = $ident;
-
-			    push @row_values, $val;
+				my $ident = $slcaln->percentage_identity();
+				$val{ident} = $ident;
+				
+				$matrix->entry($id_a, $id_b, \%val);
+				$matrix->entry($id_b, $id_a, \%val);
+				print $tfh "$cluster_id\t$id_a\t$id_b\t$val{start}\t$val{end}\t$val{length}\t$val{ident}\n";
+			    }
+			    else {
+				$matrix->entry($id_a, $id_b, $default_vals);
+				$matrix->entry($id_b, $id_a, $default_vals);
+				print $tfh "$cluster_id\t$id_a\t$id_b\tNO OVLS\n";
+			    }
 			}
 			else {
-			    push @row_values, { start  => 0, 
-						end    => 0, 
-						length => 0,
-						ident  => 0,
-			    };
+			    $matrix->entry($id_a, $id_b, $default_vals);
+			    $matrix->entry($id_b, $id_a, $default_vals);
+			    print $tfh "$cluster_id\t$id_a\t$id_b\tNO OVLS\n";
 			}
-		    }
-		    else {
-			push @row_values, { start  => 0, 
-					    end    => 0, 
-					    length => 0,
-					    ident  => 0,
-			};
+			$entries{$pair1} = 1;
+			$entries{$pair2} = 1;
 		    }
 		}
-		## Now it will add this row_values to the matrix
-		$matrix->row($id_a, \@row_values);
 	    }
 	    $overlaps{$cluster_id} = $matrix;
 	}
@@ -3071,10 +3160,20 @@ sub homologous_search {
     ## blast
 
     my %clusters = %{$self->get_clusters()};
-    foreach my $cl_id (keys %clusters) {
+    my $CL = scalar( keys %clusters);
+    my $cl = 0;
+
+    foreach my $cl_id (sort keys %clusters) {
 	my $seqfam = $clusters{$cl_id};
 	my $align = $seqfam->alignment();
 
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($cl, $CL, 
+				 "\t\tPerc. of cluster homologous searched:",
+				 $cl_id,
+		);
+	}
 
 	if (defined $align) {
 
@@ -3369,10 +3468,21 @@ sub reroot_trees {
     ## Get trees, raw sequences and strains
 
     my %seqfams = %{$self->get_clusters()};
+    my $CL = scalar( keys %seqfams );
+    my $cl = 0;
+
     my %strains = %{$self->get_strains()};
 
     foreach my $cluster_id (keys %seqfams) {
 	my $tree = $seqfams{$cluster_id}->tree();
+
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($cl, $CL, "\t\tPerc. of trees rerooted:",
+				 $cluster_id,
+		);
+	}
+
 
 	if (defined $tree) {
 	    
@@ -3964,13 +4074,14 @@ sub run_alignments {
 		    $seq->display_id($i);
 		    $i++;
 		}
-	
-		if (exists $args_href->{'report_status'}) {
+		
+		if ($self->is_on_reportstatus) {
 		    print_parsing_status($a, $t, 
-				       "\t\tPercentage of alignments produced",
+					 "\t\tPerc. of alignments produced:",
 					 $cluster_id,
 			);
 		}
+
 
 		my $alignobj = $factory->align(\@seq_members);
 
@@ -4143,12 +4254,13 @@ sub run_distances {
 		}
 	    }
 
-	    if (exists $arghref->{'report_status'}) {
+	    if ($self->is_on_reportstatus) {
 		print_parsing_status($a, $t, 
-				     "\t\tPercentage of distances calculated",
+				     "\t\tPerc. of distances calculated:",
 				     $cluster_id,
 		    );
 	    }
+
 
 	    if ($skip_distance == 0) {
 
@@ -4371,9 +4483,9 @@ sub run_bootstrapping {
 	    $args{strains} = $strains_href;
 	    my $memb_n = $align->num_sequences();
 
-	    if (exists $args_href->{'report_status'}) {
+	    if ($self->is_on_reportstatus) {
 		print_parsing_status($a, $t, 
-				 "\t\tPercentage of bootstrapping calculated",
+				     "\t\tPerc. of bootstrapping calculated:",
 				     $cluster_id,
 		    );
 	    }
@@ -4432,7 +4544,6 @@ sub run_njtrees {
 		      subrep          => '[1|0]', 
 		      jumble          => '\d+', 
 		      quiet           => '[1|0]',
-                      report_status   => '[1|0]',
 		      outgroup_strain => '\w+', 
 	);
 
@@ -4453,13 +4564,6 @@ sub run_njtrees {
 		}
 	    }
 	}
-    }
-
-    ## Delete report status
-
-    my $repstatus;
-    if (exists $args_href->{report_status}) {
-	$repstatus = delete($args_href->{report_status});
     }
 
     ## Get outgroup if it is defined and delete from arguments
@@ -4564,9 +4668,9 @@ sub run_njtrees {
 		}
 	    }
 
-	    if (defined $repstatus) {
+	    if ($self->is_on_reportstatus) {
 		print_parsing_status($a, $t, 
-				     "\t\tPercentage of tree calculated", 
+				     "\t\tPerc. of trees calculated:",
 				     $cluster_id,
 		    );
 	    }
@@ -4643,7 +4747,6 @@ sub run_mltrees {
 	phyml           => 'HASH',
 	dnaml           => 'HASH',
 	outgroup_strain => '\w+',
-        report_status   => '\d+',
 	);
 
     if (defined $args_href) {
@@ -4751,9 +4854,9 @@ sub run_mltrees {
 
 	    if (defined $factory) {
 
-		if (exists $args_href->{'report_status'}) {
+		if ($self->is_on_reportstatus) {
 		    print_parsing_status($a, $t, 
-					 "\t\tPercentage of tree calculated",
+					 "\t\tPerc. of trees calculated:",
 					 $cluster_id,
 			);
 		}
@@ -4867,12 +4970,20 @@ sub prune_by_align {
     my %rmclusters = ();
 
     my %clusters = %{$self->get_clusters()};
+    my $CL = scalar(keys %clusters);
+    my $cl = 0;
+
     foreach my $clid (keys %clusters) {
 	
 	my $rmcluster = 0;
 	my $seqfam = $clusters{$clid};
 	my $align = $seqfam->alignment();
 	
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($CL,$cl,"\t\tPerc. of clusters pruned:",$clid);
+	}
+
 	if (defined $align) {
 	    foreach my $function (keys %{$args_href}) {
 		my $seqfam_value = $align->$function;
@@ -5101,8 +5212,16 @@ sub prune_by_strains {
     ## Now it will order the distances according each of the strains.
 
     my %clusters = %{$self->get_clusters()};
+    my $CL = scalar( keys %clusters);
+    my $cl = 0;
+
     foreach my $clid (keys %clusters) {
 	
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($CL,$cl,"\t\tPerc. of clusters pruned:",$clid);
+	}
+
 	## Get one new composition hash per cluster id and create the list
 	my %cmp = %{$args_href->{'composition'}};
 	my %othercmp = %{$args_href->{'composition'}};
@@ -5452,12 +5571,24 @@ sub prune_by_overlaps {
     ## After check the variables it will get clusters and overlaps
 
     my $cls_href = $self->get_clusters();
+    my $CL = scalar( keys %{$cls_href} );
+    my $cl = 0;
+
     my %ovl = $self->calculate_overlaps();
     my %str = %{$self->get_strains()};
+
+    my $seedfiletest = 'seedfiletest.txt';
+    open my $seedfh, '>', $seedfiletest;
 
     foreach my $clid (keys %{$cls_href}) {
 	if (exists $ovl{$clid}) {
 	
+	    $cl++;
+	    if ($self->is_on_reportstatus) {
+		print_parsing_status($CL, $cl, 
+				     "\t\tPerc. of clusters pruned:", $clid);
+	    }
+
 	    ## Get the rand variable from random. It should be regenerate
 	    ## each cluster_id
 
@@ -5558,44 +5689,116 @@ sub prune_by_overlaps {
 	    ## the pairs of the seed.
 
 	    my %seedp = ();
-	    my %seedline = ();
 
 	    ## GET THE REST OF OVELAPS FOR THE SEED
 	    ## Skip if there are no seed.
+	    ## To add a new member it should overlap both members of the
+	    ## seed.
+	    ## A new overlap will be created based in this seed region
+
+	    my %seedovl = ();
 
 	    if (scalar(keys %seed) == 2) {
 
-		foreach my $row2 (@rownames) {
+		my @seed_memb = sort(keys(%seed));
+		print $seedfh "TEST SEED ($clid):" . join(';', @seed_memb) . "\n";
+		my $seedentry = $mtx->get_entry($seed_memb[0], $seed_memb[1]);
+		my $seed_st = $seedentry->{start};
+		my $seed_en = $seedentry->{end};
 		    
-		    if (defined $seed{$row2}) {  ## Get ovl. elements for seed
-		    
-			foreach my $col2 (@colnames) {
+		foreach my $col2 (@colnames) {
 			    
-			    ## Skip the selfmatrix, and add the new member
-			    unless (defined $seed{$col2}) {
+		    ## Skip the selfmatrix, and add the new member
+		    unless (defined $seed{$col2}) {
 
-				my $entry2 = $mtx->get_entry($row2, $col2);
+			my $entry_a = $mtx->get_entry($seed_memb[0], $col2);
+			my $entry_b = $mtx->get_entry($seed_memb[1], $col2);
+			
+                        ## Add to seed pairs only if $length > 0.
+			## for both seeds.
+			## It means, there is an overlap
 			    
-				## Add to seed pairs only if $length > 0.
-				## It means, there is an overlap
-			    
-				my $len2 = $entry2->{length};
-				my $ide2 = $entry2->{ident};
-				my $ovlsc2 = $len2 * ($ide2/100) * ($ide2/100);
+			print $seedfh "SEED EXT: $seed_memb[0] - $col2\n";
+			my $len_a = $entry_a->{length};
+			my $ide_a = $entry_a->{ident};
+			my $st_a = $entry_a->{start};
+			my $en_a = $entry_a->{end};
+			my $ovlsc_a = $len_a * ($ide_a/100) * ($ide_a/100);
+			print $seedfh "\tL:$len_a\tI:$ide_a\tS:$st_a\tE:$en_a\tOVLSC:$ovlsc_a\n";
+			
+			
+			print $seedfh "SEED EXT: $seed_memb[1] - $col2\n";
+			my $len_b = $entry_b->{length};
+			my $ide_b = $entry_b->{ident};
+			my $st_b = $entry_b->{start};
+			my $en_b = $entry_b->{end};
+			my $ovlsc_b = $len_b * ($ide_b/100) * ($ide_b/100);
+			print $seedfh "\tL:$len_a\tI:$ide_a\tS:$st_a\tE:$en_a\tOVLSC:$ovlsc_b\n";
 
-				if ($len2 > 0) {
+			if ($len_a > 0 && $len_b > 0) {
 				    
-				    unless (defined $seedp{$col2}) {
-					if ($ovlscore == 1) { 
-					    $seedp{$col2} = $ovlsc2;
-					    $seedline{$col2} = $row2;
-					}
-					else {
-					    $seedp{$col2} = $len2;
-					    $seedline{$col2} = $row2;
-					}	
+			    unless (defined $seedp{$col2}) {
+				
+				my %newentry = ();
+
+				## Redefine a new length for this overlap
+				
+				## Get a new start
+
+				if ($seed_st > $st_a && $seed_st > $st_b) {
+				    $newentry{start} = $seed_st;
+				}
+				elsif ($seed_st > $st_a && $seed_st < $st_b) {
+				    $newentry{start} = $st_b;
+				}
+				elsif ($seed_st < $st_a && $seed_st > $st_b) {
+				    $newentry{start} = $st_a;
+				}
+				else {
+				    if ($st_a > $st_b) {
+					$newentry{start} = $st_a;
+				    }
+				    else {
+					$newentry{start} = $st_b;
 				    }
 				}
+
+				## Get a new end
+
+				if ($seed_en < $en_a && $seed_en < $en_b) {
+				    $newentry{end} = $seed_en;
+				}
+				elsif ($seed_en < $en_a && $seed_en > $en_b) {
+				    $newentry{end} = $en_b;
+				}
+				elsif ($seed_en > $en_a && $seed_en < $en_b) {
+				    $newentry{end} = $st_a;
+				}
+				else {
+				    if ($en_a < $en_b) {
+					$newentry{end} = $en_a;
+				    }
+				    else {
+					$newentry{end} = $en_b;
+				    }
+				}
+				
+				print $seedfh "SEED ADDED: $col2 with START:$newentry{start}\tEND:$newentry{end}\n";
+
+				## Store the new ovl data
+
+				$seedovl{$col2} = \%newentry;
+				
+				## Assign a common score as the mean of the
+				## overlap
+
+				if ($ovlscore == 1) { 
+				    $seedp{$col2} = $ovlsc_a + $ovlsc_b / 2;
+				}
+				else {
+				    $seedp{$col2} = $len_a + $len_b / 2;
+				}
+				print $seedfh "SEED ADDED: $col2 with score $seedp{$col2}\n";
 			    }
 			}
 		    }
@@ -5607,29 +5810,27 @@ sub prune_by_overlaps {
 
 		## SELECT THE OVERLAPS
 
-		my @seeds = keys %seed;
-
-		my $seedentry = $mtx->get_entry($seeds[0], $seeds[1]);
 		my $curr_start = $seedentry->{start};
 		my $curr_end = $seedentry->{end};
-		
+
 		foreach my $nw (sort {$seedp{$b} <=> $seedp{$a}} keys %seedp) {
 		
+		    print $seedfh "\t\t\tORDER SEED EXTENSION: $seedp{$nw}\t$nw\n";
+
 		    if (scalar(keys %comp) > 0) {
 			my $currcomp = $comp{$str{$nw}};
 			if (defined $currcomp && $currcomp > 0 ) {
 
-			    ## It will take the new element only if 
-			    ## the overlapping region is in the delimited ovl
-			    ## region
+			    ## Only sequences with a overlap with the seeds
+			    ## have been selected, but the limits are going to
+			    ## change adding new members.
 
-			    my $seedpair = $seedline{$nw};
-			    my $pairentry = $mtx->get_entry($seedpair, $nw);
-			    my $pair_start = $pairentry->{start};
-			    my $pair_end = $pairentry->{end};
+			    my $pair_start = $seedovl{$nw}->{start};
+			    my $pair_end = $seedovl{$nw}->{end};
 
 			    if ($pair_start >= $curr_start) {
 				if ($pair_end <= $curr_end) {
+				    print $seedfh "\t\t\tADDED SEED EXT: $nw\n";
 				    $comp{$str{$nw}}--;
 				    $members{$nw} = 1;
 				    delete($seedp{$nw});
@@ -5871,9 +6072,16 @@ sub prune_by_bootstrap {
     ## First get bootstrapping
 
     my %boots = %{$self->get_bootstrapping()};
+    my $CL = scalar(keys %boots);
+    my $cl = 0;
 
     foreach my $clid (sort keys %boots) {
 	
+	$cl++;
+	if ($self->is_on_reportstatus) {
+	    print_parsing_status($CL,$cl,"\t\tPerc. of clusters pruned:",$clid);
+	}
+
 	my $consensus = $boots{$clid};
 	my @nodes = $consensus->get_nodes();
 
