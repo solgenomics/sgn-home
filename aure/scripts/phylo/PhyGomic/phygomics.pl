@@ -195,6 +195,10 @@ filecheck(\%conf);
 
 my $phyg = PhyGeCluster->new();
 
+ if ($opt_S) {
+     $phyg->enable_reportstatus();
+}
+
 
 ###############################################
 ## 1.1) Add the cluster source file and parse it.
@@ -332,10 +336,10 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     print STDERR "\t\t2.0) CLONING CLUSTER DATA (" .  date() . "):\n\n";
 
-    my $paphyg = $phyg->clone($opt_S);
+    my $paphyg = $phyg->clone();
 
     if (defined $opt_S) {
-	priny STDERR "\n\n";
+	print STDERR "\n\n";
     }
 
     ## 2.1) Homologous search
@@ -413,10 +417,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 			 parameters => { quiet => undef, matrix => 'BLOSUM'},
 	 };
     }
-    
-    if ($opt_S) {
-	$align_args->{report_status} = 1;
-    }
+
 
     ## Run the alignment
 
@@ -480,10 +481,6 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
 	print STDERR "\t\t\t USING DEFAULT DISTANCE (Kimura)\n\n";
 	$dist_args = { method => 'Kimura', quiet => 1};
-    }
-
-    if ($opt_S) {
-	$dist_args->{report_status} = 1;
     }
 
     ## And now use the Run distances method
@@ -683,19 +680,11 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
 	    my $njtree_args = parse_njtrees_args(\%pargs);
 
-            if ($opt_S) {
-	        $njtree_args->{report_status} = 1;
-            }
-
 	    @failed_trees = $paphyg->run_njtrees($njtree_args);
 	}
 	else {
 
 	    my $mltree_args = parse_mltrees_args(\%pargs);
-
-            if ($opt_S) {
-	        $mltree_args->{report_status} = 1;
-            }
 
 	    @failed_trees = $paphyg->run_mltrees($mltree_args);
 	}
@@ -788,10 +777,6 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	if (defined $pargs{bo_run}) {
 		    
 	    my $boots_args = parse_boots_args(\%pargs);
-
-            if ($opt_S) {
-	        $boots_args->{report_status} = 1;
-            }
             
 	    $paphyg->run_bootstrapping($boots_args);
 
