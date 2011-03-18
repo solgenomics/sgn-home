@@ -32,7 +32,7 @@ while( <$fasta_in> ) {
             chomp;
             s/\s+(functional_)?description:"[^"]+"//;
             $desc =~ s/"/'\"'/ge;
-            $_ .= qq| description:"$desc"\n|;
+            $_ .= qq| functional_description:"$desc"\n|;
         }
     }
     print;

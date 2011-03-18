@@ -25,6 +25,23 @@ sub load_functional_files {
 }
 
 sub load_descriptions {
+    load_descriptions_fasta(@_);
+}
+
+sub load_descriptions_fasta {
+    my ( $desc_file, $func ) = @_;
+
+    open my $desc, '<', $desc_file;
+    while( my $line = <$desc> ) {
+        if( my ($prot_id, $desc) = $line =~ /^>\s*(\S+)\s+(.+)/ ) {
+            chomp $desc;
+            $prot_id =~ s/\.\d//;
+            $func->{$prot_id}{description} = $desc;
+        }
+    }
+}
+
+sub load_descriptions_csv {
     my ( $desc_file, $func ) = @_;
     open my $desc, '<', $desc_file;
     while( my $line = <$desc> ) {
