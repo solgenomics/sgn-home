@@ -25,12 +25,14 @@ while( <$fasta_in> ) {
         $id =~ s/\.\d//;
         if( my $terms = $func->{ $id }{combined} ) {
             chomp;
+            s/\s+go_terms:\S+//;
             $_ .= " go_terms:".join(',', @$terms )."\n";
         }
         if( my $desc = $func->{ $id }{description} ) {
             chomp;
+            s/\s+(functional_)?description:"[^"]+"//;
             $desc =~ s/"/'\"'/ge;
-            $_ .= qq| functional_description:"$desc"\n|;
+            $_ .= qq| description:"$desc"\n|;
         }
     }
     print;
