@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 94;
+use Test::More tests => 105;
 use Test::Exception;
 
 use FindBin;
@@ -437,6 +437,62 @@ throws_ok { Bio::Align::Overlaps::extension_list(\%overseeds,
 						 undef, 
 						 { fk1 => 1}) } qr/fk1/,
     "TESTING DIE ERROR: when filter p. used for extension_list isnt permited.";
+
+
+## Testing global_overlap
+
+my %def_ovlps = Bio::Align::Overlaps::global_overlap($align);
+
+## There is no overlap for all the members
+
+is(join(',', values %def_ovlps), '0,0,0',
+    "testing global_overlap, checking values for no-overlap for all the align.")
+    or diag("Looks like this has failed");
+
+my @selected1 = ( @{$seedlist1[0]}, $extseed1_fil[0]);
+my %ovldata1 = Bio::Align::Overlaps::global_overlap($align, \@selected1);
+
+is($ovldata1{start}, 11,
+    "testing global_overlap, checking start for seq3:seq6:seq4")
+    or diag("Looks like this has failed");
+
+is($ovldata1{end}, 60,
+    "testing global_overlap, checking end for seq3:seq6:seq4")
+    or diag("Looks like this has failed");
+
+is($ovldata1{length}, 50, 
+    "testing global_overlap, checking length for seq3:seq6:seq4")
+    or diag("Looks like this has failed");
+
+
+my @selected2 = ('seq3', 'seq6', 'seq4', 'seq1', 'seq5');
+my %ovldata2 = Bio::Align::Overlaps::global_overlap($align, \@selected2);
+
+is($ovldata2{start}, 22,
+    "testing global_overlap, checking start for seq3:seq6:seq4:seq1:seq5")
+    or diag("Looks like this has failed");
+
+is($ovldata2{end}, 59,
+    "testing global_overlap, checking end for seq3:seq6:seq4:seq1:seq5")
+    or diag("Looks like this has failed");
+
+is($ovldata2{length}, 38,
+    "testing global_overlap, checking length for seq3:seq6:seq4:seq1:seq5")
+    or diag("Looks like this has failed");
+
+
+throws_ok { Bio::Align::Overlaps::global_overlap() } qr/ERROR: No align/,
+    "TESTING DIE ERROR: when no argument is used with global_overlap";
+
+throws_ok { Bio::Align::Overlaps::global_overlap('fk1') } qr/ERROR: fk1/,
+    "TESTING DIE ERROR: when align used with global_overlap isnt align";
+
+throws_ok { Bio::Align::Overlaps::global_overlap($align, 'fk2') } qr/RROR: fk2/,
+    "TESTING DIE ERROR: when members used with global_overlap are not aref.";
+
+throws_ok { Bio::Align::Overlaps::global_overlap($align, ['fk2']) } qr/Less/,
+    "TESTING DIE ERROR: when lees than two members are used for global_overlap";
+
 
 
 ####

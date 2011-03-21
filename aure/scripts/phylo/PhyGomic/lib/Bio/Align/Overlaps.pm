@@ -644,6 +644,115 @@ sub extension_list {
     return @extension;
 }
 
+=head2 global_overlap
+
+  Usage: my %ovldata = global_overlap($align, \@selectedmembers);
+
+  Desc: Calculate the total overlap region.
+
+  Ret: %ovldata, a hash ref with the following keys:
+        start, an start coordinate
+        end, an end coordinate.
+        length, length of the overlap (0 if there are no overlap)
+
+  Args: $align, a Bio::SimpleAlign object
+        $selectedmembers_aref, an array reference with the selected members 
+        
+  Side_Effects: Die if no argument is used.
+                Die if first argument is not an Bio::SimpleAlign object
+                Die if second argument is not an array ref. and if it has
+                less of 2 memberss
+
+  Example: my %ovldata = global_overlap($align, \@selectedmemb);
+
+=cut
+
+sub global_overlap {
+    my $align = shift ||
+	croak("ERROR: No align object was supplied to global_ovelap()");
+    
+    if (ref($align) ne 'Bio::SimpleAlign') {
+	croak("ERROR: $align supplied to global_overlap isnt SimpleAlign");
+    }
+
+    my $selmemb_aref = shift;
+
+    my %selected;
+
+    if (defined $selmemb_aref) {
+	if (ref($selmemb_aref) ne 'ARRAY') {
+	    croak("ERROR: $selmemb_aref supplied to global_overlap isnt AREF");
+	}
+	else {
+	    if (scalar(@{$selmemb_aref}) < 2) {
+		croak("ERROR: Less than 2 mmb were supplied to global_overlap");
+	    }
+	    foreach my $selid (@{$selmemb_aref}) {
+		$selected{$selid} = 1;
+	    }
+	}
+    }
+    else {  ## By default it will use all the sequences in the alignment
+
+	foreach my $seq ($align->each_seq()) {
+	    $selected{$seq->display_id()} = 1;
+	}
+    }
+
+    ## First get the coordinates for each member.
+
+    my $max_en = 0;  ## Get also the max end
+    
+    my @members = $align->each_seq();
+    foreach my $member (@members) {
+
+	my $seqid = $member->display_id();
+
+	if (exists $selected{$seqid}) {
+	    my ($st, $en) = get_coordinates($member);
+	    $selected{$seqid} = { st => $st, en => $en, seq => $member };
+	    
+	    if ($en >= $max_en) {   ## Set the max. end to the bigger end
+		$max_en = $en;
+	    }
+	}
+    }
+
+    ## Check the selected member that don't exists in the alignment
+
+    foreach my $sel_id ( keys %selected) {
+	if (ref($selected{$sel_id}) ne 'HASH') {
+	    croak("ERROR: $sel_id doesnt exist into the align=$align\n");
+	}
+    }
+
+    ## Second recalculate the overlaps
+
+    my ($max_st, $min_en) = (0, $max_en);
+    
+    foreach my $seq_id (sort keys %selected) {
+
+	if ($selected{$seq_id}->{st} >= $max_st) {
+	    $max_st = $selected{$seq_id}->{st};
+	}
+	
+	if ($selected{$seq_id}->{en} <= $min_en) {
+	    $min_en = $selected{$seq_id}->{en};
+	}
+    }
+    
+       my $length = $min_en - $max_st + 1;
+
+    my %ovldata = ( start => $max_st, end => $min_en, length => $length ); 
+ 
+    if ($length < 1) {
+	 %ovldata =  ( start => 0, end => 0, length => 0 );
+    }
+   
+    return %ovldata;
+}
+
+
 
 
 ####
