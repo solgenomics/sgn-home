@@ -263,7 +263,7 @@ sub calculate_overlaps {
 
 =head2 seed_list
 
-  Usage: my @seeds_href = seed_list($mtx, $method);
+  Usage: my @seeds_href = seed_list($mtx, $method, $filter_href);
 
   Desc: Calculate the seed list based in length, identity, or ovlscore
 
@@ -273,6 +273,9 @@ sub calculate_overlaps {
   Args: $mtx, a Bio::Matrix::Generic object with the overlaps
         $method, method to order the seeds. Permited values are 'length', 
         'identity' or 'ovlscore'.
+        $filter_href, a hashref with key=length,identity,start,end and
+        value=integer. It will throw away all the overlaps with values lower
+        than these values.
         
   Side_Effects: Die if no argument is used.
                 Die if first argument is not Bio::Matrix::Generic object.
@@ -280,6 +283,8 @@ sub calculate_overlaps {
                 ovlscore will be used as default. 
 
   Example: my @seeds_href = seed_list($mtx);
+           my @seeds_href = seed_list($mtx, undef, { length   => 100, 
+                                                     identity => 80  });
 
 =cut
 
@@ -295,6 +300,19 @@ sub seed_list {
 
     if ($method !~ m/^(length|identity)$/) {
 	$method = 'ovlscore';
+    }
+
+    ## Get filter
+    
+    my $filter_href = shift;
+    my %filter;
+    if (defined $filter_href) {
+	if (ref($filter_href) ne 'HASH') {
+	    croak("ERROR: Filter argument is not a hashref. for seed_list");
+	}
+	else {
+	    %filter = %{$filter_href};
+	}
     }
 
     ## Declare the hsh to store the pairs
@@ -323,17 +341,35 @@ sub seed_list {
 
 		if ($entry->{length} > 0) {  ## ignore no-overlaps
 		
+		    my $pass = 1;
+		    foreach my $param (keys %filter) {
+			if (defined $entry->{$param}) {
+			    if ($entry->{$param} < $filter{$param}) {
+				$pass = 0;
+			    }
+			}
+			else {
+			    croak("ERROR: filter param. $param isnt permited.");
+			}
+		    }
+
 		    if ($method eq 'length') {
-			$seedscoring{$id_a . ':' . $id_b} = $entry->{length};
+			if ($pass == 1) {
+			    $seedscoring{$id_a.':'.$id_b} = $entry->{length};
+			}
 		    }
 		    elsif ($method eq 'identity') {
-			$seedscoring{$id_a . ':' . $id_b} = $entry->{identity};
+			if ($pass == 1) {
+			    $seedscoring{$id_a.':'.$id_b} = $entry->{identity};
+			}
 		    }
 		    else {
 			my $idenfrac = $entry->{identity} / 100;
 			my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
-			$seedscoring{$id_a . ':' . $id_b} = $ovlscore;
-		    }		
+			if ($pass == 1) {
+			    $seedscoring{$id_a . ':' . $id_b} = $ovlscore;
+			}		
+		    }
 		}
 	    }
 	}
@@ -504,6 +540,110 @@ sub calculate_overseeds {
     }
     return %overseeds;
 }
+
+
+=head2 extension_list
+
+  Usage: my @extension = extension_list(\%overseeds, $method);
+
+  Desc: Calculate the seed extension list based in length, identity, or ovlscore
+
+  Ret: An array with sequence id elements.
+
+  Args: $overseed_href, a hashref with member_id as keys and hashref with 
+        overlap parameters as value.
+        $method, method to order the seeds. Permited values are 'length', 
+        'identity' or 'ovlscore'.
+        
+  Side_Effects: Die if no argument is used.
+                Die if first argument is not an hashref.
+                If method is undef, or it doesnt match with length or identity
+                ovlscore will be used as default. 
+
+  Example: my @extension = extension_list(\%overseeds, 'identity');
+
+=cut
+
+sub extension_list {
+    my $ovlseed_href = shift ||
+	croak("ERROR: No argument was supplied to extension_list.");
+
+    if (ref($ovlseed_href) ne 'HASH') {
+	croak("ERROR: $ovlseed_href supplied to extension_list isnt a HASHREF");
+    }
+
+    my $method = shift || 'ovlscore';
+
+    if ($method !~ m/^(length|identity)$/) {
+	$method = 'ovlscore';
+    }
+
+    ## Get filter
+    
+    my $filter_href = shift;
+    my %filter;
+    if (defined $filter_href) {
+	if (ref($filter_href) ne 'HASH') {
+	    croak("ERROR: Filter argumebt isnt a hashref. for extension_list");
+	}
+	else {
+	    %filter = %{$filter_href};
+	}
+    }
+
+    ## Declare the hash to store the list
+
+    my %extscores = ();
+
+    ## First, it will get the list ids from the matrix
+
+    my @ids = keys %{$ovlseed_href};
+    
+    foreach my $id (sort @ids) {
+	
+	my $entry = $ovlseed_href->{$id};
+
+	if ($entry->{length} > 0) {  ## ignore no-overlaps
+
+	    my $pass = 1;            ## Check the filter options
+	    foreach my $param (keys %filter) {
+		if (defined $entry->{$param}) {
+		    if ($entry->{$param} < $filter{$param}) {
+				$pass = 0;
+		    }
+		}
+		else {
+		    croak("ERROR: filter param. $param isnt permited.");
+		}
+	    }
+		
+	    if ($method eq 'length') {
+		if ($pass == 1) {
+		    $extscores{$id} = $entry->{length};
+		}
+	    }
+	    elsif ($method eq 'identity') {
+		if ($pass == 1) {
+		    $extscores{$id} = $entry->{identity};
+		}
+	    }
+	    else {
+		my $idenfrac = $entry->{identity} / 100;
+		my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
+		if ($pass == 1) {
+		    $extscores{$id} = $ovlscore;
+		}		
+	    }
+	}
+    }
+
+    ## Finally it will order the pairs based in the score
+
+    my @extension = sort {$extscores{$b} <=> $extscores{$a}} keys %extscores;
+
+    return @extension;
+}
+
 
 
 ####

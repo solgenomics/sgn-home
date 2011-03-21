@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 72;
+use Test::More tests => 94;
 use Test::Exception;
 
 use FindBin;
@@ -230,7 +230,7 @@ throws_ok { Bio::Align::Overlaps::calculate_overlaps('fk') } qr/ERROR: fk/,
     "TESTING DIE ERROR: when argument used for calculate_overlaps isnt alnobj.";
 
 
-## test seed_list, TEST 50 to 57
+## test seed_list, TEST 50 to 64
 
 my @seedlist1 = Bio::Align::Overlaps::seed_list($mtx);
 my @seedlist2= Bio::Align::Overlaps::seed_list($mtx, 'length');
@@ -244,12 +244,20 @@ is(join(':', @{$seedlist1[-1]}), 'seq1:seq9',
     "testing seed_list, checking last for ovlscore")
     or diag("Looks like this has failed");
 
+is(scalar(@seedlist1), 32, 
+    "testing seed_list, checking seed number for ovlscore")
+    or diag("Looks like this has failed");
+
 is(join(':', @{$seedlist2[0]}), 'seq1:seq4', 
     "testing seed_list, checking first for length")
     or diag("Looks like this has failed");
 
 is(join(':', @{$seedlist2[-1]}), 'seq5:seq8', 
     "testing seed_list, checking last for length")
+    or diag("Looks like this has failed");
+
+is(scalar(@seedlist2), 32, 
+    "testing seed_list, checking seed number for length")
     or diag("Looks like this has failed");
 
 is(join(':', @{$seedlist3[0]}), 'seq4:seq5', 
@@ -260,6 +268,24 @@ is(join(':', @{$seedlist3[-1]}), 'seq7:seq9',
     "testing seed_list, checking last for identity")
     or diag("Looks like this has failed");
 
+is(scalar(@seedlist3), 32, 
+    "testing seed_list, checking seed number for identity")
+    or diag("Looks like this has failed");
+
+my @seedlist4 = Bio::Align::Overlaps::seed_list($mtx, undef, { length => 45 });
+
+is(join(':', @{$seedlist4[0]}), 'seq3:seq6', 
+    "testing seed_list, checking first for ovlscore with length filter")
+    or diag("Looks like this has failed");
+
+is(join(':', @{$seedlist4[-1]}), 'seq1:seq3', 
+    "testing seed_list, checking last for ovlscore with length filter")
+    or diag("Looks like this has failed");
+
+is(scalar(@seedlist4), 6, 
+    "testing seed_list, checking seed number for ovlscore with length filter")
+    or diag("Looks like this has failed");
+
 
 throws_ok { Bio::Align::Overlaps::seed_list() } qr/ERROR: No argument/,
     "TESTING DIE ERROR: when no argument is used with seed_list";
@@ -267,8 +293,11 @@ throws_ok { Bio::Align::Overlaps::seed_list() } qr/ERROR: No argument/,
 throws_ok { Bio::Align::Overlaps::seed_list('fk') } qr/ERROR: fk/,
     "TESTING DIE ERROR: when argument used for seed_list isnt mtxobj.";
 
+throws_ok { Bio::Align::Overlaps::seed_list($mtx, undef, { fk1 => 1}) } qr/fk1/,
+    "TESTING DIE ERROR: when filter param. used for seed_list isnt permited.";
 
-## Checking calculate_overseeds, TEST 58 to 72
+
+## Checking calculate_overseeds, TEST 65 to 79
 
 my $seed1vals = $mtx->entry($seedlist1[0]->[0], $seedlist1[0]->[1]);
 my %overseeds = Bio::Align::Overlaps::calculate_overseeds( $align, 
@@ -338,7 +367,76 @@ throws_ok { Bio::Align::Overlaps::calculate_overseeds(@fk_end) } qr/fk4/,
     "TESTING DIE ERROR: when wrong start is used with calculate_overseeds()";
 
 
+## Checking extension_list, TEST 80 to 94
 
+my @extseed1_ovl = Bio::Align::Overlaps::extension_list(\%overseeds);
+my @extseed1_len = Bio::Align::Overlaps::extension_list(\%overseeds,'length');
+my @extseed1_ide = Bio::Align::Overlaps::extension_list(\%overseeds,'identity');
+
+is($extseed1_ovl[0], 'seq4', 
+    "testing extension_list, checking first member for overscore option")
+    or diag("Looks like this has failed");
+
+is($extseed1_ovl[-1], 'seq9', 
+    "testing extension_list, checking last member for overscore option")
+    or diag("Looks like this has failed");
+
+is(scalar(@extseed1_ovl), 7, 
+    "testing extension_list, checking number of member for extension (ovlsco.)")
+    or diag("Looks like this has failed");
+
+is($extseed1_len[0], 'seq4', 
+    "testing extension_list, checking first member for length option")
+    or diag("Looks like this has failed");
+
+is($extseed1_len[-1], 'seq8', 
+    "testing extension_list, checking last member for length option")
+    or diag("Looks like this has failed");
+
+is(scalar(@extseed1_len), 7, 
+    "testing extension_list, checking number of member for extension (length)")
+    or diag("Looks like this has failed");
+
+is($extseed1_ide[0], 'seq5', 
+    "testing extension_list, checking first member for identity option")
+    or diag("Looks like this has failed");
+
+is($extseed1_ide[-1], 'seq9', 
+    "testing extension_list, checking last member for identity option")
+    or diag("Looks like this has failed");
+
+is(scalar(@extseed1_ide), 7, 
+    "testing extension_list, checking number of member for extension (ident.)")
+    or diag("Looks like this has failed");
+
+my @extseed1_fil = Bio::Align::Overlaps::extension_list(\%overseeds, 
+							undef,
+							{ length => 40 },
+    );
+
+is($extseed1_fil[0], 'seq4', 
+    "testing extension_list, checking first member for overscore and filter")
+    or diag("Looks like this has failed");
+
+is($extseed1_fil[-1], 'seq5', 
+    "testing extension_list, checking last member for overscore and filter")
+    or diag("Looks like this has failed");
+
+is(scalar(@extseed1_fil), 3, 
+    "testing extension_list, checking number of member for oversco. and filter")
+    or diag("Looks like this has failed");
+
+
+throws_ok { Bio::Align::Overlaps::extension_list() } qr/ERROR: No argument/,
+    "TESTING DIE ERROR: when no argument is used with extension_list";
+
+throws_ok { Bio::Align::Overlaps::extension_list('fk') } qr/ERROR: fk/,
+    "TESTING DIE ERROR: when argument used for extension_list isnt hashref..";
+
+throws_ok { Bio::Align::Overlaps::extension_list(\%overseeds, 
+						 undef, 
+						 { fk1 => 1}) } qr/fk1/,
+    "TESTING DIE ERROR: when filter p. used for extension_list isnt permited.";
 
 
 ####
