@@ -355,6 +355,155 @@ sub seed_list {
     return @seedlist;
 }
 
+=head2 calculate_overseeds
+
+  Usage: my %overseeds = calculate_overseeds($align, $seed_aref, $start, $end);
+
+  Desc: Calculate the overlaps for each sequence in an alignment with the
+        seeds overlap region. 
+        The identity is calculated as the average of the seeds and the new
+        sequence
+
+  Ret: a hash with key=sequence_id, value=hashref. 
+         with keys=start,end,length and identity.
+
+  Args: $align, an alignment object (Bio::SimpleAlign)
+        $seed_aref, an array ref. with two seed ids.
+        $start, start of the seed overlaping region
+        $end, end of the seed overlapping region
+        
+  Side_Effects: Die if the argument used is not a Bio::SimpleAlign object.
+                Die if one (or more) arguments are absent.
+
+  Example: my %overseeds = calculate_overseeds($align, $seed_aref, 10, 100);
+
+=cut
+
+sub calculate_overseeds {
+    my $align = shift ||
+	croak("ERROR: No align object was supplied to calculate_overseeds()");
+
+    if (ref($align) ne 'Bio::SimpleAlign') {
+	croak("ERROR: $align supplied to calculate_overseeds isnt SimpleAlign");
+    }
+
+    my $seeds_aref = shift ||
+	croak("ERROR: No seed aref. was supplied to calculate_overseeds()");
+
+    my @seeds;
+    if (ref($seeds_aref) ne 'ARRAY') {
+	croak("ERROR: $seeds_aref supplied to calculate_overseeds isnt AREF.");
+    }
+    else {
+	@seeds = sort @{$seeds_aref};
+	if (scalar(@seeds) != 2) {
+	    croak("ERROR: seed aref. supplied doesnt have 2 members");
+	}
+    }
+
+    my $start = shift ||
+	croak("ERROR: No start was supplied to calculate_overseeds()");
+
+    if ($start !~ m/^\d+$/) {
+	croak("ERROR: $start supplied to calculate_overseeds isnt an integer");
+    }
+
+    my $end = shift ||
+	croak("ERROR: No end was supplied to calculate_overseeds()");
+
+    if ($end !~ m/^\d+$/) {
+	croak("ERROR: $end supplied to calculate_overseeds isnt an integer");
+    }
+
+    my $id = join(':', @seeds);
+    
+    ## now it will calculate the coordinates for each seq
+
+    ## Define the overseed hash
+
+    my %overseeds;
+
+    ## Get members, member_ids and coordinates
+
+    my @members = $align->each_seq();
+    my %coords = ();
+    foreach my $member (@members) {
+
+	my $seqid = $member->display_id();
+	my ($st, $en) = get_coordinates($member);
+	
+	$coords{$seqid} = { st => $st, en => $en, seq => $member };
+    }
+    my @member_ids = sort( keys %coords);
+    
+    ## Calculate overlaps, only if number of members are > 1
+    
+    if (scalar(@members) > 1) {
+	
+	## Define the default values:
+
+	my $default_vals = { start => 0, end => 0, length => 0, identity => 0 };
+	
+	## It will compare coordinates between the seed coordinate and 
+	## the alignment member. It will skip the seed members
+
+	foreach my $member_id (@member_ids) {
+	    if ($member_id ne $seeds[0] && $member_id ne $seeds[1]) {
+		
+                ## Define coords
+		
+		my $m_st = $coords{$member_id}->{st};
+		my $m_en = $coords{$member_id}->{en};
+		    
+		my ($st_ovl, $en_ovl) = ($m_st, $end);  ## Defaults
+
+		## Compare coordinates and define cases
+		
+		my @case = ('A', 'A', 'A', 'A');
+		
+		if ($start >= $m_st) {
+		    $case[0] = 'B';
+		    $st_ovl = $start;
+		}
+		if ($end >= $m_en) {
+		    $case[1] = 'B';
+		    $en_ovl = $m_en;
+		}
+		if ($start >= $m_en) {
+		    $case[2] = 'B';
+		}
+		if ($end >= $m_st) {
+		    $case[3] = 'B';
+		}
+		
+		my $case = join('', @case);
+
+		if ($case =~ m/A/ && $case =~ m/B/) {
+
+		    ## It will calculate the identity as an overall of
+		    ## two seeds and the candidate
+
+		    my $seed0 = $coords{$seeds[0]}->{seq};
+		    my $seed1 = $coords{$seeds[1]}->{seq};
+		    my $memb =  $coords{$member_id}->{seq};
+		    my $seqlist = [$seed0,$seed1,$memb];
+
+		    my $praln = Bio::SimpleAlign->new(-seqs => $seqlist);
+		    my $ident = $praln->slice($st_ovl, $en_ovl)
+			              ->percentage_identity();
+
+		    my $vals = { start    => $st_ovl, 
+				 end      => $en_ovl, 
+				 length   => $en_ovl - $st_ovl + 1, 
+				 identity => $ident };
+		    
+		    $overseeds{$member_id} = $vals; 
+		}
+	    }
+	}	
+    }
+    return %overseeds;
+}
 
 
 ####

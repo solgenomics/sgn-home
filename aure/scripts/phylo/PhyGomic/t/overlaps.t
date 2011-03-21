@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 57;
+use Test::More tests => 72;
 use Test::Exception;
 
 use FindBin;
@@ -266,6 +266,78 @@ throws_ok { Bio::Align::Overlaps::seed_list() } qr/ERROR: No argument/,
 
 throws_ok { Bio::Align::Overlaps::seed_list('fk') } qr/ERROR: fk/,
     "TESTING DIE ERROR: when argument used for seed_list isnt mtxobj.";
+
+
+## Checking calculate_overseeds, TEST 58 to 72
+
+my $seed1vals = $mtx->entry($seedlist1[0]->[0], $seedlist1[0]->[1]);
+my %overseeds = Bio::Align::Overlaps::calculate_overseeds( $align, 
+							   $seedlist1[0], 
+							   $seed1vals->{start}, 
+							   $seed1vals->{end} );
+
+is($overseeds{seq8}->{start}, 11,
+    "testing calculate_overseeds, checking start for seq8")
+    or diag("Looks like this has failed");
+
+is($overseeds{seq1}->{end}, 59,
+    "testing calculate_overseeds, checking end for seq1")
+    or diag("Looks like this has failed");
+
+is($overseeds{seq4}->{length}, 50,
+    "testing calculate_overseeds, checking length for seq4")
+    or diag("Looks like this has failed");
+
+is($overseeds{seq5}->{identity}, 92.5,
+    "testing calculate_overseeds, checking identity for seq5")
+    or diag("Looks like this has failed");
+
+is($overseeds{seq3}, undef, 
+    "testing calculate overseeds, checking seed 1 absent")
+    or diag("Looks like this has failed");
+
+is($overseeds{seq6}, undef, 
+    "testing calculate overseeds, checking seed 2 absent")
+    or diag("Looks like this has failed");
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds() } qr/ERROR: No align/,
+    "TESTING DIE ERROR: when no argument is used with calculate_overseeds";
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds('fk1') } qr/ERROR: fk1/,
+    "TESTING DIE ERROR: when align used with calculate_overseeds isnt align";
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds($align) } qr/ERROR: No s/,
+    "TESTING DIE ERROR: when no seed pair is used with calculate_overseeds";
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds($align, 'fk2') } qr/fk2/,
+    "TESTING DIE ERROR: when seed used with calculate_overseeds isnt aref.";
+
+my $fkaref = [1,2,3];
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds($align, $fkaref) } qr/se/,
+    "TESTING DIE ERROR: when seedaref used doesnt have 3 members";
+
+my @no_start = ($align, $seedlist1[0]);
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds(@no_start) } qr/No start/,
+    "TESTING DIE ERROR: when no start is used with calculate_overseeds()";
+
+my @fk_start = ($align, $seedlist1[0], 'fk3');
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds(@fk_start) } qr/fk3/,
+    "TESTING DIE ERROR: when wrong start is used with calculate_overseeds()";
+
+my @no_end = ($align, $seedlist1[0], 5);
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds(@no_end) } qr/No end/,
+    "TESTING DIE ERROR: when no end is used with calculate_overseeds()";
+
+my @fk_end = ($align, $seedlist1[0], 5, 'fk4');
+
+throws_ok { Bio::Align::Overlaps::calculate_overseeds(@fk_end) } qr/fk4/,
+    "TESTING DIE ERROR: when wrong start is used with calculate_overseeds()";
+
+
 
 
 
