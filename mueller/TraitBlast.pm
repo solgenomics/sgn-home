@@ -56,12 +56,12 @@ has 'contrast_group' => (is=> 'rw',
 
 has 'min_ingroups' => (is=>'rw',
 		       isa=> 'Int',
-		       default => 5,
+		       default => 6,
     );
 
 has 'min_outgroups' => (is=>'rw',
 			isa =>'Int',
-			default => 5,
+			default => 3,
     );
 
 
@@ -100,7 +100,7 @@ sub is_in_list {
 sub run { 
     my $self = shift;
 
-    $self->outgroup( [ qw | rice maize brachypodium sorghum selginella | ]);
+    $self->outgroup( [ qw | rice maize brachypodium sorghum | ]);
     $self->ingroup( [ qw | tomato poplar vitis papaya soybean castorbean cucumber | ]);
     $self->contrast_group ([ qw | arabidopsis lyrata |]);
     
@@ -122,6 +122,9 @@ sub run {
     my $old_min_score = 0;
     my $old_max_score = 0;
 
+    my $candidate_count = 0;
+    my $skip =0;
+
     open (my $F, "<", $self->blast_file()) || die "Can't open \"".$self->blast_file()."\". ";
     while (<$F>) { 
 	chomp;
@@ -131,11 +134,13 @@ sub run {
 
 	if ($score < $min_score) { $min_score = $score; }
 	
-
+	
 	if ($q ne $old_q) { 
 
 	    if ($candidate_flag) { 
 		print "$old_q\n";# $min_score $max_score\n";
+		$candidate_count++;
+		
 	    }
 	    else { 
 		#print "NOT A CANDIDATE: $old_q\n";
@@ -150,8 +155,11 @@ sub run {
 
 	    %ingroups = ();
 	    %outgroups = ();
+
+	    $skip = 0;
 	}
 
+	if ($skip) { 		print STDERR "."; next; }
 
 	#print STDERR "$q, $s, $score\n";
 	my $species = $self->id2species($s);
@@ -172,10 +180,20 @@ sub run {
 	    #warn "Adding $species to ingroup... ".scalar(keys(%ingroups))."\n";
 	    $ingroups{$species}++;
 	    $ingroup_flag = 1;
+
+	    # don't allow outgroup matches before ingroup matches
+	    #
+	    if (keys(%ingroups) < $self->min_outgroups() && keys(%outgroups)>0) { 
+		$candidate_flag=0;
+		$skip = 1;
+		next;
+		
+	    }
 	}
 
 	if ((scalar(keys(%outgroups))>=$self->min_outgroups()) && (scalar(keys(%ingroups))>$self->min_ingroups()) && ($contrast_flag ==0) ) { 
 	    $candidate_flag= 1;
+
 	}
 
 	$old_q = $q;
@@ -185,6 +203,9 @@ sub run {
     
 
     print STDERR "Species detected in dataset: ".(join ", ", (map { "$_ ($species{$_})" } sort(keys(%species))))."\n";
+
+    print STDERR "Candidates detected: $candidate_count\n";
+    
 }
 
 
