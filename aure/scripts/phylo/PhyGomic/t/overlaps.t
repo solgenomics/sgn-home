@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 105;
+use Test::More tests => 125;
 use Test::Exception;
 
 use FindBin;
@@ -53,9 +53,9 @@ my $seq1 = 'ATGCCGCGTGCTGGCAGTTCGGAATCGGACGTAGCACCAGCTTGGTCACGTGGCATCCC------';
 my $seq2 = '-----GCGTGCTGGCAGTTCGGATTCGGCCGTAGC------------------------------';
 my $seq3 = '---------CCTGGCAGTTCGGATAGGGACGTCGCACCAGCTT---CACGTGGCATGACCCGATA';
 my $seq4 = '----CGCGTGCTCCCAGTTCGGATTCGGACGTAGCACCAGCTTGGACACGTGGCATGACC-----';
-my $seq5 = '---------------------GATTCGGACGTAGCACCAGCTTGGACACGTGGCATGACCCGATA';
+my $seq5 = '---------------------GATTCGGACGTAGCACCAGCTT-GACACGTGGCATGACCCGATA';
 my $seq6 = '----------CTGGCAGTTCGGATACGGACGTAGCACCAGCTTGGGCACCTGGCATGACCCGA--';
-my $seq7 = '-------------------------------------TAGCTTGGACACCTCGCATGACCCGC--';
+my $seq7 = '-------------------------------------TAGCTT-GACACCTCGCATGACCCGC--';
 my $seq8 = '---CCGCGTGCTGCCAGTTCGGACTCGGACGTA--------------------------------';
 my $seq9 = '------------------------------------TCAGCATGTTTTCGTGGAAAGACCCGA--';
 ############1---5----10---15---20---25---30---35---40---45---50---55---60---65
@@ -65,9 +65,9 @@ my %seqs = (
     seq2 => [ -id => 'seq2', -seq => $seq2, -start => 6,  -end => 35 ],
     seq3 => [ -id => 'seq3', -seq => $seq3, -start => 10, -end => 62 ],
     seq4 => [ -id => 'seq4', -seq => $seq4, -start => 5,  -end => 60 ],
-    seq5 => [ -id => 'seq5', -seq => $seq5, -start => 22, -end => 65 ],
+    seq5 => [ -id => 'seq5', -seq => $seq5, -start => 22, -end => 64 ],
     seq6 => [ -id => 'seq6', -seq => $seq6, -start => 11, -end => 63 ],
-    seq7 => [ -id => 'seq7', -seq => $seq7, -start => 38, -end => 63 ],
+    seq7 => [ -id => 'seq7', -seq => $seq7, -start => 38, -end => 62 ],
     seq8 => [ -id => 'seq8', -seq => $seq8, -start => 4,  -end => 33 ],
     seq9 => [ -id => 'seq9', -seq => $seq9, -start => 37, -end => 63 ],
     );
@@ -92,6 +92,9 @@ foreach my $seq (@seqs) {
 
     if ($mb_id eq 'seq3') {
 	$en1 -= 3;  ## It has an internal gap
+    }
+    elsif ($mb_id eq 'seq5' || $mb_id eq 'seq7') {
+	$en1 -= 1;
     }
     
     is($st1, $seqs{$mb_id}[5], 
@@ -133,7 +136,7 @@ is($val_seq56{length}, 42,
    "testing calculate_overlaps, checking length coord. for ovl type BBAB")
     or diag("Looks like this has failed");
 
-is($val_seq56{identity}, 92.8571428571429, 
+is($val_seq56{identity}, 92.6829268292683, 
    "testing calculate_overlaps, checking identity coord. for ovl type BBAB")
     or diag("Looks like this has failed");
 
@@ -240,7 +243,7 @@ is(join(':', @{$seedlist1[0]}), 'seq3:seq6',
     "testing seed_list, checking first for ovlscore")
     or diag("Looks like this has failed");
 
-is(join(':', @{$seedlist1[-1]}), 'seq1:seq9', 
+is(join(':', @{$seedlist1[-1]}), 'seq7:seq9', 
     "testing seed_list, checking last for ovlscore")
     or diag("Looks like this has failed");
 
@@ -317,7 +320,7 @@ is($overseeds{seq4}->{length}, 50,
     "testing calculate_overseeds, checking length for seq4")
     or diag("Looks like this has failed");
 
-is($overseeds{seq5}->{identity}, 92.5,
+is($overseeds{seq5}->{identity}, 92.436974789916,
     "testing calculate_overseeds, checking identity for seq5")
     or diag("Looks like this has failed");
 
@@ -491,8 +494,137 @@ throws_ok { Bio::Align::Overlaps::global_overlap($align, 'fk2') } qr/RROR: fk2/,
     "TESTING DIE ERROR: when members used with global_overlap are not aref.";
 
 throws_ok { Bio::Align::Overlaps::global_overlap($align, ['fk2']) } qr/Less/,
-    "TESTING DIE ERROR: when lees than two members are used for global_overlap";
+    "TESTING DIE ERROR: when less than two members are used for global_overlap";
 
+
+## test make_overlap_align, TEST 106 to ...
+
+my $newalign = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align => $align, 
+	members => \@selected2 
+    });
+
+is(scalar($newalign->each_seq()), scalar(@selected2), 
+    "testing make_overlap_align, checking number of members")
+    or diag("Looks like this has failed");
+
+is($newalign->length(), $ovldata2{length}, 
+    "testing make_overlap_align, checking length after trimming")
+    or diag("looks like this has failed");
+
+my $seq3a = $newalign->get_seq_by_id('seq3')->seq();
+my $seq3ag = $seq3a;
+$seq3ag =~ s/-//g;
+
+is(length($seq3a) - length($seq3ag), 3, 
+    "testing make_overlap_align, checking number of gaps for seq3")
+    or diag("Looks like this has failed");
+
+my $seq5a = $newalign->get_seq_by_id('seq5')->seq();
+my $seq5ag = $seq5a;
+$seq5ag =~ s/-//g;
+
+is(length($seq5a) - length($seq5ag), 1, 
+    "testing make_overlap_align, checking number of gaps for seq5")
+    or diag("Looks like this has failed");
+
+my $seq1a = $newalign->get_seq_by_id('seq1')->seq();
+my $seq1ag = $seq1a;
+$seq1ag =~ s/-//g;
+
+is(length($seq1a) - length($seq1ag), 0, 
+    "testing make_overlap_align, checking number of gaps for seq1")
+    or diag("Looks like this has failed");
+
+
+## Now test for an alignment with one column gap
+
+my $newalign2 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align => $align, 
+	members => ['seq3', 'seq5', 'seq7'], 
+    });
+
+is(scalar($newalign2->each_seq()), 3, 
+    "testing make_overlap_align for gaps, checking number of members")
+    or diag("Looks like this has failed");
+
+is($newalign2->length(), 25, 
+    "testing make_overlap_align for gaps, checking length after trimming")
+    or diag("looks like this has failed");
+
+my $seq3al = $newalign2->get_seq_by_id('seq3')->seq();
+my $seq3alg = $seq3al;
+$seq3alg =~ s/-//g;
+
+is(length($seq3al) - length($seq3alg), 2, 
+    "testing make_overlap_align for gaps, checking number of gaps for seq3")
+    or diag("Looks like this has failed");
+
+my $seq5al = $newalign2->get_seq_by_id('seq5')->seq();
+my $seq5alg = $seq5al;
+$seq5alg =~ s/-//g;
+
+is(length($seq5al) - length($seq5alg), 0, 
+    "testing make_overlap_align for gaps, checking number of gaps for seq5")
+    or diag("Looks like this has failed");
+
+my $newalign3 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 0,
+    });
+
+is(scalar($newalign3->each_seq()), 3, 
+    "testing make_overlap_align for no rm gaps, checking number of members")
+    or diag("Looks like this has failed");
+
+is($newalign3->length(), 26, 
+    "testing make_overlap_align for no rm gaps, checking length after trimming")
+    or diag("looks like this has failed");
+
+my $newalign3 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 0,
+	trim     => 0,
+    });
+
+is(scalar($newalign3->each_seq()), 3, 
+    "testing make_overlap_align for nogaps notrim, checking number of members")
+    or diag("Looks like this has failed");
+
+is($newalign3->length(), 65, 
+    "testing make_overlap_align for nogaps notrim, checking length")
+    or diag("looks like this has failed");
+
+throws_ok { Bio::Align::Overlaps::make_overlap_align() } qr/ERROR: No arg/,
+    "TESTING DIE ERROR: when no argument is used with make_overlap_align";
+
+throws_ok { Bio::Align::Overlaps::make_overlap_align('fk') } qr/ERROR: fk/,
+    "TESTING DIE ERROR: when arg. used with make_overlap_align isnt hashref";
+
+throws_ok { Bio::Align::Overlaps::make_overlap_align({}) } qr/ERROR: No align/,
+    "TESTING DIE ERROR: when align argument is used with make_overlap_align";
+
+my $fk1 = { align => 'fake' };
+throws_ok { Bio::Align::Overlaps::make_overlap_align($fk1)} qr/ERROR: No align/,
+    "TESTING DIE ERROR: when align argument is used with make_overlap_align II";
+
+my $fk2 = { align => $align, members => 'seq1' };
+throws_ok { Bio::Align::Overlaps::make_overlap_align($fk2) } qr/ERROR: members/,
+    "TESTING DIE ERROR: when memb arg. used with make_overlap_align isnt href";
+
+my $fk3 = { align => $align, members => ['seq100'] };
+throws_ok { Bio::Align::Overlaps::make_overlap_align($fk3) } qr/ERROR: seq100/,
+    "TESTING DIE ERROR: when memb used with make_overlap_align doesnt exists";
+
+my $fk4 = { align => $align }; 
+throws_ok { Bio::Align::Overlaps::make_overlap_align($fk4) } qr/ERROR: Member/,
+    "TESTING DIE ERROR: when memb used with make_overlap_align doesnt overlap";
 
 
 ####

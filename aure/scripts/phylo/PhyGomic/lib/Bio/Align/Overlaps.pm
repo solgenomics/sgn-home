@@ -753,7 +753,104 @@ sub global_overlap {
 }
 
 
+=head2 make_overlap_align
 
+  Usage: my $newalign = make_overlap_align($arg_href);
+
+  Desc: Get a new alignment for the overlap region detailed between the members
+
+  Ret: $newalign, a Bio::SimpleAlign object
+
+  Args: A hash ref. with the following arguments:
+         align    => a Bio::SimpleAlign object.
+         members  => a arrayref. with the member ids.
+         trim     => a switch to trim the alignment to the overlap region,
+                     (enabled by default, use 0 to disable)
+         gapscomp => compress the aligmemnt when exist gaps in all the columns
+                     (enabled by default, use 0 to disable)
+
+  Side_Effects: Die if no argument is used.
+                Die if no alignment is used or if it isnt a Bio::SimpleAlign
+                Die if there are not overlap
+
+  Example: my $newalign = make_overlap_align($arg_href);
+
+=cut
+
+sub make_overlap_align {
+    my $arg_href = shift ||
+	croak("ERROR: No argument was supplied to make_overlap_align.");
+
+    my %args;
+    if (ref($arg_href) ne 'HASH') {
+	croak("ERROR: $arg_href supplied to make_overlap_align isnt HASHREF");
+    }
+    else {
+	%args = %{$arg_href};
+    }
+
+    my $align = $args{align};
+    if (defined $align && ref($align) eq 'Bio::SimpleAlign') {
+    
+	## First get the sequences to create a new alignment.
+	
+	my @selseqs = ();
+	if (defined $args{members}) {
+	    if (ref($args{members}) ne 'ARRAY') {
+		croak("ERROR: members supplied make_overlap_align isnt aref");
+	    }
+	    foreach my $selid (@{$args{members}}) {
+		
+		my $seq = $align->get_seq_by_id($selid);		
+		unless (defined $seq) {
+		    croak("ERROR: $selid doesnt exists for align:$align.")
+		}
+		else {
+		    push @selseqs, $seq;
+		}
+	    }
+	}
+	else {
+	    foreach my $seq ($align->each_seq()) {
+		push @selseqs, $seq;
+	    }
+	}
+
+	## Get the overlap coords. Die if they dont have any overlap
+
+	my %ovldata = global_overlap($align, $args{members});
+	
+	if ($ovldata{length} == 0) {
+	    croak("ERROR: Member specified for make_overlap_align no overlap");
+	}
+
+	## Create a new alignment with the sequences, Transfer the alignment
+	## id
+
+	my $new_align = Bio::SimpleAlign->new(-seqs => \@selseqs);
+	$new_align->id($align->id());
+
+	## Slice by default
+
+	unless (defined $args{trim} && $args{trim} == 0) {
+
+	    $new_align = $new_align->slice($ovldata{start}, $ovldata{end});
+	}
+	
+	## Remove gaps by default
+
+	unless (defined $args{gapscomp} && $args{gapscomp} == 0) {
+	    
+	    $new_align = $new_align->remove_gaps(undef, 1);
+	}
+
+	return $new_align;
+
+    }
+    else {
+	croak("ERROR: No align object was supplied to make_overlap_align.");
+    }
+}
 
 ####
 1; #
