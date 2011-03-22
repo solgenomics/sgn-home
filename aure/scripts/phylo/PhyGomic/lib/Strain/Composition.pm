@@ -371,18 +371,36 @@ sub add_member {
 	unless ( $self->is_complete($strains{$member_id}) ) {
 	    
 	    my $members_aref = $self->get_members();
-	    
+	    my $redun = 0;
+
 	    if (exists $members_aref->{$strains{$member_id}}) {
-		push @{$members_aref->{$strains{$member_id}}}, $member_id;
+
+		## Check that the member is not in the array
+		
+		foreach my $amember (@{$members_aref->{$strains{$member_id}}}) {
+		    if ($amember eq $member_id) {
+			$redun = 1;
+		    }
+		}
+
+		if ($redun == 0) {
+		    push @{$members_aref->{$strains{$member_id}}}, $member_id;
+		}
 	    }
 	    else {
 		$members_aref->{$strains{$member_id}} = [$member_id];
 	    }
 	    
 	    ## Reset with the same hashref. to re-check arguments
-	    $self->set_members($members_aref);
-	
-	    return $strains{$member_id};
+	    
+	    if ($redun == 0) { 
+
+		$self->set_members($members_aref);	
+		return $strains{$member_id};
+	    }
+	    else {
+		return undef;
+	    }
 	}
 	else {
 	    return undef;
