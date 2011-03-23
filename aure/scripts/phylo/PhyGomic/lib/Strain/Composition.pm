@@ -579,7 +579,7 @@ sub count_members {
 
 =head2 total_members
 
-  Usage: my $total_members = $comp->count_members();
+  Usage: my $total_members = $comp->total_members();
 
   Desc: Count how many members there are in total
 
@@ -604,6 +604,35 @@ sub total_members {
     }
    
     return $total_members;
+}
+
+=head2 total_composition
+
+  Usage: my $total_composition = $comp->total_composition();
+
+  Desc: Count how many members in total are specified by composition
+
+  Ret: $total_composition, total number of members in the object
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my $total_composition = $comp->total_composition();
+ 
+=cut
+
+sub total_composition {
+    my $self = shift;
+    
+    my $total_comp = 0;
+    my %composition = %{$self->get_composition()};
+   
+    foreach my $str (keys %composition) {
+	$total_comp += $composition{$str};
+    }
+   
+    return $total_comp;
 }
 
 

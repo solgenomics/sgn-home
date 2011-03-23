@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 47;
+use Test::More tests => 48;
 use Test::Exception;
 
 use FindBin;
@@ -281,6 +281,13 @@ is(join(',', sort keys %delmembers), 'str1,str3,str4',
 
 throws_ok { $comp->delete_members('strx') } qr/ERROR: Strain strx/,
     "TESTING DIE ERROR: when strain used doesnt exist into the composition acc";
+
+
+## Test total_composition, TEST 48
+
+is($comp->total_composition(), 5, 
+    "testing total_composition, checking result of total_composition")
+    or diag("Looks like this has failed");
 
 
 
