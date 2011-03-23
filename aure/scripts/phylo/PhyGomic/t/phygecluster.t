@@ -1227,7 +1227,7 @@ foreach my $fam_id (sort keys %selclusters2) {
 	$clt_diff3mb++;
     }
     foreach my $member2 (@memb2list) {
-	my $member_id2 = $member2->display_id();	
+	my $member_id2 = $member2->display_id();
 	my $member2str = $strains2{$member_id2};
 	$comp2{$member2str}--;
     }

@@ -12,6 +12,7 @@ use Math::BigFloat;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use PhyGeBoots;  ## A PhyGomic module.
+use Strain::Composition;
 
 use Bio::Seq::Meta;
 use Bio::LocatableSeq;
@@ -5149,11 +5150,15 @@ sub prune_by_strains {
 
     ## Check the arguments
    
+    my %args;
     unless(ref($args_href) eq 'HASH') {
 	croak("ARG. ERROR: $args_href is not a hash ref. for prune_by_strains");
     }
+    else {
+	%args = %{$args_href};
+    }
 
-    unless($args_href->{'composition'}) {
+    unless($args{'composition'}) {
 	croak("ARG. ERROR: No composition arg. was used for prune_by_strains");
     }
 
@@ -5162,12 +5167,12 @@ sub prune_by_strains {
 			 max_distance => 'ARRAY',
 	);
 
-    foreach my $constr (keys %{$args_href}) {
+    foreach my $constr (keys %args) {
 	unless (exists $valid_constr{$constr}) {
 	    croak("ERROR: Constraint $constr does not avail. prune_by_strains");
 	}
 	else {
-	    unless (ref($args_href->{$constr}) eq $valid_constr{$constr}) {
+	    unless (ref($args{$constr}) eq $valid_constr{$constr}) {
 		croak("ERROR: Value $constr isnt $valid_constr{$constr} ref.");
 	    }
 	}
@@ -5179,14 +5184,6 @@ sub prune_by_strains {
     my %rm_clusters = ();
     my %rm_members = ();
 
-    ## Define composition hash and get the number of sequences expected
-    
-    my $expected_seq_n = 0;
-    my %composition = %{$args_href->{'composition'}};
-    foreach my $compmember (keys %composition) {
-	$expected_seq_n += $composition{$compmember};
-    }
-
     ## Check that exists strains
 
     my %strains = %{$self->get_strains()};
@@ -5195,6 +5192,18 @@ sub prune_by_strains {
     if ($strain_n < 1) {
 	croak("ERROR: No strains were loaded into PhyGeCluster object.");
     }
+
+    ## Define composition hash and get the number of sequences expected
+    
+    my $comp = Strain::Composition->new(
+	{ 
+	    strains     => $self->get_strains(),
+	    composition => $args{'composition'}, 
+	}
+	);
+
+    ## Define
+
 
     ## Get the distances
     
@@ -5222,20 +5231,6 @@ sub prune_by_strains {
 	    print_parsing_status($CL,$cl,"\t\tPerc. of clusters pruned:",$clid);
 	}
 
-	## Get one new composition hash per cluster id and create the list
-	my %cmp = %{$args_href->{'composition'}};
-	my %othercmp = %{$args_href->{'composition'}};
-	
-	my @cmplist = ();
-	foreach my $cmpstr (keys %othercmp) {
-	    while ($othercmp{$cmpstr} > 0) {
-		push @cmplist, $cmpstr;
-		$othercmp{$cmpstr}--;
-	    }
-	}
-	my $cmp_line = join(',', sort @cmplist);
-	
-
 	my $seqfam = $clusters{$clid};
 	
 	## Define the array to select the seq_ids
@@ -5249,184 +5244,131 @@ sub prune_by_strains {
 	    ## Now transform the distance matrix into a serie of
 	    ## arrays for each strain pair with seqnames as elements
 
-	    ## 1) Get the seq_ids by strains
+	    ## 1) Create a hash with pair/distance
 
-	    my %strmemb = ();
-	    my @seq_ids = @{$distmx->names()};
-	    foreach my $seq_id (@seq_ids) {
-		my $seqstr = $strains{$seq_id} ||
-		    croak("ERROR: $seq_id has not strain defined");
+	    my %distpr = ();
+	    my %comppr = ();
+	    my %strpr = ();
+	    
+	    my $row = 0;
+	    foreach my $seqid_a ($distmx->row_names) {
+		
+		$row++;
+		my $col = 0;
 
-		if (exists $strmemb{$seqstr}) {
-		    push @{$strmemb{$seqstr}}, $seq_id;
+		foreach my $seqid_b ($distmx->column_names) {
+
+		    $col++;
+		    if ($row > $col) {  ## Skip the half of the matrix
+			
+			my @pair = sort(($seqid_a, $seqid_b));
+			my $pair = join(',', @pair);
+			my $dist_val = $distmx->get_entry($seqid_a, $seqid_b);
+			
+			$distpr{$pair} = $dist_val;
+			$comppr{$pair} = \@pair;
+			$strpr{$pair} = [$strains{$seqid_a},$strains{$seqid_b}];
+		    }
+		}
+	    }
+
+	    
+	    ## 2) Create a hash depending of the constrain
+
+	    my @ordpairs = ();
+	   
+	    if (exists $args{min_distance} || exists $args{max_distance}) {
+
+		my @dpairs = sort { $distpr{$a} <=> $distpr{$b} } keys %distpr;
+		my @constpairs;
+
+		if (exists $args{max_distance}) {  ## reverse if is max
+
+		    @dpairs = reverse(@dpairs);
+		    @constpairs = @{$args_href->{max_distance}};
 		}
 		else {
-		    $strmemb{$seqstr} = [$seq_id]
+		    @constpairs = @{$args_href->{min_distance}};
 		}
-	    }
-
-	    ## 2) Create the a hash with key=strain_pair_name and value
-	    ##    hash reference with key=seq_pair and value=distance
-	    ##    to be able to order the seqpairs by distances
-
-	    my %pair_strains = ();
-	    my %seqpair_names = ();
-	    foreach my $strname1 (keys %strmemb) {
-		foreach my $strname2 (keys %strmemb) {
-		    
-		    ## define the pair
-		    my $strpair = $strname1 . ',' . $strname2;
-		    my %seqpairs = ();
-		    
-		    ## get distances for each pair
-		    foreach my $seqid1 (@{$strmemb{$strname1}}) {
-			foreach my $seqid2 (@{$strmemb{$strname2}}) {
-			    if ($seqid1 ne $seqid2) {
-				my $dist_val = $distmx->get_entry( $seqid1, 
-								   $seqid2 );
-
-				my @seqpair = ($seqid1, $seqid2);
-				my $seqpair_name = join('-', sort @seqpair);
-				$seqpairs{$seqpair_name} = $dist_val;
-				$seqpair_names{$seqpair_name} = \@seqpair;
-			    }
-			}
-		    }
-		    if (scalar(keys %seqpairs) > 0) {
-			$pair_strains{$strpair} = \%seqpairs;
-		    }
-		}	    
-	    }
-
-	    ## 3) Use the defined constrains
-
-	    foreach my $constrtype (keys %{$args_href}) {
-		if ($constrtype =~ m/^m\w+_distance$/) {
-		    my @constr = @{$args_href->{$constrtype}};
-		    foreach my $pair_aref (@constr) {
-			my $pair_name = join(',', @{$pair_aref});
-			my $str1 = $pair_aref->[0];
-			my $str2 = $pair_aref->[1];
-			
-			if (exists $pair_strains{$pair_name}) {
-			    my %dp = %{$pair_strains{$pair_name}};
-
-			    ## By default it will order as min, but if the
-			    ## constraint is max_distance it will reverse the
-			    ## list 
-
-			    my @pairs = sort { $dp{$a} <=> $dp{$b} } keys %dp;
-			    if ($constrtype =~ m/^max_distance$/) {
-				@pairs = reverse(@pairs);
-			    }
-			    
-			    ## Now it will get one pair and decrease the
-			    ## composition
-			
-			    my $n = 1;
-			    while($cmp{$str1} > 0 || $cmp{$str2} > 0) {
-				my $pairname = shift(@pairs);
-				$n++;
-
-				if (defined $pairname) {
-				   
-				    my @seqpair = @{$seqpair_names{$pairname}};
-
-				    my $new = 0;
-				    my $singlenew = '';
-				    foreach my $seqid (@seqpair) {
-					my $strseq = $strains{$seqid};
-					unless (exists $selected_mb{$seqid}) {
-					    if ($cmp{$strseq} > 0) {
-						$new++;
-						$singlenew = $seqid;
-					    }
-					}
-				    }
-				    if ($new == 2) {
-					$selected_mb{$seqpair[0]} = 1;
-					$selected_mb{$seqpair[1]} = 1;
-					$cmp{$str1}--;
-					$cmp{$str2}--;
-				    }
-				    elsif ($new == 1) {
-					$selected_mb{$singlenew} = 1;
-					$cmp{$strains{$singlenew}}--;
-				    }
-				}
-				else {
-				    $cmp{$str1}--;
-				    $cmp{$str2}--;
-				}
-			    }
-			}
-		    }
-		}
-	    }
-
-	    ## Finally it will get random sequences for each of the composition
-	    ## seqids
-	    
-	    foreach my $cmp_strain (keys %cmp) {
-		while ($cmp{$cmp_strain} > 0) {
-	
-		    if (defined $strmemb{$cmp_strain}) {
-			foreach my $seq (@{$strmemb{$cmp_strain}}) {
-
-			    my $seq_id = shift(@{$strmemb{$cmp_strain}});
-			    if ($cmp{$cmp_strain} > 0) {
-				unless (exists $selected_mb{$seq_id}) {
-				    $selected_mb{$seq_id} = 1;
-				    $cmp{$cmp_strain}--;		
-				}
-			    }
-			}
-			if (scalar(@{$strmemb{$cmp_strain}}) == 0) {
-			    $cmp{$cmp_strain} = 0;
-			}
-		    }
-		    else {
-			$cmp{$cmp_strain} = 0;
-		    }		    		
-		}	    
-	    }
-	}
-
-	## Now with the selected_mb strain it will remove the members 
-	## and strains that are not in the list
-	
-	## 0) Check if it has all the sequences that it should have.
-	##    If it has the requested number it will remove the members
-	##    not selected, if it has not, it will remove the SequenceFamily
-	##    objects from PhyGeCluster
-	   
-	my @selstr = ();
-	foreach my $selmb (keys %selected_mb) {
-	    push @selstr, $strains{$selmb};
-	}
-	my $selstr_list = join(',', sort @selstr);
-
-	## Two conditions to be selected: same member number and same line
-
-	my $selected_cluster = 0;
-	if (scalar(keys %selected_mb) == $expected_seq_n) {
-	    if ($selstr_list eq $cmp_line) {
 		
-		$selected_cluster = 1;
+		foreach my $constpair (@constpairs) {
+		    
+		    my @non_selected = ();
+
+		    my $constline = join(',', sort @{$constpair});
+
+		    while (scalar(@dpairs) > 0) {
+			
+			my $distpair = shift(@dpairs);
+			my $distline = join(',', sort @{$strpr{$distpair}});
+			
+			if ($distline eq $constline) {
+			    push @ordpairs, $distpair;
+			}
+			else {
+			    push @non_selected, $distpair;
+			}
+		    }
+		    push @dpairs, @non_selected;
+		}
+		push @ordpairs, @dpairs;
+
+	    }
+	    else {
+		@ordpairs = keys %distpr;
+	    }
+	    
+
+	    ## 3) Select members according the order
+
+	    my $complete = $comp->is_complete();
+		
+	    while( $complete == 0 && scalar(@ordpairs) > 0) {
+		    
+		my $pairname = shift(@ordpairs);  ## Remove one from the pair
+		
+		if (defined $pairname) {
+		    
+		    my @seqpair = @{$comppr{$pairname}};
+
+		    foreach my $seqid (@seqpair) {
+
+			$comp->add_member($seqid);
+			$complete = $comp->is_complete();
+		    }
+		}
 	    }
 	}
 
-	if ($selected_cluster == 1) {
+	## Now it will remove all the clusters where the composition is not
+	## complete.
+
+	if ($comp->is_complete()) {
+	   
+	    ## Get the members and delete from composition object
+	    
+	    my %sel_members = ();
+	    my %members = $comp->delete_members();
+	    foreach my $str (keys %members) {
+		
+		foreach my $member (@{$members{$str}}) {
+
+		    $sel_members{$member} = $str;
+		}
+	    }
+
+	    ## define the array to store removed members
 
 	    my @rm_members = ();
 
-	    ## 1) Remove from the alignment
-	    
+	    ## 1) Remove the sequence from the alignment that has not been 
+            ##    selected
+
 	    my $align = $seqfam->alignment();
 	    if (defined $align) {
 		foreach my $alignmember ( $align->each_seq() ) {
 		    my $member_id = $alignmember->display_id();
-		    unless (exists $selected_mb{$member_id}) {
+		    unless (exists $sel_members{$member_id}) {
 			$align->remove_seq($alignmember);
 		    }
 		}
@@ -5445,7 +5387,7 @@ sub prune_by_strains {
 
 	    foreach my $fam_member (@fam_members) {
 		my $fmember_id = $fam_member->display_id();
-		unless (exists $selected_mb{$fmember_id}) {
+		unless (exists $sel_members{$fmember_id}) {
 		    push @rm_members, $fmember_id;
 		}
 		else {
@@ -5467,6 +5409,9 @@ sub prune_by_strains {
 	    }
 	}
 	else {
+
+	    ## Delete the comp
+	    my %members = $comp->delete_members();
 
 	    my $cluster_removed = $self->remove_cluster($clid);
 	    my $rm_distmtx = delete($self->get_distances()->{$clid});
