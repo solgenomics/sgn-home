@@ -363,48 +363,62 @@ sub add_member {
     my $self = shift;
     my $member_id = shift;
 
+    unless (defined $member_id) {
+	croak("ERROR: No member_id was supplied to add_member().");
+    }
+
     my %strains = %{$self->get_strains()};
+    my %comp = %{$self->get_composition()};
+    
+    my $fback = 0;
+
     unless (exists $strains{$member_id}) {
 	croak("ERROR: $member_id doesnt exist into the strain accessor.");
     }
     else {
-	unless ( $self->is_complete($strains{$member_id}) ) {
+
+	if (exists $comp{$strains{$member_id}}) {  ## Skip if isnt comp
+
+	    unless ( $self->is_complete($strains{$member_id}) ) {
 	    
-	    my $members_aref = $self->get_members();
+	    my $membaref = $self->get_members();
 	    my $redun = 0;
 
-	    if (exists $members_aref->{$strains{$member_id}}) {
+		if (exists $membaref->{$strains{$member_id}}) {
 
-		## Check that the member is not in the array
+		    my @members = @{$membaref->{$strains{$member_id}}};
+
+		    ## Check that the member is not in the array
 		
-		foreach my $amember (@{$members_aref->{$strains{$member_id}}}) {
-		    if ($amember eq $member_id) {
-			$redun = 1;
+		    foreach my $amember (@members) {
+			if ($amember eq $member_id) {
+			    $redun = 1;
+			}
+		    }
+
+		    if ($redun == 0) {
+			push @{$membaref->{$strains{$member_id}}}, $member_id;
 		    }
 		}
+		else {
+		    $membaref->{$strains{$member_id}} = [$member_id];
+		}
+	    	    
+		## Reset with the same hashref. to re-check arguments
+	    
+		if ($redun == 0) { 
 
-		if ($redun == 0) {
-		    push @{$members_aref->{$strains{$member_id}}}, $member_id;
+		    $self->set_members($membaref);
+		    $fback = 1;
 		}
 	    }
-	    else {
-		$members_aref->{$strains{$member_id}} = [$member_id];
-	    }
-	    
-	    ## Reset with the same hashref. to re-check arguments
-	    
-	    if ($redun == 0) { 
-
-		$self->set_members($members_aref);	
-		return $strains{$member_id};
-	    }
-	    else {
-		return undef;
-	    }
 	}
-	else {
-	    return undef;
-	}
+    }
+    if ($fback == 1) {
+	return $strains{$member_id};
+    }
+    else {
+	return undef;
     }
 }
 
