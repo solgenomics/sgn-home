@@ -28,8 +28,28 @@ $VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
 
-  
+  use Bio::Align::Overlaps;
 
+  my $ovl_mtx = Bio::Align::Overlaps::calculate_overlaps($align);
+  my @seed_list = Bio::Align::Overlaps::seed_list($ovl_mtx, $method, $filter);  
+
+  my %overseeds = Bio::Align::Overlaps::calculate_overseeds($align, 
+                                                            $seed_list[0],
+                                                            $start,
+                                                            $end,
+                                                           );
+
+  my @ext_list = Bio::Align::Overlaps::extension_list(\%overseeds, 
+                                                      $method, 
+                                                      $filter );
+
+  my $newalign = Bio::Align::Overlaps::make_overlap_align(
+                                 {
+                                   align   => $align,
+                                   members => [@{$seed_list[0]}, @ext_list[0] ],
+                                   trim    => 1,
+                                 }
+                 );
 
 =head1 DESCRIPTION
 
@@ -544,7 +564,7 @@ sub calculate_overseeds {
 
 =head2 extension_list
 
-  Usage: my @extension = extension_list(\%overseeds, $method);
+  Usage: my @extension = extension_list(\%overseeds, $method, $filter_href);
 
   Desc: Calculate the seed extension list based in length, identity, or ovlscore
 
@@ -562,6 +582,7 @@ sub calculate_overseeds {
                 Die if first argument is not an hashref.
                 If method is undef, or it doesnt match with length or identity
                 ovlscore will be used as default. 
+                Die if filter_href used isnt a hash ref.
 
   Example: my @extension = extension_list(\%overseeds, 'identity');
 
