@@ -554,6 +554,9 @@ sub calculate_overseeds {
         overlap parameters as value.
         $method, method to order the seeds. Permited values are 'length', 
         'identity' or 'ovlscore'.
+        $filter_href, a hashref with key=length,identity,start,end and
+        value=integer. It will throw away all the overlaps with values lower
+        than these values.
         
   Side_Effects: Die if no argument is used.
                 Die if first argument is not an hashref.
@@ -584,7 +587,7 @@ sub extension_list {
     my %filter;
     if (defined $filter_href) {
 	if (ref($filter_href) ne 'HASH') {
-	    croak("ERROR: Filter argumebt isnt a hashref. for extension_list");
+	    croak("ERROR: Filter argument isnt a hashref. for extension_list");
 	}
 	else {
 	    %filter = %{$filter_href};
