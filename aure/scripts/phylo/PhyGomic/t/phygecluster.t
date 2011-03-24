@@ -1885,8 +1885,10 @@ is($best_ovcluster2, 'Nsy_11897,Sly_13535',
 my $phygecluster_c3 = $phygecluster3->clone();
 my ($rm_ovcl1href, $rm_ovmb1href) = $phygecluster_c3->prune_by_overlaps(
     { 
-	random => 3, 
-	trim   => 1 
+	composition => { Nsy => 1, Nto => 1, Nta => 1 },
+	method      => 'length',
+        removegaps  => 0,
+	trim        => 0, 
     }
     );
 
@@ -1902,29 +1904,29 @@ foreach my $ov_clid1 (keys %rmovl_cluster1) {
     }
     my $ov_align1 = $rmovl_cluster1{$ov_clid1}->alignment();
     my $or_align1 = $orig_cluster1{$ov_clid1}->alignment();
-    if ($ov_align1->length() >= $or_align1->length() ) {
+    if ($ov_align1->length() != $or_align1->length() ) {
 	$wrong_length_dif++;
     }
 }
 
 is($wrong_memb_count, 0, 
-    "Testing prune_by_overlaps(random,trim), checking clusters with 3 members")
+    "Testing prune_by_overlaps(length,notrim), checking clusters with 3 memb.")
     or diag("Looks like this has failed");
 
 is($wrong_length_dif, 0, 
-    "Testing prune_by_overlaps(random,trim), checking alignment length")
+    "Testing prune_by_overlaps(length,notrim), checking alignment length")
     or diag("Looks like this has failed");
 
 is(scalar(keys %rmovl_cluster1) <=> 0, 1,
-    "Testing prune_by_overlaps(random), checking selected cluster count")
+    "Testing prune_by_overlaps(length,notrim), checking selected cluster count")
     or diag("Looks like this has failed");
 
 is(scalar(keys %{$rm_ovcl1href}) <=> 0, 1,
-    "Testing prune_by_overlaps(random), checking removed cluster count")
+    "Testing prune_by_overlaps(length,notrim), checking removed cluster count")
     or diag("Looks like this has failed");
 
 is(scalar(keys %{$rm_ovmb1href}) <=> 0, 1,
-    "Testing prune_by_overlaps(random), checking removed member count")
+    "Testing prune_by_overlaps(length,notrim), checking removed member count")
     or diag("Looks like this has failed");
 
 
@@ -1934,7 +1936,9 @@ my %comp = ( 'Nsy' => 1, 'Nto' => 1, 'Nta' => 2, 'Sly' => 1 );
 my ($rm_ovcl2href, $rm_ovmb2href) = $phygecluster_c4->prune_by_overlaps(
     { 
 	composition => \%comp,
-	trim   => 1 
+	filter      => { length => 100 },
+	trim        => 1,
+	removegaps  => 0,
     }
     );
 
@@ -1969,31 +1973,31 @@ foreach my $ov_clid2 (keys %rmovl_cluster2) {
 
 my $rmovlc = scalar(keys %rmovl_cluster2);
 is($rmovlc <=> 0, 1, 
-    "testing prune_by_overlaps(comp,trim), checking returns clusters ($rmovlc)")
+    "testing prune_by_overlaps(comp,filter,trim), checking returns cl($rmovlc)")
     or diag("Looks like this has failed");
 
 is($wrong_memb_count2, 0, 
-    "Testing prune_by_overlaps(comp,trim), checking clusters with 5 members")
+    "Testing prune_by_overlaps(comp,filter,trim), checking clusters 5 members")
     or diag("Looks like this has failed");
 
 is($wrong_strains_select2, 0, 
-    "Testing prune_by_overlaps(comp,trim), checking composition for each clst")
+    "Testing prune_by_overlaps(comp,filter,trim), checking comp. for each clst")
     or diag("Looks like this has failed");
 
 is($wrong_length_dif2, 0, 
-    "Testing prune_by_overlaps(composition,trim), checking alignment length")
+    "Testing prune_by_overlaps(comp,filter,trim), checking alignment length")
     or diag("Looks like this has failed");
 
 is(scalar(keys %rmovl_cluster2) <=> 0, 1,
-    "Testing prune_by_overlaps(comp,trim), checking selected cluster count")
+    "Testing prune_by_overlaps(comp,filter,trim), checking selected cl. count")
     or diag("Looks like this has failed");
 
 is(scalar(keys %{$rm_ovcl2href}) <=> 0, 1,
-    "Testing prune_by_overlaps(composition), checking removed cluster count")
+    "Testing prune_by_overlaps(comp,filter,trim), checking removed cl. count")
     or diag("Looks like this has failed");
 
 is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
-    "Testing prune_by_overlaps(composition), checking removed member count")
+    "Testing prune_by_overlaps(comp,filter,trim), checking removed memb. count")
     or diag("Looks like this has failed");
 
 
@@ -2004,8 +2008,11 @@ my $phygecluster_c5 = $phygecluster3->clone();
 my ($rm_ovcl5href, $rm_ovmb5href) = $phygecluster_c5->prune_by_overlaps(
     { 
 	composition => \%comp,
+	evalseed    => 3,
+        filter      => { length => 100 },
 	trim        => 1,
-	ovlscore    => 1,
+        removegaps  => 1,
+	method      => 'ovlscore',
     }
     );
 
@@ -2039,31 +2046,31 @@ foreach my $ov_clid5 (keys %rmovl_cluster5) {
 
 my $rmovlc5 = scalar(keys %rmovl_cluster5);
 is($rmovlc5 <=> 0, 1, 
-    "testing prune_by_overlaps(comp,trim,ovlscore), checking ret.cl ($rmovlc5)")
+    "testing prune_by_overlaps(comp,trim,ovl,eval), checking ret.cl ($rmovlc5)")
     or diag("Looks like this has failed");
 
 is($wrong_memb_count5, 0, 
-    "Testing prune_by_overlaps(comp,trim,ovlscore), checking cls with 5 memb.")
+    "Testing prune_by_overlaps(comp,trim,ovl,eval), checking cls with 5 memb.")
     or diag("Looks like this has failed");
 
 is($wrong_strains_select5, 0, 
-    "Testing prune_by_overlaps(comp,trim,ovlscore), checking cmp for each clst")
+    "Testing prune_by_overlaps(comp,trim,ovl,eval), checking cmp for each clst")
     or diag("Looks like this has failed");
 
 is($wrong_length_dif5, 0, 
-    "Testing prune_by_overlaps(comp,trim,ovlscore), checking aln. length")
+    "Testing prune_by_overlaps(comp,trim,ovl,eval), checking aln. length")
     or diag("Looks like this has failed");
 
 is(scalar(keys %rmovl_cluster5) <=> 0, 1,
-    "Testing prune_by_overlaps(comp,trim,ovlscore), checking selected cl. cnt")
+    "Testing prune_by_overlaps(comp,trim,ovl,eval), checking selected cl. cnt")
     or diag("Looks like this has failed");
 
 is(scalar(keys %{$rm_ovcl5href}) <=> 0, 1,
-    "Testing prune_by_overlaps(comp, ovlscore), checking removed cluster count")
+    "Testing prune_by_overlaps(comp,ovl,eval), checking removed cluster count")
     or diag("Looks like this has failed");
 
 is(scalar(keys %{$rm_ovmb5href}) <=> 0, 1,
-    "Testing prune_by_overlaps(comp, ovlscore), checking removed member count")
+    "Testing prune_by_overlaps(comp,ovl,eval), checking removed member count")
     or diag("Looks like this has failed");
 
 
@@ -2078,29 +2085,29 @@ throws_ok { $phygecluster_c3->prune_by_overlaps('fake') } qr/ARG. ERROR: fake/,
 
 my $ovhrf1 = { composition => 'fake' };
 
-throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf1) } qr/ARG. ERROR: comp/,
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf1) } qr/ERROR: comp/,
     "TESTING DIE ERROR when comp. supplied to prune_by_overlaps isnt a HASHREF";
 
 my $ovhrf2 = { composition => { test => 1 }, random => 1 };
 
-throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf2)} qr/ERROR: 'random' &/,
-    "TESTING DIE ERROR when comp. and random are supplied to prune_by_overlaps";
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf2)} qr/ERROR: random is/,
+    "TESTING DIE ERROR when non-permited a. are supplied to prune_by_overlaps";
 
-my $ovhrf3 = { random => 'fake' };
+my $ovhrf3 = { evalseed => 1 };
 
-throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf3) } qr/ARG. ERROR: 'ra/,
-    "TESTING DIE ERROR when random supplied to prune_by_overlaps isnt an INT";
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf3) } qr/ERROR: No comp/,
+    "TESTING DIE ERROR when no composition argument was supplied.";
 
-my $ovhrf4 = { random => 1, trim => 'fake' };
+my $ovhrf4 = { method => 'fake' };
 
-throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ARG. ERROR: 'tr/,
-    "TESTING DIE ERROR when trim supplied to prune_by_overlaps isnt 0 or 1";
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf4) } qr/ERROR: method/,
+    "TESTING DIE ERROR when method supplied to prune_by_overlaps hasnt permit.";
 
 
-my $ovhrf5 = { random => 1, ovlscore => 'fake' };
+my $ovhrf5 = { filter => [], removegaps => 1 };
 
-throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf5) } qr/ARG. ERROR: 'ov/,
-    "TESTING DIE ERROR when ovlscore supplied to prune_by_overlaps isnt 0 or 1";
+throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf5) } qr/ERROR: filter/,
+    "TESTING DIE ERROR when filter supplied to prune_by_overlaps isnt hashref";
 
 
 ##########################
