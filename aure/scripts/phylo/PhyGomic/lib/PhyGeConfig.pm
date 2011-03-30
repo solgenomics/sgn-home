@@ -587,6 +587,7 @@ sub read_conf_file {
 
 		    my $regexp = $fields{$lv1}->{$lv2}->{$lv3}->{regexp};
 		    my $request = $fields{$lv1}->{$lv2}->{$lv3}->{request};
+		    my $cutoff = $fields{$lv1}->{$lv2}->{$lv3}->{cutoff};
 
 		    if ($request eq 'mandatory') {
 			unless (defined $conf{$lv1}->{$lv2}->{$lv3}) {
@@ -602,6 +603,13 @@ sub read_conf_file {
 			    $err .= "$lv1>$lv2>$lv3";
 			    $err .= " doesnt have a permitted value ($regexp)";
 			    croak($err);
+			}
+			else {  ## Modify the argument to add the cutoff
+			    
+			    if (defined $cutoff) {
+				my $val = $conf{$lv1}->{$lv2}->{$lv3};
+				$conf{$lv1}->{$lv2}->{$lv3} = [$cutoff, $val];
+			    }			
 			}
 		    }
 		}
@@ -627,7 +635,8 @@ sub read_conf_file {
 
 			my $regexp = $fields{$lv1}->{$lv2}->{$lv3}->{regexp};
 			my $request = $fields{$lv1}->{$lv2}->{$lv3}->{request};
-			
+			my $cutoff = $fields{$lv1}->{$lv2}->{$lv3}->{cutoff};
+
 			if ($request eq 'mandatory') {
 			    unless (defined $conf{$lv1}->{$p}->{$lv2}->{$lv3}) {
 				$err .= "path $p>$lv2>$lv3";
@@ -642,6 +651,13 @@ sub read_conf_file {
 				$err .= "path $p>$lv2>$lv3";
 				$err .=" doesnt have permitted value ($regexp)";
 				croak($err);
+			    }
+			    else {  ## Modify the argument to add the cutoff
+			    
+				if (defined $cutoff) {
+				    my $cutval = [$cutoff,$val];
+				    $conf{$lv1}->{$p}->{$lv2}->{$lv3} = $cutval;
+				}			
 			    }
 			}
 		    }
@@ -670,6 +686,7 @@ sub read_conf_file {
 	else {
 	    foreach my $fv2 (sort keys %{$fields{$fv1}}) {
 		foreach my $fv3 (sort keys %{$fields{$fv1}->{$fv2}}) {
+		    
 		    my $req = $fields{$fv1}->{$fv2}->{$fv3}->{request};
 		    if ($req eq 'mandatory') {
 			my @paths = keys %{$conf{path}};

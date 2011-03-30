@@ -162,32 +162,32 @@ my %exp_data = (
 	    memberstrain            => 'MyStrains.tab',
         },
         cluster_values => {
-                evalue                  => 1e-10,
-                expect                  => 1e-10,
-                frac_identical          => '0.80',
-                gaps                    => 5,
-                hsp_length              => 100,
-                num_conserved           => 75,
-                num_identical           => 75,
-                score                   => 120,
-                bits                    => 200,
-                percent_identity        => 80,
-                max_cluster_members     => 4,
+                evalue                  => ['<', 1e-10],
+                expect                  => ['<', 1e-10],
+                frac_identical          => ['>', '0.80'],
+                gaps                    => ['<', 5],
+                hsp_length              => ['>', 100],
+                num_conserved           => ['>', 75],
+                num_identical           => ['>', 75],
+                score                   => ['>', 120],
+                bits                    => ['>', 200],
+                percent_identity        => ['>', 80],
+                max_cluster_members     => ['<', 4],
         },       
         fastcluster_values => {
                 query_id                => 'Str_',
                 subject_id              => 'Str_',
-                percent_identity        => 80,
-                align_length            => 100,
-                mismatches              => 5,
-                gaps_openings           => 10,
-                q_start                 => 10,
-                q_end                   => 1000,
-                s_start                 => 50,
-                s_end                   => 5000,
-                e_value                 => 1e-10,
-                bit_score               => 250,
-                max_cluster_members     => 6,
+                percent_identity        => ['>', 80],
+                align_length            => ['>', 100],
+                mismatches              => ['<', 5],
+                gaps_openings           => ['<', 10],
+                q_start                 => ['>', 10],
+                q_end                   => ['<', 1000],
+                s_start                 => ['>', 50],
+                s_end                   => ['<', 5000],
+                e_value                 => ['<', 1e-10],
+                bit_score               => ['>', 250],
+                max_cluster_members     => ['<', 6],
 	},
     },
     path => { 
@@ -211,11 +211,11 @@ my %exp_data = (
                 },
 	    },
 	    prune_alignments => {
-                score                   => 120,
-                length                  => 100,
-                num_residues            => 100,
-                num_members             => 6,
-                percentage_identity     => 80,
+                score                   => ['>', 120],
+                length                  => ['>', 100],
+                num_residues            => ['>', 100],
+                num_members             => ['<', 6],
+                percentage_identity     => ['>', 80],
 	    },
 	    prune_overlaps => {
                 composition             => 'Str1=1,Str2=1',
@@ -283,9 +283,19 @@ foreach my $par1lv (sort keys %exp_data) {
 	    if ($par1lv eq 'general') {
 		
 		my $expval3 = $exp_data{$par1lv}->{$par2lv}->{$par3lv};
-		is($config{$par1lv}->{$par2lv}->{$par3lv}, $expval3, 
-		   "testing read_conf_file, checking 3st level value ($par3lv)")
-		    or diag("Looks like this has failed");
+		my $obtval3 = $config{$par1lv}->{$par2lv}->{$par3lv};
+
+		if (ref($expval3) eq 'ARRAY' && ref($obtval3) eq 'ARRAY' ) {
+
+		    is(join('', @{$obtval3}), join('', @{$expval3}), 
+		       "testing read_conf_file, checking 3st ($par3lv)")
+			or diag("Looks like this has failed");
+		}
+		else {
+		    is($obtval3, $expval3, 
+		       "testing read_conf_file, checking 3st level ($par3lv)")
+			or diag("Looks like this has failed");
+		}
 	    }
 	    else {
 
@@ -320,9 +330,19 @@ foreach my $par1lv (sort keys %exp_data) {
 			my $obtval4 = $config{$par1lv}->{$par2lv}
                                                       ->{$par3lv}
                                                       ->{$par4lv};
-			is($obtval4, $expval4, 
-			   "testing read_conf_file, checking 4st lv ($par4lv)")
-			    or diag("Looks like this has failed");
+
+			if (ref($expval4) eq 'ARRAY' &&
+			    ref($obtval4) eq 'ARRAY' ) {
+
+			    is(join('', @{$obtval4}), join('', @{$expval4}), 
+			       "testing read_conf_file, checking 4st ($par4lv)")
+				or diag("Looks like this has failed");
+			}
+			else {
+			    is($obtval4, $expval4, 
+			       "testing read_conf_file, checking 4st ($par4lv)")
+				or diag("Looks like this has failed");
+			}
 		    }
 		}
 	    }
