@@ -845,7 +845,7 @@ sub make_overlap_align {
 	my %ovldata = global_overlap($align, $args{members});
 	
 	if ($ovldata{length} == 0) {
-	    croak("ERROR: Member specified for make_overlap_align no overlap");
+	    croak("ERROR: Members specified for make_overlap_align no overlap");
 	}
 
 	## Create a new alignment with the sequences, Transfer the alignment
