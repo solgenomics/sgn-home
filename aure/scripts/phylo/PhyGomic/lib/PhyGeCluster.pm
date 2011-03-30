@@ -5554,7 +5554,7 @@ sub prune_by_overlaps {
     my $CL = scalar( keys %{$cls_href} );
     my $cl = 0;
 
-    foreach my $clid (keys %{$cls_href}) {
+    foreach my $clid (sort keys %{$cls_href}) {
 
 	## Define the best align var to catch the best align at the end of the
 	## block (if there are any)
@@ -5652,7 +5652,16 @@ sub prune_by_overlaps {
 			foreach my $str (keys %members) {
 			    push @selectedmembers, @{$members{$str}};
 			}
-			$seedpath{$curr_seedeval} = \@selectedmembers;
+
+			## Check that the members all the members overlap
+
+			my @ovl = ($align, \@selectedmembers);
+			my %govl = Bio::Align::Overlaps::global_overlap(@ovl);
+
+			if ($govl{length} > 0) {
+
+			    $seedpath{$curr_seedeval} = \@selectedmembers;
+			}
 		    }
 		    else {
 			$comp->delete_members();
@@ -5674,15 +5683,15 @@ sub prune_by_overlaps {
 				trim     => $args{trim},
 				gapscomp => $args{removegaps},
 		    };
-
-		    my $nalign = Bio::Align::Overlaps::make_overlap_align($oal);
 		    
-		    $sealign{$sp} = $nalign;
+		    my $nwaln = Bio::Align::Overlaps::make_overlap_align($oal);
 		    
-		    my $na_len = $nalign->length();
-		    my $na_ide = $nalign->percentage_identity();
+		    $sealign{$sp} = $nwaln;
+		    
+		    my $na_len = $nwaln->length();
+		    my $na_ide = $nwaln->percentage_identity();
 		    my $na_ovlsc = $na_len * ($na_ide / 100) * ($na_ide / 100);
-
+		    
 		    ## Score the alignment according method
 		    
 		    if ($args{method} eq 'length') {
