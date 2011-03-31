@@ -30,7 +30,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 170;
+use Test::More tests => 178;
 use Test::Exception;
 
 use File::Temp qw/ tempfile tempdir /;
@@ -48,7 +48,7 @@ BEGIN {
 ## Prepare the data
 
 my $tempdir = tempdir( CLEANUP => 1 );
-my $fileconf = File::Spec->catfile($tempdir, 'phygeconf.test.conf'); 
+my $fileconf = File::Spec->catfile('phygeconf.test.conf'); 
 
 write_conf_file($fileconf, { paths => 1});
 
@@ -106,7 +106,7 @@ while(<$fh>) {
 }
 close($fh);
 
-## TEST 6 to 78
+## TEST 6 to 81
 
 foreach my $arg1 (sort keys %fields1st) {
     is ($ffile1st{$arg1}, 1, 
@@ -127,7 +127,7 @@ foreach my $arg3 (sort keys %fields3rd) {
 }
 
 
-## TEST 79 to 166
+## TEST 82 to 174
 
 my $fileconf2 = File::Spec->catfile($tempdir, 'phygeconf.example.conf'); 
 
@@ -239,6 +239,13 @@ my %exp_data = (
                 program                 => 'dnaml',
                 quiet                   => 1,
                 outgroup                => 'str3',
+		nj_parameters           => {
+		    lowtri              => 1,
+		    jumble              => 10,
+		},
+		ml_parameters           => {
+		    trans_ratio         => 1.5
+		},
 	    },
 	    reroot_tree => {
                 midpoint                => 1,
@@ -250,6 +257,8 @@ my %exp_data = (
                 quiet                   => 1,
                 outgroup                => 'str3',
                 filter                  => 75,
+		midpoint                => 0,
+		normalized              => 1,
 	    }, 
 	    topoanalysis => {
 		branch_cutoff               => '0.01-1',
@@ -307,7 +316,9 @@ foreach my $par1lv (sort keys %exp_data) {
 		my %expdata4lv = %{$exp_data{$par1lv}->{$par2lv}->{$par3lv}};
 		foreach my $par4lv (sort keys %expdata4lv) {
 		    
-		    if ($par3lv eq 'alignment' && $par4lv eq 'parameters') {
+		    if ($par3lv eq 'alignment' && $par4lv eq 'parameters' ||
+			$par3lv eq 'tree' && $par4lv eq 'nj_parameters'   ||
+			$par3lv eq 'tree' && $par4lv eq 'ml_parameters') {
 		
 			my %expdata5lv = %{$expdata4lv{$par4lv}};
 			foreach my $par5lv (sort keys %expdata5lv) {
@@ -350,12 +361,12 @@ foreach my $par1lv (sort keys %exp_data) {
     }
 }
 
-## TEST 167
+## TEST 175
 
 throws_ok { read_conf_file() } qr/ERROR: No argument/,
     "TESTING DIE ERROR: when no argument was used for read_conf_file";
 
-## test some regexp, TEST 168
+## test some regexp, TEST 176 to 178
 
 my $fileconf3 = File::Spec->catfile($tempdir,, 'phygeconf.failcheck1.conf'); 
 

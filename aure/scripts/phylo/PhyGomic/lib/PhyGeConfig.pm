@@ -262,6 +262,15 @@ print $cfh qq/
 \t\tprogram\t\t\t=\t## Optional, (only ML) example: 'dnaml'
 \t\tquiet\t\t\t=\t## Optional, example: '1'
 \t\toutgroup\t\t=\t## Optional, example: 'str3'
+\t\t<nj_parameters>\t\t\t## Optional parameters to pass to phylip
+\t\t\t\t\t\t## example:
+\t\t\t\t\t\t##   lowtri  = 1
+\t\t\t\t\t\t##   jumble  = 10
+\t\t<\/nj_parameters>
+\t\t<ml_parameters>\t\t\t## Optional parameters to pass to phylip or dnaml
+\t\t\t\t\t\t## example:
+\t\t\t\t\t\t##   trans_ratio  = 1.5
+\t\t<\/ml_parameters>
 \t<\/tree>
 
 \t<reroot_tree>\t\t\t\t## Optional section
@@ -275,6 +284,8 @@ print $cfh qq/
 \t\tquiet\t\t\t=\t## Optional, example: '1'
 \t\toutgroup\t\t=\t## Optional, example: 'str3'
 \t\tfilter\t\t\t=\t## Optional, (>) example: '75'
+\t\tmidpoint\t\t=\t## Optional, example: '0'
+\t\tnormalized\t\t=\t## Optional, example: '1'
 \t<\/bootstrapping>
  
 \t<topoanalysis>\t\t\t\t## Optional section
@@ -502,6 +513,10 @@ sub _confields {
 		program         => \%wrd_opt,
                 outgroup        => \%fre_opt,
 		quiet           => \%bol_opt,
+		nj_parameters   => { regexp  => undef,
+				     request => 'optional' },
+		ml_parameters   => { regexp  => undef,
+				     request => 'optional' },
 	    },
 	    reroot_tree => {
 		midpoint  => \%bol_opt,
@@ -512,6 +527,8 @@ sub _confields {
 		replicates => \%int_opt,
 		quiet      => \%bol_opt,
 		outgroup   => \%fre_opt,
+		midpoint   => \%bol_opt,
+		normalized => \%bol_opt,
 		filter     => \%int_opt,
 	    },
 	    topoanalysis => {
