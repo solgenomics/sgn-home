@@ -294,7 +294,7 @@ print $cfh qq/
 
 \t<allele_identification>\t\t\t## Optional section
 \t\ttarget\t\t\t=\t## Optional, example: 'str1'
-\t\tparents\t\t\t=\t## Optional, example: 'str2,str3'
+\t\tparents\t\t\t=\t## Optional, example: 'str2=str1-2,str3=str1-3'
 \t\tfilter_length\t\t=\t## Optional, (>) example: '100'
 \t\tfilter_identity\t\t=\t## Optional, (>) example: '75'
 \t<\/allele_identification>

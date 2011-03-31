@@ -265,7 +265,7 @@ my %exp_data = (
 	    },
 	    allele_identification => {
 		target                  => 'str1',
-		parents                 => 'str2,str3',
+		parents                 => 'str2=str1-2,str3=str1-3',
 		filter_length           => 100,
 		filter_identity         => 75,
 	    },
