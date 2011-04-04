@@ -17,7 +17,20 @@ use List::MoreUtils qw/ uniq any /;
 
 with 'MooseX::Getopt';
 with 'MooseX::Runnable';
-with 'MooseX::Role::DBIx::Connector';
+with 'MooseX::Role::DBIx::Connector' => {
+    accessor_options => {
+        db_conn  => [ traits => ['NoGetopt']],
+        db_attrs => [ traits => ['NoGetopt']],
+    },
+};
+
+
+has 'map_name' => (
+    is  => 'ro',
+    isa => 'Str',
+    required => 0,
+    documentation => 'restrict map names (regex)',
+);
 
 sub run {
     my ( $self, $markers_gff3 ) = @_;
@@ -39,6 +52,12 @@ sub run {
     print dump( \%mapping_data );
 }
 
+sub match_map_name {
+    my ( $self, $name ) = @_;
+    my $n = $self->map_name or return 1;
+    return $name =~ /$n/i;
+}
+
 sub fetch_marker_locations {
     my ( $self, $mapping_data ) = @_;
 
@@ -48,9 +67,14 @@ sub fetch_marker_locations {
         my @locs =
             map {
                 my $loc = $_;
-                my $map = CXGN::Map->new( $self->db_conn->dbh, {map_version_id=>$loc->{map_version_id}});
                 die dump $loc unless $loc->{lg_name};
-                [ $loc->{lg_name}, $map->get_short_name, $loc->{position}, $loc->{confidence} ]
+                my $map = CXGN::Map->new( $self->db_conn->dbh, {map_version_id=>$loc->{map_version_id}});
+                my $mapname = $map->get_short_name;
+                if( $self->match_map_name( $mapname ) ) {
+                    [ $loc->{lg_name}, $map->get_short_name, $loc->{position}, $loc->{confidence} ]
+                } else {
+                    ()
+                }
             }
             grep $_,
             map $_->{location},
