@@ -74,8 +74,10 @@ sub read_itag_locations {
         my ( $id ) = $f->{attributes}{Alias}[0] =~ /^SGN-M(\d+)/
           or die dump $f;
         my ( $chr ) = $f->{seq_id} =~ /^SL\d\.\d\dch(\d\d)$/;
+        $chr += 0;
+        next if $chr == 0;
         my ( $s, $e ) = sort { $a <=> $b } @{$f}{'start','end'};
-        push @{ $mapping_data->{$id+0} ||= [] }, [$chr+0, 'ITAG2.3', "$s..$e", $f->{score}];
+        push @{ $mapping_data->{$id+0} ||= [] }, [$chr, 'ITAG2.3', "$s..$e", $f->{score}];
     }
 }
 
