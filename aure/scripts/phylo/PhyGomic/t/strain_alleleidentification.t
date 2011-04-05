@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 20;
+use Test::More tests => 27;
 use Test::Exception;
 
 use FindBin;
@@ -201,6 +201,53 @@ throws_ok { identify_alleles(\%allele_args)} qr/ERROR: No seq was found/,
     "TESTING DIE ERROR: when parents seqids in the tree are not in the align";
 
 $node1->id('sq1');
+
+
+## Test the function using filters
+
+## Test the function
+
+my %allele_args2 = ( strains   => \%strains,
+		     alignment => $align,
+		     tree      => $tree,
+		     target    => 'T',
+		     parents   => { 'A' => 'T-a', 'B' => 'T-b'},
+		     filter    => { identity => 95},
+    );
+
+my %alleles2 = identify_alleles(\%allele_args2);
+
+
+## Test
+
+is(scalar(keys %alleles2), 2,
+    "testing identify_alleles with filter, checking number of alleles")
+    or diag("Looks like this has failed");
+
+is($alleles2{sq1}, undef,
+    "testing identify_alleles with filter, checking one of the parents(undef)")
+    or diag("Looks like this has failed");
+
+is($alleles2{sq2}, undef,
+    "testing identify_alleles with filter, checking one of the targets (T-a)")
+    or diag("Looks like this has failed");
+
+is($alleles2{sq3}, 'T-b',
+    "testing identify_alleles with filter, checking one of the targets (T-b)")
+    or diag("Looks like this has failed");
+
+is($alleles2{sq4}, undef,
+    "testing identify_alleles with filter, checkingv the other parent (undef)")
+    or diag("Looks like this has failed");
+
+is($alleles2{sq5}, undef,
+    "testing identify_alleles with filter, checking one of the targets (undef)")
+    or diag("Looks like this has failed");
+
+is($alleles2{sq6}, 'T-b',
+    "testing identify_alleles with filter, checking one of the targets (T-b)")
+    or diag("Looks like this has failed");
+
 
 
 ####

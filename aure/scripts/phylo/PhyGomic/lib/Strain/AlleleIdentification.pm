@@ -176,6 +176,15 @@ sub identify_alleles {
 		croak("ERROR: Mandatory argument $marg wasnt used as argument");
 	    }
 	}
+	else {
+	    if (exists $args{filter}) {
+		foreach my $fi (keys %{$args{filter}}) {
+		    if ($fi !~ m/^(length|identity)$/) {
+			croak("ERROR: Filter arg. has not the right arg ($fi)");
+		    }
+		}
+	    }
+	}
     }
 
     ## Declare possible alleles hash
@@ -269,15 +278,22 @@ sub identify_alleles {
 		$newalign->add_seq($par);
 	    }
 
-	    if ($args{filter} eq 'length') {
+	    my $cond = scalar(keys %{$args{filter}});
+	    if (exists $args{filter}->{length}) {
 		if ($newalign->length >= $args{filter}->{length}) {
-		    $alleles{$target} = $pos_alleles{$target};
+		    $cond--;
 		}
 	    }
-	    elsif ($args{filter} eq 'identity') {
-		if ($newalign->percentage_identity >= $args{filter}->{length}){
-		    $alleles{$target} = $pos_alleles{$target};
+	    
+	    if (exists $args{filter}->{identity}) {
+
+		my $req_ident =  $args{filter}->{identity};
+		if ($newalign->percentage_identity >= $req_ident){
+		    $cond--;
 		}
+	    }
+	    if ($cond == 0) {
+		$alleles{$target} = $pos_alleles{$target};
 	    }
 	}
     }
