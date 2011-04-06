@@ -5568,7 +5568,7 @@ sub prune_by_overlaps {
 	
 	$cl++;
 	if ($self->is_on_reportstatus) {
-	    print_parsing_status($CL,$cl,"\t\tPerc. of clusters pruned:",$clid);
+	    print_parsing_status($cl,$CL,"\t\tPerc. of clusters pruned:",$clid);
 	}
 	
 	## Create a complete remove switch
@@ -5617,9 +5617,13 @@ sub prune_by_overlaps {
 		my %seedpath = ();
 
 		my $curr_seedeval = 0;
-		while($curr_seedeval < $args{evalseed}) {
+		my $seedn =  scalar(@filtseeds);
+		while($curr_seedeval < $args{evalseed} && $seedn > 0) {
 
-		    my @seed = sort( @{shift(@filtseeds)});
+		    my $seed_aref = shift(@filtseeds);
+		    print STDERR "TEST $seedn\t[$seed_aref]\t$curr_seedeval\n";
+		    $seedn = scalar(@filtseeds);
+		    my @seed = sort( @{$seed_aref});
 		    
 		    ## Get start and end for this seed
 		    my $seed_entry = $mtx->entry($seed[0], $seed[1]);
