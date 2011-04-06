@@ -5621,7 +5621,6 @@ sub prune_by_overlaps {
 		while($curr_seedeval < $args{evalseed} && $seedn > 0) {
 
 		    my $seed_aref = shift(@filtseeds);
-		    print STDERR "TEST $seedn\t[$seed_aref]\t$curr_seedeval\n";
 		    $seedn = scalar(@filtseeds);
 		    my @seed = sort( @{$seed_aref});
 		    
