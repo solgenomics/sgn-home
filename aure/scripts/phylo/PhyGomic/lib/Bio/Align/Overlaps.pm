@@ -633,7 +633,7 @@ sub extension_list {
 	    foreach my $param (keys %filter) {
 		if (defined $entry->{$param}) {
 		    if ($entry->{$param} < $filter{$param}) {
-				$pass = 0;
+			$pass = 0;
 		    }
 		}
 		else {
@@ -857,7 +857,6 @@ sub make_overlap_align {
 	## Slice by default
 
 	unless (defined $args{trim} && $args{trim} == 0) {
-
 	    $new_align = $new_align->slice($ovldata{start}, $ovldata{end});
 	}
 	
@@ -865,7 +864,30 @@ sub make_overlap_align {
 
 	unless (defined $args{gapscomp} && $args{gapscomp} == 0) {
 	    
+	    ## . is not recognixed as gap character, it 
+	    ## will change it.
+
+	    my @symbolchars = $new_align->symbol_chars();
+	    if (join('', sort @symbolchars) =~ m/\./) {
+
+		foreach my $seqobj ($new_align->each_seq()) {
+		    my $seq = $seqobj->seq();
+		    $seq =~ s/\./-/g;
+		    $seqobj->seq($seq);
+		}
+	    }
 	    $new_align = $new_align->remove_gaps(undef, 1);
+
+	    ## Change back
+
+	    if (join('', sort @symbolchars) =~ m/\./) {
+
+		foreach my $seqobj ($new_align->each_seq()) {
+		    my $seq = $seqobj->seq();
+		    $seq =~ s/-/\./g;
+		    $seqobj->seq($seq);
+		}
+	    }
 	}
 
 	return $new_align;

@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 125;
+use Test::More tests => 129;
 use Test::Exception;
 
 use FindBin;
@@ -585,7 +585,7 @@ is($newalign3->length(), 26,
     "testing make_overlap_align for no rm gaps, checking length after trimming")
     or diag("looks like this has failed");
 
-my $newalign3 = Bio::Align::Overlaps::make_overlap_align(
+my $newalign4 = Bio::Align::Overlaps::make_overlap_align(
     { 
 	align    => $align, 
 	members  => ['seq3', 'seq5', 'seq7'],
@@ -593,11 +593,11 @@ my $newalign3 = Bio::Align::Overlaps::make_overlap_align(
 	trim     => 0,
     });
 
-is(scalar($newalign3->each_seq()), 3, 
+is(scalar($newalign4->each_seq()), 3, 
     "testing make_overlap_align for nogaps notrim, checking number of members")
     or diag("Looks like this has failed");
 
-is($newalign3->length(), 65, 
+is($newalign4->length(), 65, 
     "testing make_overlap_align for nogaps notrim, checking length")
     or diag("looks like this has failed");
 
@@ -625,6 +625,38 @@ throws_ok { Bio::Align::Overlaps::make_overlap_align($fk3) } qr/ERROR: seq100/,
 my $fk4 = { align => $align }; 
 throws_ok { Bio::Align::Overlaps::make_overlap_align($fk4) } qr/ERROR: Member/,
     "TESTING DIE ERROR: when memb used with make_overlap_align doesnt overlap";
+
+
+## Chech if the gaps are removed with different gap characters
+
+my %gapschars = ("\." => 25, 
+		 'N'  => 65 );  ## Two gaps chars (one real, one fake)
+
+foreach my $gapchar (keys %gapschars) {
+    
+    foreach my $seqobj ($align->each_seq()) {
+	
+	my $seq = $seqobj->seq();
+	$seq =~ s/(-|\.|N)/$gapchar/g;
+	$seqobj->seq($seq);
+    }
+
+    my $newalign5 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 1,
+	trim     => 1,
+    });
+
+    is(scalar($newalign5->each_seq()), 3, 
+       "testing make_overlap_align for gaps $gapchar, checking members' number")
+	or diag("Looks like this has failed");
+
+    is($newalign5->length(), $gapschars{$gapchar}, 
+       "testing make_overlap_align for nogaps $gapchar, checking length")
+	or diag("looks like this has failed");
+}
 
 
 ####
