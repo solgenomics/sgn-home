@@ -1767,6 +1767,13 @@ sub parse_acefile {
     my $acefile = $arg_href->{'acefile'} ||
 	croak("ARG. ERROR: 'acefile' isn't defined for $arg_href.\n");
     
+    my $nosinglets =  1;
+    if (defined $arg_href->{'nosinglets'}) {
+	if( $arg_href->{'nosinglets'} =~ m/^(0|N)/i) {
+	    $nosinglets = 0;
+	}
+    }
+
     my $L = `cut -f1 $acefile | wc -l`;
     chomp($L);
     my $l = 0;
@@ -1944,52 +1951,60 @@ sub parse_acefile {
 	## First, create the array with Bio::Seq::Meta objects with all
 	## the sequence members.
 
-	my @align_objs = ();
-	my @member_objs = ();
-	foreach my $memb_id (keys %members) {
-	    my %rd = %{$reads{$ctg_id}->{$memb_id}};
-	    my $strand = 1;
-	    if ($rd{'complemenent'} eq 'C') {
-		$strand = -1;
-	    }
+	## SKIP when only one member is present (singlets)
+
+	if (scalar(keys %members) > 1 || $nosinglets == 0) { 
+
+	    my @align_objs = ();
+	    my @member_objs = ();
+	    foreach my $memb_id (keys %members) {
+		my %rd = %{$reads{$ctg_id}->{$memb_id}};
+		my $strand = 1;
+		if ($rd{'complemenent'} eq 'C') {
+		    $strand = -1;
+		}
 	    
-	    my $seq = Bio::Seq->new( -id => $memb_id, -seq => $rd{'unpadseq'} );
-	    push @member_objs, $seq;
+		my $seq = Bio::Seq->new( -id  => $memb_id, 
+					 -seq => $rd{'unpadseq'} );
+		push @member_objs, $seq;
 
-	    my $metaseq = Bio::LocatableSeq->new( 
-		-id     => $memb_id,
-		-start  => $rd{'pad_start_consensus'},
-		-end    => $rd{'pad_start_consensus'}+length($rd{'unpadseq'})-1,
-		-strand => $strand,
-		-seq    => $rd{'trimseq'},
-		-verbose => 0,
+		my $metaseq = Bio::LocatableSeq->new( 
+		    -id     => $memb_id,
+		    -start  => $rd{'pad_start_consensus'},
+		    -end    => 
+		    $rd{'pad_start_consensus'}+length($rd{'unpadseq'})-1,
+		    -strand => $strand,
+		    -seq    => $rd{'trimseq'},
+		    -verbose => 0,
+		    );
+		push @align_objs, $metaseq;
+	    }
+
+	    ## Second, create the Bio::Align object.
+	    
+	    my $cons_seq = Bio::Seq::Meta->new( 
+		-id  => $ctg_id,
+		-seq => $contigs{$ctg_id}->{'seq'},
 		);
-	    push @align_objs, $metaseq;
-	}
 
-	## Second, create the Bio::Align object.
+	    my $align = Bio::SimpleAlign->new( -id        => $ctg_id, 
+					       -source    => 
+					       '.ace, assembly file',
+					       -seqs      => \@align_objs,
+					       -consensus_meta => $cons_seq, 
+		);
 
-	my $cons_seq = Bio::Seq::Meta->new( 
-	    -id  => $ctg_id,
-	    -seq => $contigs{$ctg_id}->{'seq'},
-	    );
+	    ## Create a Bio::Cluster::SequenceFamily object and load the 
+	    ## alignment
 
-	my $align = Bio::SimpleAlign->new( -id        => $ctg_id, 
-					   -source    => '.ace, assembly file',
-					   -seqs      => \@align_objs,
-					   -consensus_meta => $cons_seq, 
-	    );
-
-	## Create a Bio::Cluster::SequenceFamily object and load the 
-	## alignment
-
-	my $seqfam = Bio::Cluster::SequenceFamily->new(
-	    -family_id => $ctg_id, 
-	    -members   => \@member_objs,	    
-	    );
-	$seqfam->alignment($align),
+	    my $seqfam = Bio::Cluster::SequenceFamily->new(
+		-family_id => $ctg_id, 
+		-members   => \@member_objs,	    
+		);
+	    $seqfam->alignment($align),
 	
-	$clusters{$ctg_id} = $seqfam;
+	    $clusters{$ctg_id} = $seqfam;
+	}
     }
     return %clusters;
 }

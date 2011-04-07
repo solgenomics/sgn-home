@@ -531,7 +531,9 @@ throws_ok { PhyGeCluster::parse_strainfile({t => 1}) } qr/ARG. ERROR: 'str/,
 
 ## Test parsing_acefile()
 
-my %clusters6 = PhyGeCluster::parse_acefile({ acefile => $acefile});
+my %clusters6 = PhyGeCluster::parse_acefile({ acefile    => $acefile,
+					      nosinglets => 0,
+					    });
 
 ## So it will create them and compare with the obtained number
 
@@ -680,6 +682,7 @@ is(scalar(keys %{$phygecluster_cloned->get_strains()}),
 my $phygecluster_ace = PhyGeCluster->new(
     { 
 	acefile    => $acefile,
+	nosinglets => 0,
 	strainfile => $strainfile,
     }
     );
