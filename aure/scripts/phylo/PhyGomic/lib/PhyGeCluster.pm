@@ -394,8 +394,7 @@ sub clone {
 	    $new_align = $old_align->select(1, $old_align->num_sequences());
 
 	    ## Select does not copy metadata, so it will transfer manually
-	    my @transfers = ('description', 'score', 'percentage_identity', 
-			     'source');
+	    my @transfers = ('description', 'score', 'source');
 
 	    foreach my $transf_var (@transfers) {
 		if (defined $old_align->$transf_var) {
@@ -1821,7 +1820,8 @@ sub parse_acefile {
 					 'complemenent' => $5,
 					 'seq'          => '',
 					 'rd_members'   => {},
-		};  
+		};
+		$reads{$contig_id} = {};
 	    }
 	    else {
 		$contigs{$contig_id}->{'seq'} .= $_;
@@ -1830,14 +1830,14 @@ sub parse_acefile {
 	if ($curr_cr eq 'AF') {
 	    if ($_ =~ m/^AF\s+(.+?)\s+(\w)\s+(-?\d+)/) {
 		$read_id = $1;
-		$reads{$read_id} = { 'complemenent'        => $2,
-				     'pad_start_consensus' => $3,
-				     'pad_bases_num'       => '',
-				     'seq'                 => '',
-				     'qual_clip_start'     => '',
-				     'qual_clip_end'       => '',
-				     'align_clip_start'    => '',
-				     'align_clip_end'      => '',
+		$reads{$contig_id}->{$read_id} = { 'complemenent'        => $2,
+						   'pad_start_consensus' => $3,
+						   'pad_bases_num'       => '',
+						   'seq'                 => '',
+						   'qual_clip_start'     => '',
+						   'qual_clip_end'       => '',
+						   'align_clip_start'    => '',
+						   'align_clip_end'      => '',
 		};
 		unless (exists $contigs{$contig_id}->{rd_members}->{$read_id}) {
 		    $contigs{$contig_id}->{rd_members}->{$read_id} = 1;
@@ -1847,18 +1847,22 @@ sub parse_acefile {
 	if ($curr_cr eq 'RD') {
 	    if ($_ =~ m/^RD\s+(.+?)\s+(\d+)\s+(\d+)\s+(\d+)/) {
 		$read_id = $1;
-		if (exists $reads{$read_id}) {
-		    $reads{$read_id}->{'pad_bases_num'} = $2;
+		if (exists $reads{$contig_id}->{$read_id}) {
+		    $reads{$contig_id}->{$read_id}->{'pad_bases_num'} = $2;
+		#    print STDERR "\n\nWARNING: $read_id exists in multiple ";
+		#    print STDERR "contigs. It could produce an error in the ";
+		#    print STDERR "alignment creation.\n\n";
 		}
 		else {
-		    $reads{$read_id} = { 'complemenent'        => '',
-					 'pad_start_consensus' => '',
-					 'pad_bases_num'       => $2,
-					 'seq'                 => '',
-					 'qual_clip_start'     => '',
-					 'qual_clip_end'       => '',
-					 'align_clip_start'    => '',
-					 'align_clip_end'      => '',
+		    $reads{$contig_id}->{$read_id} = { 
+			'complemenent'        => '',
+			'pad_start_consensus' => '',
+			'pad_bases_num'       => $2,
+			'seq'                 => '',
+			'qual_clip_start'     => '',
+			'qual_clip_end'       => '',
+			'align_clip_start'    => '',
+			'align_clip_end'      => '',
 		    };
 		}
 		unless (exists $contigs{$contig_id}->{rd_members}->{$read_id}) {
@@ -1866,36 +1870,40 @@ sub parse_acefile {
 		}
 	    }
 	    else {
-		$reads{$read_id}->{'seq'} .= $_;
+		$reads{$contig_id}->{$read_id}->{'seq'} .= $_;
 	    }
 	}
 	if ($curr_cr eq 'QA') {
 	    if ($_ =~ m/^QA\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
 
-		$reads{$read_id}->{'qual_clip_start'} = $1;
-		$reads{$read_id}->{'qual_clip_end'} = $2;
-		$reads{$read_id}->{'align_clip_start'} = $3;
-		$reads{$read_id}->{'align_clip_end'} = $4;
+		$reads{$contig_id}->{$read_id}->{'qual_clip_start'} = $1;
+		$reads{$contig_id}->{$read_id}->{'qual_clip_end'} = $2;
+		$reads{$contig_id}->{$read_id}->{'align_clip_start'} = $3;
+		$reads{$contig_id}->{$read_id}->{'align_clip_end'} = $4;
 
 		my $seqobj = Bio::Seq->new( -id  => $read_id,
-					    -seq => $reads{$read_id}->{'seq'},
+					    -seq => $reads{$contig_id}->
+					    {$read_id}->{'seq'},
 		    );
 
 		## To get the trim sequence, remenber that .ace files are
 		## 1-based and bioperl is 1-based. The end position will
 		## be length+1 (for example 1nt length will be 1-2)
 
-		my $st = $reads{$read_id}->{'align_clip_start'};
-		my $en = $reads{$read_id}->{'align_clip_end'};
-		my $cs = $reads{$read_id}->{'pad_start_consensus'};
+		my $st = $reads{$contig_id}->{$read_id}->{'align_clip_start'};
+		my $en = $reads{$contig_id}->{$read_id}->{'align_clip_end'};
+		my $cs = $reads{$contig_id}->{$read_id}
+		                           ->{'pad_start_consensus'};
+
 		my $le = $en - $st;
-		my $ce = $en + $cs;
+		my $ce = $en + $cs - 1;
 
 		my $init_gaps = '';
 		my $final_gaps = '';
-		if ($reads{$read_id}->{'pad_start_consensus'} =~ m/^-(\d+)/) {
+		my $finalseq = '';
+		if ($cs =~ m/^-(\d+)/) {
 		    $st = $1 + 2;
-		    $reads{$read_id}->{'pad_start_consensus'} = 1;
+		    $reads{$contig_id}->{$read_id}->{'pad_start_consensus'} = 1;
 		}
 		else {
 		
@@ -1903,24 +1911,26 @@ sub parse_acefile {
 		    ## pad_start_consensus - 1.
 		    if ($cs >= 0) {
 			foreach my $i (1 .. $cs + $st - 2) {
-			    $init_gaps .= '-';
+			    $finalseq .= '-';
 			}
 		    }
 		}
-		my $co_en = $contigs{$contig_id}->{'bases_num'} + 1;
-		if ($co_en > $ce) {
-		    foreach my $y (1 .. $co_en - $ce) {
-			$final_gaps .= '-';
-		    }
+		
+		$finalseq .= $seqobj->subseq($st, $en);
+		my $final_l = length($finalseq);
+
+		my $co_en = $contigs{$contig_id}->{'bases_num'};
+		while ($final_l < $co_en) {
+		    $finalseq .= '-';
+		    $final_l = length($finalseq);
 		}
 		
-		$reads{$read_id}->{'trimseq'} = $init_gaps . 
-		                                $seqobj->subseq($st, $en) .
-						$final_gaps;
-	        $reads{$read_id}->{'trimseq'} =~ s/\*/-/g;
-		my $unpadseq = $reads{$read_id}->{'trimseq'};
+		$reads{$contig_id}->{$read_id}->{'trimseq'} = $finalseq;
+
+	        $reads{$contig_id}->{$read_id}->{'trimseq'} =~ s/\*/-/g;
+		my $unpadseq = $reads{$contig_id}->{$read_id}->{'trimseq'};
 		$unpadseq =~ s/-//g;
-		$reads{$read_id}->{'unpadseq'} = $unpadseq
+		$reads{$contig_id}->{$read_id}->{'unpadseq'} = $unpadseq
 	    }
 	}
     }
@@ -1937,7 +1947,7 @@ sub parse_acefile {
 	my @align_objs = ();
 	my @member_objs = ();
 	foreach my $memb_id (keys %members) {
-	    my %rd = %{$reads{$memb_id}};
+	    my %rd = %{$reads{$ctg_id}->{$memb_id}};
 	    my $strand = 1;
 	    if ($rd{'complemenent'} eq 'C') {
 		$strand = -1;
