@@ -8,12 +8,15 @@ our ($opt_D, $opt_H);
 
 # this script rotates a given chromosome on a map. Specifically written to turn around chromosome 12 on the potato QTL map.
 
+getopts('D:H:');
 my $map_version_id = shift;
 my $chr_name = shift;
 
-my $dbh = CXGN::DB::InsertDBH->new( { dbname=> $opt_D,
+my $dbh = CXGN::DB::InsertDBH->new( {
 				      dbhost=> $opt_H,
-				    });
+				      dbname=> $opt_D,
+				    }
+				    );
 
 
 my $sth = $dbh->prepare("SELECT lg_id FROM sgn.linkage_group WHERE map_version_id=? AND lg_name = ?");
