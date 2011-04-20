@@ -391,6 +391,26 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\n\n";
     }
 
+    if ($opt_O) {
+	
+	## Create a folder:
+	my $alndir = $pathoutdir . '/00_alignments';
+	mkdir($alndir);
+	
+	## Print files
+	my $alnbase = $alndir . '/alignments';
+	my %alnfiles = $paphyg->out_alignfile({ 
+	    'rootname'     => $alnbase,
+	    'distribution' => 'single',
+	    'format'       => 'clustalw',
+						 });
+	
+	my $aln_n = scalar(keys %alnfiles);
+	print STDERR "\t\t\tOPTION -O enabled: ";
+	print STDERR "$aln_n alignment files have been created";
+	print STDERR " with basename:\n\t\t\t$alnbase\n\n";
+    }
+
     ## 2.1) Homologous search ############################################
 
     print STDERR "\t\t2.1) HOMOLOGOUS SEARCH (" .  date() . "):\n\n";
