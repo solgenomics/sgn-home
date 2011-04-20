@@ -59,7 +59,7 @@ use CXGN::BioTools::AGP qw | agp_parse |;
 
 our %args;
 
-getopts('l:c:', \%args); # -l <local mapping file>
+getopts('l:c:', \%args); # -l <local mapping file> -c contig def file
 
 my $dir = shift;
 
@@ -75,9 +75,10 @@ open (my $F, "<", $args{l}) || die "Can't open file $args{l}";
 
 while (<$F>) { 
     chomp;
-    my ($local, $acc) = split /\t/;
+    my ($local_id, $acc) = split /\t/;
+    $acc =~ s/(.*?)\.\d+/$1/; #remove version number
     #print STDERR "READ: $local AND $acc\n";
-    $ids{$acc} = $local;
+    $ids{$acc} = $local_id;
 }
 close($F);
 
@@ -88,6 +89,8 @@ if ($args{c}) {
     while (<$F>) { 
 	chomp;
 	my ($sc, $ct) = split /\t/;
+	# remove version number
+	##print STDERR "$ct contained in $sc\n";
 	$ct{$ct} = $sc;
     }   
 }
@@ -147,42 +150,50 @@ HEADER
 	my $gap_size;
 	my $method = "";
 	# remove the version number in the identifier
-	if (exists($line->{ident})) { $line->{ident} =~ s/(.*)\.\d+/$1/; }
+	if (exists($line->{ident})) { $line->{ident} =~ s/(.*?)\.\d+/$1/; }
 
 	if (exists($line->{type}) && defined($line->{type})) { 
 	    if ($line->{type} eq "W") { 
-		my $local;
+		my $local_id;
 		
 		if(exists($line->{ident}) && exists($ids{$line->{ident}})) { 
-		    $local = $ids{$line->{ident}};
+		    $local_id = $ids{$line->{ident}};
 		    
 		    #provide the scaffold if possible
-		    if (exists($ct{$local})) { 
-			$local = $ct{$local};
+		    if (exists($ct{$local_id})) { 
+			$local_id = $ct{$local_id};
 		    }
 		    
 		}
 		else {
-		    $local = "";
+		    $local_id = "";
 		}
 
 		
 		print $F join ("\t", (
 				   $line->{ident},
 				   "?",
-				   $local,
-				   
+				   $local_id,
 			       )
 		    )."\n";
 	    }
 	}
 	
+	my $gap_type;
 	if (exists($line->{type}) && $line->{type} eq "U") { 
-	    $gap_size = 50_000;
+	    if ($line->{gap_type} eq 'fragment' || $line->{gap_type} eq 'clone') { 
+		$gap_type='TYPE-2';
+	    }
+	    if ($line->{gap_type} eq 'contig') { 
+		$gap_type='TYPE-3';
+	    }
+
+
 	}
-	elsif ($line->{type} eq "N") { 
-	    
+	elsif ($line->{type} eq "N") { 	    
 	    $gap_size = $line->{length};#$line->{oend} - $line->{ostart};
+	    $gap_type = $gap_types{$line->{gap_type}};
+
 	    $method = "PAIRED ENDS";
 	    
 	}
@@ -190,16 +201,18 @@ HEADER
 	    $gap_size = '';
 	}
 	    
-	my $tpf_gap_type;
-	if (exists($line->{gap_type}) && exists($gap_types{$line->{gap_type}})) { 
-	    $tpf_gap_type = $gap_types{$line->{gap_type}};
 
+	if (exists($line->{gap_type}) && exists($gap_types{$line->{gap_type}})) { 
+
+
+	   
 	    if (!defined($gap_size)) { $gap_size = ''; }
 	    print $F join ("\t", (
 			       "GAP",
-			       $gap_types{$line->{gap_type}},
+			       $gap_type,
 			       $gap_size,
 			       $method || '',
+			       '',
 			       
 			
 		    )

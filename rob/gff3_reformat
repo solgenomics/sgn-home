@@ -1,0 +1,303 @@
+#!/usr/bin/env perl
+
+# PODNAME: gff3_reformat
+# ABSTRACT: multipurpose reformatting and cleanup tool for GFF3
+
+use strict;
+use warnings;
+use Carp;
+use FindBin;
+use Getopt::Std;
+
+use Tie::Cache::LRU;
+use URI::Escape;
+
+use Pod::Usage;
+
+use Data::Dumper;
+
+########### GLOBAL VARS ########
+
+our $uniq_sep = '_';
+our $lb_size = 200;
+
+################################
+
+our %opt;
+getopts('sl:e:A:S:u:UL:If:i',\%opt) or pod2usage();
+$uniq_sep = $opt{u} if defined $opt{u};
+$lb_size = $opt{l} if defined $opt{l};
+
+tie my %uniq_lb, 'Tie::Cache::LRU', $lb_size;
+my %uniq_ctrs;
+
+#compile the -e option as a pattern if passed
+if($opt{e}) {
+  $opt{e} = eval "qr$opt{e}o";
+  die 'error in -e :'.$@ if $@;
+}
+
+my @attr_exprs;
+if($opt{A}) {
+  @attr_exprs = map {
+    my @nv = split /=/,$_,2;
+    if($nv[0] eq 'Parent' && $opt{U}) {
+      die  "cannot rename Parent attributes alone while uniqifying with -U";
+    }
+    #compile the pattern as a qr
+    #warn "compile $nv[0],$nv[1]\n";
+    $nv[0] = eval "qr/$nv[0]/";
+    die "error in -A: $@" if $@;
+
+    #compile the expression as a subroutine ref
+    $nv[1] = eval "sub { \$_ = shift; $nv[1]; return \$_}";
+    die "error in -A: $@" if $@;
+    \@nv
+  } split /,/,$opt{A};
+}
+
+#compile the -L expression as a subroutine if given
+if( $opt{L} ) {
+  $opt{L} = eval "sub { \$_ = shift; $opt{L}; return \$_}";
+  die "error in -L: $@" if $@;
+}
+
+#if we have a -f option, read the filenames out of that file and add them to ARGV
+if( $opt{f} ) {
+  open my $files, $opt{f} or die "$! reading $opt{f}";
+  while( <$files> ) {
+    s/^\s+|\s+$//g;
+    -f && -r or die "file $_ is not readable\n";
+    push @ARGV,$_;
+  }
+}
+
+
+my $seqregions = do {
+  if($opt{S}) {
+    -r $opt{S} or die "cannot open '$opt{S}' for reading\n";
+    index_seqlengths($opt{S});
+  } else {
+    {}
+  }
+};
+
+print "##gff-version 3\n";
+
+unless ( $opt{i} ) {		#< if we are not interleaving seqregions, print them all here
+  foreach my $sr_rec (map $seqregions->{$_}, sort keys %$seqregions) {
+    print sr_str($sr_rec)."\n";
+    $sr_rec->{printed} = 1;
+  }
+}
+
+my $in_fh;
+if( $opt{s} ) {
+    open $in_fh, "sort -k 1,1 -k 4,4g -s @ARGV | grep -v '^###' |"
+        or die "$! running sort";
+} else {
+    open $in_fh, "cat @ARGV |"
+        or die "$! running cat";
+}
+
+while (<$in_fh>) {
+  $_ = $opt{L}->($_) if $opt{L}; #< do the global -L alteration if present
+  next if /^##gff-version/;
+
+  if (/^##\s*sequence-region/) {
+
+    #check sequence-region directive, check but don't repeat directives that have already been printed
+    chomp;
+    my (undef,$seqname,$start,$end) = split;
+
+    if ( my $known_sr = $seqregions->{$seqname} ) { #< if we already know about this sequence-region, check it and print it if 
+      my $this_sr = { name => $seqname, start => $start, end => $end, length => $end-$start+1 };
+      sr_eq( $this_sr, $known_sr )
+	or warn "WARNING: sequence-region statement '".sr_str($this_sr)."' conflicts with previously-seen sequence region length (".sr_str($known_sr).") from -S file or earlier in the GFF stream.  Overriding with first-seen length.\n";
+
+    } else {
+      $seqregions->{$seqname} = { length => $end-$start+1,
+				  start => $start,
+				  end => $end,
+				  name => $seqname,
+				  printed => 0,
+				};
+    }
+  } elsif ( /^\S+\t\S+\t\S+/ ) { #a data line, process it
+    chomp;
+    my @fields = split /\s+/,$_,9;
+    my $fcnt = @fields;
+    $fcnt == 9 or die "invalid number of fields ($fcnt)";
+
+    if( my $sr_rec = $seqregions->{$fields[0]} ) {
+      unless( $sr_rec->{printed} ) {
+	print sr_str($sr_rec)."\n";
+	$sr_rec->{printed} = 1;
+      }
+    }
+
+    #use Data::Dumper
+    #warn Dumper \@attrs;
+
+    # if we have -U or attr expressions, we have to parse and mess with the attributes
+    if( $opt{U} || @attr_exprs ) {
+
+      #parse the attributes
+      my @attrs = map [split /=/],split /;/,$fields[8];
+
+      foreach my $a (@attrs) {
+	my ($name,$val) = @$a;
+	$val = uri_unescape($val);
+
+	foreach my $ae (@attr_exprs) {
+	  my ($qr,$change_sub) = @$ae;
+	  #warn "try matching $name with '$qr' => '$expr'\n";
+	  if ( $name =~ $qr) {
+	    #warn "matched $qr, $change_sub\n";
+	    $val = $change_sub->($val);
+	  }
+	}
+
+	if ( $opt{U} ) {
+	  if ( $name eq 'Parent') {
+            my $key = join ':',@fields[0,1],$val;
+	    #find the uniqified version in the lookback buffer
+	    $uniq_lb{$key} or die "no feature found with key '$key', either this file is not valid GFF3, or you have parent and child features very far away from eachother in this file and need to increase the lookback buffer size with the -l option (currently -l $lb_size).\nCurrent lookback buffer contents: ".Dumper(\%uniq_lb);
+	    $val = $uniq_lb{$key};
+	  } elsif ( $name eq 'ID' ) {
+	    my $new = $val;
+	    $new =~ s/$uniq_sep\d+$//;
+            my $index = ++$uniq_ctrs{$new};
+	    $new .= $uniq_sep.$index unless $index == 1;
+
+            my $key = join ':', @fields[0,1], $val;
+
+	    unless ( $opt{e} && $new =~ $opt{e} ) {
+	      $uniq_lb{$key} = $new;
+	    }
+	    $val = $new;
+	  }
+	}
+
+	# add an ID if we got -I option and this feature has no ID
+	if ( $opt{I} ) {
+	  unless( grep $_->[0] eq 'ID', @attrs ) {
+	    unshift @attrs,['ID',$fields[0].'_'.$fields[2].'_'.++$uniq_ctrs{$fields[2]}];
+	  }
+
+	  # note: we don't have to worry about Parent attrs, because
+	  # anything that doesn't have an ID will not have any
+	  # elements referring to it as Parent
+	}
+
+	$a = [$name,uri_escape($val,"\t\n".';=%&,[:cntrl:]')]; #<alter the attributes
+      }
+
+      $fields[8] = join ';', map join('=',@$_), @attrs;
+    }
+
+    print join("\t",@fields);
+    print "\n";
+  }
+  else { 		#some other thing, just print it
+    print;
+  }
+}
+
+
+#given a sequence file, return a hashref of its sequence lengths
+sub index_seqlengths {
+  my $seqfile = shift;
+
+  require Bio::SeqIO;
+  my $seq_in = Bio::SeqIO->new( -file => $seqfile, -format => 'fasta');
+  my %lengths;
+  while( my $s = $seq_in->next_seq ) {
+    $lengths{$s->primary_id} = { start => 1, end => $s->length, length => $s->length, name => $s->primary_id, printed => 0 }
+      or die "in '$seqfile', sequence ".$s->primary_id." has no length!\n";
+  }
+  return \%lengths;
+}
+
+# couple of small functions for dealing with sequence-region records
+sub sr_eq {
+  my ($one,$two) = @_;
+  foreach (qw/length start end/) {
+    return 0 unless $one->{$_} == $two->{$_};
+  }
+  return 1;
+}
+sub sr_str {
+  my ($sr) = @_;
+  return "##sequence-region $sr->{name} $sr->{start} $sr->{end}";
+}
+
+
+
+__END__
+
+=head1 USAGE
+
+  gff3_reformat [options] gff3_file gff3_file ...
+
+  Reformat one or more GFF3 files according to the options given.  If
+  no files are given, reads GFF3 from stdin.  Prints the altered GFF3
+  to stdout.
+
+=head2 Options
+
+    -s
+     if passed, sort the gff3 file by reference sequence and start
+     coordinate.  Sync (###) markers will not be preserved.
+
+    -S fasta_file
+     add sequence-region statements for the sequences in the given
+     FASTA file
+
+    -L expr
+     run the given perl expression on each line of gff3 (which is in
+     $_), before doing anything else to it.
+
+    -A attr_name=expr,attr_name=expr,...
+     run the expression on the contents of attribute attr_name.  The
+     attribute values will be url-decoded before running the pattern,
+     then re-encoded after alteration.  attr_names are matched in a
+     regexp, so you can do, ID|Parent=s/foo/bar/ to do the substitution
+     on both ID and Parent attributes
+
+    -u uniq_sep
+     set the separator to use when appending a uniqifying number
+     suffix to an identifier.  Default '$uniq_sep'
+
+    -I
+     Make up and add IDs to elements that don't have them.  Made up
+     IDs will be of the form <featuretype>_<unique number>.
+
+    -U
+     uniqify all identifiers (ID and Parent attributes) by appending
+     '${uniq_sep}1', '${uniq_sep}2.  If a uniqification suffix seems
+     to already be present, it will be replaced.
+
+    -l 200
+     uniqification lookback buffer size, defaults to 200 identifiers.
+     When an ID is changed in a uniqification, the Parent attributes
+     of subfeatures need to also be changed, and the lookback buffer
+     is consulted to find the mapping of old ID -> new ID.  If it's
+     not found, the script dies.  Only used with -U.
+
+    -f <file>
+     list of GFF3 files to operate on as input.  if given, this list
+     will be used in addition to STDIN and files on the command line
+
+    -e pattern
+     Features with IDs matching this pattern will have no subfeatures,
+     and thus can be safely excluded from the uniqifying lookback buffer.
+     Only used with -U.  Example: -e /GTH_.+_CDS_/
+
+    -i
+     if set, interleave ##sequence-region pragmas with the other gff3
+     lines such that sequence-region pragmas appear just before the
+     lines where that sequence is used.  Defaults to off, which means
+     that sequence-region statements go at the top of the file
+
+=cut
