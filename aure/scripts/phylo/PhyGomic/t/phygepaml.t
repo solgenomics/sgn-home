@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 29;
+use Test::More tests => 55;
 use Test::Exception;
 
 use FindBin;
@@ -75,14 +75,14 @@ throws_ok { PhyGePaml->new({ seqfams => 'fk2'}) } qr/ERROR: fk2/,
 ## Sequences
 
 my %seq = (
-    seq0 => 'ATGCGTGAGACTAGACAGTTGACCAGGTAGACGATGAGATCAGAGTCAGGGATTTTCAGGATTGA',
-    seq1 => 'ATGCGTGAGTTTAGACAGTTGACCAGGTAGACACGGAGATCAGAGTCAGGGAATTTCACGATTGA',
-    seq2 => 'ATGCGTGAGTTTAGACAGTAGACCAGGTAGACCCGGAGATAAGAGTCAGGGAATATCACGATTGA',
-    seq3 => 'ATGCGTGAGTTTAGACAGTAGACCAGGAAGACCCGGAGATAAGAGCCAGGGAATATCAGGACTGA',
-    seq4 => 'ATGCGGACGATGGCAGTTGGGTGGGTGCAGGACGAGAGAGAGCTGACGTGGACGATGGACGATGA',
-    seq5 => 'ATGCGGACGATGGCAGTTCCGTGGGTGCAGGACGAGTGAGAGCTGACGTGGACGCTGGACGATGA',
-    seq6 => 'ATGCGGACGTTGGCAGTTCCGTGCGTGCAGGACGAGTGCGAGCTGTCGTGGACGCCGGACGTTGA',
-    seq7 => 'ATGCGGACGTTGGCAGTTCCGTGCGAGCAGGACGAGTGCGAGCTGACGTGGACGGCGGACGTTGA',
+    seq0 => 'CTGATGGAGACTAGACAGTTGACCAGGTATACGATGAGATCAGAGTCAGGGATTTTCTGACCG',
+    seq1 => 'CTGATGGAGTTTAGACAGTTGACCAGGTATACACGGAGATCAGAGTCAGGGAATTTCTGACCG',
+    seq2 => 'CTGATGGAGTTTAGACAGTTGACCAGGTATACCCGGAGATCAGAGTCAGGGAATATCTGACCG',
+    seq3 => 'CTGATGGAGTTTAGACAGTTGACCAGGAATACCCGGAGATCAGAGCCAGGGAATATCTGACCG',
+    seq4 => 'ATGCGGACGATGGCAGTTGGGTGGGTGCAGGACGAGAGAGAGCTGACGTGGACGATGGACTGA',
+    seq5 => 'ATGCGGACGATGGCAGTTCCGTGGGTGCAGGACGAGTGAGAGCTGACGTGGACGCTGGACTGA',
+    seq6 => 'ATGCGGACGTTGGCAGTTCCGTGCGTGCAGGACGAGTGCGAGCTGTCGTGGACGCCGGACTGA',
+    seq7 => 'ATGCGGACGTTGGCAGTTCCGTGCGAGCAGGACGAGTGCGAGCTGACGTGGACGGCGGACTGA',
     seq8 => 'ATGCGACGTGACCGATGGACAAAAAAGCTAGGCACATCATTTACATTACGGGACAGGGATTGA',
     seq9 => 'ATGGGACGTGACCGATGGACAAATAAGCTAGGCACATCATTTACAATACGGCACAGGGAATGA',
     seq10 => 'ATGGGTCGTGACCGATGGACCAATAAGCTAGGCACATCATTTACACTACGGCAGAGGGAATGA'
@@ -189,9 +189,9 @@ throws_ok { $phygepaml0->set_strains('fake') } qr/ARG. ERROR: When arg/,
 
 my %cons = (
     cl_id1 => 
-    'ATGCGTGAGTTTAGACAGTTGACCAGGTAGACCCGGAGATCAGAGTCAGGGAATATCACGATTGA',
+    'ATGGAGTTTAGACAGTTGACCAGGTATACCCGGAGATCAGAGTCAGGGAATATCTGA',
     cl_id2 => 
-    'ATGCGGACGATGGCAGTTCCGTGGGTGCAGGACGAGTGCGAGCTGACGTGGACGCCGGACGTTGA',
+    'ATGCGGACGATGGCAGTTCCGTGGGTGCAGGACGAGTGCGAGCTGACGTGGACGCCGGACTGA',
     cl_id3 => 
     'ATGGGACGTGACCGATGGACAAATAAGCTAGGCACATCATTTACATTACGGCACAGGGAATGA',
     );
@@ -257,11 +257,143 @@ throws_ok { $phygepaml0->set_topotypes('fake1') } qr/ARG. ERROR: When arg/,
 throws_ok { $phygepaml0->set_topotypes({ test1 => 'fake2'}) } qr/ARG. ERROR: V/,
     'TESTING DIE ERROR when values supplied to set_topologies() are wrong';
 
+## Test get/set_codeml_results, TEST 30 to 33
+
+my %restest = (
+    id1 => Bio::Matrix::Generic->new(),
+    id2 => Bio::Matrix::Generic->new(),
+    );
+
+$phygepaml0->set_codeml_results(\%restest);
+
+is(scalar(keys %{$phygepaml0->get_codeml_results()}), 2, 
+    "Testing get/set_codeml_results, checking number of hash elements")
+    or diag("Looks like this has failed");
+
+throws_ok { $phygepaml0->set_codeml_results() } qr/ARG. ERROR: No arg. was/, 
+    'TESTING DIE ERROR when no arg. was supplied to set_codeml_results()';
+
+throws_ok { $phygepaml0->set_codeml_results('fake1') } qr/ARG. ERROR: When ar/, 
+    'TESTING DIE ERROR when arg. supplied to set_codeml_results() isnt HashRef';
+
+throws_ok { $phygepaml0->set_codeml_results({ test1 => 'fake2'}) } qr/ERROR: V/,
+    'TESTING DIE ERROR when values supplied to set_codeml_results() are wrong';
 
 
+######################
+## Analytical tools ##
+######################
+
+## Calculate the consensus sequence, TES 34 to 36
+
+my %exp_prot = (
+    cl_id1 => 'MEFRQLTRYTRRSESGNI*',
+    cl_id2 => 'MRTMAVPWVQDECELTWTPD*',
+    cl_id3 => 'MGRDRWTNKLGTSFTLRHRE*',
+    );
 
 
+my %proteins = $phygepaml0->translate_cds();
+foreach my $prot_id (sort keys %proteins) {
+    is ($proteins{$prot_id}->seq(), $exp_prot{$prot_id},
+	"Testing translate_cds, checking protein seq for $prot_id")
+	or diag("Looks like this has failed");
+}
 
+
+## Align member cds, TEST 37 and 38
+
+my %seqfam_cds_objs = $phygepaml0->align_member_cds();
+
+is(scalar(keys %seqfam_cds_objs), 3, 
+    "Testing align_member_cds, checking number of new seqfams")
+    or diag("Looks like this has failed");
+
+throws_ok { $phygepaml0->align_member_cds('fk') } qr/ERROR: Parameters used/, 
+    'TESTING DIE ERROR when parameters used for align_member_cds are not href';
+
+## Test set_seqfam_cds, TEST 39 to 41
+
+$phygepaml0->set_seqfam_cds();
+
+my %newseqfams = %{$phygepaml0->get_seqfams()};
+foreach my $sf_id (sort keys %newseqfams) {
+    is(ref($newseqfams{$sf_id}), 'Bio::Cluster::SequenceFamily',
+	"Testing set_seqfam_cds, checking ref. object for $sf_id")
+	or diag("Looks like this has failed");
+}
+
+## Test _cds_by_longest6frame, TEST 42 to 46
+
+my @cds0_data = PhyGePaml::_cds_by_longest6frame($seqs0{seq0}, 1);
+
+is(length($cds0_data[0]->seq()), length($seqs0{seq0}->seq()) - 6, 
+    "Testing _cds_by_longest6frame (forcing first met), cheking cds")
+    or diag("Looks like this has failed");
+
+throws_ok { PhyGePaml::_cds_by_longest6frame() } qr/ERROR: No seq./, 
+    'TESTING DIE ERROR when no arg. was used for _cds_by_longest6frame';
+
+throws_ok { PhyGePaml::_cds_by_longest6frame('fake') } qr/ERROR: Argument/, 
+    'TESTING DIE ERROR when arg. supplied _cds_by_longest6frame isnt Bio::Seq';
+
+throws_ok { PhyGePaml::_cds_by_longest6frame($seqs0{seq0}, 't') } qr/ERROR: W/, 
+    'TESTING DIE ERROR when arg. supplied _cds_by_longest6frame isn boolean';
+
+my @cds1_data = PhyGePaml::_cds_by_longest6frame($seqs0{seq0}, 0);
+
+is(length($cds1_data[0]->seq()), length($seqs0{seq0}->seq()) - 3, 
+    "Testing _cds_by_longest6frame (no first met), cheking cds")
+    or diag("Looks like this has failed");
+
+
+## Test predict_cds, TEST 47 to 51
+
+$phygepaml0->predict_cds({ method    => 'longest6frame', 
+			   arguments => { force_firstmet => 1}});
+
+my %cds1 = %{$phygepaml0->get_cds()};
+
+is($cds1{cl_id1}->seq(), 
+   'ATGGAGWYTAGACAGTTGACCAGGWATACVMKGAGATCAGAGYCAGGG', 
+   "Testing predict_cds, checking sequence of the consensus")
+    or diag("looks like this has failed");
+
+throws_ok { $phygepaml0->predict_cds() } qr/ERROR: No parameters/, 
+    'TESTING DIE ERROR when no parameters were used for predict_cds';
+
+throws_ok { $phygepaml0->predict_cds('fake') } qr/ERROR: Parameters spec/, 
+    'TESTING DIE ERROR when parameters used for predict_cds are not hashref';
+
+throws_ok { $phygepaml0->predict_cds({ fake => 1}) } qr/ERROR: fake/, 
+    'TESTING DIE ERROR when parameters used for predict_cds is not permitted';
+
+throws_ok { $phygepaml0->predict_cds({method => 1}) } qr/ERROR: method/, 
+    'TESTING DIE ERROR when par. used for predict_cds has no-permitted value';
+
+## Test run_codeml, TEST 52 to 55
+
+$phygepaml0->run_codeml();
+
+my %codeml = %{$phygepaml0->get_codeml_results()};
+
+my $mlmtx1 = $codeml{cl_id1};
+
+
+is(join(',', sort $mlmtx1->column_names()), 'seq0,seq1,seq2,seq3', 
+    "Testing run_codeml, checking column names for mlmatrix (cl_id1)")
+    or diag("Looks like this has failed");
+
+is($mlmtx1->entry('seq3', 'seq2')->{'dS'}, 0.0006,
+    "Testing run_codeml, checking dS value for mlmatrix (seq3,seq2)")
+    or diag("Looks like this has failed");
+
+is($mlmtx1->entry('seq3', 'seq3'), undef,
+    "Testing run_codeml, checking undef value for selfentry mlmatrix")
+    or diag("Looks like this has failed");
+
+throws_ok { $phygepaml0->run_codeml('fake') } qr/ERROR: fake/, 
+    'TESTING DIE ERROR when parameter supplied to run_codeml isnt a hashref.';
 
 
 ####

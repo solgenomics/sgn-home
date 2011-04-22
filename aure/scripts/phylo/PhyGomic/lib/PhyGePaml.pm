@@ -11,6 +11,9 @@ use Math::BigFloat;
 
 use File::Temp qw/ tempfile tempdir/;
 
+use Bio::Tools::Run::StandAloneBlast;
+use Bio::Tools::Run::Phylo::PAML::Codeml;
+
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
@@ -374,10 +377,610 @@ sub set_topotypes {
     }
 }
 
+=head2 get_codeml_results/set_codeml_results
+
+  Usage: my $codeml_results_href = $phygetopo->get_codeml_results();
+         $phygetopo->set_codeml_results($codeml_results_href); 
+
+  Desc: Get or set a hashref with key=ID and value=Bio::Matrix::Generic object
+        Bio::Matrix::Generic entries are hashrefs. with the followings keys:
+          S, N, kappa, dS, lnL, dN, omega, t
+
+  Ret: Get: a hashref with keys=ID and value=Bio::Matrix::Generic
+       Set: None
+
+  Args: Get: None
+        Set: a hashref with keys=ID and value=Bio::Matrix::Generic
+
+  Side_Effects: Die if no argument is used, if the argument is not a hashref
+                or if its values are not Bio::Matrix::Generic objects.
+
+  Example:  my $codeml_results_href = $phygetopo->get_codeml_results();
+            $phygetopo->set_codeml_results($codeml_results_href); 
+
+=cut
+
+sub get_codeml_results {
+    my $self = shift;
+    return $self->{codeml_results};
+}
+
+sub set_codeml_results {
+    my $self = shift;
+    my $codeml_res_href = shift;
+   
+    unless (defined $codeml_res_href) {
+	croak("ARG. ERROR: No arg. was used for set_codeml_results function");
+    }
+    else {
+	unless (ref($codeml_res_href) eq 'HASH') {
+	    croak("ARG. ERROR: When arg isnt a hashref for set_codeml_results");
+	}
+	else {
+	    my %hash = %{$codeml_res_href};
+	    my $obj = 'Bio::Matrix::Generic';
+	    foreach my $key (keys %hash) {
+		unless (ref($hash{$key}) eq $obj) {
+		    croak("ARG. ERROR: Values arent $obj set_codeml_results()");
+		}
+	    }
+	}
+	$self->{codeml_results} = $codeml_res_href;    
+    }
+}
+
 
 ##########################
 ## ANALYTICAL FUNCTIONS ##
 ##########################
+
+=head2 translate_cds
+
+  Usage: my %protein_objs = $phygepaml->translate_cds();
+
+  Desc: Translate the cds to protein with the ORF +1
+        
+  Ret: %protein_objs, a hash ref. with key=id and values=Bio::Seq object. 
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my %protein_objs = $phygepaml->translate_cds();
+
+=cut
+
+sub translate_cds {
+    my $self = shift;
+    
+    my %proteins = ();
+    my %cds = %{$self->get_cds()};
+
+    foreach my $cds_id (keys %cds) {
+	my $prot = $cds{$cds_id}->translate();
+	$proteins{$cds_id} = $prot;
+    }
+    return %proteins;
+}
+
+=head2 align_member_cds
+
+  Usage: my %seqfam_cds_objs = $phygepaml->align_member_cds();
+
+  Desc: Using cds as reference, align it with the consensus for the family
+        get the coordinates and modify the members of the family to get its cds.
+        
+  Ret: %seqfam_cds_objs, a hash ref. with key=id and 
+                                          values=Bio::Cluster::SequenceFamily
+
+  Args: None
+
+  Side_Effects: None
+
+  Example: my %seqfam_cds_objs = $phygepaml->align_member_cds();
+
+=cut
+
+sub align_member_cds {
+    my $self = shift;
+    my $params = shift;
+    
+    my @params;
+    if (defined $params) {
+	if (ref($params) ne 'HASH') {
+	    croak("ERROR: Parameters used for align_member_cds isnt a HASHREF");
+	}
+	else {
+	    foreach my $p (keys %{$params}) {
+		push @params, ($p, $params->{$p});
+	    }
+	}
+    }
+    else {
+	@params = ('-program', 'blastx', '-W', 2);
+    }
+
+    my %new_seqfam = ();
+
+    my %cds = %{$self->get_cds()};
+    my %seqfam = %{$self->get_seqfams()};
+
+    ## Create a blast factory to run bl2seq
+
+    my $blast_fc = Bio::Tools::Run::StandAloneBlast->new(@params);
+
+    ## First get the consensus for each of the sequences and compare with
+    ## the cds.
+
+    my $new_align;
+
+    foreach my $id (sort keys %seqfam) {
+	
+	my $aln = $seqfam{$id}->alignment();
+	if (defined $aln && defined $cds{$id}) {
+	    
+	    my $cons = $aln->consensus_iupac();
+
+	    ## If the cds ends in a stop codon remove it.
+
+	    my $pepseq = $cds{$id}->translate()->seq();
+	    if ($pepseq =~ m/\*$/i) {
+		$pepseq =~ s/\*$//;
+	    }
+
+	    my $cds_obj = Bio::Seq->new( -id => $id, -seq => $pepseq );
+	    my $cons_obj = Bio::Seq->new( -id => $id . '_cons', -seq => $cons );
+	    my $blast_rep = $blast_fc->bl2seq($cons_obj, $cds_obj);
+
+	    ## Take the first result
+
+	    my @blast_results = $blast_rep->next_result;
+	    my @blast_hits = $blast_results[0]->next_hit;
+	    if (scalar(@blast_hits) > 0) {
+		my @blast_hsps = $blast_hits[0]->next_hsp;
+		my $que_st = $blast_hsps[0]->start('query');
+		my $que_en = $blast_hsps[0]->end('query');
+
+		$new_align = $aln->slice($que_st, $que_en);
+	    }
+	}
+
+	## Second create a new family with the new alignment if it is defined
+
+	if (defined $new_align) {
+	    my $new_fam = Bio::Cluster::SequenceFamily->new(
+		-family_id => $id,
+		-members   => [$seqfam{$id}->get_members]
+		);
+	    $new_fam->alignment($new_align);
+	    $new_seqfam{$id} = $new_fam;
+	}
+    }
+
+    return %new_seqfam;
+}
+
+
+=head2 set_seqfam_cds
+
+  Usage: $phygepaml->set_seqfam_cds($bl2seq_parameters);
+
+  Desc: Replace the seqfams alignments with the alignments of the cds of the
+        members.
+        
+  Ret: None
+
+  Args: $bl2seq_parameters, a hashref. with the parameters to use for the
+                            alignment between the original consensus of the
+                            seqfam and the cds.
+
+  Side_Effects: Die if the $bl2seq_parameters isnt a hashref.
+
+  Example: $phygepaml->set_seqfam_cds();
+
+=cut
+
+sub set_seqfam_cds {
+    my $self = shift;
+    my $params = shift;
+
+    my %seqfam_cds_objs = $self->align_member_cds($params);
+    $self->set_seqfams(\%seqfam_cds_objs);
+}
+
+=head2 predict_cds
+
+  Usage: $phygepaml->predict_cds($parameters);
+
+  Desc: Predict the cds of an alignment using the consensus sequence.
+        Some methods are available: 
+         -longest6frame
+         -estscan
+         -proteinalign
+        
+  Ret: None
+
+  Args: $parameters, a hashref. with key=method/arguments and 
+                                     value=method_string/argument_href
+
+  Side_Effects: Die if some arguments are wrong
+
+  Example: $phygepaml->predict_cds($parameters);
+
+=cut
+
+sub predict_cds {
+    my $self = shift;
+    my $params = shift ||
+	croak("ERROR: No parameters were specified for predict_cds()");
+
+    ## Check variables
+
+    if (ref($params) ne 'HASH') {
+	croak("ERROR: Parameters specified for predict_cds is not a hashref.");
+    }
+    my %params = %{$params};
+    
+    my %perm_params = (
+	method    => '(longest6frame|estscan|proteinalign)',
+	arguments => {},
+	);
+
+    foreach my $pa (keys %params) {
+	unless (exists $perm_params{$pa}) {
+	    croak("ERROR: $pa isnt a permited parameter for predict_cds");
+	}
+	else {
+	    if (ref($perm_params{$pa})) {
+		if (ref($params{$pa}) ne ref($perm_params{$pa})) {
+		    croak("ERROR: $pa parameters has a non permited value.");
+		}
+	    }
+	    else {
+	    	if ($params{$pa} !~ m/^$perm_params{$pa}$/) {
+		    croak("ERROR: $pa parameters has a non permited value.");
+		}
+	    }
+	}
+    }
+    unless (exists $params{arguments}) {
+	$params{arguments} = {};
+    }
+
+    ## Now it will predict the cds for each contigs
+    
+    my %cds = ();
+
+    my %seqfams = %{$self->get_seqfams()};
+    foreach my $id (sort keys %seqfams) {
+	my $aln = $seqfams{$id}->alignment();
+	my $consensus = $aln->consensus_iupac();
+	my $conseq = Bio::Seq->new( -id       => $id, 
+				    -seq      => $consensus, 
+				    -alphabet => 'dna' );
+
+	my ($cds_seq, $frame, $start, $end);
+
+	if ($params{method} eq 'estscan') {  
+	   ## $cds_seq = _cds_by_estscan($conseq, $params{arguments});
+	}
+	elsif ($params{method} eq 'proteinalign') {   
+	    $cds_seq = _cds_by_proteinalign($conseq, 
+					    $params{arguments}->{blastdb});
+	}
+	else {  ## By default
+	    ($cds_seq, $frame, $start, $end) = _cds_by_longest6frame(
+		$conseq,
+		$params{arguments}->{force_firstmet},
+		); 
+	}
+
+	if (defined $cds_seq) {
+	    $cds{$id} = $cds_seq;
+	}
+    }
+    
+    $self->set_cds(\%cds);
+}
+
+=head2 _cds_by_longest6frame
+
+  Usage: my ($cds, $frame, $start, $end) = _cds_by_longest6frame($seq);
+
+  Desc: Calculate the 6 ORF for a sequences and get the longest sequence.
+        If more than one ORF have the longest sequence, it will take the
+        first (see translation function at Bio::PrimarySeqI for more details)
+        If force_firstmet is enabled it will get the longest6frame where appears
+        a first metionine.        
+
+  Ret: $cds, a Bio::Seq object with the predicted cds,
+       $frame, frame for the predicted cds
+       $start, start coord. for the predicted cds refering to the original seq.
+       $end, end coord. for predicted cds refering to the original seq.
+    
+  Args: $seq, a Bio::Seq object
+        $force_firstmet, a boolean.        
+
+  Side_Effects: Die if some arguments are wrong
+
+  Example: my $cds = _cds_by_longest6frame($seq);
+
+=cut
+
+sub _cds_by_longest6frame {
+    my $seq = shift ||
+	croak("ERROR: No seq. object was supplied to _cds_by_longest6frame");
+    my $firstmet = shift || 0;
+
+    if ($firstmet !~ m/^(1|0)$/) {
+	croak("ERROR: Wrong value for force_firstmet. It only can be boolean");
+    }
+
+    if (ref($seq) !~ m/Bio::\w*Seq/) {
+	croak("ERROR: Argument supplied to _cds_by_longest6frame isnt seq obj");
+    }
+
+    my $longest_orf;
+
+    ## Create the 6 ORFs (orf1 = +1, orf2 = +2, orf3 = +3, orf4 = -1, 
+    ## orf5 = -2, orf6 = -3)
+
+    my %frames = (
+	orf1 => 1,
+	orf2 => 2,
+	orf3 => 3,
+	orf4 => -1,
+	orf5 => -2,
+	orf6 => -3,
+	);
+
+    my %orfs = (
+	orf1 => $seq->translate(),
+	orf2 => $seq->translate( -frame => 1),
+	orf3 => $seq->translate( -frame => 2),
+	orf4 => $seq->revcom->translate(),
+	orf5 => $seq->revcom->translate( -frame => 1),
+	orf6 => $seq->revcom->translate( -frame => 2),
+	);
+
+    ## Evaluate fragments
+    
+    my %fragms = ();
+    my %fragms_seq = ();
+    
+    foreach my $orf (sort keys %orfs) {
+
+	my @frags = split(/\*/, $orfs{$orf}->seq());
+
+	## That will remove the stop codon from the sequence.
+
+	my $st = 1;
+	my $en = 0;
+
+	my $n = 0;
+	foreach my $fragm (@frags) {
+
+	    $n++;
+	    ## Find the first metionine
+
+	    my $met;
+	    if ($fragm =~ m/M/) {
+		$met = index($fragm, 'M');
+		$st += ($met + 1) * 3 - 3;
+		
+		$fragm = substr($fragm, $met);
+	    }
+	    
+	    my $len = length($fragm);
+	    $en = $st + $len * 3 - 1;
+
+	    if ($n < scalar(@frags)) { ## If it is not the last add the stop
+		$en += 3;
+	    }
+	    
+	    my $frag_id = $orf . ':' . $st . '-' . $en;
+	    if ($len > 0) {
+		$fragms{$frag_id} = $len;
+		$fragms_seq{$frag_id} = $fragm;
+	    }
+
+	    $st = $en + 3;
+	}
+    }
+
+    ## Order fragments
+
+    my @frags_ordered = ();
+    
+    my @frags = sort { $fragms{$b} <=> $fragms{$a} } keys %fragms;
+    if ($firstmet == 1) {
+	
+	foreach my $frag_id (@frags) {
+	    if ($fragms_seq{$frag_id} =~ m/^M/) {
+		push @frags_ordered, $frag_id;
+	    }
+	}
+    }
+    else {
+	@frags_ordered = @frags;
+    }
+
+    ## Get the longest fragment and return the data
+
+    my $longest = $frags_ordered[0];
+    
+    if (defined $longest && $longest =~ m/(orf\d+):(\d+)-(\d+)/) {
+	my $orf_sel = $1;
+	my $start = $2;
+	my $end = $3;
+	my $cds;
+    
+	if ($frames{$orf_sel} > 0) {
+	    $cds = $seq->trunc($start, $end);
+	}
+	else {
+	    $cds = $seq->revcom()->trunc($start, $end);
+	}
+    
+	return ($cds, $frames{$orf_sel}, $start, $end);
+    }
+    else {
+	return ();
+    }
+}
+
+=head2 _cds_by_proteinalign
+
+  Usage: my $cds = _cds_by_proteinalign($seq, $protein_blast_database);
+
+  Desc: Calculate the CDS of a sequence based in the match with a know protein.
+        Add N to the cds sequence when some gaps are finded in the match.
+
+  Ret: $cds, a Bio::Seq object with the predicted cds,
+    
+  Args: $seq, a Bio::Seq object,
+        $protein_blast_database, a protein blast database name.
+
+  Side_Effects: Die if some arguments are wrong
+
+  Example: my $cds = _cds_by_proteinalign($seq);
+
+=cut
+
+sub _cds_by_proteinalign {
+    my $seq = shift ||
+	croak("ERROR: No seq. object was supplied to _cds_by_proteinalign");
+    my $protein_blastdb = shift ||
+	croak("ERROR: No protein blastdb was supplied to _cds_by_proteinalign");
+
+    if (ref($seq) !~ m/Bio::\w*Seq/) {
+	croak("ERROR: Argument supplied to _cds_by_proteinalign isnt seq obj");
+    }
+
+    my $cds;
+    
+    return $cds;
+}
+
+
+##################
+### PAML TOOLS ###
+##################
+
+=head2 run_codeml
+
+  Usage: $phygepaml->run_codeml($parameters_href);
+
+  Desc: Run codeml program (from PAML) over the aligments of the phygepaml
+        object.
+
+  Ret: None.
+    
+  Args: $parameters_href, a hashref with key=parameter, value=value to run 
+        codeml (see Bio::Tools::Run::Phylo::PAML::Baseml for more details)
+
+  Side_Effects: Die if some arguments are wrong
+
+  Example: $phygepaml->run_codeml($parameters_href);
+
+=cut
+
+sub run_codeml {
+    my $self = shift;
+    my $params = shift;
+
+    if (defined $params && ref($params) ne 'HASH') {
+	croak("ERROR: $params supplied to run_codeml isnt a hashref.");
+    }
+
+    my %seqfams = %{$self->get_seqfams()};
+    my %paml = ();
+
+
+    foreach my $seqfam_id (sort keys %seqfams) {
+	
+	my $aln = $seqfams{$seqfam_id}->alignment();
+	my $tree = $seqfams{$seqfam_id}->tree();
+
+	## PAML give problems with the stop codon, so it will check first
+	## if there are any problems with that
+
+	my $stopcodon = 0;
+	foreach my $seqmem ($aln->each_seq()) {
+	    
+	    my $pepseq = $seqmem->translate()->seq();
+	    if ($pepseq =~ m/\*/) {		
+		$stopcodon = 1;
+	    }	    
+	}
+	
+	if (defined $aln && $stopcodon == 0) {
+
+	    my $codeml = Bio::Tools::Run::Phylo::PAML::Codeml->new();
+
+	    ## Pass the parameters
+
+	    foreach my $par (keys %{$params}) {
+		$codeml->set_parameter($par, $params->{$par});
+	    }
+
+	    ## To have the right parser verbose must to be 0, 
+	    ## So this line will overwrite that
+
+	    $codeml->set_parameter('verbose', 0);
+	    $codeml->alignment($aln);
+
+	    my ($rc, $parser) = $codeml->run();
+
+	    if (defined $rc && $rc == 1) { ## Success
+		my $result = $parser->next_result;
+		my $MLmatrix = $result->get_MLmatrix();
+
+		## The sequences in the alignment are in the same order than
+		## in the input/output PAML files
+
+		my @members = $aln->each_seq();
+		my @seqnames = ();
+
+		foreach my $seq (@members) {
+		    my $seqid = $seq->display_id();
+		    push @seqnames, $seqid;
+		}
+
+		## The matrix is symmetric, but it is incomplete
+		
+		my $i = 0;
+		foreach my $iname (@seqnames) {
+		    
+		    my $j = 0;
+		    foreach my $jname (@seqnames) {
+		    
+			unless (defined $MLmatrix->[$i]->[$j]) {
+			    $MLmatrix->[$i]->[$j] = $MLmatrix->[$j]->[$i];
+			}
+			$j++;
+		    }
+		    $i++;
+		}
+       
+		my $mtx = Bio::Matrix::Generic->new(
+		    -values   => $MLmatrix,
+		    -rownames => \@seqnames,
+		    -colnames => \@seqnames,
+		    -matrix_name => $seqfam_id,
+		    );
+
+		$paml{$seqfam_id} = $mtx;
+	    }
+	}
+    }
+    
+    ## Finally it will set the results into the object
+
+    $self->set_codeml_results(\%paml);
+}
+
+
 
 
 
