@@ -128,10 +128,11 @@ sub new {
     my $self = bless( {}, $class );                         
     
     my %permargs = ( 
-	seqfams     => {},
-	strains     => {},
-	cds         => {},
-	topotypes   => {},
+	seqfams        => {},
+	strains        => {},
+	cds            => {},
+	topotypes      => {},
+	codeml_results => {},
 	);
 
     ## Check argument
@@ -170,6 +171,7 @@ sub new {
     $self->set_strains($args_href->{strains});
     $self->set_cds($args_href->{cds});
     $self->set_topotypes($args_href->{topotypes});
+    $self->set_codeml_results($args_href->{codeml_results});
     
     return $self;
 }
@@ -980,8 +982,122 @@ sub run_codeml {
     $self->set_codeml_results(\%paml);
 }
 
+=head2 out_codeml
+
+  Usage: $phygepaml->out_codeml($filename, $header);
+
+  Desc: Produce an output file with the following columns:
+        -f1:  cluster_id
+        -f2:  topology_id
+        -f3:  pair_str1
+        -f4:  pair_str2
+        -f5:  pair_id1
+        -f6:  pair_id2
+        -f7:  N
+        -f8:  S
+        -f9:  dN
+        -f10: dS
+        -f11: omega
+        -f12: kappa
+        -f13: lnL
+        -f14: t
+
+  Ret: None.
+    
+  Args: $filename, a filename to print the data
+        $header, aboolean to print/no print a header
+
+  Side_Effects: Die no filename is supplied
+
+  Example: $phygepaml->out_codeml($filename);
+
+=cut
+
+sub out_codeml {
+    my $self = shift;
+    my $filename = shift ||
+	croak("ERROR: No filename was supplied to out_codeml function.");
+
+    my $header = shift || 1;
+    if ($header !~ m/0/) { ## Overwrite different things than a boolean
+	$header = 1;
+    }
 
 
+    my %seqfams = %{$self->get_seqfams()};
+    my %strains = %{$self->get_strains()};
+    my %topologies = %{$self->get_topotypes()};
+    my %codeml = %{$self->get_codeml_results()};
+
+    ## convert topologies
+
+    my %fams2topo = ();
+    foreach my $topology_id (sort keys %topologies) {
+	my @members = @{$topologies{$topology_id}->get_members()};
+	foreach my $members (@members) {
+	    $fams2topo{$members->id()} = $topology_id;
+ 	}
+    }
+
+    ## open the file to print the data
+
+    open my $ofh, '>', $filename;
+    
+    if ($header == 1) {
+	print $ofh "CL_ID\tTOPOLOGY_ID\tSTR1\tSTR2\tSEQ1\tSEQ2\tN\tS\tdN\tdS\t";
+	print $ofh "OMEGA\tKAPPA\tLnL\tT\n";
+    }
+
+    foreach my $seqfam_id (sort keys %seqfams) {
+
+	my $topo_id = $fams2topo{$seqfam_id} || 'NA';	
+	
+	## Get the members
+    
+	my $mtx = $codeml{$seqfam_id};
+
+	if (defined $mtx) {
+	
+	    my @names = $mtx->column_names();
+	    
+	    ## It will order the data by strains
+
+	    my %bystr = ();
+	    foreach my $name (@names) {
+		$bystr{$name} = $strains{$name};
+	    }
+	    my @ord_names = sort {$bystr{$a} cmp $bystr{$b}} keys %bystr;
+
+	    my %outdata = ();  ## To remove the redundancy
+	    foreach my $oname1 (@ord_names) {
+		foreach my $oname2 (@ord_names) {
+		    
+		    if ($oname1 ne $oname2) {
+
+			my $id = join(',', sort ($oname1, $oname2));
+			unless (exists $outdata{$id}) {
+			    print $ofh "$seqfam_id\t$topo_id\t";
+			    print $ofh "$strains{$oname1}\t$strains{$oname2}\t";
+			    print $ofh "$oname1\t$oname2\t";
+			    
+			    my %entry = %{$mtx->entry($oname1, $oname2)};
+			    print $ofh "$entry{N}\t$entry{S}\t";
+			    print $ofh "$entry{dN}\t$entry{dS}\t";
+			    print $ofh "$entry{omega}\t$entry{kappa}\t";
+			    print $ofh "$entry{lnL}\t$entry{t}\n";
+			    $outdata{$id} = 1;
+			}		    
+		    }
+		}
+	    }
+
+	}
+	else {
+	    print $ofh "$seqfam_id\t$topo_id\t";
+	    print $ofh "NA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\n";
+	}
+    }
+}
 
 
 ####

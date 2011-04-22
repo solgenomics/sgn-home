@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 55;
+use Test::More tests => 56;
 use Test::Exception;
 
 use FindBin;
@@ -394,6 +394,11 @@ is($mlmtx1->entry('seq3', 'seq3'), undef,
 
 throws_ok { $phygepaml0->run_codeml('fake') } qr/ERROR: fake/, 
     'TESTING DIE ERROR when parameter supplied to run_codeml isnt a hashref.';
+
+## TEST 56
+
+throws_ok { $phygepaml0->out_codeml() } qr /ERROR: No filename/,
+    'TESTING DIE ERROR when no filename is supplied to out_codeml';
 
 
 ####
