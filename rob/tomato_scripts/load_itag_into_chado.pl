@@ -42,6 +42,7 @@ Bio::Chado::Loader::FixGMODBulkGFF3Polypeptides->new(
     'mrna_name_like' => 'Solyc%',
     );
 
+
 # load the genomic sequences
 my $fasta_l = Bio::Chado::Loader::FASTA->new(
     'organism_name' => 'Solanum _ Solanum lycopersicum',
@@ -52,7 +53,7 @@ my $fasta_l = Bio::Chado::Loader::FASTA->new(
     'db_user' => $dbuser,
     'db_pass' => $dbpass,
     );
-$fasta_l->execute(
+$fasta_l->run(
     glob('ITAG*_genomic.fasta'),
     );
 

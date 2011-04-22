@@ -1,8 +1,4 @@
 #!/usr/bin/perl
-
-eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
-    if 0; # not running under some shell
-
 use strict;
 use warnings;
 
@@ -16,7 +12,9 @@ use Pod::Usage;
 #use Data::Dumper;
 
 our %opt;
-getopts('',\%opt) or pod2usage(1);
+getopts('v',\%opt) or pod2usage(1);
+my $invert = $opt{v} ? 1 : 0;
+
 my $pat = shift @ARGV;
 $pat = qr/$pat/;
 
@@ -25,11 +23,11 @@ $/ = "\n>";
 
 my $first = <>;
 chomp $first;
-print "$first\n" if $first =~ $pat;
+print "$first\n" if $first =~ $pat xor $invert;
 
 while(my $seq = <>) {
   chomp $seq;
-  print ">$seq\n" if $seq =~ $pat;
+  print ">$seq\n" if $seq =~ $pat xor $invert;
 }
 
 
@@ -55,7 +53,7 @@ seq in your input matches.
 
   Options:
 
-    none yet
+    -v invert match, show seqs that do NOT match
 
 =head1 MAINTAINER
 
