@@ -172,6 +172,7 @@ sub new {
     $self->set_cds($args_href->{cds});
     $self->set_topotypes($args_href->{topotypes});
     $self->set_codeml_results($args_href->{codeml_results});
+    $self->disable_reportstatus();
     
     return $self;
 }
@@ -430,6 +431,114 @@ sub set_codeml_results {
 	$self->{codeml_results} = $codeml_res_href;    
     }
 }
+
+################
+### SWITCHES ###
+################
+
+=head2 enable/disable_reportstatus
+
+  Usage: $phygepaml->enable_reportstatus();
+         $phygepaml->disable_reportstatus();
+
+  Desc: Enable/disable the switch report status
+
+  Ret: none
+ 
+  Args: None
+ 
+  Side_Effects: None
+ 
+  Example: $phygepaml->enable_reportstatus();
+           $phygepaml->disable_reportstatus();
+
+=cut 
+
+sub enable_reportstatus {
+    my $self = shift;
+    $self->{reportstatus} = 1;
+}
+
+sub disable_reportstatus {
+    my $self = shift;
+    $self->{reportstatus} = 0;
+}
+
+=head2 is_on_reportstatus
+
+  Usage: my $boolean = $phygepaml->is_on_reportstatus();
+
+  Desc: Get 0 or 1 for reportstatus switch
+
+  Ret: a boolean, 0 or 1.
+ 
+  Args: None
+ 
+  Side_Effects: None
+ 
+  Example: if ($phygepaml->is_on_reportstatus() ) {
+               print STDERR "REPORT";
+           }
+
+=cut 
+
+sub is_on_reportstatus {
+    my $self = shift;
+    return $self->{reportstatus};
+}
+
+
+=head2 print_run_status
+
+  Usage: print_run_status($progress, $total, $message, $id);
+
+  Desc: Print as STDERR the percentage of the process run
+
+  Ret: none
+
+  Args: $progress, a scalar, an integer with the progress
+        $total, a scalar, a integer with the total
+        $message to print before the percentage
+        $id, to print after the percetage
+
+  Side_Effects: Die if 1st and 2nd arguments are undefined or are not integers
+                Print as default message: Percentage of the file parsed: ";
+
+  Example: print_run_status($progress, $total, $message);
+
+=cut
+
+sub print_run_status {
+    my $a = shift;
+
+    unless (defined $a) {
+        croak("ERROR: 1st argument is not defined for print_parsing_status()");
+    }
+    my $z = shift;
+    
+    unless (defined $z) {
+        croak("ERROR: 2nd argument is not defined for print_parsing_status()");
+    }
+        
+    my $message = shift ||
+        "Percentage of the file parsed:";
+
+    my $id = shift || 'NA';
+
+    unless ($a =~ m/^\d+$/) {
+        croak("ERROR: 1st argument is not an int. for print_parsing_status()");
+    }
+    unless ($z =~ m/^\d+$/) {
+        croak("ERROR: 2nd argument is not an int. for print_parsing_status()");
+    }
+    
+    my $perc = $a * 100 / $z;
+    my $perc_obj = Math::BigFloat->new($perc);
+    my $perc_formated = $perc_obj->bfround(-2);
+
+    print STDERR "\t$message $perc_formated %    \t(processing:$id)       \r";
+}
+
 
 
 ##########################
@@ -897,12 +1006,19 @@ sub run_codeml {
 
     my %seqfams = %{$self->get_seqfams()};
     my %paml = ();
+    my $t = scalar(%seqfams);
+    my $a = 0;
 
 
     foreach my $seqfam_id (sort keys %seqfams) {
 	
 	my $aln = $seqfams{$seqfam_id}->alignment();
 	my $tree = $seqfams{$seqfam_id}->tree();
+
+	$a++;
+	if ($self->is_on_reportstatus) {
+	    print_run_status($a, $t, "\t\tPerc. of codeml run:", $seqfam_id );
+	}
 
 	## PAML give problems with the stop codon, so it will check first
 	## if there are any problems with that

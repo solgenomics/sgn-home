@@ -2241,11 +2241,14 @@ $MTFH->setpos(1);
 my $midroot_pairs = 0;
 while(<$MTFH>) {
     chomp($_);
-    if (exists $mid_trees{$_}) {
-	$midroot_pairs++;
-    }
-    else {
-	my $test = join("\n", keys %mid_trees);
+    my @trees = split(/;/, $_);
+    foreach my $treecheck (sort @trees) {
+	if (exists $mid_trees{$treecheck . ';'}) {
+	    $midroot_pairs++;
+	}
+	else {
+	    my $test = join("\n", keys %mid_trees);
+	}
     }
 }
 

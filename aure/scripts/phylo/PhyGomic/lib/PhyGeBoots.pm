@@ -1076,8 +1076,10 @@ sub run_njtrees {
 
 	    my @nodes = $tree->get_nodes();
 	    foreach my $node (@nodes) {
-		my $old_node_id = $node->id();
-		$node->id($equivnames{$old_node_id});
+		if (defined $node->id()) {
+		    my $old_node_id = $node->id();
+		    $node->id($equivnames{$old_node_id});
+		}
 	    }
 
 	    push @trees, $tree;	
@@ -1199,7 +1201,7 @@ sub run_mltrees {
 
     foreach my $align (@aligns) {
 
-	my $seqn = $align->no_sequences(); ## to skip dnaml runnings when < 3
+	my $seqn = $align->num_sequences(); ## to skip dnaml runnings when < 3
 
 	## Replace the names for indexes (shorter to be used with phylip)
 

@@ -4716,8 +4716,10 @@ sub run_njtrees {
 
 		my @nodes = $tree->get_nodes();
 		foreach my $node (@nodes) {
-		    my $old_node_id = $node->id();
-		    $node->id($equivnames{$old_node_id});
+		    if (defined $node->id()) {
+			my $old_node_id = $node->id();
+			$node->id($equivnames{$old_node_id});
+		    }
 		}
 
 		$seqfam->tree($tree);
@@ -4839,7 +4841,7 @@ sub run_mltrees {
 	
 	if (defined $align) {
 
-	    my $seqn = $align->no_sequences();
+	    my $seqn = $align->num_sequences();
 
 	    my %seqids = ();
 	    my %revseqids = ();

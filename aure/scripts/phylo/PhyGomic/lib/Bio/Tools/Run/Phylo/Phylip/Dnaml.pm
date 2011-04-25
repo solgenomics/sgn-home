@@ -531,7 +531,7 @@ sub _setinput {
 	## First check how many sequences has the alignment
 	## With 2 or less it can give problems
 
-	my $members_num = $input->no_sequences();
+	my $members_num = $input->num_sequences();
 	
 	if ($members_num > 2) { 
 

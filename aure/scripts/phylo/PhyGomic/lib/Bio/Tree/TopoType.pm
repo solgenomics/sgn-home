@@ -914,10 +914,15 @@ sub _tree2newick {
 	croak("ARG. ERROR: Tree supplied to _tree2newick() isnt Tree Obj");
     }
      
-    my @data = Bio::TreeIO::newick::_write_tree_Helper($tree->get_root_node);
-    my $string = join(',', @data);
+    my $root = $tree->get_root_node();
+    if (defined $root) {
+	my @desc = $root->each_Descendent;
+	my $newick =  Bio::TreeIO::newick->new();
+	my @data = $newick->_write_tree_Helper($root);
+	my $string = join(',', @data);
 
-    return $string;
+	return $string;
+    }
 }
 
 =head2 get_topology_as_newick
