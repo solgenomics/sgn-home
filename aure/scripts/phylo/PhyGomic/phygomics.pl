@@ -932,6 +932,8 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
     }
     
     ## Now it will continue, only if $cls_n > 0
+    
+    my %topotypes;
 
     if ($cls_n > 0) {
     
@@ -1193,7 +1195,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    }
 	}
 
-	my %topotypes = $phygetopo->run_topoanalysis($topo_args);
+	%topotypes = $phygetopo->run_topoanalysis($topo_args);
 	
 	$topostats{$phname} = $phygetopo;
 
@@ -1231,6 +1233,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 
     my %seqfams = %{$paphyg->get_clusters()};
     my %strains = %{$paphyg->get_strains()};
+    my %alleles_strains = ();
 
     if (defined $conf{path}->{$path_idx}->{allele_identification} ) {
 
@@ -1300,6 +1303,7 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 				
 				$allele_n++;
 				print $alfh "$clid\t$mb_id\t$alleles{$mb_id}\n";
+				$alleles_strains{$mb_id} = $alleles{$mb_id};
 			    }
 			}
 		    }
@@ -1324,6 +1328,90 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	print STDERR "\t\tNo allele_identification arguments were used.\n";
 	print STDERR "\t\tSKIPPING ALLELE IDENTIFICATION\n\n";
     }
+
+    ## 2.12) Run codeml for dN/dS  ####################################
+
+    print STDERR "\t\t2.12) RUN CODEML ANALYSIS (" .  date() . "):\n\n";
+
+    if (defined $conf{path}->{$path_idx}->{codeml_analysis} ) {
+
+	my %codeml = %{$conf{path}->{$path_idx}->{codeml_analysis}};
+
+	## It will replace the strains with the alleles when in the 
+	## cases that they have been identified
+
+	my %str_al = ();
+	my %str = %{$paphyg->get_strains()};
+
+	foreach my $member_id (sort keys %str) {
+	    if (defined $alleles_strains{$member_id}) {
+		$str_al{$member_id} = $alleles_strains{$member_id};
+	    }
+	    else {
+		$str_al{$member_id} = $str{$member_id};
+	    }
+	}
+
+	## Create the PhyGePaml object
+
+	my $phygecodeml = PhyGePaml->new({ 
+	    seqfams   => $paphyg->get_clusters(),
+	    strains   => \%str_al,
+	    topotypes => \%topotypes
+					 });
+
+	if (defined $opt_S) {
+	    $phygecodeml->enable_reportstatus();
+	}
+
+	## Now it will feed the cds depending of the source
+
+	if ($codeml{source_cds} eq 'file') {  ## It will get the CDS from file
+	
+	    if (defined $codeml{file_cds}) {
+	    
+		## Parse the file
+		
+		my %cds = ();
+		my $cds_path = File::Spec->catfile($indir, $codeml{file_cds});
+	    
+		my $cdsio = Bio::SeqIO->new( -file => $cds_path, 
+					     -format => 'fasta' );
+
+		while( my $cdsseq = $cdsio->next_seq() ) {
+		
+		    $cds{$cdsseq->display_id()} = $cdsseq;
+		}
+
+		## Set the cds
+
+		$phygecodeml->set_cds(\%cds);
+	    }
+	    else {
+		die("ERROR: No cds_file was used for source_cds=file.\n\n");
+	    }
+	}
+	else {  ## It will calculate the CDS using longest6frame
+	    
+	    $phygecodeml->predict_cds({ method => 'longest6frame' });
+	}
+
+	$phygecodeml->run_codeml($codeml{codeml_parameters});
+
+	## Print the message of how many codeml has been run
+
+	my %phygecml = %{$phygecodeml->get_codeml()};
+	my $codeml_n = scalar(%phygecml);
+
+	print STDERR "\n\n\t\t\t\t$codeml_n have been obtained\n\n";
+
+	my $codemldir = $pathoutdir . '/12_codeml_analysis';
+	mkdir($codemldir);
+	my $codemlfile = File::Spec->catfile($codemldir, 'codeml_analysis.tab');
+
+	$phygecodeml->out_codeml($codemlfile);
+    }
+
 
     print STDERR "\t$path_idx ==> END. PATH=$phname (" .  date() . "):\n\n";
     print STDERR "\t\t\t\t<======+======>\n\n\n";
