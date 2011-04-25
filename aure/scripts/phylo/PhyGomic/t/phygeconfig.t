@@ -30,7 +30,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 178;
+use Test::More tests => 186;
 use Test::Exception;
 
 use File::Temp qw/ tempfile tempdir /;
@@ -269,6 +269,13 @@ my %exp_data = (
 		filter_length           => 100,
 		filter_identity         => 75,
 	    },
+	    codeml_analysis => {
+		source_cds        => 'file',
+                file_cds          => 'MyCDS.fasta',
+		codeml_parameters => {
+		    model         => 3,
+		},
+	    },
 	},
     },
     );
@@ -318,7 +325,10 @@ foreach my $par1lv (sort keys %exp_data) {
 		    
 		    if ($par3lv eq 'alignment' && $par4lv eq 'parameters' ||
 			$par3lv eq 'tree' && $par4lv eq 'nj_parameters'   ||
-			$par3lv eq 'tree' && $par4lv eq 'ml_parameters') {
+			$par3lv eq 'tree' && $par4lv eq 'ml_parameters'   ||
+			$par3lv eq 'codeml_analysis' && 
+			$par4lv eq 'codeml_parameters'
+			) {
 		
 			my %expdata5lv = %{$expdata4lv{$par4lv}};
 			foreach my $par5lv (sort keys %expdata5lv) {

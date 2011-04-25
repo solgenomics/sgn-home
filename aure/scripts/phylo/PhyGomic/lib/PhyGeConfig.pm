@@ -299,6 +299,15 @@ print $cfh qq/
 \t\tfilter_identity\t\t=\t## Optional, (>) example: '75'
 \t<\/allele_identification>
 
+\t<codeml_analysis>\t\t\t## Optional section
+\t\tsource_cds\t\t=\t## Optional, example: 'file'
+\t\tfile_cds\t\t=\t## Optional, example: 'MyCDS.fasta'
+\t\t<codeml_parameters>\t\t## Optional parameters to pass to codeml
+\t\t\t\t\t\t## example:
+\t\t\t\t\t\t##   model  = 3
+\t\t<\/codeml_parameters>
+\t<\/codeml_analysis>
+
 <\/path $n>
 
 /;
@@ -540,6 +549,14 @@ sub _confields {
 		filter_length   => \%fre_opt,
                 filter_identity => \%fre_opt,
 	    },
+	    codeml_analysis => {
+		source_cds        => \%wrd_opt,
+                file_cds          => { regexp => '.+',  
+				       request => 'optional', 
+				       default => undef },
+		codeml_parameters => { regexp  => undef,
+				       request => 'optional' },
+	    },
 	},
 	);
     return %fields;
@@ -665,7 +682,7 @@ sub read_conf_file {
 			    
 			    my $val = $conf{$lv1}->{$p}->{$lv2}->{$lv3};
 			    if ($val !~ m/^$regexp$/) {
-				$err .= "path $p>$lv2>$lv3";
+				$err .= "path $p>$lv2>$lv3 (value=$val)";
 				$err .=" doesnt have permitted value ($regexp)";
 				croak($err);
 			    }
