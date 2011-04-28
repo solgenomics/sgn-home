@@ -1006,7 +1006,7 @@ sub run_codeml {
 
     my %seqfams = %{$self->get_seqfams()};
     my %paml = ();
-    my $t = scalar(%seqfams);
+    my $t = scalar(keys %seqfams);
     my $a = 0;
 
 
@@ -1089,6 +1089,10 @@ sub run_codeml {
 		    );
 
 		$paml{$seqfam_id} = $mtx;
+	    }
+	    else {
+		my $error = $codeml->error_string();
+		warn("\ncodeml fails:\n$error\n");
 	    }
 	}
     }
