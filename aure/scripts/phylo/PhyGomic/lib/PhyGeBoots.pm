@@ -1472,7 +1472,12 @@ sub run_consensus {
 	    foreach my $node (@nodes) {
 		my $br_length = $node->branch_length();
 		if (defined $br_length) {
-		    $node->branch_length($br_length * 100 / $tree_n);
+
+		    ## In the last bioperl version (1.6.900) the values are 
+		    ## normalized to 1
+		    ## $node->branch_length($br_length * 100 / $tree_n);
+		
+		    $node->branch_length($br_length * 100);
 		}
 	    }
 	}

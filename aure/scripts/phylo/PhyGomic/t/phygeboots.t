@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 77;
+use Test::More tests => 78;
 use Test::Exception;
 
 use FindBin;
@@ -494,18 +494,26 @@ is(scalar($consensus1->get_leaf_nodes()), $member_n1,
 my $consensus2 = $phygeb1->run_consensus({ quiet => 1, normalized => 1});
 
 my $wrong_norm = 0;
+my $node_count = 0;
+
 my @nodes = $consensus2->get_nodes();
 foreach my $node (@nodes) {
     if (defined $node->branch_length()) {
-	if ($node->branch_length() > 100) {
+	$node_count++;
+	if ($node->branch_length() > 100 || $node->branch_length() < 1) {
 	    $wrong_norm++;
 	}
     }
 }
 
 is($wrong_norm, 0, 
-    "Testing run_consensus (normalized), checking that branches < 100")
+    "Testing run_consensus (normalized), checking that branches > 10 & < 100")
     or diag("Looks like this has failed");
+
+is($node_count > 0, 1, 
+    "Testing run_consensus (normalized), checking node count != 0")
+    or diag("Looks like this has failed");
+
 
 throws_ok { $phygeb1->run_consensus(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_consensus() arg. supplied isnt a HASHREF';
