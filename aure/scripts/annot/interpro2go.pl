@@ -9,7 +9,7 @@
 
 =head1 SYPNOSIS
 
- interpro2go.pl [-h] -i <input_file> -o <output_file> -D
+ interpro2go.pl [-h] -i <input_file> -o <output_file> -D -R
                      [-m <filter_by_method>]
                      [-l <filter_by_length_domain_match>]
                      [-e <filter_by_evalue>]
@@ -47,6 +47,10 @@ B<filter_by_evalue>            evalue used as filtering cutoff
 
 B<print_go_descriptions>       add go description to the go terms
 
+=item -R
+
+B<R_GO_format>                 output compatible with R GO tables
+
 =item -h
 
 B<help>                        print the help
@@ -62,6 +66,10 @@ B<help>                        print the help
   of GO terms (<ID><tab><GOID1><;><GOID2><;>...).
 
   If -D option is used it will print: <ID><tab><GODescrip><space><GOID1><;>...
+
+  If -R option is used, it will ignore -D option. The format will be:
+  <ID><tab><GO_id><tab><evidence><tab><ontology>
+  (evidence always will be ISM, Inferred from Sequence Model)
 
 =cut
 
@@ -87,9 +95,9 @@ use Getopt::Std;
 use Math::BigFloat;
 
 
-our ($opt_i, $opt_o, $opt_m, $opt_l, $opt_e, $opt_D, $opt_h);
-getopts("i:o:m:l:e:Dh");
-if (!$opt_i && !$opt_o && !$opt_m && !$opt_l && !$opt_e && !$opt_D && !$opt_h) {
+our ($opt_i, $opt_o, $opt_m, $opt_l, $opt_e, $opt_D, $opt_R, $opt_h);
+getopts("i:o:m:l:e:DRh");
+if (!$opt_i && !$opt_o && !$opt_m && !$opt_l && !$opt_e && !$opt_D && !$opt_R) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
@@ -232,12 +240,20 @@ print STDERR "\n\nPrinting output file ($date)\n\n";
 
 open my $ofh, '>', $output;
 
+if ($opt_R) {
+    print $ofh "gene_id\tgo_id\tEvidence\tOntology\n";
+}
+
 foreach my $id (sort {$id_idx{$a} <=> $id_idx{$b}} keys %id_idx) {
     if (defined $golist{$id}) {
 	
 	my @ord_types = ( 'Biological Process', 
 			  'Molecular Function', 
 			  'Cellular Component' );
+	my %ontology = (
+	    'Biological Process' => 'BP', 
+	    'Molecular Function' => 'MF', 
+	    'Cellular Component' => 'CC' );
 
 	my @list = ();
 
@@ -247,17 +263,24 @@ foreach my $id (sort {$id_idx{$a} <=> $id_idx{$b}} keys %id_idx) {
 		
 		my %goclass = %{$golist{$id}->{$type}};
 		foreach my $go (keys %goclass) {
-		    if ($opt_D) {
-			push @list, "$goclass{$go} $go";
+		    if ($opt_R) {
+			print $ofh "$id\t$go\tISM\t$ontology{$type}\n"
 		    }
 		    else {
-			push @list, "$go";
+			if ($opt_D) {
+			    push @list, "$goclass{$go} $go";
+			}
+			else {
+			    push @list, "$go";
+			}
 		    }
 		}
 	    }
 	}
-	my $list_line = join('; ', @list);
-	print $ofh "$id\t$list_line\n";
+	unless ($opt_R) {
+	    my $list_line = join('; ', @list);
+	    print $ofh "$id\t$list_line\n";
+	}
     }
 }
 
@@ -295,6 +318,10 @@ sub help {
         If -D option is used it will print: 
         <ID><tab><GODescrip><space><GOID1><;>...
 
+         If -R option is used, it will ignore -D option. The format will be:
+         <ID><tab><GO_id><tab><evidence><tab><ontology>
+         (evidence always will be 'ISM', Inferred from Sequence Model)
+
     Usage:
   
       interpro2go.pl [-h] -i <input_file> -o <output_file> -D
@@ -314,6 +341,7 @@ sub help {
      -l <filter_by_length_match>     length of the domain match to use as filter
      -e <filter_by_evalue>           evalue used as filtering cutoff
      -D <print_go_descriptions>      add go description to the go terms
+     -R <R_GO_format>                output compatible with R GO tables
      -h <help>                       print the help
 
 
