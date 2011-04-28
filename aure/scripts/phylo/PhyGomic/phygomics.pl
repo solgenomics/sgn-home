@@ -116,6 +116,8 @@ use PhyGeCluster;
 use PhyGeConfig qw( write_conf_file read_conf_file );
 use PhyGeTopo;
 use PhyGeStats;
+use PhyGePaml;
+
 use Strain::AlleleIdentification qw/ identify_alleles /;
 
 our ($opt_c, $opt_i, $opt_o, $opt_h, $opt_C, $opt_S, $opt_O);
@@ -1396,12 +1398,16 @@ foreach my $path_idx (sort {$a <=> $b} keys %paths) {
 	    $phygecodeml->predict_cds({ method => 'longest6frame' });
 	}
 
+	## It will set the align cds
+
+	$phygecodeml->set_seqfam_cds();
+
 	$phygecodeml->run_codeml($codeml{codeml_parameters});
 
 	## Print the message of how many codeml has been run
 
-	my %phygecml = %{$phygecodeml->get_codeml()};
-	my $codeml_n = scalar(%phygecml);
+	my %phygecml = %{$phygecodeml->get_codeml_results()};
+	my $codeml_n = scalar(keys %phygecml);
 
 	print STDERR "\n\n\t\t\t\t$codeml_n have been obtained\n\n";
 
