@@ -37,7 +37,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 239;
+use Test::More tests => 240;
 use Test::Exception;
 
 use IO::Scalar;
@@ -2003,7 +2003,6 @@ is(scalar(keys %{$rm_ovmb2href}) <=> 0, 1,
     "Testing prune_by_overlaps(comp,filter,trim), checking removed memb. count")
     or diag("Looks like this has failed");
 
-
 ## Check the new ovlscore, TEST 197 to 203
 
 my $phygecluster_c5 = $phygecluster3->clone();
@@ -2064,6 +2063,15 @@ is($wrong_length_dif5, 0,
     "Testing prune_by_overlaps(comp,trim,ovl,eval), checking aln. length")
     or diag("Looks like this has failed");
 
+## Check that the removed members doesnt exists into the clusters
+
+my @rmclusters5 = keys %{$rm_ovcl5href};
+my $first_rmcl5 = $rmclusters5[0];
+
+is($rmovl_cluster5{$first_rmcl5}, undef,
+    "Testing prune_by_overlaps(comp,trim,ovl,eval), checking removed id")
+    or diag("Looks like this has failed");
+
 is(scalar(keys %rmovl_cluster5) <=> 0, 1,
     "Testing prune_by_overlaps(comp,trim,ovl,eval), checking selected cl. cnt")
     or diag("Looks like this has failed");
@@ -2078,7 +2086,7 @@ is(scalar(keys %{$rm_ovmb5href}) <=> 0, 1,
 
 
 
-## Test the croak functions for prune_by_overlapings, TEST 204 to 210
+## Test the croak functions for prune_by_overlapings, TEST 205 to 211
 
 throws_ok { $phygecluster_c3->prune_by_overlaps() } qr/ARG. ERROR: No hash/,
     "TESTING DIE ERROR when none arg. is supplied to prune_by_overlaps";
@@ -2117,7 +2125,7 @@ throws_ok { $phygecluster_c3->prune_by_overlaps($ovhrf5) } qr/ERROR: filter/,
 ## TREE TOOLS FUNCTIONS ##
 ##########################
 
-## First create a clone, TEST 211 and 212
+## First create a clone, TEST 212 and 213
 
 my $phygecl_tr1 = $phygecluster3->clone();
 $phygecl_tr1->run_njtrees({ quiet => 1 });
@@ -2148,7 +2156,7 @@ is(scalar(@njtrees) <=> 0, 1,
     "Testing run_njtrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 213 to 215
+## Test the croak, TEST 214 to 216
 
 throws_ok { $phygecl_tr1->run_njtrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_njtrees() arg. supplied isnt a HASHREF';
@@ -2159,7 +2167,7 @@ throws_ok { $phygecl_tr1->run_njtrees({ fk => 1}) } qr/ARG. ERROR: fk/,
 throws_ok { $phygecl_tr1->run_njtrees({quiet =>'fk'}) } qr/ARG. ERROR: quiet/, 
     'TESTING DIE ERROR for run_njtrees() when value used is not permited';
 
-## First create a clone, TEST 216 and 217
+## First create a clone, TEST 217 and 218
 
 my $phygecl_tr2 = $phygecluster3->clone();
 $phygecl_tr2->run_mltrees({ phyml => {} });
@@ -2191,7 +2199,7 @@ is(scalar(@mltrees) <=> 0, 1,
     "Testing run_mltrees, checking number of trees different of 0")
     or diag("Looks like this has failed");
 
-## Test the croak, TEST 218 to 220
+## Test the croak, TEST 219 to 221
 
 throws_ok { $phygecl_tr2->run_mltrees(['fk']) } qr/ARG. ERROR: Arg. supplied/, 
     'TESTING DIE ERROR for run_mltrees() arg. supplied isnt a HASHREF';
@@ -2253,7 +2261,7 @@ while(<$MTFH>) {
 }
 
 ## Finally it will check that there are two pairs of the same tree
-## TEST 221 to 223
+## TEST 222 to 224
 
 is($midroot_pairs, 3, 
     "Testing _set_midpoint_root, checking midpoint root trees")
@@ -2266,7 +2274,7 @@ throws_ok { PhyGeCluster::_set_midpoint_root('fake') } qr/ERROR: fake/,
     'TESTING DIE ERROR when arg. supplied to _set_midpoint_root isnt Bio::Tree';
 
 
-## Test reroot_trees function, TEST 224 to 232
+## Test reroot_trees function, TEST 225 to 233
 
 
 my %reroot_opts = ( midpoint => 1, strainref => 'Sly', longestref => 1 );
@@ -2338,7 +2346,7 @@ foreach my $keyopt (keys %reroot_opts) {
 	or diag("Looks like this has failed");
 }
 
-## TEST 233 to 237
+## TEST 234 to 238
 
 throws_ok { $phygecl_tr1->reroot_trees() } qr/ARG. ERROR: No argument/, 
     'TESTING DIE ERROR when no argument was supplied to reroot_trees()';
@@ -2361,7 +2369,7 @@ throws_ok { $phygecl_tr1->reroot_trees($freroothref) } qr/ARG. ERROR: Only/,
 ## TEST OUTGROUP FOR TREES ##
 #############################
 
-## TEST 238
+## TEST 239
 
 my $phygecl_tr3 = $phygecluster3->clone();
 $phygecl_tr3->run_njtrees({ quiet => 1 , outgroup_strain => 'Sly' });
@@ -2410,7 +2418,7 @@ is($outgr_nj <=> 0, 1,
     or diag("Looks like this has failed");
 
 
-## TEST 239
+## TEST 240
 
 my $phygecl_tr4 = $phygecluster3->clone();
 $phygecl_tr4->run_mltrees({dnaml => { quiet => 1 }});
