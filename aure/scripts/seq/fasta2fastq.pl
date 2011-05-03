@@ -34,13 +34,17 @@ B<ngs_technology>         ngs_technology used (sanger by default)
 
 B<default_qscore>         value to use as qscore when none is used (15 default)
 
-=item -S
+=item -s
 
 B<seq_number>             slice the fasta and quality files before run the
                           script (charge less sequences in the computer memory)
 =item -Q
 
 B<quiet>                  run and dont print any message.
+
+=item -V
+
+B<version>                print script version
 
 =item -h
 
@@ -92,15 +96,21 @@ use Getopt::Std;
 use Bio::SeqIO;
 use File::Temp qw/ tempfile /;
 
+our $VERSION = '0.02';
+$VERSION = eval $VERSION;
 
-our ($opt_f, $opt_q, $opt_t, $opt_d, $opt_S, $opt_Q, $opt_h);
-getopts("f:q:t:d:S:Qh");
-if (!$opt_f && !$opt_q && !$opt_t && !$opt_d && !$opt_S && !$opt_Q && !$opt_h) {
+our ($opt_f, $opt_q, $opt_t, $opt_d, $opt_s, $opt_Q, $opt_V, $opt_h);
+getopts("f:q:t:d:s:QVh");
+if (!$opt_f && !$opt_q && !$opt_t && !$opt_d && !$opt_s && !$opt_Q && !$opt_V) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
 if ($opt_h) {
     help();
+}
+if ($opt_V) {
+    print STDERR "\nfasta2fastq.pl VERSION: $VERSION\n\n";
+    exit();
 }
 
 ## Get the arguments and check them
@@ -111,7 +121,7 @@ my $fasta = $opt_f ||
 my $qual = $opt_q;
 my $tech = $opt_t || 'sanger';
 my $defqual = $opt_d || '15';
-my $slices = $opt_S;
+my $slices = $opt_s;
 
 my %tech = ( 
     'sanger'      => 33,
@@ -160,7 +170,11 @@ if (defined $slices) {
     while( my $seq = $fastaio->next_seq()) {
     
 	unless (defined $newfastaio) {
-	    my ($tempfh, $tempfile) = tempfile("tmpfileXXXXXX", '.fasta');
+	    my ($tempfh, $tempfile) = tempfile("$fasta"."_XXXXXX", 
+					       SUFFIX => '.fasta',
+					       UNLINK => 1,
+					       TMPDIR => 1,
+		);
 	    close($tempfh);
 
 	    $newfastaio = Bio::SeqIO->new(-file => ">$tempfile", 
@@ -186,7 +200,11 @@ if (defined $slices) {
 	while( my $qua = $qualio->next_seq()) {
     
 	    unless (defined $newqualio) {
-		my ($tempfh, $tempfile) = tempfile("tmpfileXXXXXX", '.qual');
+		my ($tempfh, $tempfile) = tempfile("$qual"."_XXXXXX", 
+						   SUFFIX => '.qual',
+						   UNLINK => 1,
+						   TMPDIR => 1,
+		    );
 		close($tempfh);
 
 		$newqualio = Bio::SeqIO->new(-file => ">$tempfile", 
@@ -195,7 +213,7 @@ if (defined $slices) {
 		push @tempqual, $tempfile;
 	    }
 	    $newqualio->write_seq($qua);
-	    $sq++;
+	    $qq++;
 
 	    if ($qq == $slices) {
 		undef($newqualio); 
@@ -234,7 +252,11 @@ if (defined $slices) {
     }
     my $catfiles = join(' ', @outfiles);
     
-    system("cat $catfiles > $outfile");     
+    system("cat $catfiles > $outfile");
+
+    unless ($opt_Q) {
+	print STDERR "JOINING OUTPUT FILES INTO $outfile\n\n";
+    }
 }
 else {
 
@@ -245,6 +267,12 @@ else {
     print_fastq(\%seq, \%qual, $tech, $outfile);
 }
 
+my $date2 = `date`;
+chomp($date2);
+
+print STDERR "\n**********************************************************\n";
+print STDERR "* fasta2fastq script ends ($date2) *\n";
+print STDERR "**********************************************************\n";
 
 
 =head2 help
@@ -304,9 +332,11 @@ sub help {
      -t <ngs_technology>         ngs_technology used (sanger by default)
      -d <default_qscore>         value to use as qscore when none is used 
                                  (15 default)
-     -h <help>                   print the help
      -S <seqnumber>              slice the fasta file and qual file before
                                  parse (reduce the memory requeriments)
+     -V <version>                print version
+     -h <help>                   print the help
+    
 
 EOF
 exit (1);
@@ -336,7 +366,7 @@ sub get_fasta {
     my $s = 0;
     
     unless ($opt_Q) {
-	print STDERR "\nPARSING FASTA FILE $fasta\n\n";
+	print STDERR "\n\tPARSING FASTA FILE $fasta\n\n";
     }
 
     my $fastaio = Bio::SeqIO->new( -file => $fasta, -format => 'fasta');
@@ -346,7 +376,7 @@ sub get_fasta {
 	$s++;
 	
 	unless ($opt_Q) {
-	    print STDERR "\tLoading sequence $s with ID: $id     \r";
+	    print STDERR "\t\tLoading sequence $s with ID: $id     \r";
 	}
 
 	$seq{$id} = $seqobj;
@@ -391,7 +421,7 @@ sub get_qual {
     if (defined $qual) {
 	
 	unless ($opt_Q) {
-	    print STDERR "\nPARSING QUAL FILE $qual\n\n";
+	    print STDERR "\n\tPARSING QUAL FILE $qual\n\n";
 	}
 	
 	my $qualio = Bio::SeqIO->new( -file => $qual, -format => 'qual');
@@ -401,7 +431,7 @@ sub get_qual {
 	    my $id = $qualobj->display_id();
 	 
 	    unless ($opt_Q) {
-		print STDERR "\tLoading quality $q with ID: $id     \r";
+		print STDERR "\t\tLoading quality $q with ID: $id     \r";
 	    }
 	    $qual{$id} = $qualobj;
 	}
@@ -409,7 +439,7 @@ sub get_qual {
     else {
 	
 	unless ($opt_Q) {
-	    print STDERR "\nNO QUAL FILE WAS USED. DEFAULT QUAL VALUES\n\n";
+	    print STDERR "\n\tNO QUAL FILE WAS USED. DEFAULT QUAL VALUES\n\n";
 	}
 	
 	foreach my $id (keys %seq) {
@@ -420,7 +450,7 @@ sub get_qual {
 		push @qual, $defqual;
 	    }
 	    unless ($opt_Q) {
-		print STDERR "\tCreating quality $q for ID: $id     \r";
+		print STDERR "\t\tCreating quality $q for ID: $id     \r";
 	    }
 	    
 	    my $qualobj = Bio::Seq::PrimaryQual->new( -qual => join(' ', @qual),
@@ -466,7 +496,7 @@ sub print_fastq {
     my %qual = %{$qual_href};
 
     unless ($opt_Q) {
-	print STDERR "\nMERGING SEQ-QUAL. PRINTING FASTQ FILE ($outfile)\n\n";	
+	print STDERR "\n\tMERGING SEQ-QUAL.PRINTING FASTQ FILE ($outfile)\n\n";	
     }
 
     my $fastqio = Bio::SeqIO->new( -file => ">$outfile", -format => 'fastq');
@@ -493,7 +523,7 @@ sub print_fastq {
 	    );
 
 	unless ($opt_Q) {
-	    print STDERR "\tPrinting fastq $f for ID: $id     \r";
+	    print STDERR "\t\tPrinting fastq $f for ID: $id     \r";
 	}
 	
 	$fastqio->write_fastq($qual);
