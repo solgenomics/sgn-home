@@ -190,11 +190,11 @@ if (defined $slices) {
 		close($tempfh);
 
 		$newqualio = Bio::SeqIO->new(-file => ">$tempfile", 
-					      -format => 'qual' );
+					     -format => 'qual' );
 
 		push @tempqual, $tempfile;
 	    }
-	    $newqualio->write_seq($qual);
+	    $newqualio->write_seq($qua);
 	    $sq++;
 
 	    if ($qq == $slices) {
