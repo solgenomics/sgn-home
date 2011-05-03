@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 129;
+use Test::More tests => 130;
 use Test::Exception;
 
 use FindBin;
@@ -289,6 +289,15 @@ is(scalar(@seedlist4), 6,
     "testing seed_list, checking seed number for ovlscore with length filter")
     or diag("Looks like this has failed");
 
+## Combine length + identity filter
+
+my @seedlist5 = Bio::Align::Overlaps::seed_list($mtx, undef, 
+						{ length => 45, identity => 90 }
+    );
+
+is(scalar(@seedlist5), 2, 
+    "testing seed_list, checking seed number for ovlscore with double filter")
+    or diag("Looks like this has failed");
 
 throws_ok { Bio::Align::Overlaps::seed_list() } qr/ERROR: No argument/,
     "TESTING DIE ERROR: when no argument is used with seed_list";
@@ -300,7 +309,7 @@ throws_ok { Bio::Align::Overlaps::seed_list($mtx, undef, { fk1 => 1}) } qr/fk1/,
     "TESTING DIE ERROR: when filter param. used for seed_list isnt permited.";
 
 
-## Checking calculate_overseeds, TEST 65 to 79
+## Checking calculate_overseeds, TEST 66 to 80
 
 my $seed1vals = $mtx->entry($seedlist1[0]->[0], $seedlist1[0]->[1]);
 my %overseeds = Bio::Align::Overlaps::calculate_overseeds( $align, 
@@ -370,7 +379,7 @@ throws_ok { Bio::Align::Overlaps::calculate_overseeds(@fk_end) } qr/fk4/,
     "TESTING DIE ERROR: when wrong start is used with calculate_overseeds()";
 
 
-## Checking extension_list, TEST 80 to 94
+## Checking extension_list, TEST 81 to 95
 
 my @extseed1_ovl = Bio::Align::Overlaps::extension_list(\%overseeds);
 my @extseed1_len = Bio::Align::Overlaps::extension_list(\%overseeds,'length');
@@ -442,7 +451,7 @@ throws_ok { Bio::Align::Overlaps::extension_list(\%overseeds,
     "TESTING DIE ERROR: when filter p. used for extension_list isnt permited.";
 
 
-## Testing global_overlap
+## Testing global_overlap, TEST 96 to 106
 
 my %def_ovlps = Bio::Align::Overlaps::global_overlap($align);
 
@@ -497,7 +506,7 @@ throws_ok { Bio::Align::Overlaps::global_overlap($align, ['fk2']) } qr/Less/,
     "TESTING DIE ERROR: when less than two members are used for global_overlap";
 
 
-## test make_overlap_align, TEST 106 to ...
+## test make_overlap_align, TEST 107 to 130
 
 my $newalign = Bio::Align::Overlaps::make_overlap_align(
     { 

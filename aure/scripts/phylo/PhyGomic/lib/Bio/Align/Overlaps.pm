@@ -361,11 +361,12 @@ sub seed_list {
 
 		if ($entry->{length} > 0) {  ## ignore no-overlaps
 		
-		    my $pass = 1;
+		    my $req = scalar(keys %filter) || 0;
+		    my $pass = $req;
 		    foreach my $param (keys %filter) {
 			if (defined $entry->{$param}) {
 			    if ($entry->{$param} < $filter{$param}) {
-				$pass = 0;
+				$pass--;
 			    }
 			}
 			else {
@@ -374,19 +375,19 @@ sub seed_list {
 		    }
 
 		    if ($method eq 'length') {
-			if ($pass == 1) {
+			if ($pass == $req) {
 			    $seedscoring{$id_a.':'.$id_b} = $entry->{length};
 			}
 		    }
 		    elsif ($method eq 'identity') {
-			if ($pass == 1) {
+			if ($pass == $req) {
 			    $seedscoring{$id_a.':'.$id_b} = $entry->{identity};
 			}
 		    }
 		    else {
 			my $idenfrac = $entry->{identity} / 100;
 			my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
-			if ($pass == 1) {
+			if ($pass == $req) {
 			    $seedscoring{$id_a . ':' . $id_b} = $ovlscore;
 			}		
 		    }
@@ -629,32 +630,33 @@ sub extension_list {
 
 	if ($entry->{length} > 0) {  ## ignore no-overlaps
 
-	    my $pass = 1;            ## Check the filter options
+	    my $req = scalar(keys %filter) || 0;
+	    my $pass = $req; ## Check the filter options
 	    foreach my $param (keys %filter) {
 		if (defined $entry->{$param}) {
 		    if ($entry->{$param} < $filter{$param}) {
-			$pass = 0;
+			$pass--;
 		    }
 		}
 		else {
 		    croak("ERROR: filter param. $param isnt permited.");
 		}
 	    }
-		
+	    
 	    if ($method eq 'length') {
-		if ($pass == 1) {
+		if ($pass == $req) {
 		    $extscores{$id} = $entry->{length};
 		}
 	    }
 	    elsif ($method eq 'identity') {
-		if ($pass == 1) {
+		if ($pass == $req) {
 		    $extscores{$id} = $entry->{identity};
 		}
 	    }
 	    else {
 		my $idenfrac = $entry->{identity} / 100;
 		my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
-		if ($pass == 1) {
+		if ($pass == $req) {
 		    $extscores{$id} = $ovlscore;
 		}		
 	    }
