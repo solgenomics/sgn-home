@@ -5712,26 +5712,29 @@ sub prune_by_overlaps {
 				members  => $seedpath{$sp},
 				trim     => $args{trim},
 				gapscomp => $args{removegaps},
+				filter   => $args{filter},
 		    };
 		    
 		    my $nwaln = Bio::Align::Overlaps::make_overlap_align($oal);
 		    
-		    $sealign{$sp} = $nwaln;
+		    if (defined $nwaln) {
+			$sealign{$sp} = $nwaln;
 		    
-		    my $na_len = $nwaln->length();
-		    my $na_ide = $nwaln->percentage_identity();
-		    my $na_ovlsc = $na_len * ($na_ide / 100) * ($na_ide / 100);
+			my $na_len = $nwaln->length();
+			my $na_ide = $nwaln->percentage_identity();
+			my $na_ovlsc = $na_len * ($na_ide/100) * ($na_ide/100);
 		    
-		    ## Score the alignment according method
-		    
-		    if ($args{method} eq 'length') {
-			$sescore{$sp} = $na_len;
-		    }
-		    elsif ($args{method} eq 'identity') {
-			$sescore{$sp} = $na_ide;
-		    }
-		    else {
-			$sescore{$sp} = $na_ovlsc;
+			## Score the alignment according method
+			
+			if ($args{method} eq 'length') {
+			    $sescore{$sp} = $na_len;
+			}
+			elsif ($args{method} eq 'identity') {
+			    $sescore{$sp} = $na_ide;
+			}
+			else {
+			    $sescore{$sp} = $na_ovlsc;
+			}
 		    }
 		}
 
