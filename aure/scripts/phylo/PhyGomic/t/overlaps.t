@@ -31,7 +31,7 @@ use warnings;
 use autodie;
 
 use Data::Dumper;
-use Test::More tests => 130;
+use Test::More tests => 135;
 use Test::Exception;
 
 use FindBin;
@@ -379,7 +379,7 @@ throws_ok { Bio::Align::Overlaps::calculate_overseeds(@fk_end) } qr/fk4/,
     "TESTING DIE ERROR: when wrong start is used with calculate_overseeds()";
 
 
-## Checking extension_list, TEST 81 to 95
+## Checking extension_list, TEST 81 to 96
 
 my @extseed1_ovl = Bio::Align::Overlaps::extension_list(\%overseeds);
 my @extseed1_len = Bio::Align::Overlaps::extension_list(\%overseeds,'length');
@@ -438,6 +438,18 @@ is(scalar(@extseed1_fil), 3,
     "testing extension_list, checking number of member for oversco. and filter")
     or diag("Looks like this has failed");
 
+## Use double filter (length + identity)
+
+my @extseed2_fil = Bio::Align::Overlaps::extension_list(\%overseeds, 
+							undef,
+							{ length   => 40, 
+							  identity => 90 },
+    );
+
+is(scalar(@extseed2_fil), 2, 
+    "testing extension_list with double filter, checking number of members")
+    or diag("Looks like this has failed");
+
 
 throws_ok { Bio::Align::Overlaps::extension_list() } qr/ERROR: No argument/,
     "TESTING DIE ERROR: when no argument is used with extension_list";
@@ -451,7 +463,7 @@ throws_ok { Bio::Align::Overlaps::extension_list(\%overseeds,
     "TESTING DIE ERROR: when filter p. used for extension_list isnt permited.";
 
 
-## Testing global_overlap, TEST 96 to 106
+## Testing global_overlap, TEST 97 to 107
 
 my %def_ovlps = Bio::Align::Overlaps::global_overlap($align);
 
@@ -506,7 +518,7 @@ throws_ok { Bio::Align::Overlaps::global_overlap($align, ['fk2']) } qr/Less/,
     "TESTING DIE ERROR: when less than two members are used for global_overlap";
 
 
-## test make_overlap_align, TEST 107 to 130
+## test make_overlap_align, TEST 108 to 131
 
 my $newalign = Bio::Align::Overlaps::make_overlap_align(
     { 
@@ -666,6 +678,62 @@ foreach my $gapchar (keys %gapschars) {
        "testing make_overlap_align for nogaps $gapchar, checking length")
 	or diag("looks like this has failed");
 }
+
+## Test the filter for make_overlap_align (it should return undef)
+## TEST 132 to 135
+
+my $newalign6 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 1,
+	trim     => 1,
+	filter   => { length => 35 },
+    });
+
+is($newalign6, undef, 
+   "testing make_overlap_align for filter length, testing undef")
+    or diag("looks like this has failed");
+
+my $newalign7 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 1,
+	trim     => 1,
+	filter   => { identity => 90 },
+    });
+
+is($newalign7, undef, 
+   "testing make_overlap_align for filter identity, testing undef")
+    or diag("looks like this has failed");
+
+
+my $newalign8 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 1,
+	trim     => 1,
+	filter   => { length => 35, identity => 90 },
+    });
+
+is($newalign8, undef, 
+   "testing make_overlap_align for filter length+identity, testing undef")
+    or diag("looks like this has failed");
+
+my $newalign9 = Bio::Align::Overlaps::make_overlap_align(
+    { 
+	align    => $align, 
+	members  => ['seq3', 'seq5', 'seq7'],
+	gapscomp => 1,
+	trim     => 1,
+	filter   => { length => 20, identity => 50 },
+    });
+
+is(ref($newalign9), 'Bio::SimpleAlign', 
+   "testing make_overlap_align for filter length+identity, testing filter pass")
+    or diag("looks like this has failed");
 
 
 ####

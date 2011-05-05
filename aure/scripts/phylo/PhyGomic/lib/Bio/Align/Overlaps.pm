@@ -374,22 +374,19 @@ sub seed_list {
 			}
 		    }
 
-		    if ($method eq 'length') {
-			if ($pass == $req) {
+		    if ($pass == $req) {
+			if ($method eq 'length') {
 			    $seedscoring{$id_a.':'.$id_b} = $entry->{length};
 			}
-		    }
-		    elsif ($method eq 'identity') {
-			if ($pass == $req) {
+			elsif ($method eq 'identity') {
 			    $seedscoring{$id_a.':'.$id_b} = $entry->{identity};
 			}
-		    }
-		    else {
-			my $idenfrac = $entry->{identity} / 100;
-			my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
-			if ($pass == $req) {
+			else {
+			    my $idenfrac = $entry->{identity} / 100;
+			    my $ovlscore = $entry->{length} 
+                                           * $idenfrac * $idenfrac;
 			    $seedscoring{$id_a . ':' . $id_b} = $ovlscore;
-			}		
+			}
 		    }
 		}
 	    }
@@ -643,22 +640,18 @@ sub extension_list {
 		}
 	    }
 	    
-	    if ($method eq 'length') {
-		if ($pass == $req) {
+	    if ($pass == $req) {
+		if ($method eq 'length') {
 		    $extscores{$id} = $entry->{length};
 		}
-	    }
-	    elsif ($method eq 'identity') {
-		if ($pass == $req) {
+		elsif ($method eq 'identity') {
 		    $extscores{$id} = $entry->{identity};
 		}
-	    }
-	    else {
-		my $idenfrac = $entry->{identity} / 100;
-		my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
-		if ($pass == $req) {
+		else {
+		    my $idenfrac = $entry->{identity} / 100;
+		    my $ovlscore = $entry->{length} * $idenfrac * $idenfrac;
 		    $extscores{$id} = $ovlscore;
-		}		
+		}
 	    }
 	}
     }
@@ -794,6 +787,8 @@ sub global_overlap {
                      (enabled by default, use 0 to disable)
          gapscomp => compress the aligmemnt when exist gaps in all the columns
                      (enabled by default, use 0 to disable)
+         filter   => remove all the alignments with length or identity 
+                     under the cutoff value
 
   Side_Effects: Die if no argument is used.
                 Die if no alignment is used or if it isnt a Bio::SimpleAlign
@@ -813,6 +808,18 @@ sub make_overlap_align {
     }
     else {
 	%args = %{$arg_href};
+    }
+
+    ## Get filter
+    
+    my %filter;
+    if (defined $args{filter}) {
+	if (ref($args{filter}) ne 'HASH') {
+	    croak("ERROR: Filter argument isnt a hashref. make_overlap_align");
+	}
+	else {
+	    %filter = %{$args{filter}};
+	}
     }
 
     my $align = $args{align};
@@ -892,8 +899,26 @@ sub make_overlap_align {
 	    }
 	}
 
-	return $new_align;
+	## Finally it will test if the new alignment pass the filter.
 
+	my $pass = 1;
+	if (defined $filter{identity}) {
+	    if ($new_align->percentage_identity() < $filter{identity}) {
+		$pass = 0;
+	    }
+	}
+	if (defined $filter{length}) {
+	    if ($new_align->length() < $filter{length}) {
+		$pass = 0;
+	    }
+	}
+
+	if ($pass == 1) {	    
+	    return $new_align;
+	}
+	else {
+	    return undef;
+	}
     }
     else {
 	croak("ERROR: No align object was supplied to make_overlap_align.");
