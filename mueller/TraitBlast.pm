@@ -100,7 +100,7 @@ sub is_in_list {
 sub run { 
     my $self = shift;
 
-    $self->outgroup( [ qw | rice maize brachypodium sorghum selginella | ]);
+    $self->outgroup( [ qw | rice maize brachypodium sorghum | ]);
     $self->ingroup( [ qw | tomato poplar vitis papaya soybean castorbean cucumber | ]);
     $self->contrast_group ([ qw | arabidopsis lyrata |]);
     
