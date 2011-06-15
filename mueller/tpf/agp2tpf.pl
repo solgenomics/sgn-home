@@ -169,7 +169,7 @@ HEADER
 		    $local_id = "";
 		}
 
-		
+		# a comp line, with component name, ? and the local contig id
 		print $F join ("\t", (
 				   $line->{ident},
 				   "?",
@@ -179,18 +179,19 @@ HEADER
 	    }
 	}
 	
+	# deal with the gap lines
+	print STDERR "Linkage = $line->{linkage}\n";
 	my $gap_type;
+	#if (exists($line->{type}) && $line->{type} eq "U") { 
+	    #if ($line->{gap_type} eq 'fragment' || $line->{gap_type} eq 'clone') { 
+
+
+	#}
 	if (exists($line->{type}) && $line->{type} eq "U") { 
-	    if ($line->{gap_type} eq 'fragment' || $line->{gap_type} eq 'clone') { 
-		$gap_type='TYPE-2';
-	    }
-	    if ($line->{gap_type} eq 'contig') { 
-		$gap_type='TYPE-3';
-	    }
-
-
+	    $gap_size = '';
+	    $method = "";
 	}
-	elsif ($line->{type} eq "N") { 	    
+	elsif (exists($line->{type}) && $line->{type} eq "N") { 	    
 	    $gap_size = $line->{length};#$line->{oend} - $line->{ostart};
 	    $gap_type = $gap_types{$line->{gap_type}};
 
@@ -200,6 +201,15 @@ HEADER
 	else { 
 	    $gap_size = '';
 	}
+
+	if ($line->{linkage} eq 'yes') { 
+	    $gap_type='TYPE-2';
+	}
+	if ($line->{linkage} eq 'no') { 
+	    $gap_type='TYPE-3';
+	    $method = '';
+	}
+
 	    
 
 	if (exists($line->{gap_type}) && exists($gap_types{$line->{gap_type}})) { 
