@@ -149,6 +149,7 @@ HEADER
 	    
 	my $gap_size;
 	my $method = "";
+	my $direction;
 	# remove the version number in the identifier
 	if (exists($line->{ident})) { $line->{ident} =~ s/(.*?)\.\d+/$1/; }
 
@@ -156,6 +157,19 @@ HEADER
 	    if ($line->{type} eq "W") { 
 		my $local_id;
 		
+		#orientation:
+		if(exists($line->{orient})){
+
+		   # print STDERR "Orientation calculating... ";
+		    if($line->{orient} eq '-'){
+			$direction = "MINUS";
+		    }
+		    elsif($line->{orient} eq '+'){
+			$direction = "PLUS";
+		    }
+		}
+
+
 		if(exists($line->{ident}) && exists($ids{$line->{ident}})) { 
 		    $local_id = $ids{$line->{ident}};
 		    
@@ -174,13 +188,14 @@ HEADER
 				   $line->{ident},
 				   "?",
 				   $local_id,
+				   $direction || '',
 			       )
 		    )."\n";
 	    }
 	}
 	
 	# deal with the gap lines
-	print STDERR "Linkage = $line->{linkage}\n";
+#	print STDERR "Linkage = $line->{linkage}\n";
 	my $gap_type;
 	#if (exists($line->{type}) && $line->{type} eq "U") { 
 	    #if ($line->{gap_type} eq 'fragment' || $line->{gap_type} eq 'clone') { 
@@ -202,10 +217,10 @@ HEADER
 	    $gap_size = '';
 	}
 
-	if ($line->{linkage} eq 'yes') { 
+	if (exists($line->{linkage}) && $line->{linkage} eq 'yes') { 
 	    $gap_type='TYPE-2';
 	}
-	if ($line->{linkage} eq 'no') { 
+	if (exists($line->{linkage}) && $line->{linkage} eq 'no') { 
 	    $gap_type='TYPE-3';
 	    $method = '';
 	}
