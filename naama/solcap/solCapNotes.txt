@@ -212,4 +212,11 @@ ta_longitudinal_vintage_2009
 ta_latitudinal_vintage_2009
 
 
+#############
+align solcap snp markers to the tomato genome
 
+ bwa samse ~srs57/seq_assembly/reference_pre2.3/ITAG_pre2.3_genomic.fasta tom_solcap_align.bwa /data/shared/home/naama/tomato_solcap_snps.fasta  -f tom_solcap_align.bwa.sam
+
+ bwa samse ~srs57/seq_assembly/reference_pre2.3/ITAG_pre2.3_genomic.fasta tom_solcap_align.bwa /data/shared/home/naama/potato_solcap_snps.fasta  -f potato_solcap_align.bwa.sam
+
+ cut -f2 potato_solcap_align.bwa.sam  | perl -ne 'chomp ; if ($_ == 4) { print "*\n" ; } ' | wc
