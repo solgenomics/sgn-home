@@ -1,0 +1,3 @@
+#data file for the solcap potato 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap potato Yencho data 2009. Plymouth, NC	solcap potatos Yencho data. Tidewater Reasearch Station, 207 Research Station Rd, Plymouth, NC 27962	Tidewater. Plymouth, NC	35.8333333	-76.65	WGS84	6.1		2009/03/31	2009/07/24		2009	Tidewater Reasearch Station, 207 Research Station Rd, Plymouth, NC 27962
