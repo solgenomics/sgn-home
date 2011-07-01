@@ -10,7 +10,7 @@
 =head1 SYPNOSIS
 
  fastq_stats.pl [-h] -p fastq_file1 [-q fastq_file2] - t <seq_technology> [-V]
-                [-c <cutoff_value>]               
+                [-c <cutoff_value>]          
 
 =head2 I<Flags:>
 
@@ -118,6 +118,7 @@ my $seqtech = $opt_t ||
 
 my $q15_cutoff = $opt_c || 90;
 
+
 my %permtech = (
 		'S'           => 'sanger',
 		'454'         => 'sanger',
@@ -172,12 +173,7 @@ foreach my $idx1 (sort keys %{$seqidx1_href}) {
 
     print $out_fh1 "$id1/1\t";
     
-    my @data = ();
-    foreach my $c (@col) {
-	push @data, $seqstats1_href->{$id1}->{$c};
-    }
-    
-    my $dataline = join("\t", @data);
+    my $dataline = join("\t", @{$seqstats1_href->{$id1}});
     print $out_fh1 "$dataline\n";
 }
 
@@ -215,12 +211,7 @@ if (defined $fastq2) {
 
 	print $out_fh2 "$id2/2\t";
     
-	my @data2 = ();
-	foreach my $c (@col) {
-	    push @data2, $seqstats2href->{$id2}->{$c};
-	}
-    
-	my $dataline2 = join("\t", @data2);
+	my $dataline2 = join("\t", @{$seqstats2href->{$id2}});
 	print $out_fh2 "$dataline2\n";
     }
 
@@ -253,19 +244,25 @@ if (defined $fastq2) {
 	    
 	    my ($bad1, $bad2) = (0, 0);
 
-	    foreach my $c (@col) {
-		my $coldata1 = $seqstats1_href->{$id1}->{$c};
-		my $coldata2 = $seqstats2href->{$id1}->{$c};
-		push @data3, $coldata1 . "|" . $coldata2;
+	    ## Pair the data.
+
+	    my $c = 0;
+	    my @coldata1 = @{$seqstats1_href->{$id1}};
+	    my @coldata2 = @{$seqstats2href->{$id1}};
+
+	    foreach my $col1 (@coldata1) {
+		
+		push @data3, $col1 . "|" . $coldata2[$c];	
 
 		if ($c eq 'q15_idx') {
-		    if ($coldata1 >= $q15_cutoff) {
+		    if ($col1 >= $q15_cutoff) {
 			$bad1 = 1;
 		    }
-		    if ($coldata2 >= $q15_cutoff) {
+		    if ($coldata2[$c] >= $q15_cutoff) {
 			$bad2 = 1;
 		    }
 		}
+		$c++;
 	    }
 	    my $line = join("\t", @data3);
 	    print $out_fh3 "$line\t";
@@ -284,9 +281,11 @@ if (defined $fastq2) {
 	    }
 	}
 	else {
-	    foreach my $c (@col) {
-		my $coldata1 = $seqstats1_href->{$id1}->{$c};
-		push @data3, $coldata1 . "|NA";
+
+	    my @coldata1 = @{$seqstats1_href->{$id1}};
+	    foreach my $col1 (@coldata1) {
+		
+		push @data3, $col1 . "|NA";
 	    }
 	    my $line = join("\t", @data3);
 	    print $out_fh3 "$line\tABSENT PAIR2\n";
@@ -301,10 +300,10 @@ if (defined $fastq2) {
 	
 	unless (exists $seqstats1_href->{$id2}) {
 	    
-	    foreach my $c (@col) {
+	    my @coldata2 = @{$seqstats2href->{$id2}};
+	    foreach my $col2 (@coldata2) {
 		
-		my $coldata2 = $seqstats2href->{$id2}->{$c};
-		push @data4, "NA|" . $coldata2;
+		push @data4, "NA|" . $col2;
 	    }
 
 	    my $line = join("\t", @data4);
@@ -392,12 +391,12 @@ exit (1);
 
   Usage: my ($seqstats_href, $seqidx_href) = seqstats($filename, $filevariant);
   Desc: Parse the file and calculate the stats
-  Ret: A hashref with key=ID and value=hashref. with key=(raw_length, n_count, 
-       q15_length, q20_length, q25_length, q15_idx, q20_idx, q25_idx)and 
-       value=value
+  Ret: A hashref with key=ID and value=arrayref. raw_length, n_count, 
+       q15_length, q20_length, q25_length, q15_idx, q20_idx, q25_idx values)
        Another hashref. with key=sequence index and value=sequence id
   Args: $filename, filename
-        $filevariant, s scalar (sanger, solexa or illumina)
+        $filevariant, a scalar (sanger, solexa or illumina)
+        $filefrag, number of fragments used to divide the file
   Side_Effects: none
   Example: my ($seqstats, $seqidx) = seqstats($filename, $filevariant);
 
@@ -537,18 +536,10 @@ sub seqstats {
 	                             ->bfround(-2);
 
 
-	my %stats = (
-		     raw_length => $length,
-		     n_count    => $n_count,
-		     q15_length => $q15_length,
-		     q20_length => $q20_length,
-		     q25_length => $q25_length,
-		     q15_idx    => $q15_perc,
-		     q20_idx    => $q20_perc,
-		     q25_idx    => $q25_perc,
-		     );
+	my @stats = ( $length, $n_count, $q15_length, $q20_length, $q25_length,
+		      $q15_perc, $q20_perc, $q25_perc );
     
-	$seq{$id} = \%stats;
+	$seq{$id} = \@stats;
     }
     
     if ($opt_V) {
