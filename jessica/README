@@ -1,15 +1,28 @@
 This script is for integration of BAC data into a tpf file of contig's and gaps.
 
 ##################################################
-Script IN PROGRESS!!!!!!
+Script IN PROGRESS!!!!!! (bac_chr_position.pl)
 Not ready for use as of yet
 ##################################################
 
-requires three files, two inputs.
 
-The list of BACs from a BLAST is required as well as an agp file for the chromosomes being interpreted (a single file containing all agp files is preferred).
+limit_bac_output.pl:
 
-The tpf files associated with the inputed agp is required to be in the same location and under the same name (with an additional .tpf on the end) as the agp file.
+	this file is used to select only the BLAST information that is of importance to you.  You can specify the parameters of the search near the top of the file.
+
+	script requires in input of the BLAST results to be searched and a file containing two columns: first the BAC id and second the correct BAC length.
+
+#########################################################
+Following script is in progress!!!
+################################################
+
+bac_chr_position.pl:
+
+	requires three files, two inputs.
+
+	The list of BACs from a BLAST is required (useful to obtain with limit_bac_output script) as well as an agp file for the chromosomes being interpreted (a single file containing all agp files is preferred).
+
+	The tpf files associated with the inputed agp is required to be in the same location and under the same name (with an additional .tpf on the end) as the agp file.
 
 
-The output is a tpf file, similar to the one inputed. However the resulting file will have BACs replacing the contigs and gaps in the appropriate locations on the given chromosomes.
+	The output is a tpf file, similar to the one inputed. However the resulting file will have BACs replacing the contigs and gaps in the appropriate locations on the given chromosomes.
