@@ -1,264 +1,681 @@
-#!usr/bin/perl
+#! usr/bin/perl
 
 use strict;
 use warnings;
-
-#similify bacs before running, only use the "best" ones.
-#produces a tpf file with bac's incorprated
+use autodie;
 
 my $bac_file = shift;
-my $agpchr = shift;
-#my $tpfchr = shift;
-my $tpfchr = "$agpchr.tpf";
-#be sure the agp and tpf are named the SAME AND in the SAME location, to fit formatting above.
+my $dir = shift;
+#be sure the agp and tpf are named the SAME AND in the location given.
 
-my %chr  = ( #chromosome ID translation.
-	     "CM001064.1" => "CHR1",
-	     "CM001065.1" => "CHR2",
-	     "CM001066.1" => "CHR3",
-	     "CM001067.1" => "CHR4",
-	     "CM001068.1" => "CHR5",
-	     "CM001069.1" => "CHR6",
-	     "CM001070.1" => "CHR7",
-	     "CM001071.1" => "CHR8",
-	     "CM001072.1" => "CHR9",
-	     "CM001073.1" => "CHR10",
-	     "CM001074.1" => "CHR11",
-	     "CM001075.1" => "CHR12"
-    );
 
-my @start_contig;
-my @end_contig;
-my @id_contig;
-my @chr_contig;
-my @turnout;
-my %chr_defign;
-#upload agp fie into several arrays to allow for easy access and editing
-open(my $F,"<",$agpchr) || die "can't open $agpchr";
 
-while(<$F>){
+my %bac2scaf;
+open (my $F, "<", $bac_file);
+print STDERR "Loading $bac_file information...\n";
+while(<$F>){#load BAC file
+    
     chomp;
     if(/^$/ || /^\#/){next;} #skip blank and comment lines
-    my ($obj, $start_obj, $end_obj, $id, $type, $comp_id, $length_agp, $orientation_agp) = split/\t/;
+    my ($bac_id, $s_id, $per_id, $len, $mismatch, $gaps, 
+	$bac_start, $bac_end, $s_start, $s_end, $e_val, $bit) = split /\t/;
+    my @bac_info = ($s_id, $bac_start, $len);
+    $bac2scaf{$bac_id} = \@bac_info;
     
-    my $chr_current = $chr{$obj} || '';
-    if($start_obj && $comp_id && $comp_id =~m/^AEKE/){#contig
-	$comp_id=~s/(.*?)\.\d+/$1/; #remove version number
-	$chr_defign{$comp_id}=$chr_current;
-    }
-    
-    if($start_obj && $end_obj && $comp_id && $chr_current){
-	push (@start_contig, $start_obj);
-	push (@end_contig, $end_obj);
-	push (@id_contig, $comp_id);
-	push (@chr_contig, $chr_current);
-	push (@turnout, '');
-    }
-    else{
-	print STDERR "One or more of the following does not exist:\nstart_obj=$start_obj && end_obj$end_obj= && comp_id=$comp_id && chr_current=$chr_current\n";
-    }
-}
+}#end BAC load
 
-#input of tpf file into a hash of lists
-my @tpf_output_initial;
-my %scaffold_convert;
-open($F,"<",$tpfchr) || die "can't open $tpfchr";
-while(<$F>){
-    chomp;
-    if(/^$/ || /^\#/){next;} #skip blank and comment lines
-    my ($component, $data, $scaffold, $orientation_tpf, $blank) = split/\t/;
-    
-    if ($component && $component =~m/^AEKE/){  #exist, not gap (gaps do not have associated scaffold information)
-	$scaffold_convert{$scaffold} = $component;
-    }
-    push (@tpf_output_initial, [$component, $data, $scaffold, $orientation_tpf]);
-}
+my $current_orientation;
 
-my %bac_scaffold;
-my $bac_begin;
-my $bac_end;
-my $bac_chr;
-my $no_version;
-#run through bac(blast) file to find where they fit in tpf/agp and replace/remove information accordingly
-open(my $line, "<", $bac_file) || die "can't open $bac_file.";
-while(<$line>){
-    print STDERR ".";
-    chomp;
-    if(/^$/ || /^\#/){next;} #skip blank and comment lines
-    my ($q_id, $s_id, $per_id, $len, $mismatch, $gaps, $q_start, $q_end, $s_start, $s_end, $e_val, $bit) = split /\t/;
-    if (exists($scaffold_convert{$s_id})
-	){
-	$bac_chr =  $chr_defign{$scaffold_convert{$s_id}};
-	$bac_begin = $s_start + $q_start - 1;
-	$bac_end = $s_end + $q_start - 1;
+foreach my $agp (glob $dir."*.comp.agp") {
+    
+    my $tpf = $agp.".tpf";
+    
+    print STDERR "opening files $agp and $tpf...\n";
+    
+    $agp =~ s/(.*?)\.agp$/$1/;
+    open (my $OUTTPF, ">", $agp.".bac.agp.tpf");
+    open (my $OUTAGP, ">", $agp.".bac.agp");
+    open ($F, "<", $agp.".agp");
+
+    my %contig2chr;
+    my %start2chr;
+    my $contig_input;
+    while(<$F>){#look at each agp line
+	chomp;
+
+	if(/^$/ || /^\#/){ #print header of agp
+	    print $OUTAGP $_."\n";
+	    next;
+	}
+
+	my @data = split/\t/;	
+	$contig_input = $data[5];
+	$contig_input =~ s/(.*?)\.\d+/$1/; #remove version number
 	
-	my $i = 0;
-	my $contig_count = @chr_contig;
+	$data[9]= '';
+	$contig2chr{$contig_input} = \@data;
+
+	if($data[6] =~ m/^\d+/){#contig
+	    my $contig_start = $data[1] + $data[6] -1;
+	$start2chr{$contig_start} = \@data;
+	}
+
+	else{#gap
+	    $start2chr{$data[1]} = \@data;
+	}
+
+    }#end agp loop
+    
+    my %contig2scaf;
+    my %scaf2contig;
+    my %scaf2chr;
+    my $current_scaf_id;
+    open ($F, "<", $tpf);
+    
+    while(<$F>){ #each tpf line
 	
-	while($i < $contig_count){
-	    if($id_contig[$i] eq $q_id){#current contig/gap is  current bac    
-		#move to next contig/gap
+	if(/^\#\#[A-Z]/){
+	    print $OUTTPF $_;
+	    next;
+	}
+	
+	if(/^$/ || /^\#/){next;} #skip blank and comment lines
+	
+	chomp; 
+	my ($contig_id, $data_type, $scaffold, $orientation_tpf, 
+	    $blank) = split/\t/;
+	
+	if($contig_id !~ m/^GAP$/){
+	    $contig2scaf{$contig_id} = $scaffold;
+	    $scaf2contig{$scaffold} = $contig_id;
+	    if(!$scaf2chr{$scaffold}) {
+		$scaf2chr{$scaffold} = $contig2chr{$contig_id}->[1];
 	    }
-	    elsif($bac_chr eq $chr_contig[$i] && $bac_begin <= $end_contig[$i]){#close on same chromosome
-		#check bac has crossover
-		if($bac_end <= $start_contig[$i]){#past bac
-		    $i= $contig_count; #move on(next bac), ends while i
+	}
+    }
+
+    my $scaf_start = '';
+    my $scaf_end = '';
+
+
+    foreach my $bac_id ( keys %bac2scaf){ #each bac line data
+	
+	if($bac2scaf{$bac_id}->[0] && $scaf2chr{$bac2scaf{$bac_id}->[0]}){ 
+	    #if scaffold exists
+
+	    $contig2scaf{$bac_id} = $bac2scaf{$bac_id}->[0];
+	    
+	    if ($contig2chr{$scaf2contig{$bac2scaf{$bac_id}->[0]}}->[1] < 
+		$contig2chr{$scaf2contig{$bac2scaf{$bac_id}->[0]}}->[2]){
+		#start after end
+		
+		#correct orientation
+		$scaf_start = 
+		    $contig2chr{$scaf2contig{$bac2scaf{$bac_id}->[0]}}->[1];
+		
+		$scaf_end = 
+		    $contig2chr{$scaf2contig{$bac2scaf{$bac_id}->[0]}}->[2];
+		
+		$current_orientation = '';
+		
+	    }
+	    
+	    else{ #reverse orientation
+		
+		$scaf_end = 
+		    $contig2chr{$scaf2contig{$bac2scaf{$bac_id}->[0]}}->[1];
+		
+		$scaf_start = 
+		    $contig2chr{$scaf2contig{$bac2scaf{$bac_id}->[0]}}->[2];
+		
+	       $current_orientation = 'REV';
+		
+	    }
+	    
+	    my @current_bac_data = (
+		$start2chr{$scaf2chr{$bac2scaf{$bac_id}->[0]}}->[0], #chr_id
+		$scaf_start || '', #s_start
+		$scaf_end || '', #s_end
+		'', #number to be filled in later
+		'O', #type for other, aka: BAC
+		$bac_id,
+		$bac2scaf{$bac_id}->[1], #start in scaffold
+		$bac2scaf{$bac_id}->[2], #end in scaffold
+		$current_orientation || '', #orientation
+		'' #contained?
+		);
+	    
+	    $contig2chr{$bac_id} = \@current_bac_data;
+	    my $bac_begin = $current_bac_data[1] + $current_bac_data[6] -1;
+	    $start2chr{$bac_begin} = \@current_bac_data;
+
+	}
+    }#end addition of bacs to contig2chr
+    
+    
+    print $OUTTPF "\n##=== Begining of TPF Data ===\n";
+    
+    
+    my @ordered_starts = sort {$a <=> $b} keys %start2chr;
+        my $current_id = 0;
+    my $i;
+    my $next_end;
+    my $previous_end;
+    my $current_length = 0;
+    my $current_position = 0;
+
+
+    while ($ordered_starts[$current_id]){
+
+	$current_position ++;
+	if($start2chr{$ordered_starts[$current_id]}->[5] =~ m/^C/){ #is bac
+	    
+	    
+	    my $current_bac_start = 
+		$start2chr{$ordered_starts[$current_id]}->[1];
+	    
+	    my $current_bac_end = $start2chr{
+		$ordered_starts[$current_id]}->[1] +
+		    $bac2scaf{$start2chr{
+			$ordered_starts[$current_id]}->[5]}->[2];
+	    
+	    if ($ordered_starts[$current_id + 1]){
+
+		my $next_start = $start2chr{
+		    $ordered_starts[$current_id + 1]}->[1];
+
+		if($start2chr{
+		    $ordered_starts[$current_id + 1]}->[6] !~m/^\d+$/){
+		    #next is gap
+		    
+		    $next_end = $next_start + 
+			($start2chr{$ordered_starts[$current_id + 1]}->[5]);
+		    #gap length
 		}
+		
+		else{ #next is not gap
+		    
+		    $next_start += $start2chr{
+			$ordered_starts[$current_id + 1]}->[6] - 1;
+		    
+		    $next_end = $next_start + 
+		    $start2chr{$ordered_starts[$current_id + 1]}->[7] -
+		    $start2chr{$ordered_starts[$current_id + 1]}->[6];
+		    
+		}
+		
+		if($start2chr{
+		    $ordered_starts[$current_id - 1]}->[6] =~m/^\d+$/){
+		    #not gap
+		    
+		    $previous_end = $start2chr{
+			$ordered_starts[$current_id - 1]} +#start
+			$start2chr{$ordered_starts[$current_id - 1]}->[7] -
+			$start2chr{$ordered_starts[$current_id - 1]}->[6];
+		    #cotig length
+		    
+		}
+		
+		else{#gap
+		    
+		    $previous_end=$start2chr{
+			$ordered_starts[$current_id - 1]}->[1] +
+		    #start scaf
+			$start2chr{$ordered_starts[$current_id - 1]}->[5];
+		    #gapLength;
+		}
+		
+		#look at previous data, if gap, will be accounted for in output
+		if($start2chr{
+		    $ordered_starts[$current_id - 1]}->[6] =~ m/^\d+$/){
+		    #prevous is not gap
 
-		elsif($bac_begin >= $start_contig[$i]){#around bac_start
-		    if($id_contig[$i] =~m/^[0-9]/){#gap (contig start with 'A' and BACs start with 'C')
-			#alter to remove gap where bac overlaps
-			$end_contig[$i] = $bac_begin-1;#gap set to end at  bac start
-		    }	
-		    #insert bac after obj in array
-		    $bac_scaffold{$q_id} = $s_id;
-		    splice(@start_contig,$i+1,0,$bac_begin || '');
-		    splice(@end_contig,$i+1,0,$bac_end || '');
-		    splice(@chr_contig,$i+1,0,$bac_chr || '');
-		    splice(@id_contig,$i+1,0,$q_id || '');
-		    splice(@tpf_output_initial,$i+1,0,['error','error','error','error']);
-		    splice(@turnout,$i+1,0,'');
-		    if($id_contig[$i] !~m/^[0-9]/){#not gap
-			$no_version = $id_contig[$i];
-			$no_version =~s/(.*?)\.\d+/$1/; #remove version number
-			$turnout[$i+1] = 'CONTAINED_TURNOUT'."\t".$no_version;
-			if($id_contig[$i+2] =~m/^C\d\dHBa/){#current bac followed by bac
-			    if($start_contig[$i+2] > $bac_begin){
-				$no_version = $q_id;
-				$no_version =~s/(.*?)\.\d+/$1/; #remove version number
-				$turnout[$i+2] = 'CONTAINED_TURNOUT'."\t".$no_version;
-			    }
-			    elsif($start_contig[$i+2] < $bac_begin){
-				#SWITCH PLACES, AND SET CURRENT TO IN OLD
-				#replace both locations with old bac info
-				splice(@start_contig,$i+1,1,$start_contig[$i+2]);
-				splice(@end_contig,$i+1,1,$end_contig[$i+2]);
-				splice(@chr_contig,$i+1,1,$chr_contig[$i+2]);
-				splice(@id_contig,$i+1,1,$id_contig[$i+2]);
+		    if($start2chr{$ordered_starts[$current_id-1]}->[2] > 
+		       $start2chr{$ordered_starts[$current_id]}->[1] ){
+			#around bac start
+			
+			#make current back contained turnout of previous
+			$start2chr{$ordered_starts[$current_id]}->[9] = 
+			    'CONTAINED TURNOUT'."\t".
+			    $start2chr{$ordered_starts[$current_id - 1]}->[5];
+		    }#end around bac start
+		    
+		    
+		    if($previous_end > $current_bac_end){#bac in previous contig
+			$start2chr{$ordered_starts[$current_id]}->[9] = 
+			'CONTAINED'."\t".$start2chr{
+			    $ordered_starts[$current_id - 1]}->[5];
+		    }
 
-				#change second bac to current information
-				splice(@start_contig,$i+2,1,$bac_begin || '');
-				splice(@end_contig,$i+2,1,$bac_end || '');
-				splice(@chr_contig,$i+2,1,$bac_chr || '');
-				splice(@id_contig,$i+2,1,$q_id || '');
-				$no_version = $id_contig[$i];
-				$no_version =~s/(.*?)\.\d+/$1/; #remove version number
-				$turnout[$i+1] = 'CONTAINED_TURNOUT'."\t".$no_version;
-				$no_version = $id_contig[$i+1];
-				$no_version =~s/(.*?)\.\d+/$1/; #remove version number
-				$turnout[$i+2] = 'CONTAINED_TURNOUT'."\t".$no_version;
-			    }
+		    $i = 1;
+		    while($i > 0 && $ordered_starts[$current_id + $i] &&
+			  $start2chr{
+			      $ordered_starts[$current_id + $i]}->[1]){
+			
+			
+			#reset start
+			my $next_start = 
+			    $start2chr{$ordered_starts[$current_id+$i]}->[1];
+			
+			$next_end = '';#reset end
+
+			if($start2chr{$ordered_starts[$current_id + $i]}->[6] =~
+			   m/^\d+$/){#not gap
+			    $next_end = $next_start + 
+				$start2chr{
+				    $ordered_starts[$current_id + $i]}->[7] -
+					$start2chr{$ordered_starts[
+						       $current_id + $i]}->[6];
+			    
 			}
+			elsif($start2chr{
+			    $ordered_starts[$current_id + $i]}->[5] =~
+			      m/^\d+$/){ #gap
+
+			    $next_end = $next_start + 
+				$start2chr{$ordered_starts[
+					       $current_id + $i]}->[5];
+			    #gap length
+			}
+			
+			if ($current_bac_start < $next_start && 
+			    $next_end < $current_bac_end){#in bac
+			    
+			    if ($start2chr{$ordered_starts[
+					       $current_id + $i]}->[4] eq 'O'){
+				               #bac
+				
+				$start2chr{
+				    $ordered_starts[$current_id + $i]}->[9] =
+					'CONTAINED'."\t".$start2chr{
+					    $ordered_starts[$current_id]}->[5];
+			    } #end if bac
+			    
+			    else{#remove
+				
+				if($start2chr{$ordered_starts[
+						  $current_id + $i]}->[4] eq
+				   'U'){ #fill unknown gap!  MAYBE....
+				    my $k=$i+1;
+				    while (!$contig2scaf{
+					$start2chr{$ordered_starts[
+						       $current_id+$k]}->[5]}){
+					
+					$k++;
+					   }
+
+				    print "JOINED SCAFFOLDS(".
+					$contig2scaf{$start2chr{
+					    $ordered_starts[$current_id]}->[5]}.
+				        " and ".
+					$contig2scaf{$start2chr{
+					    $ordered_starts[
+						$current_id + $k]}->[5]}.
+					")!!!in $agp...\twhere BAC_id=".
+					$start2chr{
+					    $ordered_starts[$current_id]}->[5].
+					"\n";
+
+				}
+
+				splice(@ordered_starts,$current_id + $i,1);
+
+				$i--;#cancel out addition at end of while
+
+
+			    } #end remove, not bac
+			    
+			}#end in bac
+			
+			elsif($next_end > $current_bac_end && 
+			      $next_start < $current_bac_end){#end of bac
+
+			    for(my $j=0; $j<$i; $j++){#find turnout_id
+
+			    $start2chr{$ordered_starts[$current_id + $i]}->[9] =
+				'CONTAINED TURNOUT'."\t".
+				$start2chr{
+				    $ordered_starts[$current_id + $j]}->[5];
+
+			    } #end for turnout
+
+
+			} #end elsif at end of bac
+			
+			$i++;
+			
+			
+		    } #end of while
+		    
+		    
+		    
+		} #end if not gap
+
+		
+	    }#end while next exists
+	    
+	    my $after = $current_id + 1;
+	    my $before = $current_id - 1;
+	    
+
+	    while($ordered_starts[$after] &&
+	       $start2chr{$ordered_starts[$after]}->[4] ne 'W'){#gap
+		$after++;
+	    }
+	    
+	    while($ordered_starts[$before] &&
+	       $start2chr{$ordered_starts[$before]}->[4] ne 'W'){#gap
+		$before--;
+	    }
+	    
+	    
+	    #print bac
+	    if ($ordered_starts[$after] && $ordered_starts[$before] &&
+		$start2chr{$ordered_starts[$after]}->[8] &&
+		$start2chr{$ordered_starts[$before]}->[8] &&
+		$start2chr{$ordered_starts[$after]}->[8] eq 
+		$start2chr{$ordered_starts[$before]}->[8]){
+		#before and after orientation same
+		if ($start2chr{$ordered_starts[$current_id]}->[8] eq 'REV'){
+
+		    if($start2chr{$ordered_starts[$before]}->[8] eq '+'){
+
+			$start2chr{$ordered_starts[$current_id]}->[8] = '-';
 		    }
-		    $i++ #to correctly calculate next contig/gap
+		    
+		    if($start2chr{$ordered_starts[$before]}->[8] eq '-'){
+
+			$start2chr{$ordered_starts[$current_id]}->[8] = '+';
+		    }
+
+		} #end reverse
+
+		else{
+		    $start2chr{$ordered_starts[$current_id]}->[8] = 
+			$start2chr{$ordered_starts[$after]}->[8];
+		}
+		
+	    } #end same orientation around
+	    
+	    elsif(!$ordered_starts[$after] ||
+		  $start2chr{$ordered_starts[$current_id + 1]}->[4] eq 'U'){
+		
+		if ($start2chr{$ordered_starts[$current_id]}->[8] eq 'REV'){
+
+		    if($start2chr{$ordered_starts[$before]}->[8] eq '+'){
+
+			$start2chr{$ordered_starts[$current_id]}->[8] = '-';
+		    }
+		    
+		    if($start2chr{$ordered_starts[$before]}->[8] eq '-'){
+
+			$start2chr{$ordered_starts[$current_id]}->[8] = '+';
+		    }
 		}
 
-		elsif($bac_begin <= $start_contig[$i] && 
-		      $bac_end >= $end_contig[$i]){#within bac
-		    #remove contig/gap from each array 
-		    splice(@start_contig,$i,1);
-		    splice(@end_contig,$i,1);
-		    splice(@chr_contig,$i,1);
-		    splice(@id_contig,$i,1);
-		    splice(@tpf_output_initial,$i,1);
-		    splice(@turnout,$i,1);
-		    $i--; #re-set i due to removed space
+		else{
+		    $start2chr{$ordered_starts[$current_id]}->[8] = 
+			$start2chr{$ordered_starts[$before]}->[8];
 		}
+		
+	    }
+	    
+	    elsif(!$ordered_starts[$before] ||
+		  $start2chr{$ordered_starts[$current_id - 1]}->[4] eq 'U'){
 
-		elsif($bac_begin <= $start_contig[$i] && 
-		      $bac_end <= $end_contig[$i]){#around bac end
-		    if(!($id_contig[$i] =~m/^[0-9]/)){#gap
-			#alter to remove gap where bac overlaps
-			$start_contig[$i] = $bac_end; #set gap start at bac end
+		if ($start2chr{$ordered_starts[$current_id]}->[8] eq 'REV'){
+
+		    if($start2chr{$ordered_starts[$after]}->[8] eq '+'){
+
+			$start2chr{$ordered_starts[$current_id]}->[8] = '-';
 		    }
-		    else{
-			$no_version = $id_contig[$i-1];
-			$no_version =~s/(.*?)\.\d+/$1/; #remove version number
-			$turnout[$i] = 'CONTAINED_TURNOUT'."\t".$no_version;
+		    
+		    if($start2chr{$ordered_starts[$after]}->[8] eq '-'){
+
+			$start2chr{$ordered_starts[$current_id]}->[8] = '+';
 		    }
-		    $i= $contig_count; #move on(next bac), ends while i
+		}
+		else{
+		    $start2chr{$ordered_starts[$current_id]}->[8] = 
+			$start2chr{$ordered_starts[$after]}->[8];
 		}
 	    }
-	    $i++; #moves to next contig/gap
-	}
-    }
-}
-
-my $bac_orient;
-my $id_size = @id_contig;
-my $current_line = 0;
-while($id_contig[$current_line] && $current_line <= $id_size){#contig or gap
-    if($tpf_output_initial[$current_line][0] eq 'GAP'){#gap
-	my $contig_length = $end_contig[$current_line] - $start_contig[$current_line] + 1;
-	print join("\t",('GAP', #true for all gaps
-			 $tpf_output_initial[$current_line][1], #data (gap type)
-			 $contig_length,
-			 $tpf_output_initial[$current_line][3], #type
-			 '', #true for all gaps
-			 ));
-	print "\n";
-    }
-    elsif($id_contig[$current_line] =~m/^AEKE/){#contig
-	if($turnout[$current_line] eq ''){
-	    print join("\t",($id_contig[$current_line], 
-			     $tpf_output_initial[$current_line][1],#data
-			     $tpf_output_initial[$current_line][2],#scaffold
-			     $tpf_output_initial[$current_line][3],#$orientation
-		       ));
-	}
-	else{
-	    print join("\t",($id_contig[$current_line], 
-			     $tpf_output_initial[$current_line][1],#data
-			     $tpf_output_initial[$current_line][2],#scaffold
-			     $turnout[$current_line]#turnout in place of orientation
-		       ));
-	}
-	print "\n";
-#remember: %tpf_output_initial{id}=@($component,$data,$scaffold,$orientation_tpf)
-    }
-
-    elsif($id_contig[$current_line] =~m/^C\d\dHBa/){#bac's start with C##HBa..., and are not in the previous tpf file
-	my $previous_line = $current_line - 1;
-	my $next_line = $current_line + 1;
-	if($id_contig[$previous_line] !~m/^AEKE/){#bac began in a gap or another bac
-	    if($id_contig[$previous_line - 1]!~m/^AEKE/){#Bac is proceded by bac that starts at a gap
-		$next_line++;
-	    }
-	    if($tpf_output_initial[$previous_line - 1][3]=$tpf_output_initial[$next_line][3]){#if orientation of last contig = orientation of next contig: set orientation
-		$bac_orient = $tpf_output_initial[$next_line][3];
-	    }
-	    elsif($tpf_output_initial[$previous_line - 1][3] ne $tpf_output_initial[$next_line][3]){#if previous contig orientation diffrent from following contig orientation, orientation of BAC not known
-		print STDERR "ERROR!!!!!     NO BAC ORIENTATION!!!!\nbefore=$tpf_output_initial[$previous_line - 1][3]!=$tpf_output_initial[$next_line][3]=after)\n\n\n\n";
-	    }	
-	}
-	if($id_contig[$next_line] !~m/^AEKE/){#bac end at non-contig (either gap or another BAC
-	    if($id_contig[$next_line + 1]!~m/^AEKE/){#Bac is following bac, followed by gap
-		$next_line++;
-	    }
-	    if($tpf_output_initial[$previous_line][3]=$tpf_output_initial[$next_line+1][3]){#if orientation of last contig = orientation of next contig: set orientation
-		$bac_orient = $tpf_output_initial[$previous_line][3];
-	    }
-	    elsif($tpf_output_initial[$previous_line][3] ne $tpf_output_initial[$next_line+1][3]){#if previous contig orientation diffrent from following contig orientation, orientation of BAC not known
-		print STDERR "ERROR!!!!!    NO BAC ORIENTATION!!!!\nbefore=$tpf_output_initial[$previous_line][3]!=$tpf_output_initial[$next_line+1][3]=afer)\n\n\n\n";
-	    }
-	    if($turnout[$current_line] eq ''){
-		print join("\t",($id_contig[$current_line], '?', $bac_scaffold{$id_contig[$current_line]}, $bac_orient || ''));
-	    }
+	    
 	    else{
-		print join("\t",($id_contig[$current_line], '?', $bac_scaffold{$id_contig[$current_line]}, $turnout[$current_line]));
+		$start2chr{$ordered_starts[$current_id]}->[8] = 'ERROR';
 	    }
-	    print "\n";
-	}
 
-	else{#was not following a gap, thus overlaped with scaffold and can print normaly, the orientation will be filled automaticaly with conversion of file.
-	    if($turnout[$current_line] eq ''){
-		print join("\t",($id_contig[$current_line], '?', $bac_scaffold{$id_contig[$current_line]}, ''));
+
+
+	    if($start2chr{$ordered_starts[$current_id]}->[8] eq '-'){
+		$current_orientation = 'MINUS';
 	    }
+	    
+	    elsif($start2chr{$ordered_starts[$current_id]}->[8] eq '+'){
+		$current_orientation = 'PLUS';
+	    }
+
+	    else{ #ERROR
+		$current_orientation = 'ERROR';
+	    }
+
+	    print $OUTTPF join(
+		"\t", 
+		$start2chr{$ordered_starts[$current_id]}->[5], #bac_id
+		'?',
+		$bac2scaf{$start2chr{$ordered_starts[$current_id]}->[5]}->[0],
+		#s_id
+		); #end of print join
+
+
+	    $current_length = $start2chr{$ordered_starts[$current_id]}->[2] -
+		$start2chr{$ordered_starts[$current_id]}->[1];
+
+
+	    print $OUTAGP join(
+		"\t",
+		$start2chr{$ordered_starts[$current_id]}->[0],
+		$current_position,
+		($current_position + $current_length) || '',
+		$current_id,
+		$start2chr{$ordered_starts[$current_id]}->[4],
+		$start2chr{$ordered_starts[$current_id]}->[5],
+		$start2chr{$ordered_starts[$current_id]}->[6],
+		$start2chr{$ordered_starts[$current_id]}->[7],
+		$start2chr{$ordered_starts[$current_id]}->[8]
+		), "\n";
+	    
+	    $current_position += $current_length;
+
+	    if($start2chr{$ordered_starts[$current_id]}->[9]){
+		print $OUTTPF "\t".
+		    $start2chr{$ordered_starts[$current_id]}->[9].
+		    "\n";
+	    } #end of if has contained info
+	    
 	    else{
-		print join("\t",($id_contig[$current_line], '?', $bac_scaffold{$id_contig[$current_line]}, $turnout[$current_line]));
-	    }		
-	    print "\n";
-	}
-    }
-    $current_line++;
-}
+		print $OUTTPF "\t".
+		    $current_orientation. #orient
+		    "\n";
+	    } #end else, print orientation
+
+
+	}# end if(bac)
+	
+	
+	else{ #not bac
+
+
+
+	    if($start2chr{$ordered_starts[$current_id]}->[6] =~ m/^\d+$/){
+		#not gap
+
+		
+		$current_length = $start2chr{
+		    $ordered_starts[$current_id]}->[2] -
+			$start2chr{$ordered_starts[$current_id]}->[1];
+
+
+		print $OUTAGP join(
+		    "\t",
+		    $start2chr{$ordered_starts[$current_id]}->[0],
+		    $current_position,
+		    ($current_position + $current_length) || '',
+		    $current_id,
+		    $start2chr{$ordered_starts[$current_id]}->[4],
+		    $start2chr{$ordered_starts[$current_id]}->[5],
+		    $start2chr{$ordered_starts[$current_id]}->[6],
+		    $start2chr{$ordered_starts[$current_id]}->[7],
+		    $start2chr{$ordered_starts[$current_id]}->[8]
+		    ), "\n";
+		
+		$current_position += $current_length;
+
+
+		if($start2chr{$ordered_starts[$current_id]}->[8] eq '-'){
+		    $current_orientation = 'MINUS';
+		}
+		
+		if($start2chr{$ordered_starts[$current_id]}->[8] eq '+'){
+		    $current_orientation = 'PLUS';
+		}
+
+
+		my $current_contig_id = (
+		    $start2chr{$ordered_starts[$current_id]}->[5]);
+
+		$current_contig_id =~ s/(.*?)\.\d+/$1/; #remove version number
+
+		print $OUTTPF join("\t",
+			 $start2chr{$ordered_starts[$current_id]}->[5], #id
+			 '?',
+			 $contig2scaf{$current_contig_id},#s_id
+		    );
+		
+		if($start2chr{$ordered_starts[$current_id]}->[9]){
+		    
+		    print $OUTTPF "\t".
+			$start2chr{$ordered_starts[$current_id]}->[9].
+			"\n";
+		}
+		
+		elsif($start2chr{$ordered_starts[$current_id]}->[8]){
+		    
+		    print $OUTTPF "\t".
+			$current_orientation.
+			"\n";
+		}
+
+		else{
+		    print $OUTTPF "\n";
+		}
+		
+	    }
+	    elsif(
+		$start2chr{$ordered_starts[$current_id + 1]}->[6] =~ m/^\d+$/ &&
+		$start2chr{$ordered_starts[$current_id - 1]}->[6] =~ m/^\d+$/){
+		#gap
+
+		if($start2chr{$ordered_starts[$current_id]}->[4] eq 'U'){
+		    #unknown gap
+		    $current_length = 100;
+		}
+
+		else{
+		   $current_length = $start2chr{
+		       $ordered_starts[$current_id]}->[2] -
+			   $start2chr{$ordered_starts[$current_id]}->[1];
+		}
+		
+		
+		print $OUTAGP join(
+		    "\t",
+		    $start2chr{$ordered_starts[$current_id]}->[0],
+		    $current_position,
+		    ($current_position + $current_length) || '',
+		    $current_id,
+		    $start2chr{$ordered_starts[$current_id]}->[4],
+		    $current_length || '',
+		    $start2chr{$ordered_starts[$current_id]}->[6],
+		    $start2chr{$ordered_starts[$current_id]}->[7],
+		    ''
+		    ), "\n";
+		
+		$current_position += $current_length;
+		
+		
+		my $gap_length = #end:
+		    ($start2chr{$ordered_starts[$current_id + 1]}->[1] + 
+		        #next s_start
+		     $start2chr{$ordered_starts[$current_id + 1]}->[6] - 
+		        #next start on scaf
+		     1) - #correct for counting
+		     #start:
+		     #prev s_start:
+		     ($start2chr{$ordered_starts[$current_id - 1]}->[1] + 
+		      #prev end:
+		      $start2chr{$ordered_starts[$current_id - 1]}->[7] - 
+		      #prev start on staf:
+		      $start2chr{$ordered_starts[$current_id - 1]}->[6]);  
+		#end gap_length calculation
+
+
+		if($start2chr{$ordered_starts[$current_id]}->[4] eq 'U'){
+
+		    my $gap_type = "TYPE-2";
+		    if ($start2chr{
+			$ordered_starts[$current_id]}->[7] =~ m/no/i){
+
+			#unknown contig gap
+			$gap_type = "TYPE-3";
+		    }
+		    
+		    print $OUTTPF
+			join("\t", 
+			     'GAP',
+			     $gap_type || '',
+			     '', #length of gap, not known
+			     '', #type of gap, blank for not known
+			     ''
+			),"\n"; #end print statment
+
+		}#end if unknown gap
+		
+
+		else{ #known gap
+		    
+		    print $OUTTPF
+		    join("\t", 
+			 'GAP',
+			 "TYPE-2",
+			 $gap_length, #length of gap
+			 "PAIRED ENDS", #type of gap (PAIRED ENDS?)
+			 ''
+		    ),"\n"; #end print statment
+
+		}
+		
+	    }  #end if gap print 
+	    
+	    else{
+		print $OUTTPF "***************ERROR*********************\n";
+		print $OUTAGP "***************ERROR*********************\n";
+
+	    }
+	} #end else of if(bac)
+
+
+	$current_id++;
+
+    } #end while.    
+    
+    print $OUTTPF "##=== End of TPF Data ===\n";
+
+
+
+
+
+
+}  #end file
+
+
