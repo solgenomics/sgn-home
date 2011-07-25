@@ -108,11 +108,11 @@ foreach my $agp (glob $dir."*.comp.agp") {
 		
 		#reverse orientation
 		$scaf_start = $bac2scaf{$bac_id}->[4] + #end in scaffold
-		    $scaf2start{$bac2scaf{$bac_id}->[0]};
+		    $scaf2start{$bac2scaf{$bac_id}->[0]} - 1;
 		    #start of scaffold
 
 		$scaf_end = $bac2scaf{$bac_id}->[3] + #start in scaffold
-		    $scaf2start{$bac2scaf{$bac_id}->[0]};
+		    $scaf2start{$bac2scaf{$bac_id}->[0]} - 1;
 		    #start of scaffold
 		$current_orientation = 'REV';
 		
@@ -121,11 +121,11 @@ foreach my $agp (glob $dir."*.comp.agp") {
 	    else{ #correct orientation
 		
 		$scaf_end = $bac2scaf{$bac_id}->[4] + #end in scaffold
-		    $scaf2start{$bac2scaf{$bac_id}->[0]};
+		    $scaf2start{$bac2scaf{$bac_id}->[0]} - 1;
 		    #start of scaffold
 
 		$scaf_start = 	$bac2scaf{$bac_id}->[3] + #start in scaffold
-		    $scaf2start{$bac2scaf{$bac_id}->[0]};
+		    $scaf2start{$bac2scaf{$bac_id}->[0]} - 1;
 		    #start of scaffold	
 
 		$current_orientation = '';
@@ -255,26 +255,44 @@ foreach my $agp (glob $dir."*.comp.agp") {
 				#due to estimation  not accurate,
 				#tests needed to varify.
 
-				my $k=$i+1;
-				while (!$contig2scaf{
-				    $start2chr{$ordered_starts[
-						   $current_id+$k]}->[5]}){
-				    
-				    $k++;
+				print STDERR "FILLED UNKNOWN GAP! ";
+
+				if($start2chr{
+				    $ordered_starts[$current_id+$i]}->[7] =~ 
+				      m/^yes$/i){#unknown clone gap (linkage)
+
+				    print STDERR "IN: ".
+					$contig2scaf{$start2chr{
+					    $ordered_starts[$current_id]}->[5]};
 				}
-				
-				print "JOINED SCAFFOLDS(".
-				    $contig2scaf{$start2chr{
-					$ordered_starts[$current_id]}->[5]}.
+
+				elsif($start2chr{
+				    $ordered_starts[$current_id+$i]}->[7] =~ 
+				      m/^no$/i){
+				    #unknown contig gap (no linkage)
+				    
+				    my $k=$i+1;
+				    while (!$contig2scaf{
+					$start2chr{
+					    $ordered_starts[
+						$current_id+$k]}->[5]}){
+					
+					$k++;
+				    }
+				    
+				    print STDERR "JOINING: ".
+					$contig2scaf{$start2chr{
+					    $ordered_starts[$current_id]}->[5]}.
 					" and ".
 					$contig2scaf{$start2chr{
 					    $ordered_starts[
-						$current_id + $k]}->[5]}.
-					")!!!in $agp...\twhere BAC_id=".
-					$start2chr{
-					    $ordered_starts[$current_id]}->[5].
-				        "\n";
-				
+						$current_id + $k]}->[5]};
+
+				}
+				print STDERR " from $agp...\twhere BAC_id=".
+				    $start2chr{
+					$ordered_starts[$current_id]}->[5].
+				    "\n";
 			    }
 
 			    splice(@ordered_starts,$current_id + $i,1);
