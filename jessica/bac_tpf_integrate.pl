@@ -31,7 +31,7 @@ foreach my $agp (glob $dir."*.comp.agp") {
     my $tpf = $agp.".tpf";
     
     print STDERR "opening files $agp and $tpf...\n";
-    
+
     $agp =~ s/(.*?)\.agp$/$1/;
     open (my $OUTTPF, ">", $agp.".bac.agp.tpf");
     open (my $OUTAGP, ">", $agp.".bac.agp");
@@ -169,16 +169,14 @@ foreach my $agp (glob $dir."*.comp.agp") {
     my $previous_end;
     my $current_length = 0;
     my $current_position_move = 0;
-
+    my $count = 0;
 
 
     while ($ordered_starts[$current_id]){
 
-
 	if($start2chr{$ordered_starts[$current_id]}->[5] =~ m/^C/){ #is bac
 	    
-	    
-    
+ 
 	    my $current_bac_end =
 		$start2chr{$ordered_starts[$current_id]}->[2];
 	    
@@ -189,8 +187,7 @@ foreach my $agp (glob $dir."*.comp.agp") {
 		$next_end =
 		    $start2chr{$ordered_starts[$current_id + 1]}->[2];
 
-	    
-
+		$previous_end = 0;
 		if ($ordered_starts[$current_id - 1]){
 
 		    $previous_end =
@@ -205,20 +202,48 @@ foreach my $agp (glob $dir."*.comp.agp") {
 		    
 		    if($previous_end > $ordered_starts[$current_id]){
 			#around bac start
+
+			$count = 1;
+			while($start2chr{
+			    $ordered_starts[$current_id - $count]}->[9] =~
+			      m/^CONTAINED/i &&
+			      $start2chr{$ordered_starts[
+					     $current_id - $count]}->[9] !~
+			      m/^CONTAINED TURNOUT/i){
+			    #find furthest/largest contained
+			    
+			    $count++;
+			}
+		
+			if($start2chr{
+			    $ordered_starts[$current_id - 
+					    $count]}->[2] > $current_bac_end){
+			    #overlaping contained
+			    
+			    $start2chr{$ordered_starts[$current_id]}->[9] = 
+				'CONTAINED'."\t".
+				$start2chr{
+				    $ordered_starts[$current_id - $count]}->[5]
+			}
 			
-			#make current back contained turnout of previous
-			$start2chr{$ordered_starts[$current_id]}->[9] = 
-			    'CONTAINED TURNOUT'."\t".
-			$start2chr{$ordered_starts[$current_id - 1]}->[5];
+			else{			
+			    #make current back contained turnout of previous
+			    $start2chr{$ordered_starts[$current_id]}->[9] = 
+				'CONTAINED TURNOUT'."\t".
+				$start2chr{
+				    $ordered_starts[$current_id - 1]}->[5];
+			}
 		    }#end around bac start
 		    
 		
 		    if($previous_end > $current_bac_end){#bac in previous contig
+
+
 			$start2chr{$ordered_starts[$current_id]}->[9] = 
 			    'CONTAINED'."\t".$start2chr{
 				$ordered_starts[$current_id - 1]}->[5];
 		    }
-		}
+		} #end prev not gap
 
 		$i = 1;
 		while($i > 0 && $ordered_starts[$current_id + $i] &&
@@ -271,13 +296,13 @@ foreach my $agp (glob $dir."*.comp.agp") {
 				      m/^no$/i){
 				    #unknown contig gap (no linkage)
 				    
-				    my $k=$i+1;
+				    $count=$i+1;
 				    while (!$contig2scaf{
 					$start2chr{
 					    $ordered_starts[
-						$current_id+$k]}->[5]}){
+						$current_id+$count]}->[5]}){
 					
-					$k++;
+					$count++;
 				    }
 				    
 				    print STDERR "JOINING: ".
@@ -286,10 +311,11 @@ foreach my $agp (glob $dir."*.comp.agp") {
 					" and ".
 					$contig2scaf{$start2chr{
 					    $ordered_starts[
-						$current_id + $k]}->[5]};
+						$current_id + $count]}->[5]};
 
 				}
-				print STDERR " from $agp...\twhere BAC_id=".
+
+				print STDERR " from $agp...Where BAC_id=".
 				    $start2chr{
 					$ordered_starts[$current_id]}->[5].
 				    "\n";
@@ -301,30 +327,142 @@ foreach my $agp (glob $dir."*.comp.agp") {
 
 
 			} #end remove, not bac
+
+			if($start2chr{
+			    $ordered_starts[$current_id - 1]}->[9] =~
+			   m/^CONTAINED/i &&
+			   $start2chr{$ordered_starts[
+					  $current_id]}->[9] !~
+			   m/^CONTAINED TURNOUT/i){#if prev contained
+
+			    $count = 1;
+			    while($start2chr{
+				$ordered_starts[$current_id - $count]}->[9] =~
+				  m/^CONTAINED/i &&
+				  $start2chr{$ordered_starts[
+						 $current_id - $count]}->[9] !~
+				  m/^CONTAINED TURNOUT/i){
+			    #find furthest/largest contained
+				
+				$count++;
+			    }
 			    
+			    if($start2chr{
+				$ordered_starts[
+				    $current_id - 
+				    $count]}->[2] > $current_bac_end){
+				#overlaping contained
+				
+				$start2chr{$ordered_starts[$current_id]}->[9] = 
+				'CONTAINED'."\t".
+				$start2chr{
+				    $ordered_starts[$current_id - $count]}->[5]
+			    }
+			} #end previous contained
 		    }#end in bac
-			
+		    
 		    elsif($next_end > $current_bac_end && 
 			  $next_start < $current_bac_end){#end of bac
 
+			if($start2chr{
+			    $ordered_starts[$current_id]}->[9] eq 
+			   'CONTAINED'){
 
-			$start2chr{$ordered_starts[$current_id + $i]}->[9] =
-			    'CONTAINED TURNOUT'."\t".
-			    $start2chr{
-				$ordered_starts[$current_id]}->[5];
-			#will result in turnout of most recent BAC.
+			    $count = 1;
+			    while($start2chr{
+				$ordered_starts[$current_id - $count]}->[9] =~
+				  m/^CONTAINED/i &&
+				  $start2chr{
+				      $ordered_starts[
+					  $current_id - $count]}->[9] !~
+				  m/^CONTAINED TURNOUT/i){
+				#find furthest/largest contained
+				
+				$count++;
+			    }
+			    
+			    if($start2chr{$ordered_starts[
+					      $current_id - 
+					      $count]}->[2] > $ordered_starts[
+				   $current_id]){ #overlaping contained
+				
+				$start2chr{$ordered_starts[$current_id]}->[9] = 
+				    'CONTAINED'."\t".
+				    $start2chr{$ordered_starts[
+						   $current_id - $count]}->[5]
+			    }
 
-		    } #end elsif at end of bac
+			    else{
+				$start2chr{
+				    $ordered_starts[$current_id + $i]}->[9] =
+					'CONTAINED TURNOUT'."\t".
+					$start2chr{
+					    $ordered_starts[$current_id]}->[5];
+				#will result in turnout of most recent BAC.
+			    }
+			}#end if turnout of contained
 			
+			elsif($start2chr{$ordered_starts[
+				$current_id + $i]}->[6] !~ m/^\d+$/ && 
+			      $start2chr{$ordered_starts[
+				$current_id]}->[2] > $ordered_starts[
+				  $current_id+2]){
+			    #previous gap that containes overlapping data,
+
+			    #thus gap needs to be removed:
+			    splice(@ordered_starts,$current_id + 1,1);
+			    $i--; #correct addition at end of while
+			}
+
+			else{
+			    $start2chr{
+				$ordered_starts[$current_id + $i]}->[9] =
+				    'CONTAINED TURNOUT'."\t".
+				    $start2chr{
+					$ordered_starts[$current_id]}->[5];
+			    #will result in turnout of most recent BAC
+			}
+			
+		    } #end elsif at end of bac
+		    
 		    $i++;
 			
 			
 		} #end of while
 		    
-
-
 		
 	    }#end while next exists
+
+	    if(!$start2chr{$ordered_starts[$current_id]}->[9] && 
+	       $start2chr{$ordered_starts[
+			      $current_id-1]}->[9] =~ m/^CONTAINED/i && 
+	       $start2chr{$ordered_starts[
+			      $current_id - 1]}->[9] !~ m/^CONTAINED TURNOUT/){
+		#no contained info, prev contained
+
+			$count = 1;
+			while($start2chr{
+			    $ordered_starts[$current_id - $count]}->[9] =~
+			      m/^CONTAINED/i &&
+			      $start2chr{$ordered_starts[
+					     $current_id - $count]}->[9] !~
+			      m/^CONTAINED TURNOUT/i){
+			    #find furthest/largest contained
+			    
+			    $count++;
+			}
+		
+			if($start2chr{
+			    $ordered_starts[$current_id - 
+					    $count]}->[2] > $current_bac_end){
+			    #overlaping contained
+			    
+			    $start2chr{$ordered_starts[$current_id]}->[9] = 
+				'CONTAINED'."\t".
+				$start2chr{
+				    $ordered_starts[$current_id - $count]}->[5]
+			}
+	    }#end if previous contained
 	    
 	    my $after = $current_id + 1;
 	    my $before = $current_id - 1;
@@ -595,9 +733,8 @@ foreach my $agp (glob $dir."*.comp.agp") {
 		    $start2chr{$ordered_starts[$current_id]}->[4]
 		    );
 		
-		    my $num = $current_id + 1;
 		$current_length = #next start:
-		    $ordered_starts[$num] -
+		    $ordered_starts[$current_id + 1] -
 		    #prev end:
 		    $start2chr{$ordered_starts[$current_id - 1]}->[2];  
 	
@@ -673,10 +810,6 @@ foreach my $agp (glob $dir."*.comp.agp") {
     } #end while.    
     
     print $OUTTPF "##=== End of TPF Data ===\n";
-
-
-
-
 
 
 }  #end file
