@@ -1,28 +1,54 @@
-This script is for integration of BAC data into a tpf file of contig's and gaps.
-
-##################################################
-Script IN PROGRESS!!!!!! (bac_chr_position.pl)
-Not ready for use as of yet
-##################################################
-
+The following scripts are used to integrate BAC data into 
+current agp and tpf contig/gap files:
 
 limit_bac_output.pl:
 
-	this file is used to select only the BLAST information that is of importance to you.  You can specify the parameters of the search near the top of the file.
+	this file is used to select biased the BLAST 
+	information that is of importance to you.  You can 
+	specify the parameters of the search near the top 
+	of the file.
 
-	script requires in input of the BLAST results to be searched and a file containing two columns: first the BAC id and second the correct BAC length.
+	The script requires in input of the BLAST results to
+	be searched and a file containing two columns: first 
+	the BAC id and second the correct BAC length.
 
-#########################################################
-Following script is in progress!!!
-################################################
+
 
 bac_chr_position.pl:
 
-	requires three files, two inputs.
+	This script requires an input of the BAC data to be 
+	integrated (from limit_bac_output.pl), and a folder 
+	containing both the current agp and tpf files for 
+	chromosomes of interest (use all chromosomes if you 
+	do not know which your BAC information will map to).
 
-	The list of BACs from a BLAST is required (useful to obtain with limit_bac_output script) as well as an agp file for the chromosomes being interpreted (a single file containing all agp files is preferred).
+	This script looks at each chromosome individually, 
+	taking the BAC information mapping to the chromosome 
+	and adding it to the chromosome information.  After 
+	all BACs have been checked the start positions are 
+	used to sort the data	After sorting is completed, 
+	orientation	information is added and BACs are 
+	used to replace current contigs and gaps where 
+	possible.
 
-	The tpf files associated with the inputed agp is required to be in the same location and under the same name (with an additional .tpf on the end) as the agp file.
+	A standard error output is generated when an unknown 
+	gap is removed by a BAC, as the estimated length of 
+	all such gaps is 100bp.  These locations will need to 
+	be tested to find the correct gap length, and test if 
+	the BAC truly spans the gap. The following data start 
+	and end positions as well as contained information 
+	will need to be corrected accordingly.  Until more 
+	information is known the script assumes 100bp to be 
+	the correct length of such gaps.
+
+	The script will automatically create new agp and tpf
+	files for each chromosome contained in the input 
+	folder.  The output files will contain 'bac' in their 
+	name before the agp/tpf decoration (ex: if chr1.comp.agp 
+	and chr1.comp.agp.tpf are inputed, you will get 
+	chr1.comp.bac.agp and chr1.comp.bac.agp.tpf as output 
+	files within the same folder). These files will contain 
+	the BACs associated with the given chromosome, containing 
+	all necessary information.
 
 
-	The output is a tpf file, similar to the one inputed. However the resulting file will have BACs replacing the contigs and gaps in the appropriate locations on the given chromosomes.
