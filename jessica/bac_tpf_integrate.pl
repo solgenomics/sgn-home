@@ -8,6 +8,8 @@ my $bac_file = shift;
 my $dir = shift;
 #be sure the agp and tpf are named the SAME AND in the location given.
 
+mkdir "bac_integrated_chr" unless "bac_integrated_chr";
+#creates output folder
 
 
 my %bac2scaf;
@@ -19,6 +21,7 @@ while(<$F>){#load BAC file
     if(/^$/ || /^\#/){next;} #skip blank and comment lines
     my ($bac_id, $s_id, $per_id, $len, $mismatch, $gaps, 
 	$bac_start, $bac_end, $s_start, $s_end, $e_val, $bit) = split /\t/;
+
     my @bac_info = ($s_id, $bac_start, $len, $s_start, $s_end);
     $bac2scaf{$bac_id} = \@bac_info;
     
@@ -29,12 +32,16 @@ my $current_orientation;
 foreach my $agp (glob $dir."*.comp.agp") {
     
     my $tpf = $agp.".tpf";
+    $agp =~ m/$dir/;
+	my $file_name = "$'";
+	my ($chr_now) = split(/\./, $file_name);
     
+
     print STDERR "opening files $agp and $tpf...\n";
 
     $agp =~ s/(.*?)\.agp$/$1/;
-    open (my $OUTTPF, ">", $agp.".bac.agp.tpf");
-    open (my $OUTAGP, ">", $agp.".bac.agp");
+    open (my $OUTTPF, ">", "bac_integrated_chr/".$file_name.".tpf");
+    open (my $OUTAGP, ">", "bac_integrated_chr/".$file_name);
     open ($F, "<", $agp.".agp");
 
     my %contig2chr;
@@ -174,7 +181,7 @@ foreach my $agp (glob $dir."*.comp.agp") {
 
     while ($ordered_starts[$current_id]){
 
-	if($start2chr{$ordered_starts[$current_id]}->[5] =~ m/^C/){ #is bac
+	if($bac2scaf{$start2chr{$ordered_starts[$current_id]}->[5]}){ #is bac
 	    
  
 	    my $current_bac_end =
@@ -315,7 +322,7 @@ foreach my $agp (glob $dir."*.comp.agp") {
 
 				}
 
-				print STDERR " from $agp...Where BAC_id=".
+				print STDERR " from $chr_now...Where BAC_id=".
 				    $start2chr{
 					$ordered_starts[$current_id]}->[5].
 				    "\n";

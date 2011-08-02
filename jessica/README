@@ -21,6 +21,9 @@ bac_chr_position.pl:
 	containing both the current agp and tpf files for 
 	chromosomes of interest (use all chromosomes if you 
 	do not know which your BAC information will map to).
+	It is possible to input BLAST information not from 
+	BACS, and the script should run this similarly,
+	however this has yet to be tested.
 
 	This script looks at each chromosome individually, 
 	taking the BAC information mapping to the chromosome 
@@ -41,14 +44,11 @@ bac_chr_position.pl:
 	information is known the script assumes 100bp to be 
 	the correct length of such gaps.
 
-	The script will automatically create new agp and tpf
-	files for each chromosome contained in the input 
-	folder.  The output files will contain 'bac' in their 
-	name before the agp/tpf decoration (ex: if chr1.comp.agp 
-	and chr1.comp.agp.tpf are inputed, you will get 
-	chr1.comp.bac.agp and chr1.comp.bac.agp.tpf as output 
-	files within the same folder). These files will contain 
-	the BACs associated with the given chromosome, containing 
-	all necessary information.
+	The script will automatically create a new folder in the
+	location the program is called.  Within this folder there
+	will be new agp and tpf files created for each chromosome
+	named the same as the input files.  The output files will 
+	contain the BACs associated with the given chromosome, as
+	well as all the BAC and contained information.
 
 
