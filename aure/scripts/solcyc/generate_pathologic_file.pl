@@ -189,8 +189,13 @@ while (<$D>) {
     
     if ($AGI ne "UNKNOWN") { 
 	$agi_annot{$AGI}=$protein_name; 
-	if ($reaction =~ /\d+\.\d+\.\d+\.\d+/) { 
-	    $agi_ec_number{$AGI} = $reaction; 
+	if ($reaction =~ /\d+\.\d+\.\d+\.\d+/) {
+            if (exists $agi_ec_number{$AGI}) { 
+	        push @{$agi_ec_number{$AGI}}, $reaction;
+            } 
+            else {
+                $agi_ec_number{$AGI} = [$reaction];
+            } 
 	}
     }
 }
@@ -251,7 +256,12 @@ if (defined $swpdat) {
 
 	    if ($ec_number) { 
 	        foreach my $a (@accs) { 
-		    $swissprot_ec_number{$a} = $ec_number; 
+                    if (exists $swissprot_ec_number{$a}) {
+                        push @{$swissprot_ec_number{$a}}, $ec_number;
+                    }
+                    else {
+		        $swissprot_ec_number{$a} = [$ec_number];
+                    } 
 	        }
 	    }
 
@@ -366,7 +376,7 @@ $old_id="";
 
 while (<$F>) { 
 
-    $ec_number = "";
+    my @ec_number = ();
     chomp;
     $bal++;
 
@@ -387,9 +397,9 @@ while (<$F>) {
 	$AGI=~s/(AT\dG\d+)\.\d+/$1/;
 	my $annotation = "";
 	if (exists($agi_annot{$AGI})) { 
-
-	    $ec_number = $agi_ec_number{$AGI};
-            if (defined $ec_number) {
+           
+            if (exists $agi_ec_number{$AGI}) {
+	        @ec_number = @{$agi_ec_number{$AGI}};           
                 $agiec_count++;
             } 
 	    $annotation = $agi_annot{$AGI};
@@ -400,7 +410,7 @@ while (<$F>) {
 	    
 	    $annotation = $swissprot{$id};
 	    if (exists($swissprot_ec_number{$swissprot_match{$id}})) { 
-		$ec_number = $swissprot_ec_number{$swissprot_match{$id}};
+		@ec_number = @{$swissprot_ec_number{$swissprot_match{$id}}};
                 $swpec_count++;
 	    }
 	    
@@ -431,8 +441,10 @@ while (<$F>) {
 
         print STDOUT "PRODUCT-TYPE\tP\nGENE-COMMENT\t$comment\n"; 
 
-	if ($ec_number) { 
-              print STDOUT "EC\t$ec_number\n"; 
+	if (scalar(@ec_number) > 0) {
+              foreach my $ec (@ec_number) { 
+                      print STDOUT "EC\t$ec\n";
+              } 
         }
 	print STDOUT "\/\/\n";
 
