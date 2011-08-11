@@ -157,6 +157,40 @@ print STDERR "\n\n===========================================================";
 print STDERR "\nuniprot2tab.pl initiation [$date]\n";
 print STDERR "===========================================================\n\n";
 
+print STDERR "0) Running parameters:\n\n";
+
+## LOAD THE FIELDS INTO A HASH
+
+my %fields = ();
+foreach my $fd (@afields) {
+
+    if ($fd =~ m/^(.+?)=(.+)$/) {
+	my $cat = $1;
+	my $subcat = $2;
+	my @subcat = split(/;/, $subcat);
+	
+	foreach my $scat (@subcat) {
+	    print STDERR "\tFIELD (SUBCATEGORY) SET: $cat\t$scat\n";
+	}
+	
+	$fields{$cat} = \@subcat;
+    }
+    else { 
+	print STDERR "\tFIELD (CATEGORY) SET: $fd\n";
+	$fields{$fd} = [];
+    }
+}
+print STDERR "\n";
+
+## LOAD THE ORGANISM INTO A HASH ###############
+
+my %species = ();
+foreach my $sp (@species) {
+    print STDERR "\tSPECIES FILTER ENABLED FOR: $sp\n";
+    $species{$sp} = 1;
+}
+
+
 ## PARSING ID FILE ###############
 
 my %ids = ();
@@ -186,29 +220,6 @@ else {
     print STDERR "\tNo -i <id_list_file> was supplied. Skipping step 1.";
 }
 
-## LOAD THE FIELDS INTO A HASH
-
-my %fields = ();
-foreach my $fd (@afields) {
-
-    if ($fd =~ m/^(.+?)=(.+)$/) {
-	my $cat = $1;
-	my $subcat = $2;
-	my @subcat = split(/;/, $subcat);
-	$fields{$cat} = \@subcat;
-    }
-    else { 
-	$fields{$fd} = [];
-    }
-}
-
-
-## LOAD THE ORGANISM INTO A HASH ###############
-
-my %species = ();
-foreach my $sp (@species) {
-    $species{$sp} = 1;
-}
 
 ## PARSING uniprot FILE #############
 
@@ -256,17 +267,17 @@ foreach my $upfile (@unipfiles) {
 		    
 		    ## Break the line using ';'
 		    my @line = split(/;/, $line);
+
 		    ## Take all the fields
 		    my @fields = @{$fields{$tag}};
 		    
 		    foreach my $fd (@fields) {
 			foreach my $subline (@line) {
 	
-			    if ($line =~ m/$fd=(.+)$/) {
-
+			    if ($subline =~ m/$fd=(.+)$/) {
 				push @selected, $1;
 			    }
-			    elsif ($line =~ m/$fd:(.+)$/) {
+			    elsif ($subline =~ m/$fd:(.+)$/) {
 				push @selected, $1;
 			    }
 			}
@@ -281,10 +292,22 @@ foreach my $upfile (@unipfiles) {
 
 	    ## Process species and taxon.
 
-	    $taxon =~ s/\.$//;
 	    my @taxon = split(/;\s*/, $taxon);
+	    
+	    ## Clean the species line
 	    $sps =~ s/\(.+$//;
+	    
 	    push @taxon, $sps;
+	    my @clean_taxon = ();
+	    foreach my $tx (@taxon) {
+		$tx =~ s/\s+$//;
+		$tx =~ s/^\s+//;
+		$tx =~ s/\.$//;
+		push @clean_taxon, $tx;
+	    }
+	    @taxon = @clean_taxon;
+
+	    my $test = join('|', @taxon);
 
 	    ## Continue only if there are selected objects
 
@@ -310,6 +333,7 @@ foreach my $upfile (@unipfiles) {
 		    $selected_data = 0;
 		    foreach my $tx (@taxon) {
 			if (exists $species{$tx}) {
+
 			    $selected_data = 1;
 			}
 		    }
