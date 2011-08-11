@@ -560,7 +560,7 @@ sub help {
                                    Note  -> GENE-COMMENT 
 
         New functions, ec numbers and synonyms can be loaded with extra input 
-      files using -f, -e and -s options.
+      files (separated by commas) using -f, -e, -s and -d options.
 
     Example1:
 
@@ -594,8 +594,8 @@ sub help {
     Usage:
       
       gff2pathologic.pl [-h] -g <gff3_file> -t <soterm> -o <output_basename> 
-                        [-f <function_file>] [-e <ec_code_file>] 
-                        [-s <synonym_file>] [-N] [-S]
+                        [-f <function_files>] [-e <ec_code_files>] 
+                        [-s <synonym_files>]  [-d <dblink_files>] [-N] [-S]
       
     Flags:
  
@@ -609,6 +609,8 @@ sub help {
                                   1st=ID and Xth=ec_code (optional)
       -s <synonym_file>           synonym file (tabular), X columns where 
                                   1st=ID and Xth=synonyms (optional)
+      -d <dblink_files>           dblink files (tabular), X columns where
+                                  1st=ID and Xth=DBCODE:ACCESSSION (optional)
       -S <use_synonyms>           use synonyms for mapping with -f and -e files
       -N <note2function>          parse note field to try to extract a function.
       -h <help>                   print the help
