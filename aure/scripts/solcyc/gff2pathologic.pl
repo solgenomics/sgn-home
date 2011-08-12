@@ -352,6 +352,15 @@ foreach my $selseq (sort keys %sel_entries) {
 	    ## Add the synonyms parsed in the file
 	    if (exists $synonyms{$id}) {
 		push @synonyms, @{$synonyms{$id}};
+		if ($opt_S) {
+		    my @syn_from_syn = ();
+		    foreach my $synon (@synonyms) {
+			if (exists $synonyms{$synon}) {
+			    push @syn_from_syn, @{$synonyms{$synon}};
+			}
+		    }
+		    push @synonyms, @syn_from_syn;
+		}
 	    }
 	    ## print the synonyms without redundancy
 	    my %nr_synonyms = ();
@@ -489,7 +498,8 @@ foreach my $selseq (sort keys %sel_entries) {
 	    elsif (defined $name && exists $dblinks{$name}) {
 		push @dblinks, @{$dblinks{name}};
 	    }
-	    elsif ($opt_S) {
+	    ## Add the dblink for the synonyms if exists
+	    if ($opt_S) {
 		foreach my $synon (@synonyms) {
 		    if (exists $dblinks{$synon}) {
 			push @dblinks, @{$dblinks{$synon}};
@@ -658,7 +668,7 @@ sub parse_annotation_file {
 	my $id = shift(@data);
 
 	if ($opt_V) {
-	    print STDERR "\tParsing line: $line (ID=$id)                 \r";
+	    print STDERR "\tParsing $filename line: $line (ID=$id)          \r";
 	}
 
 	if (defined $id && scalar(@data) > 0) {
