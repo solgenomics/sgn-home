@@ -16,6 +16,15 @@ limit_bac_output.pl:
 
 bac_chr_position.pl:
 
+	Able to input options.  -d for the folder containing the 
+	current agp and tpf files, and -t for a transformation 
+	file.  The transformation file contins two colums first 
+	of BAC ID and second of GenBank ID.  This gives output 
+	as many BAC IDs, put in the print (can be output wiht 
+	">" to a error file), are not in current transformation 
+	file (mainly chromosome 8).  In this case file uses 
+	original BAC ID.
+
 	This script requires an input of the BAC data to be 
 	integrated (from limit_bac_output.pl), and a folder 
 	containing both the current agp and tpf files for 
@@ -52,3 +61,12 @@ bac_chr_position.pl:
 	well as all the BAC and contained information.
 
 
+itag2annotate.pl:
+
+	This file is to integrate .gff3 files to annotation for 
+	Genbank. It currently is not working correctly, it will 
+	not note the multiple elements of a given type, and needs 
+	work, possibly re-writing.
+	##########################################
+	##########NOT WORKING CORRECTLY###########
+	##########################################
