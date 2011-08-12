@@ -9,7 +9,8 @@
 
 =head1 SYPNOSIS
 
- gff2pathologic.pl [-h] -g <gff3_file> -t <soterm> -o <output_basename> [-N][-V]
+ gff2pathologic.pl [-h] -g <gff3_file> -t <soterm> -o <output_basename> 
+                        [-N][-V][-S]
                         [-f <function_files>]
                         [-e <ec_codes_files>]
                         [-s <synonyms_files>] 
@@ -595,7 +596,8 @@ sub help {
       
       gff2pathologic.pl [-h] -g <gff3_file> -t <soterm> -o <output_basename> 
                         [-f <function_files>] [-e <ec_code_files>] 
-                        [-s <synonym_files>]  [-d <dblink_files>] [-N] [-S]
+                        [-s <synonym_files>]  [-d <dblink_files>] 
+                        [-N] [-S] [-V]
       
     Flags:
  
@@ -613,6 +615,7 @@ sub help {
                                   1st=ID and Xth=DBCODE:ACCESSSION (optional)
       -S <use_synonyms>           use synonyms for mapping with -f and -e files
       -N <note2function>          parse note field to try to extract a function.
+      -V <be_verbose>             print parsing status messages.
       -h <help>                   print the help
 
 EOF
