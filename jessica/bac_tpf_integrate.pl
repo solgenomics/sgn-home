@@ -1,12 +1,43 @@
 #! usr/bin/perl
 
-use strict;
-use warnings;
+use Modern::Perl;
+use Getopt::Std;
 use autodie;
 
+
+
+
+#be sure the agp and tpf are named the SAME AND in the location given(-d).
+
 my $bac_file = shift;
-my $dir = shift;
-#be sure the agp and tpf are named the SAME AND in the location given.
+#my $dir = shift;
+
+our %args;
+getopts('d:t:', \%args); # -d <directory> -c transformation file
+
+if(!$args{d}){
+    die "Need directory input (-d) contiaining current agp and tpf files";
+}
+my $dir = $args{d};
+
+my %transform;
+
+if($args{t}){
+
+    open (my $G, "<", $args{t});
+
+    while (<$G>){
+	chomp;
+	my ($old_id,$new_id) = split /\t/;
+	if($old_id =~ /^\D\d\d/){#removes chr num
+	    my $after_chr_num = "$'";
+	    $old_id = $after_chr_num;
+	}
+	$transform{$old_id} = $new_id;
+#	print STDERR "We have::: transform{old_id} = transform{$old_id} = $transform{$old_id} = $new id = new_id\n";
+    }
+
+}#end transformation hash create
 
 mkdir "bac_integrated_chr" unless "bac_integrated_chr";
 #creates output folder
@@ -23,7 +54,36 @@ while(<$F>){#load BAC file
 	$bac_start, $bac_end, $s_start, $s_end, $e_val, $bit) = split /\t/;
 
     my @bac_info = ($s_id, $bac_start, $len, $s_start, $s_end);
-    $bac2scaf{$bac_id} = \@bac_info;
+
+    if($args{t}){
+#	print $bac_id;
+
+	my $after_chr_num = $bac_id; #defalt if not fit layout
+	if($bac_id =~ /^\D\d\d/){#removes chr num
+	    #in case change occured, id's are matched without chr
+	    $after_chr_num = "$'";
+	}
+
+	if($transform{$after_chr_num}){
+	    my $corrected_bac_id = $transform{$after_chr_num};
+	    $bac2scaf{$corrected_bac_id} = \@bac_info;
+	}
+
+	else{
+	    print STDERR "PROBLEM:  ".
+		"A transormation file (-t) has been given, ". 
+		$args{t}.", however no information for ".
+		"$bac_id exists.  Old ID has been used.".
+		"\n";
+	    print "$bac_id\n";
+	    $bac2scaf{$bac_id} = \@bac_info;
+
+	} 
+    }
+
+    else{
+	$bac2scaf{$bac_id} = \@bac_info;
+    }
     
 }#end BAC load
 
@@ -619,7 +679,8 @@ foreach my $agp (glob $dir."*.comp.agp") {
 		$start2chr{$ordered_starts[$current_id]}->[5], #id
 		$start2chr{$ordered_starts[$current_id]}->[6],#start_obj
 		$start2chr{$ordered_starts[$current_id]}->[7]#end_obj
-		);
+		);#."\t";
+
 
 	    if ($start2chr{$ordered_starts[$current_id]}->[9]){#contained
 
