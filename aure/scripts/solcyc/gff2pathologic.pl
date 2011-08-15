@@ -10,7 +10,7 @@
 =head1 SYPNOSIS
 
  gff2pathologic.pl [-h] -g <gff3_file> -t <soterm> -o <output_basename> 
-                        [-N][-V][-S]
+                        [-N][-V][-S][-C][-I]
                         [-f <function_files>]
                         [-e <ec_codes_files>]
                         [-s <synonyms_files>] 
@@ -56,6 +56,14 @@ B<use_synonyms>           use synonyms for mapping with -f and -e files
 =item -N
 
 B<note2function>          parse note field to try to extract a function.
+
+=item -I
+
+B<extract_introns>        extract intron data information
+
+=item -C
+
+B<use_cds_coords>         use CDS coordinates as STARTBASE-ENDBASE
 
 =item -V
 
@@ -143,10 +151,10 @@ use Getopt::Std;
 use Bio::FeatureIO;
 
 our ($opt_g, $opt_t, $opt_f, $opt_e, $opt_s, $opt_o, $opt_d, $opt_N, $opt_S, 
-     $opt_V, $opt_h);
-getopts("g:t:f:e:s:o:d:NSVh");
+     $opt_I, $opt_C, $opt_V, $opt_h);
+getopts("g:t:f:e:s:o:d:NSICVh");
 if (!$opt_g && !$opt_t && !$opt_f && !$opt_e && !$opt_s && !$opt_o && !$opt_N 
-    && !$opt_d && !$opt_S && !$opt_V && !$opt_h) {
+    && !$opt_d && !$opt_S && !$opt_I && !$opt_C && !$opt_V && !$opt_h) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
@@ -198,6 +206,11 @@ my $feaio = Bio::FeatureIO->new(
 
 my $ecnt = 0;
 
+my %geneids = ();
+my %cds_endcoords = ();
+my %cds_stacoords = ();
+my %introns = ();
+
 ## PARSING GFF# FILE #############
 
 print STDERR "\n\n1) Parsing gff3 file for SO term = $req_soterm.\n\n";
@@ -207,7 +220,6 @@ while ( my $feature = $feaio->next_feature() ) {
     $ecnt++;
 
     my $seqid = $feature->seq_id();
-    my $name = $feature->name();
     my $soterm = $feature->type()->term()->name();
     my $strand = $feature->strand();
     my $st = $feature->start();
@@ -225,6 +237,124 @@ while ( my $feature = $feaio->next_feature() ) {
 	}
 	else {
 	    $sel_entries{$seqid} = [$feature];
+	}
+	
+	## Store the gene id list for -C or -I
+	if ($opt_C || $opt_I) {
+
+	    my ($feat_id) = $feature->get_Annotations('ID');
+	    if (defined $feat_id) {
+
+		my $id = $feat_id->value();
+		$id =~ s/.+?://;
+		$geneids{$id} = 1;
+	    }
+	}
+    }
+}
+
+
+## If -C it will catch the CDS coordinates for calculate start and end
+
+if ($opt_C || $opt_I) { 
+
+    print STDERR "\n\n\tOPTION -C or/and -I enabled.\n";
+    print STDERR "\tReparsing gff3 to extract CDS or/and Intron data\n\n";
+
+    my $c_feaio = Bio::FeatureIO->new( 
+	-file    => $gff_file, 
+	-format  => 'GFF',
+	-version => 3,
+	);
+
+    my $c_ecnt = 0;
+
+    while ( my $feature = $c_feaio->next_feature() ) {
+
+	$c_ecnt++;
+	my $m_msg = '';
+
+	my $seqid = $feature->seq_id();
+	my $soterm = $feature->type()->term()->name();
+	my $st = $feature->start();
+	my $en = $feature->end();
+        
+	my ($feat_id) = $feature->get_Annotations('ID');
+	
+	## But introns doesn't have ID, just Parent ID.
+	if ($soterm eq 'intron') {
+	    ($feat_id) = $feature->get_Annotations('Parent');
+	}
+
+	if (defined $feat_id) {
+
+	    my $id = $feat_id->value();
+	    $id =~ s/.+?://;
+
+	    if (defined $id && $soterm =~ m/^(CDS|intron)$/) {
+
+		## CDS id and Intron id could be different from gene id
+		## to match with the gene id there are different options,
+		## easier, store different variations too.
+		## For example: F10G8.9b comes from F10G8.9
+		##              Solyc00g005000.2.1.1 comes from Solyc00g005000.2
+		
+                ## It will scan if dont exist
+
+		unless (exists $geneids{$id}) {
+
+		    my $match = 0;
+		    my $del = 0; ## Let say, try 8 characters
+
+		    while($match == 0 && $del < 8 && $del < length($id)) {
+			$id =~ s/.$//;
+			if (exists $geneids{$id}) {
+			    $match = 1;
+			}
+		    }
+		}
+
+		## Add the coords if it found something
+	     
+		if (exists $geneids{$id}) {
+
+		    $m_msg = "Matching ID:$id";
+
+		    if ($opt_C && $soterm eq 'CDS') {
+			if (exists $cds_endcoords{$id}) {
+			    push @{$cds_endcoords{$id}}, $en;
+			}
+			else {
+			    $cds_endcoords{$id} = [$en];
+			}
+			if (exists $cds_stacoords{$id}) {
+			    push @{$cds_stacoords{$id}}, $st;
+			}
+			else {
+			    $cds_stacoords{$id} = [$st];
+			}
+
+			$m_msg .= ' +CDS';
+		    }
+
+		    if ($opt_I && $soterm eq 'intron') {
+	
+			if (exists $introns{$id}) {
+			    push @{$introns{$id}}, $st . "-" . $en;
+			}
+			else {
+			    $introns{$id} = [$st . "-" . $en];
+			}
+			$m_msg .= ' +Intron';
+		    }
+		}
+		else {
+		    $m_msg = "NO Matching ID:$id"
+		}
+	    }
+	}
+	if ($opt_V) {
+	    print STDERR "\t\tParsing line ($c_ecnt-$soterm): $m_msg        \r";
 	}
     }
 }
@@ -375,14 +505,35 @@ foreach my $selseq (sort keys %sel_entries) {
 
 	    ## STARTBASE and ENDBASE
 	    if ($ft->strand() < 0) {
-		print $outfh "STARTBASE\t" . $ft->end() . "\n";
-		print $outfh "ENDBASE\t" . $ft->start() . "\n";
+		if ($opt_C && $cds_endcoords{$id} && $cds_stacoords{$id}) {
+		    print $outfh "STARTBASE\t" .$cds_endcoords{$id}->[-1]. "\n";
+		    print $outfh "ENDBASE\t" . $cds_stacoords{$id}->[0] . "\n";
+		}
+		else {
+		    print $outfh "STARTBASE\t" . $ft->end() . "\n";
+		    print $outfh "ENDBASE\t" . $ft->start() . "\n";
+		}
 	    }
 	    else {
-		print $outfh "STARTBASE\t" . $ft->start() . "\n";
-		print $outfh "ENDBASE\t" . $ft->end() . "\n";
+		if ($opt_C && $cds_endcoords{$id} && $cds_stacoords{$id}) {
+		     print $outfh "STARTBASE\t" .$cds_stacoords{$id}->[0]. "\n";
+		    print $outfh "ENDBASE\t" . $cds_endcoords{$id}->[-1] . "\n";
+		}
+		else {
+		    print $outfh "STARTBASE\t" . $ft->start() . "\n";
+		    print $outfh "ENDBASE\t" . $ft->end() . "\n";
+		}
 	    }
 
+	    ## If -I, print INTRONS
+
+	    if (exists $introns{$id}) {
+		my @introns = @{$introns{$id}};
+		foreach my $intron (@introns) {
+		    print $outfh "INTRON\t$intron\n";
+		}
+	    }
+	    
 	    ## FUNCTION
 	    my @functions;
 	    my @notes;
@@ -607,7 +758,7 @@ sub help {
       gff2pathologic.pl [-h] -g <gff3_file> -t <soterm> -o <output_basename> 
                         [-f <function_files>] [-e <ec_code_files>] 
                         [-s <synonym_files>]  [-d <dblink_files>] 
-                        [-N] [-S] [-V]
+                        [-N] [-S] [-V] [-C] [-I]
       
     Flags:
  
@@ -625,6 +776,8 @@ sub help {
                                   1st=ID and Xth=DBCODE:ACCESSSION (optional)
       -S <use_synonyms>           use synonyms for mapping with -f and -e files
       -N <note2function>          parse note field to try to extract a function.
+      -I <extract_introns>        extract intron data information
+      -C <use_cds_coords>         use CDS coordinates as STARTBASE-ENDBASE
       -V <be_verbose>             print parsing status messages.
       -h <help>                   print the help
 
