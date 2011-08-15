@@ -275,15 +275,21 @@ foreach my $upfile (@unipfiles) {
 			foreach my $subline (@line) {
 	
 			    if ($subline =~ m/$fd=(.+)$/) {
-				push @selected, $1;
+				my $sel = $1;
+				$sel =~ s/\.$//;
+				## Remove the last dot if exists
+				push @selected, $sel;
 			    }
 			    elsif ($subline =~ m/$fd:(.+)$/) {
+				my $sel = $1;
+				$sel =~ s/\.$//;
 				push @selected, $1;
 			    }
 			}
 		    }		    
 		}
 		else {
+		    $line =~ s/\.$//;
 		    push @selected, $line;
 		}
 	    }
