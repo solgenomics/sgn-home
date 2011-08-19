@@ -624,13 +624,13 @@ sub align_member_cds {
     ## the cds.
 
     my $new_align;
-
+    
     foreach my $id (sort keys %seqfam) {
 	
 	my $aln = $seqfam{$id}->alignment();
 	if (defined $aln && defined $cds{$id}) {
 	    
-	    my $cons = $aln->consensus_iupac();
+	    my $cons = $aln->consensus_string();
 
 	    ## If the cds ends in a stop codon remove it.
 
@@ -639,20 +639,31 @@ sub align_member_cds {
 		$pepseq =~ s/\*$//;
 	    }
 
-	    my $cds_obj = Bio::Seq->new( -id => $id, -seq => $pepseq );
-	    my $cons_obj = Bio::Seq->new( -id => $id . '_cons', -seq => $cons );
-	    my $blast_rep = $blast_fc->bl2seq($cons_obj, $cds_obj);
+	    my $cds_obj = Bio::Seq->new( -id       => $id, 
+					 -seq      => $pepseq, 
+					 -alphabet => 'protein');
+	    my $cons_obj = Bio::Seq->new( -id       => $id . '_cons', 
+					  -seq      => $cons,
+					  -alphabet => 'dna',
+		);
 
-	    ## Take the first result
+	    ## It can give problems if the seq lenght is to small
 
-	    my @blast_results = $blast_rep->next_result;
-	    my @blast_hits = $blast_results[0]->next_hit;
-	    if (scalar(@blast_hits) > 0) {
-		my @blast_hsps = $blast_hits[0]->next_hsp;
-		my $que_st = $blast_hsps[0]->start('query');
-		my $que_en = $blast_hsps[0]->end('query');
+	    if ($cds_obj->length() > 10 && $cons_obj->length() > 30) {
 
-		$new_align = $aln->slice($que_st, $que_en);
+		my $blast_rep = $blast_fc->bl2seq($cons_obj, $cds_obj);
+
+		## Take the first result
+
+		my @blast_results = $blast_rep->next_result;
+		my @blast_hits = $blast_results[0]->next_hit;
+		if (scalar(@blast_hits) > 0) {
+		    my @blast_hsps = $blast_hits[0]->next_hsp;
+		    my $que_st = $blast_hsps[0]->start('query');
+		    my $que_en = $blast_hsps[0]->end('query');
+		    
+		    $new_align = $aln->slice($que_st, $que_en);
+		}
 	    }
 	}
 
@@ -1052,43 +1063,51 @@ sub run_codeml {
 
 	    if (defined $rc && $rc == 1) { ## Success
 		my $result = $parser->next_result;
-		my $MLmatrix = $result->get_MLmatrix();
 
-		## The sequences in the alignment are in the same order than
-		## in the input/output PAML files
+		if (defined $result) {
 
-		my @members = $aln->each_seq();
-		my @seqnames = ();
+		    my $MLmatrix = $result->get_MLmatrix();
 
-		foreach my $seq (@members) {
-		    my $seqid = $seq->display_id();
-		    push @seqnames, $seqid;
-		}
+		    ## The sequences in the alignment are in the same order than
+		    ## in the input/output PAML files
 
-		## The matrix is symmetric, but it is incomplete
-		
-		my $i = 0;
-		foreach my $iname (@seqnames) {
-		    
-		    my $j = 0;
-		    foreach my $jname (@seqnames) {
-		    
-			unless (defined $MLmatrix->[$i]->[$j]) {
-			    $MLmatrix->[$i]->[$j] = $MLmatrix->[$j]->[$i];
-			}
-			$j++;
+		    my @members = $aln->each_seq();
+		    my @seqnames = ();
+
+		    foreach my $seq (@members) {
+			my $seqid = $seq->display_id();
+			push @seqnames, $seqid;
 		    }
-		    $i++;
-		}
-       
-		my $mtx = Bio::Matrix::Generic->new(
-		    -values   => $MLmatrix,
-		    -rownames => \@seqnames,
-		    -colnames => \@seqnames,
-		    -matrix_name => $seqfam_id,
-		    );
 
-		$paml{$seqfam_id} = $mtx;
+		    ## The matrix is symmetric, but it is incomplete
+		
+		    my $i = 0;
+		    foreach my $iname (@seqnames) {
+		    
+			my $j = 0;
+			foreach my $jname (@seqnames) {
+		    
+			    unless (defined $MLmatrix->[$i]->[$j]) {
+				$MLmatrix->[$i]->[$j] = $MLmatrix->[$j]->[$i];
+			    }
+			    $j++;
+			}
+		    $i++;
+		    }
+       
+		    my $mtx = Bio::Matrix::Generic->new(
+			-values   => $MLmatrix,
+			-rownames => \@seqnames,
+			-colnames => \@seqnames,
+			-matrix_name => $seqfam_id,
+			);
+
+		    $paml{$seqfam_id} = $mtx;
+		}
+		else {
+		    my $error = $codeml->error_string();
+		    warn("\ncodeml fails:\n$error\n");
+		}
 	    }
 	    else {
 		my $error = $codeml->error_string();
