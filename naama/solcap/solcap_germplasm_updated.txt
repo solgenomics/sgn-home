@@ -137,7 +137,7 @@ SCT_0135	R9812				Processing	S. lycopersicum 	David Francis	Ridgetown #OH08-9810
 SCT_0136	R996				Processing	S. lycopersicum 	David Francis	Ridgetown #OH08-9811	Ridgetown	CANADA	Ontario	Humid		 			
 SCT_0137	R997				Processing	S. lycopersicum 	David Francis	Ridgetown #OH08-9812	Ridgetown	CANADA	Ontario	Humid		 			
 SCT_0138	Saucy				Processing	S. lycopersicum 	Jim Meyers	OregonstateU #	Oregon State U.	United States	OR	 		 		 	
-SCT_0139	Sun1642			TA491	Processing	S. lycopersicum 	Ester Van der Knaap	Public #SGH08-464	Public	United States	CA	Arid	 	 		Nunhem's	
+SCT_0139	Sun1642			TA491	Processing	S. lycopersicum 	Esther Van der Knaap	Public #SGH08-464	Public	United States	CA	Arid	 	 		Nunhem's	
 SCT_0140	UC-204B	LA4437			Processing	S. lycopersicum 		Public, TGRC #ACCOPO172-2	Public, TGRC	United States	CA	Arid		 		 	
 SCT_0141	UC-82	LA1706			Processing	S. lycopersicum 		Public, TGRC #LA1706	Public, TGRC	United States	CA	Arid		 			
 SCT_0142	Unilever265				Processing	S. lycopersicum 	Public	Public #OH05-9898	Public	United States	CA	Arid		 		Unilever	
@@ -291,8 +291,8 @@ SCT_0289	Black Plum		 	01S25	Vintage	S. lycopersicum	David Francis	OARDC #06-641
 SCT_0290	Brandywine (Sudduth/Quisenberry)				Vintage	S. lycopersicum	Carolyn Male			United States							
 SCT_0291	Burbank				Vintage	S. lycopersicum 			GLVWG								
 SCT_0292	Cherokee Purple				Vintage	S. lycopersicum 	Carolyn Male	OARDC #92265		United States							 
-SCT_0293	Costoluto Genovese				Vintage	S. lycopersicum 	Ester Van der Knaap	OARDC #Ester	OSU	Italy							
-SCT_0294	D' Olvia x Industria				Vintage	S. lycopersicum 	Ester Van der Knaap	OARDC #Ester	OSU	Italy							
+SCT_0293	Costoluto Genovese				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
+SCT_0294	D' Olvia x Industria				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
 SCT_0295	Favorite		PI 636262		Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S FAVORITE 	
 SCT_0296	Globe		PI 270186		Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S GLOBE	
 SCT_0297	Gold Ball			NSL 27012	Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S GOLD BALL	 
@@ -300,11 +300,11 @@ SCT_0298	Grushovka			 	Vintage	S. lycopersicum	David Francis	OARDC #06-6462	OSU	
 SCT_0299	Howard German			01S39	Vintage	S. lycopersicum	David Francis	OARDC #06-6455	OSU							 	
 SCT_0300	Juane Flammee				Vintage	S. lycopersicum		OARDC #5082		France							
 SCT_0301	King Humbert	LA0025	PI 645082 		Vintage	S. lycopersicum 				Italy							 
-SCT_0302	LYC1903				Vintage	S. lycopersicum 	Ester Van der Knaap	OARDC #Ester	OSU	Italy							
+SCT_0302	LYC1903				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
 SCT_0303	Marglobe	LA0502			Vintage	S. lycopersicum 		OARDC #06-6407		United States						 	
 SCT_0304	Moneymaker	LA2706			Vintage	S. lycopersicum	David Francis	OARDC #06-6474	OSU	Netherlands	 					 	
 SCT_0305	Opalka				Vintage	S. lycopersicum	David Francis	OARDC #5045	OSU	Poland						 	
-SCT_0306	Orange Strawberry				Vintage	S. lycopersicum 	Ester Van der Knaap	OARDC #Ester	OSU							 	
+SCT_0306	Orange Strawberry				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU							 	
 SCT_0307	Oxheart			NSL193993	Vintage	S. lycopersicum	David Francis		OSU	United States	OH					LIVINGSTON'S OXHEART	
 SCT_0308	PARAGON		PI 451990		Vintage	S. lycopersicum	David Francis	OARDC #06-6402	OSU	United States	OH					 	
 SCT_0309	Peron				Vintage	S. lycopersicum 			GLVWG							 	
@@ -313,19 +313,19 @@ SCT_0311	Purple Clabash	LA2377	PI 290857		Vintage	S. lycopersicum 	AMBB
 SCT_0312	RomaVF			01S36	Vintage	S. lycopersicum	David Francis	OARDC #06-6482	OSU							 	
 SCT_0313	Rutgers	LA1090			Vintage	S. lycopersicum	David Francis	OARDC #06-6419	OSU	United States	NJ					 	
 SCT_0314	San Marzano	LA3008			Vintage	S. lycopersicum	David Francis	OARDC #06-6409	OSU	Italy						 	
-SCT_0315	Sponzillo				Vintage	S. lycopersicum 	Ester Van der Knapp	OARDC #Ester	OSU	Italy							
-SCT_0316	Stupice		PI 250436		Vintage	S. lycopersicum	Ester Van der Knapp		OSU	Czechoslovakia							 
-SCT_0317	T1003				Vintage	S. lycopersicum 	Ester Van der Knapp	OARDC #Ester	OSU	Italy							
-SCT_0318	T1693				Vintage	S. lycopersicum 	Ester Van der Knapp	OARDC #Ester	OSU	Italy							
-SCT_0319	T1697				Vintage	S. lycopersicum 	Ester Van der Knapp	OARDC #Ester	OSU	Italy							
-SCT_0320	Tres Cantos				Vintage	S. lycopersicum 	Ester Van der Knapp	OARDC #Ester	OSU	Spain							
+SCT_0315	Sponzillo				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
+SCT_0316	Stupice		PI 250436		Vintage	S. lycopersicum	Esther Van der Knaap		OSU	Czechoslovakia							 
+SCT_0317	T1003				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
+SCT_0318	T1693				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
+SCT_0319	T1697				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Italy							
+SCT_0320	Tres Cantos				Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #Esther	OSU	Spain							
 SCT_0321	VFNT Cherry	LA1221			Vintage	S. lycopersicum 										 	
 SCT_0322	White Queen				Vintage	S. lycopersicum	Carolyn Male			United States							
 SCT_0323	Yellow Pear				Vintage	S. lycopersicum	David Francis	OARDC #06-6503	OSU							 	
 SCT_0324	Yellow Stuffer				Vintage	S. lycopersicum	David Francis	OARDC #06-6420	OSU							 	
 SCT_0325	Ailsa Craig	LA2838A	PI 26299560AI2SD		Vintage	S. lycopersicum	David Francis	OARDC #08-8529	OSU	England						 	 
-SCT_0326	Marveille des Marches		PI 10983484AISD		Vintage	S. lycopersicum 	Ester Van der Knaap	OARDC #08-8504	OSU	France						 	 
-SCT_0327	Ponderosa		PI 270206		Vintage	S. lycopersicum 	Ester Van der Knaap	OARDC #08-8531	OSU							 	 
+SCT_0326	Marveille des Marches		PI 10983484AISD		Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #08-8504	OSU	France						 	 
+SCT_0327	Ponderosa		PI 270206		Vintage	S. lycopersicum 	Esther Van der Knaap	OARDC #08-8531	OSU							 	 
 SCT_0328	Tainan		PI 647556	AVRDC #6	Vintage	S. lycopersicum 			USDA							 	 
 SCT_0329	1091-Chonto 21 (mataverde (3-21-2))		PI 505317		Vintage	S. lycopersicum 			USDA							 	 
 SCT_0330	A-1770		PI 452026		Vintage	S. lycopersicum 			USDA							 	
@@ -484,8 +484,8 @@ SCT_0482	LA3238			Earliana	Vintage	S. lycopersicum	Roger Chetelat		TGRC
 SCT_0483	LA3243			Platense	Vintage	S. lycopersicum	Roger Chetelat		TGRC								
 SCT_0484	LA3341			C5		S. lycopersicum	Roger Chetelat		TGRC								
 SCT_0485	LA4347			BL-35	Vintage	S. lycopersicum	Roger Chetelat		TGRC							tomate de colgar', 'Tomatiques de Ramellet', origin Mallorca	
-SCT_0486	OH08-6405				FreshMarket	S. lycopersicum	Roger Chetelat		OSU	USA	OH	Humid					
-SCT_0487	NC98248				FreshMarket	S. lycopersicum	Roger Chetelat		NCSU	USA	NC						
+SCT_0486	OH08-6405				FreshMarket	S. lycopersicum	David Francis		OSU	USA	OH	Humid					
+SCT_0487	NC98248				FreshMarket	S. lycopersicum	Dilip Panthee		NCSU	USA	NC						
 SCT_0488	LA2281	LA2281															
 SCT_0489	A700																
 SCT_0490	A7996																
@@ -522,3 +522,18 @@ SCT_0520	(LA0407 x LA1927) F2-3				Wild	S. habrochaites	Roger Chetelat		UC Davis
 SCT_0521	(LA0407 x LA1927) F2-4				Wild	S. habrochaites	Roger Chetelat		UC Davis	USA	CA						
 SCT_0522	(LA0407 x LA1927) F2-5				Wild	S. habrochaites	Roger Chetelat		UC Davis	USA	CA						
 SCT_0523	(LA0407 x LA1927) F2-6				Wild	S. habrochaites	Roger Chetelat		UC Davis	USA	CA						
+SCT_0524	1203						Granell										
+SCT_0525	Pera 21						Granell										
+SCT_0526	704						Granell										
+SCT_0527	Anastasia F1				Hybrid		Granell										
+SCT_0528	7284-14				Wild	S. habrochaites	Chetelat		UC Davis	USA	CA						
+SCT_0529	7284-58				Wild	S. habrochaites	Chetelat		UC Davis	USA	CA						
+SCT_0530	7284-69				Wild	S. habrochaites	Chetelat		UC Davis	USA	CA						
+SCT_0531	7284-109				Wild	S. habrochaites	Chetelat		UC Davis	USA	CA						
+SCT_0532	7284-114				Wild	S. habrochaites	Chetelat		UC Davis	USA	CA						
+SCT_0533	7284-115				Wild	S. habrochaites	Chetelat		UC Davis	USA	CA						
+SCT_0534	F8-RIL1 2007				Hybrid	S. pimpinellifolium x S. lycopersicum	Foolad		Pennsylvannia State	USA	PA						
+SCT_0535	F8-RIL2 2007				Hybrid	S. pimpinellifolium x S. lycopersicum	Foolad		Pennsylvannia State	USA	PA						
+SCT_0536	F8-RIL3 2007				Hybrid	S. pimpinellifolium x S. lycopersicum	Foolad		Pennsylvannia State	USA	PA						
+SCT_0537	F8-RIL4 2007				Hybrid	S. pimpinellifolium x S. lycopersicum	Foolad		Pennsylvannia State	USA	PA						
+SCT_0538	F8-RIL6 2007				Hybrid	S. pimpinellifolium x S. lycopersicum	Foolad		Pennsylvannia State	USA	PA						
