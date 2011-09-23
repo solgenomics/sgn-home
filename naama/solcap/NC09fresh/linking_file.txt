@@ -1,0 +1,283 @@
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:
+CAP-001	SCT_0143	2009	Mills River	North Carolina	1	071733-1
+CAP-002	SCT_0144	2009	Mills River	North Carolina	1	071820-2
+CAP-003	SCT_0145	2009	Mills River	North Carolina	1	091003-21
+CAP-004	SCT_0146	2009	Mills River	North Carolina	1	091003-29
+CAP-005	SCT_0147	2009	Mills River	North Carolina	1	091003-30
+CAP-006	SCT_0148	2009	Mills River	North Carolina	1	091003-35
+CAP-007	SCT_0149	2009	Mills River	North Carolina	1	091003-36
+CAP-008	SCT_0150	2009	Mills River	North Carolina	1	091004-15
+CAP-009	SCT_0151	2009	Mills River	North Carolina	1	091004-16
+CAP-010	SCT_0152	2009	Mills River	North Carolina	1	091004-32
+CAP-011	SCT_0153	2009	Mills River	North Carolina	1	091004-4
+CAP-012	SCT_0154	2009	Mills River	North Carolina	1	091004-7
+CAP-013	SCT_0155	2009	Mills River	North Carolina	1	091004-8
+CAP-014	SCT_0156	2009	Mills River	North Carolina	1	0.999802265162417
+CAP-015	SCT_0157	2009	Mills River	North Carolina	1	091109-3
+CAP-016	SCT_0158	2009	Mills River	North Carolina	1	091119-2
+CAP-017	SCT_0159	2009	Mills River	North Carolina	1	091120-2
+CAP-018	SCT_0160	2009	Mills River	North Carolina	1	091120-7
+CAP-019	SCT_0161	2009	Mills River	North Carolina	1	091135-1
+CAP-020	SCT_0162	2009	Mills River	North Carolina	1	091144-1
+CAP-021	SCT_0163	2009	Mills River	North Carolina	1	091144-2
+CAP-022	SCT_0164	2009	Mills River	North Carolina	1	091153-1
+CAP-023	SCT_0165	2009	Mills River	North Carolina	1	091166-3
+CAP-024	SCT_0166	2009	Mills River	North Carolina	1	091183-1
+CAP-025	SCT_0167	2009	Mills River	North Carolina	1	88003-59
+CAP-026	SCT_0168	2009	Mills River	North Carolina	1	88003-62
+CAP-027	SCT_0169	2009	Mills River	North Carolina	1	88003-81
+CAP-028	SCT_0170	2009	Mills River	North Carolina	1	88018 N
+CAP-029	SCT_0171	2009	Mills River	North Carolina	1	88019 N
+CAP-030	SCT_0173	2009	Mills River	North Carolina	1	Cherokee
+CAP-031	SCT_0226	2009	Mills River	North Carolina	1	NC 7 P rep-8 (2006) - 96
+CAP-032	SCT_0227	2009	Mills River	North Carolina	1	NC123S
+CAP-034	SCT_0230	2009	Mills River	North Carolina	1	NC140
+CAP-035	SCT_0231	2009	Mills River	North Carolina	1	NC161L-1W(2007)
+CAP-036	SCT_0232	2009	Mills River	North Carolina	1	NC1CS
+CAP-037	SCT_0233	2009	Mills River	North Carolina	1	NC23E-2 (93)
+CAP-038	SCT_0234	2009	Mills River	North Carolina	1	NC265-1(93)-3-4
+CAP-039	SCT_0235	2009	Mills River	North Carolina	1	NC2C
+CAP-040	SCT_0236	2009	Mills River	North Carolina	1	NC2Y
+CAP-041	SCT_0237	2009	Mills River	North Carolina	1	NC33EB-1
+CAP-042	SCT_0238	2009	Mills River	North Carolina	1	NC47NC2
+CAP-043	SCT_0239	2009	Mills River	North Carolina	1	NC50-7
+CAP-044	SCT_0240	2009	Mills River	North Carolina	1	NC714-3B(2007)
+CAP-045	SCT_0241	2009	Mills River	North Carolina	1	NC8276
+CAP-046	SCT_0242	2009	Mills River	North Carolina	1	NC8288
+CAP-047	SCT_0243	2009	Mills River	North Carolina	1	NC84173
+CAP-048	SCT_0244	2009	Mills River	North Carolina	1	NC860-1(2008)
+CAP-049	SCT_0245	2009	Mills River	North Carolina	1	NC99471-3
+CAP-050	SCT_0246	2009	Mills River	North Carolina	1	NCEBR-1
+CAP-051	SCT_0247	2009	Mills River	North Carolina	1	NCEBR-2
+CAP-052	SCT_0248	2009	Mills River	North Carolina	1	NCEBR-3
+CAP-053	SCT_0249	2009	Mills River	North Carolina	1	NCEBR-4
+CAP-054	SCT_0250	2009	Mills River	North Carolina	1	NCEBR-5
+CAP-055	SCT_0251	2009	Mills River	North Carolina	1	NCEBR-6
+CAP-056	SCT_0252	2009	Mills River	North Carolina	1	NCEBR-7
+CAP-057	SCT_0253	2009	Mills River	North Carolina	1	NCEBR-8
+CAP-058	SCT_0254	2009	Mills River	North Carolina	1	NCHS-1
+CAP-059	SCT_0268	2009	Mills River	North Carolina	1	Piedmont
+CAP-060	SCT_0272	2009	Mills River	North Carolina	1	Summit
+CAP-061	SCT_0217	2009	Mills River	North Carolina	1	LA0797
+CAP-062	SCT_0218	2009	Mills River	North Carolina	1	LA1996
+CAP-063	SCT_0219	2009	Mills River	North Carolina	1	LA2378
+CAP-064	SCT_0220	2009	Mills River	North Carolina	1	LA3163
+CAP-065	SCT_0221	2009	Mills River	North Carolina	1	LA3736
+CAP-066	SCT_0222	2009	Mills River	North Carolina	1	LA4425
+CAP-067	SCT_0216	2009	Mills River	North Carolina	1	Gold Nugget
+CAP-068	SCT_0223	2009	Mills River	North Carolina	1	Large German Cherry
+CAP-069	SCT_0224	2009	Mills River	North Carolina	1	Legend
+CAP-070	SCT_0225	2009	Mills River	North Carolina	1	Medford
+CAP-071	SCT_0257	2009	Mills River	North Carolina	1	OR11
+CAP-072	SCT_0258	2009	Mills River	North Carolina	1	Oregon Spring
+CAP-073	SCT_0259	2009	Mills River	North Carolina	1	Oregon Star
+CAP-074	SCT_0260	2009	Mills River	North Carolina	1	P20-3-1
+CAP-075	SCT_0270	2009	Mills River	North Carolina	1	Severianin
+CAP-076	SCT_0271	2009	Mills River	North Carolina	1	Siletz
+CAP-077	SCT_0281	2009	Mills River	North Carolina	1	Willamette VF
+CAP-078	SCT_0229	2009	Mills River	North Carolina	1	NC 13G
+CAP-079	SCT_0255	2009	Mills River	North Carolina	1	Ohio11
+CAP-080	SCT_0256	2009	Mills River	North Carolina	1	Ohio MR13
+CAP-081	SCT_0172	2009	Mills River	North Carolina	1	Campbell 28
+CAP-082	SCT_0215	2009	Mills River	North Carolina	1	Flora-Dade
+CAP-083	SCT_0282	2009	Mills River	North Carolina	1	Ha7981
+CAP-084	SCT_0275	2009	Mills River	North Carolina	1	Tropic
+CAP-085	SCT_0283	2009	Mills River	North Carolina	1	Ha7997
+CAP-086	SCT_0284	2009	Mills River	North Carolina	1	Ha7998
+CAP-087	SCT_0269	2009	Mills River	North Carolina	1	RioGrande
+CAP-088	SCT_0273	2009	Mills River	North Carolina	1	T-5
+CAP-089	SCT_0274	2009	Mills River	North Carolina	1	T-9
+CAP-090	SCT_0276	2009	Mills River	North Carolina	1	UC-MR20
+CAP-091	SCT_0277	2009	Mills River	North Carolina	1	UC-N28
+CAP-092	SCT_0278	2009	Mills River	North Carolina	1	UC-T338
+CAP-093	SCT_0279	2009	Mills River	North Carolina	1	UC-TR44
+CAP-094	SCT_0280	2009	Mills River	North Carolina	1	UC-TR51
+CAP-095	SCT_0176	2009	Mills River	North Carolina	1	Fla. 7060
+CAP-096	SCT_0179	2009	Mills River	North Carolina	1	Fla. 7547
+CAP-097	SCT_0180	2009	Mills River	North Carolina	1	Fla. 7600
+CAP-098	SCT_0182	2009	Mills River	North Carolina	1	Fla. 7771
+CAP-099	SCT_0183	2009	Mills River	North Carolina	1	Fla. 7775
+CAP-100	SCT_0196	2009	Mills River	North Carolina	1	Fla. 8233
+CAP-101	SCT_0174	2009	Mills River	North Carolina	1	Fla. 678
+CAP-102	SCT_0175	2009	Mills River	North Carolina	1	Fla. 701
+CAP-103	SCT_0177	2009	Mills River	North Carolina	1	Fla. 726
+CAP-104	SCT_0178	2009	Mills River	North Carolina	1	Fla. 7481
+CAP-105	SCT_0181	2009	Mills River	North Carolina	1	Fla. 7770
+CAP-106	SCT_0184	2009	Mills River	North Carolina	1	Fla. 7776
+CAP-107	SCT_0185	2009	Mills River	North Carolina	1	Fla. 7781
+CAP-108	SCT_0186	2009	Mills River	North Carolina	1	Fla. 7804
+CAP-109	SCT_0187	2009	Mills River	North Carolina	1	Fla. 7907B
+CAP-110	SCT_0188	2009	Mills River	North Carolina	1	Fla. 7946
+CAP-111	SCT_0189	2009	Mills River	North Carolina	1	Fla. 8000
+CAP-112	SCT_0190	2009	Mills River	North Carolina	1	Fla. 8044
+CAP-113	SCT_0191	2009	Mills River	North Carolina	1	Fla. 8059
+CAP-114	SCT_0192	2009	Mills River	North Carolina	1	Fla. 8083
+CAP-115	SCT_0193	2009	Mills River	North Carolina	1	Fla. 8109
+CAP-116	SCT_0194	2009	Mills River	North Carolina	1	Fla. 8111BH
+CAP-117	SCT_0195	2009	Mills River	North Carolina	1	Fla. 8124C
+CAP-118	SCT_0197	2009	Mills River	North Carolina	1	Fla. 8249
+CAP-119	SCT_0198	2009	Mills River	North Carolina	1	Fla. 8293
+CAP-120	SCT_0199	2009	Mills River	North Carolina	1	Fla. 8344
+CAP-121	SCT_0200	2009	Mills River	North Carolina	1	Fla. 8352
+CAP-122	SCT_0201	2009	Mills River	North Carolina	1	Fla. 8476
+CAP-123	SCT_0202	2009	Mills River	North Carolina	1	Fla. 8516
+CAP-124	SCT_0203	2009	Mills River	North Carolina	1	Fla. 8539
+CAP-125	SCT_0204	2009	Mills River	North Carolina	1	Fla. 8543
+CAP-126	SCT_0205	2009	Mills River	North Carolina	1	Fla. 8561B-6
+CAP-127	SCT_0206	2009	Mills River	North Carolina	1	Fla. 8599
+CAP-128	SCT_0207	2009	Mills River	North Carolina	1	Fla. 8608
+CAP-129	SCT_0208	2009	Mills River	North Carolina	1	Fla. 8624
+CAP-130	SCT_0209	2009	Mills River	North Carolina	1	Fla. 8626
+CAP-131	SCT_0210	2009	Mills River	North Carolina	1	Fla. 8629
+CAP-132	SCT_0211	2009	Mills River	North Carolina	1	Fla. 8646
+CAP-133	SCT_0212	2009	Mills River	North Carolina	1	Fla. 8653
+CAP-134	SCT_0213	2009	Mills River	North Carolina	1	Fla. 8735
+CAP-135	SCT_0214	2009	Mills River	North Carolina	1	Fla. 8737
+CAP-136	SCT_0261	2009	Mills River	North Carolina	1	PI 564169
+CAP-137	SCT_0262	2009	Mills River	North Carolina	1	PI 647532
+CAP-138	SCT_0263	2009	Mills River	North Carolina	1	PI 128586
+CAP-139	SCT_0264	2009	Mills River	North Carolina	1	PI 281553
+CAP-140	SCT_0265	2009	Mills River	North Carolina	1	PI 340906
+CAP-141	SCT_0266	2009	Mills River	North Carolina	1	PI 470262
+CAP-142	SCT_0267	2009	Mills River	North Carolina	1	PI 65023
+CAP-143	SCT_0143	2009	Mills River	North Carolina	2	071733-1
+CAP-144	SCT_0144	2009	Mills River	North Carolina	2	071820-2
+CAP-145	SCT_0145	2009	Mills River	North Carolina	2	091003-21
+CAP-146	SCT_0146	2009	Mills River	North Carolina	2	091003-29
+CAP-147	SCT_0147	2009	Mills River	North Carolina	2	091003-30
+CAP-148	SCT_0148	2009	Mills River	North Carolina	2	091003-35
+CAP-149	SCT_0149	2009	Mills River	North Carolina	2	091003-36
+CAP-150	SCT_0150	2009	Mills River	North Carolina	2	091004-15
+CAP-151	SCT_0151	2009	Mills River	North Carolina	2	091004-16
+CAP-152	SCT_0152	2009	Mills River	North Carolina	2	091004-32
+CAP-153	SCT_0153	2009	Mills River	North Carolina	2	091004-4
+CAP-154	SCT_0154	2009	Mills River	North Carolina	2	091004-7
+CAP-155	SCT_0155	2009	Mills River	North Carolina	2	091004-8
+CAP-156	SCT_0156	2009	Mills River	North Carolina	2	0.999802265162417
+CAP-157	SCT_0157	2009	Mills River	North Carolina	2	091109-3
+CAP-158	SCT_0158	2009	Mills River	North Carolina	2	091119-2
+CAP-159	SCT_0159	2009	Mills River	North Carolina	2	091120-2
+CAP-160	SCT_0160	2009	Mills River	North Carolina	2	091120-7
+CAP-161	SCT_0161	2009	Mills River	North Carolina	2	091135-1
+CAP-162	SCT_0162	2009	Mills River	North Carolina	2	091144-1
+CAP-163	SCT_0163	2009	Mills River	North Carolina	2	091144-2
+CAP-164	SCT_0164	2009	Mills River	North Carolina	2	091153-1
+CAP-165	SCT_0165	2009	Mills River	North Carolina	2	091166-3
+CAP-166	SCT_0166	2009	Mills River	North Carolina	2	091183-1
+CAP-167	SCT_0167	2009	Mills River	North Carolina	2	88003-59
+CAP-168	SCT_0168	2009	Mills River	North Carolina	2	88003-62
+CAP-169	SCT_0169	2009	Mills River	North Carolina	2	88003-81
+CAP-170	SCT_0170	2009	Mills River	North Carolina	2	88018 N
+CAP-171	SCT_0171	2009	Mills River	North Carolina	2	88019 N
+CAP-172	SCT_0173	2009	Mills River	North Carolina	2	Cherokee
+CAP-173	SCT_0226	2009	Mills River	North Carolina	2	NC 7 P rep-8 (2006) - 96
+CAP-174	SCT_0227	2009	Mills River	North Carolina	2	NC123S
+CAP-175	SCT_0229	2009	Mills River	North Carolina	2	NC 13G
+CAP-176	SCT_0230	2009	Mills River	North Carolina	2	NC140
+CAP-177	SCT_0231	2009	Mills River	North Carolina	2	NC161L-1W(2007)
+CAP-178	SCT_0232	2009	Mills River	North Carolina	2	NC1CS
+CAP-179	SCT_0233	2009	Mills River	North Carolina	2	NC23E-2 (93)
+CAP-180	SCT_0234	2009	Mills River	North Carolina	2	NC265-1(93)-3-4
+CAP-181	SCT_0235	2009	Mills River	North Carolina	2	NC2C
+CAP-182	SCT_0236	2009	Mills River	North Carolina	2	NC2Y
+CAP-183	SCT_0237	2009	Mills River	North Carolina	2	NC33EB-1
+CAP-184	SCT_0238	2009	Mills River	North Carolina	2	NC47NC2
+CAP-185	SCT_0239	2009	Mills River	North Carolina	2	NC50-7
+CAP-186	SCT_0240	2009	Mills River	North Carolina	2	NC714-3B(2007)
+CAP-187	SCT_0241	2009	Mills River	North Carolina	2	NC8276
+CAP-188	SCT_0242	2009	Mills River	North Carolina	2	NC8288
+CAP-189	SCT_0243	2009	Mills River	North Carolina	2	NC84173
+CAP-190	SCT_0244	2009	Mills River	North Carolina	2	NC860-1(2008)
+CAP-191	SCT_0245	2009	Mills River	North Carolina	2	NC99471-3
+CAP-192	SCT_0246	2009	Mills River	North Carolina	2	NCEBR-1
+CAP-193	SCT_0247	2009	Mills River	North Carolina	2	NCEBR-2
+CAP-194	SCT_0248	2009	Mills River	North Carolina	2	NCEBR-3
+CAP-195	SCT_0249	2009	Mills River	North Carolina	2	NCEBR-4
+CAP-196	SCT_0250	2009	Mills River	North Carolina	2	NCEBR-5
+CAP-197	SCT_0251	2009	Mills River	North Carolina	2	NCEBR-6
+CAP-198	SCT_0252	2009	Mills River	North Carolina	2	NCEBR-7
+CAP-199	SCT_0253	2009	Mills River	North Carolina	2	NCEBR-8
+CAP-200	SCT_0254	2009	Mills River	North Carolina	2	NCHS-1
+CAP-201	SCT_0268	2009	Mills River	North Carolina	2	Piedmont
+CAP-202	SCT_0272	2009	Mills River	North Carolina	2	Summit
+CAP-203	SCT_0217	2009	Mills River	North Carolina	2	LA0797
+CAP-204	SCT_0218	2009	Mills River	North Carolina	2	LA1996
+CAP-205	SCT_0219	2009	Mills River	North Carolina	2	LA2378
+CAP-206	SCT_0220	2009	Mills River	North Carolina	2	LA3163
+CAP-207	SCT_0221	2009	Mills River	North Carolina	2	LA3736
+CAP-208	SCT_0222	2009	Mills River	North Carolina	2	LA4425
+CAP-209	SCT_0216	2009	Mills River	North Carolina	2	Gold Nugget
+CAP-210	SCT_0223	2009	Mills River	North Carolina	2	Large German Cherry
+CAP-211	SCT_0224	2009	Mills River	North Carolina	2	Legend
+CAP-212	SCT_0225	2009	Mills River	North Carolina	2	Medford
+CAP-213	SCT_0257	2009	Mills River	North Carolina	2	OR11
+CAP-214	SCT_0258	2009	Mills River	North Carolina	2	Oregon Spring
+CAP-215	SCT_0259	2009	Mills River	North Carolina	2	Oregon Star
+CAP-216	SCT_0260	2009	Mills River	North Carolina	2	P20-3-1
+CAP-217	SCT_0270	2009	Mills River	North Carolina	2	Severianin
+CAP-218	SCT_0271	2009	Mills River	North Carolina	2	Siletz
+CAP-219	SCT_0281	2009	Mills River	North Carolina	2	Willamette VF
+CAP-221	SCT_0255	2009	Mills River	North Carolina	2	Ohio11
+CAP-222	SCT_0256	2009	Mills River	North Carolina	2	Ohio MR13
+CAP-223	SCT_0172	2009	Mills River	North Carolina	2	Campbell 28
+CAP-224	SCT_0215	2009	Mills River	North Carolina	2	Flora-Dade
+CAP-225	SCT_0282	2009	Mills River	North Carolina	2	Ha7981
+CAP-226	SCT_0275	2009	Mills River	North Carolina	2	Tropic
+CAP-227	SCT_0283	2009	Mills River	North Carolina	2	Ha7997
+CAP-228	SCT_0284	2009	Mills River	North Carolina	2	Ha7998
+CAP-229	SCT_0269	2009	Mills River	North Carolina	2	RioGrande
+CAP-230	SCT_0273	2009	Mills River	North Carolina	2	T-5
+CAP-231	SCT_0274	2009	Mills River	North Carolina	2	T-9
+CAP-232	SCT_0276	2009	Mills River	North Carolina	2	UC-MR20
+CAP-233	SCT_0277	2009	Mills River	North Carolina	2	UC-N28
+CAP-234	SCT_0278	2009	Mills River	North Carolina	2	UC-T338
+CAP-235	SCT_0279	2009	Mills River	North Carolina	2	UC-TR44
+CAP-236	SCT_0280	2009	Mills River	North Carolina	2	UC-TR51
+CAP-237	SCT_0176	2009	Mills River	North Carolina	2	Fla. 7060
+CAP-238	SCT_0179	2009	Mills River	North Carolina	2	Fla. 7547
+CAP-239	SCT_0180	2009	Mills River	North Carolina	2	Fla. 7600
+CAP-240	SCT_0182	2009	Mills River	North Carolina	2	Fla. 7771
+CAP-241	SCT_0183	2009	Mills River	North Carolina	2	Fla. 7775
+CAP-242	SCT_0196	2009	Mills River	North Carolina	2	Fla. 8233
+CAP-243	SCT_0174	2009	Mills River	North Carolina	2	Fla. 678
+CAP-244	SCT_0175	2009	Mills River	North Carolina	2	Fla. 701
+CAP-245	SCT_0177	2009	Mills River	North Carolina	2	Fla. 726
+CAP-246	SCT_0178	2009	Mills River	North Carolina	2	Fla. 7481
+CAP-247	SCT_0181	2009	Mills River	North Carolina	2	Fla. 7770
+CAP-248	SCT_0184	2009	Mills River	North Carolina	2	Fla. 7776
+CAP-249	SCT_0185	2009	Mills River	North Carolina	2	Fla. 7781
+CAP-250	SCT_0186	2009	Mills River	North Carolina	2	Fla. 7804
+CAP-251	SCT_0187	2009	Mills River	North Carolina	2	Fla. 7907B
+CAP-252	SCT_0188	2009	Mills River	North Carolina	2	Fla. 7946
+CAP-253	SCT_0189	2009	Mills River	North Carolina	2	Fla. 8000
+CAP-254	SCT_0190	2009	Mills River	North Carolina	2	Fla. 8044
+CAP-255	SCT_0191	2009	Mills River	North Carolina	2	Fla. 8059
+CAP-256	SCT_0192	2009	Mills River	North Carolina	2	Fla. 8083
+CAP-257	SCT_0193	2009	Mills River	North Carolina	2	Fla. 8109
+CAP-258	SCT_0194	2009	Mills River	North Carolina	2	Fla. 8111BH
+CAP-259	SCT_0195	2009	Mills River	North Carolina	2	Fla. 8124C
+CAP-260	SCT_0197	2009	Mills River	North Carolina	2	Fla. 8249
+CAP-261	SCT_0198	2009	Mills River	North Carolina	2	Fla. 8293
+CAP-262	SCT_0199	2009	Mills River	North Carolina	2	Fla. 8344
+CAP-263	SCT_0200	2009	Mills River	North Carolina	2	Fla. 8352
+CAP-264	SCT_0201	2009	Mills River	North Carolina	2	Fla. 8476
+CAP-265	SCT_0202	2009	Mills River	North Carolina	2	Fla. 8516
+CAP-266	SCT_0203	2009	Mills River	North Carolina	2	Fla. 8539
+CAP-267	SCT_0204	2009	Mills River	North Carolina	2	Fla. 8543
+CAP-268	SCT_0205	2009	Mills River	North Carolina	2	Fla. 8561B-6
+CAP-269	SCT_0206	2009	Mills River	North Carolina	2	Fla. 8599
+CAP-270	SCT_0207	2009	Mills River	North Carolina	2	Fla. 8608
+CAP-271	SCT_0208	2009	Mills River	North Carolina	2	Fla. 8624
+CAP-272	SCT_0209	2009	Mills River	North Carolina	2	Fla. 8626
+CAP-273	SCT_0210	2009	Mills River	North Carolina	2	Fla. 8629
+CAP-274	SCT_0211	2009	Mills River	North Carolina	2	Fla. 8646
+CAP-275	SCT_0212	2009	Mills River	North Carolina	2	Fla. 8653
+CAP-276	SCT_0213	2009	Mills River	North Carolina	2	Fla. 8735
+CAP-277	SCT_0214	2009	Mills River	North Carolina	2	Fla. 8737
+CAP-278	SCT_0261	2009	Mills River	North Carolina	2	PI 564169
+CAP-279	SCT_0262	2009	Mills River	North Carolina	2	PI 647532
+CAP-280	SCT_0263	2009	Mills River	North Carolina	2	PI 128586
+CAP-281	SCT_0264	2009	Mills River	North Carolina	2	PI 281553
+CAP-282	SCT_0265	2009	Mills River	North Carolina	2	PI 340906
+CAP-283	SCT_0266	2009	Mills River	North Carolina	2	PI 470262
+CAP-284	SCT_0267	2009	Mills River	North Carolina	2	PI 65023

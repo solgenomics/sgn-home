@@ -1,0 +1,14 @@
+#data file for the solcap vintage 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap fresh tomatoes 2009, NC State University	solcap fresh tomatoes 2009, NC State University	Mills River, North Carolina	35.4	-82.6	WGS84	774					2009	455 Research Dr., Mills River NC 28759
+												
+												
+												
+												
+												
+		35.4 N										
+		82.6 W										
+		774										
+		NC State University										
+		455 Research Dr., Mills River NC 28759										
+		2009										
