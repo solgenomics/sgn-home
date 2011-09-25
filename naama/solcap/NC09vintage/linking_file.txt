@@ -1,4 +1,4 @@
-Plot	SCT	Year	Location	Location 2	Replicate	Donor number/Variety Name:
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:
 301	SCT_0325	2009	Mills River	North Carolina	1	Ailsa Craig
 302	SCT_0321	2009	Mills River	North Carolina	1	VFNT Cherry
 303	SCT_0286	2009	Mills River	North Carolina	1	Amish Paste
