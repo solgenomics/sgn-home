@@ -1,0 +1,171 @@
+Plot	SCT	Year	Location	Location 2	Replicate	Donor number/Variety Name:
+301	SCT_0325	2009	Mills River	North Carolina	1	Ailsa Craig
+302	SCT_0321	2009	Mills River	North Carolina	1	VFNT Cherry
+303	SCT_0286	2009	Mills River	North Carolina	1	Amish Paste
+304	SCT_0287	2009	Mills River	North Carolina	1	Beauty
+305	SCT_0290	2009	Mills River	North Carolina	1	Brandywine (Sudduth/Quisenberry)
+306	SCT_0289	2009	Mills River	North Carolina	1	Black Plum
+307	SCT_0292	2009	Mills River	North Carolina	1	Cherokee Purple
+308	SCT_0293	2009	Mills River	North Carolina	1	Costoluto Genovese
+309	SCT_0294	2009	Mills River	North Carolina	1	D' Olvia x Industria
+310	SCT_0295	2009	Mills River	North Carolina	1	Favorite
+311	SCT_0296	2009	Mills River	North Carolina	1	Globe
+312	SCT_0297	2009	Mills River	North Carolina	1	Gold Ball
+313	SCT_0298	2009	Mills River	North Carolina	1	Grushovka
+314	SCT_0299	2009	Mills River	North Carolina	1	Howard German
+315	SCT_0300	2009	Mills River	North Carolina	1	Juane Flammee
+316	SCT_0301	2009	Mills River	North Carolina	1	King Humbert
+317	SCT_0302	2009	Mills River	North Carolina	1	LYC1903
+318	SCT_0303	2009	Mills River	North Carolina	1	Marglobe
+319	SCT_0304	2009	Mills River	North Carolina	1	Moneymaker
+320	SCT_0305	2009	Mills River	North Carolina	1	Opalka
+321	SCT_0306	2009	Mills River	North Carolina	1	Orange Strawberry
+322	SCT_0307	2009	Mills River	North Carolina	1	Oxheart
+323	SCT_0308	2009	Mills River	North Carolina	1	PARAGON
+324	SCT_0310	2009	Mills River	North Carolina	1	Principe Borghese
+325	SCT_0311	2009	Mills River	North Carolina	1	Purple Clabash
+326	SCT_0312	2009	Mills River	North Carolina	1	RomaVF
+327	SCT_0313	2009	Mills River	North Carolina	1	Rutgers
+328	SCT_0314	2009	Mills River	North Carolina	1	San Marzano
+329	SCT_0315	2009	Mills River	North Carolina	1	Sponzillo
+330	SCT_0316	2009	Mills River	North Carolina	1	Stupice
+331	SCT_0317	2009	Mills River	North Carolina	1	T1003
+332	SCT_0318	2009	Mills River	North Carolina	1	T1693
+333	SCT_0319	2009	Mills River	North Carolina	1	T1697
+334	SCT_0320	2009	Mills River	North Carolina	1	Tres Cantos
+335	SCT_0322	2009	Mills River	North Carolina	1	White Queen
+336	SCT_0323	2009	Mills River	North Carolina	1	Yellow Pear
+337	SCT_0324	2009	Mills River	North Carolina	1	Yellow Stuffer
+338	SCT_0285	2009	Mills River	North Carolina	1	Aker's West Virginia
+339	SCT_0288	2009	Mills River	North Carolina	1	Black From Tula
+340	SCT_0291	2009	Mills River	North Carolina	1	Burbank
+341	SCT_0309	2009	Mills River	North Carolina	1	Peron
+342	SCT_0326	2009	Mills River	North Carolina	1	Marveille des Marches
+343	SCT_0327	2009	Mills River	North Carolina	1	Ponderosa
+344	SCT_0328	2009	Mills River	North Carolina	1	Tainan
+345	SCT_0344	2009	Mills River	North Carolina	1	PI 128586
+346	SCT_0359	2009	Mills River	North Carolina	1	Rinon PI 98097
+347	SCT_0364	2009	Mills River	North Carolina	1	Tomate
+348	SCT_0363	2009	Mills River	North Carolina	1	Sao Paulo
+349	SCT_0360	2009	Mills River	North Carolina	1	Rinon PI 118783
+350	SCT_0332	2009	Mills River	North Carolina	1	Abel
+351	SCT_0341	2009	Mills River	North Carolina	1	PI 124035
+352	SCT_0342	2009	Mills River	North Carolina	1	PI 124037
+353	SCT_0362	2009	Mills River	North Carolina	1	Rumi Banjan
+354	SCT_0343	2009	Mills River	North Carolina	1	PI 127820
+355	SCT_0345	2009	Mills River	North Carolina	1	PI 128592
+356	SCT_0346	2009	Mills River	North Carolina	1	PI 129026
+357	SCT_0347	2009	Mills River	North Carolina	1	PI 129033
+358	SCT_0348	2009	Mills River	North Carolina	1	PI 129084
+359	SCT_0349	2009	Mills River	North Carolina	1	PI 129128
+360	SCT_0350	2009	Mills River	North Carolina	1	PI 129142
+361	SCT_0351	2009	Mills River	North Carolina	1	PI 155372
+362	SCT_0358	2009	Mills River	North Carolina	1	Prospero
+363	SCT_0333	2009	Mills River	North Carolina	1	Chih-mu-tao-se
+364	SCT_0352	2009	Mills River	North Carolina	1	PI 159009
+365	SCT_0353	2009	Mills River	North Carolina	1	PI 196297
+366	SCT_0366	2009	Mills River	North Carolina	1	Turrialba
+367	SCT_0339	2009	Mills River	North Carolina	1	LA0410
+368	SCT_0334	2009	Mills River	North Carolina	1	Cotaxtla I
+369	SCT_0355	2009	Mills River	North Carolina	1	PI 270430
+370	SCT_0356	2009	Mills River	North Carolina	1	PI 272703
+371	SCT_0338	2009	Mills River	North Carolina	1	Kiyosu No. 2
+372	SCT_0337	2009	Mills River	North Carolina	1	Hong Kong
+373	SCT_0335	2009	Mills River	North Carolina	1	Devon Surprise
+374	SCT_0336	2009	Mills River	North Carolina	1	Heinz 1370
+375	SCT_0368	2009	Mills River	North Carolina	1	W-C 1537
+376	SCT_0330	2009	Mills River	North Carolina	1	A-1770
+377	SCT_0331	2009	Mills River	North Carolina	1	A-1771
+378	SCT_0329	2009	Mills River	North Carolina	1	1091-Chonto 21 (mataverde (3-21-2))
+379	SCT_0340	2009	Mills River	North Carolina	1	Peto 460
+380	SCT_0361	2009	Mills River	North Carolina	1	Rosa o Monserrat
+381	SCT_0365	2009	Mills River	North Carolina	1	Tomate del lugar
+382	SCT_0357	2009	Mills River	North Carolina	1	Pomodoro Superselezione di Marmande
+383	SCT_0354	2009	Mills River	North Carolina	1	PI 270408
+384	SCT_0367	2009	Mills River	North Carolina	1	W-C 1050
+385	SCT_0369	2009	Mills River	North Carolina	1	Zhongza No. 4
+386	SCT_0325	2009	Mills River	North Carolina	2	Ailsa Craig
+387	SCT_0321	2009	Mills River	North Carolina	2	VFNT Cherry
+388	SCT_0286	2009	Mills River	North Carolina	2	Amish Paste
+389	SCT_0287	2009	Mills River	North Carolina	2	Beauty
+390	SCT_0290	2009	Mills River	North Carolina	2	Brandywine (Sudduth/Quisenberry)
+391	SCT_0289	2009	Mills River	North Carolina	2	Black Plum
+392	SCT_0292	2009	Mills River	North Carolina	2	Cherokee Purple
+393	SCT_0293	2009	Mills River	North Carolina	2	Costoluto Genovese
+394	SCT_0294	2009	Mills River	North Carolina	2	D' Olvia x Industria
+395	SCT_0295	2009	Mills River	North Carolina	2	Favorite
+396	SCT_0296	2009	Mills River	North Carolina	2	Globe
+397	SCT_0297	2009	Mills River	North Carolina	2	Gold Ball
+398	SCT_0298	2009	Mills River	North Carolina	2	Grushovka
+399	SCT_0299	2009	Mills River	North Carolina	2	Howard German
+400	SCT_0300	2009	Mills River	North Carolina	2	Juane Flammee
+401	SCT_0301	2009	Mills River	North Carolina	2	King Humbert
+402	SCT_0302	2009	Mills River	North Carolina	2	LYC1903
+403	SCT_0303	2009	Mills River	North Carolina	2	Marglobe
+404	SCT_0304	2009	Mills River	North Carolina	2	Moneymaker
+405	SCT_0305	2009	Mills River	North Carolina	2	Opalka
+406	SCT_0306	2009	Mills River	North Carolina	2	Orange Strawberry
+407	SCT_0307	2009	Mills River	North Carolina	2	Oxheart
+408	SCT_0308	2009	Mills River	North Carolina	2	PARAGON
+409	SCT_0310	2009	Mills River	North Carolina	2	Principe Borghese
+410	SCT_0311	2009	Mills River	North Carolina	2	Purple Clabash
+411	SCT_0312	2009	Mills River	North Carolina	2	RomaVF
+412	SCT_0313	2009	Mills River	North Carolina	2	Rutgers
+413	SCT_0314	2009	Mills River	North Carolina	2	San Marzano
+414	SCT_0315	2009	Mills River	North Carolina	2	Sponzillo
+415	SCT_0316	2009	Mills River	North Carolina	2	Stupice
+416	SCT_0317	2009	Mills River	North Carolina	2	T1003
+417	SCT_0318	2009	Mills River	North Carolina	2	T1693
+418	SCT_0319	2009	Mills River	North Carolina	2	T1697
+419	SCT_0320	2009	Mills River	North Carolina	2	Tres Cantos
+420	SCT_0322	2009	Mills River	North Carolina	2	White Queen
+421	SCT_0323	2009	Mills River	North Carolina	2	Yellow Pear
+422	SCT_0324	2009	Mills River	North Carolina	2	Yellow Stuffer
+423	SCT_0285	2009	Mills River	North Carolina	2	Aker's West Virginia
+424	SCT_0288	2009	Mills River	North Carolina	2	Black From Tula
+425	SCT_0291	2009	Mills River	North Carolina	2	Burbank
+426	SCT_0309	2009	Mills River	North Carolina	2	Peron
+427	SCT_0326	2009	Mills River	North Carolina	2	Marveille des Marches
+428	SCT_0327	2009	Mills River	North Carolina	2	Ponderosa
+429	SCT_0328	2009	Mills River	North Carolina	2	Tainan
+430	SCT_0344	2009	Mills River	North Carolina	2	PI 128586
+431	SCT_0359	2009	Mills River	North Carolina	2	Rinon PI 98097
+432	SCT_0364	2009	Mills River	North Carolina	2	Tomate
+433	SCT_0363	2009	Mills River	North Carolina	2	Sao Paulo
+434	SCT_0360	2009	Mills River	North Carolina	2	Rinon PI 118783
+435	SCT_0332	2009	Mills River	North Carolina	2	Abel
+436	SCT_0341	2009	Mills River	North Carolina	2	PI 124035
+437	SCT_0342	2009	Mills River	North Carolina	2	PI 124037
+438	SCT_0362	2009	Mills River	North Carolina	2	Rumi Banjan
+439	SCT_0343	2009	Mills River	North Carolina	2	PI 127820
+440	SCT_0345	2009	Mills River	North Carolina	2	PI 128592
+441	SCT_0346	2009	Mills River	North Carolina	2	PI 129026
+442	SCT_0347	2009	Mills River	North Carolina	2	PI 129033
+443	SCT_0348	2009	Mills River	North Carolina	2	PI 129084
+444	SCT_0349	2009	Mills River	North Carolina	2	PI 129128
+445	SCT_0350	2009	Mills River	North Carolina	2	PI 129142
+446	SCT_0351	2009	Mills River	North Carolina	2	PI 155372
+447	SCT_0358	2009	Mills River	North Carolina	2	Prospero
+448	SCT_0333	2009	Mills River	North Carolina	2	Chih-mu-tao-se
+449	SCT_0352	2009	Mills River	North Carolina	2	PI 159009
+450	SCT_0353	2009	Mills River	North Carolina	2	PI 196297
+451	SCT_0366	2009	Mills River	North Carolina	2	Turrialba
+452	SCT_0339	2009	Mills River	North Carolina	2	LA0410
+453	SCT_0334	2009	Mills River	North Carolina	2	Cotaxtla I
+454	SCT_0355	2009	Mills River	North Carolina	2	PI 270430
+455	SCT_0356	2009	Mills River	North Carolina	2	PI 272703
+456	SCT_0338	2009	Mills River	North Carolina	2	Kiyosu No. 2
+457	SCT_0337	2009	Mills River	North Carolina	2	Hong Kong
+458	SCT_0335	2009	Mills River	North Carolina	2	Devon Surprise
+459	SCT_0336	2009	Mills River	North Carolina	2	Heinz 1370
+460	SCT_0368	2009	Mills River	North Carolina	2	W-C 1537
+461	SCT_0330	2009	Mills River	North Carolina	2	A-1770
+462	SCT_0331	2009	Mills River	North Carolina	2	A-1771
+463	SCT_0329	2009	Mills River	North Carolina	2	1091-Chonto 21 (mataverde (3-21-2))
+464	SCT_0340	2009	Mills River	North Carolina	2	Peto 460
+465	SCT_0361	2009	Mills River	North Carolina	2	Rosa o Monserrat
+466	SCT_0365	2009	Mills River	North Carolina	2	Tomate del lugar
+467	SCT_0357	2009	Mills River	North Carolina	2	Pomodoro Superselezione di Marmande
+468	SCT_0354	2009	Mills River	North Carolina	2	PI 270408
+469	SCT_0367	2009	Mills River	North Carolina	2	W-C 1050
+470	SCT_0369	2009	Mills River	North Carolina	2	Zhongza No. 4
