@@ -1,6 +1,6 @@
 	Tomato Analyzer - Color Data														
 	Plot #	Plot File Name	Fruit No.	Parameter 1  (% surface w/ Hue 70-100)	Parameter 2  (% surface w/ Hue 0-50)	Avg. Red	Avg. Green	Avg. Blue	Avg. Luminosity	Avg. L	Avg. a	Avg. b	 Avg. Hue	Avg. Chroma	comment
-unique#	Plot #	Plot File Name	Fruit No.	SP:0000351	SP:0000350	SP:0000352	SP:0000355	SP:0000356	SP:0000360	SP:0000357	SP:0000358	SP:0000359	SP:0000361	SP:0000362	
+unique#	Plot #	Plot File Name	Fruit	SP:0000351	SP:0000350	SP:0000352	SP:0000355	SP:0000356	SP:0000360	SP:0000357	SP:0000358	SP:0000359	SP:0000361	SP:0000362	
 8901-1	8901	2009_oh_8901_fruit-c.jpg	1	34.4998	20.9999	140.02	93.0675	61.3633	94.7665	43.8012	13.0164	28.0407	64.7396	32.2631	color data not normalized to color checker
 8901-2	8901	2009_oh_8901_fruit-c.jpg	2	19.7345	33.9909	124.13	75.1643	50.0282	81.9353	36.9882	15.6313	25.331	57.8095	30.6186	color data not normalized to color checker
 8901-3	8901	2009_oh_8901_fruit-c.jpg	3	40.8767	14.4351	127.945	87.5891	56.9403	86.9831	40.8206	10.5343	26.3299	67.6772	29.5224	color data not normalized to color checker
