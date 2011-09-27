@@ -50,7 +50,11 @@ my $y_scale = $max_subject / $y;
 
 print STDERR "x-scale: $x_scale. y-scale: $y_scale\n";
 my $bg = $image->colorResolve(255, 255, 255);
-my $color = $image->colorResolve(200, 0, 0);
+my $color = $image->colorResolve(100, 100, 100);
+my $red = $image->colorResolve(255, 0, 0);
+my $blue = $image -> colorResolve(0, 0, 255);
+my $brown = $image -> colorResolve(150, 150, 0);
+my $green = $image-> colorResolve(0, 0, 150);
 
 while (<$F>) { 
     chomp;
@@ -59,6 +63,12 @@ while (<$F>) {
 #print STDERR "Processing $query - $subject ($evalue)...\n";
     
     if ( ($evalue <= $evalue_cutoff) && ($args{N} eq $query) && ($args{M} eq $subject) && ($percent_identity_cutoff > $identity) && ($minimal_align_length < $length) ) { 
+
+	if ($identity > 70) { $color = $green; }
+	if ($identity > 80) { $color = $blue; }
+	if ($identity > 85) { $color = $red; }
+
+
 	$image->line($q_start / $x_scale, $s_start / $y_scale, $q_end / $x_scale, $s_end / $y_scale, $color);
 	
     }
