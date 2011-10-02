@@ -1,0 +1,277 @@
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:
+101	SCT_0272	2010	Davis	California	1	Summit
+102	SCT_0147	2010	Davis	California	1	091003-30
+103	SCT_0248	2010	Davis	California	1	NCEBR-3
+104	SCT_0242	2010	Davis	California	1	NC8288
+105	SCT_0483	2010	Davis	California	1	NC13
+106	SCT_0229	2010	Davis	California	1	NC13G
+107	SCT_0188	2010	Davis	California	1	Fla. 7946
+108	SCT_0175	2010	Davis	California	1	Fla. 701
+109	SCT_0259	2010	Davis	California	1	Oregon Star
+110	SCT_0193	2010	Davis	California	1	Fla. 8109
+111	SCT_0163	2010	Davis	California	1	091144-2
+112	SCT_0195	2010	Davis	California	1	Fla. 8124C
+113	SCT_0172	2010	Davis	California	1	Campbell28
+114	SCT_0178	2010	Davis	California	1	Fla. 7481
+115	SCT_0238	2010	Davis	California	1	NC47NC2
+116	SCT_0219	2010	Davis	California	1	LA2378
+117	SCT_0237	2010	Davis	California	1	NC33EB-1
+118	SCT_0202	2010	Davis	California	1	Fla. 8516
+119	SCT_0227	2010	Davis	California	1	NC123S
+120	SCT_0218	2010	Davis	California	1	LA1996
+121	SCT_0221	2010	Davis	California	1	LA3736
+122	SCT_0173	2010	Davis	California	1	'Cherokee'
+123	SCT_0271	2010	Davis	California	1	Siletz
+124	SCT_0205	2010	Davis	California	1	Fla. 8561B-6
+125	SCT_0280	2010	Davis	California	1	UC-TR51
+126	SCT_0206	2010	Davis	California	1	Fla. 8599
+127	SCT_0243	2010	Davis	California	1	NC84173
+128	SCT_0179	2010	Davis	California	1	Fla. 7547
+129	SCT_0233	2010	Davis	California	1	NC23E-2 (93)
+130	SCT_0270	2010	Davis	California	1	Severianin
+131	SCT_0189	2010	Davis	California	1	Fla. 8000
+132	SCT_0180	2010	Davis	California	1	Fla. 7600
+133	SCT_0226	2010	Davis	California	1	NC 7 P rep-8 (2006) - 96
+134	SCT_0159	2010	Davis	California	1	091120-2
+135	SCT_0162	2010	Davis	California	1	091144-1
+136	SCT_0170	2010	Davis	California	1	88018 N
+137	SCT_0200	2010	Davis	California	1	Fla. 8352
+138	SCT_0249	2010	Davis	California	1	NCEBR-4
+139	SCT_0250	2010	Davis	California	1	NCEBR-5
+140	SCT_0210	2010	Davis	California	1	Fla. 8629
+141	SCT_0239	2010	Davis	California	1	NC50-7
+142	SCT_0199	2010	Davis	California	1	Fla. 8344
+143	SCT_0241	2010	Davis	California	1	NC8276
+144	SCT_0230	2010	Davis	California	1	NC140
+145	SCT_0278	2010	Davis	California	1	UC-T338
+146	SCT_0196	2010	Davis	California	1	Fla. 8233
+147	SCT_0282	2010	Davis	California	1	Ha7981
+148	SCT_0244	2010	Davis	California	1	NC860-1(2008)
+149	SCT_0214	2010	Davis	California	1	Fla. 8737
+150	SCT_0235	2010	Davis	California	1	NC2C
+151	SCT_0187	2010	Davis	California	1	Fla. 7907B
+152	SCT_0269	2010	Davis	California	1	RioGrande
+153	SCT_0225	2010	Davis	California	1	Medford
+154	SCT_0216	2010	Davis	California	1	Gold Nugget
+155	SCT_0266	2010	Davis	California	1	PI 470262
+156	SCT_0232	2010	Davis	California	1	NC1CS
+157	SCT_0143	2010	Davis	California	1	071733-1
+158	SCT_0222	2010	Davis	California	1	LA4425
+159	SCT_0208	2010	Davis	California	1	Fla. 8624
+160	SCT_0176	2010	Davis	California	1	Fla. 7060
+161	SCT_0267	2010	Davis	California	1	PI 65023
+162	SCT_0192	2010	Davis	California	1	Fla. 8083
+163	SCT_0167	2010	Davis	California	1	88003-59
+164	SCT_0234	2010	Davis	California	1	NC265-1(93)-3-4
+165	SCT_0246	2010	Davis	California	1	NCEBR-1
+166	SCT_0209	2010	Davis	California	1	Fla. 8626
+167	SCT_0256	2010	Davis	California	1	Ohio MR13
+168	SCT_0254	2010	Davis	California	1	NCHS-1
+169	SCT_0260	2010	Davis	California	1	P20-3-1
+170	SCT_0181	2010	Davis	California	1	Fla. 7770
+171	SCT_0166	2010	Davis	California	1	091183-1
+172	SCT_0158	2010	Davis	California	1	091119-2
+173	SCT_0207	2010	Davis	California	1	Fla. 8608
+174	SCT_0215	2010	Davis	California	1	Flora-Dade
+175	SCT_0274	2010	Davis	California	1	T-9
+176	SCT_0198	2010	Davis	California	1	Fla. 8293
+177	SCT_0186	2010	Davis	California	1	Fla. 7804
+178	SCT_0262	2010	Davis	California	1	PI 647532
+179	SCT_0284	2010	Davis	California	1	Ha7998
+180	SCT_0204	2010	Davis	California	1	Fla. 8543
+181	SCT_0223	2010	Davis	California	1	Large German Cherry
+182	SCT_0253	2010	Davis	California	1	NCEBR-8
+183	SCT_0240	2010	Davis	California	1	NC714-3B(2007)
+184	SCT_0252	2010	Davis	California	1	NCEBR-7
+185	SCT_0236	2010	Davis	California	1	NC2Y
+186	SCT_0273	2010	Davis	California	1	T-5
+187	SCT_0169	2010	Davis	California	1	88003-81
+188	SCT_0279	2010	Davis	California	1	UC-TR44
+189	SCT_0231	2010	Davis	California	1	NC161L-1W(2007)
+190	SCT_0247	2010	Davis	California	1	NCEBR-2
+191	SCT_0281	2010	Davis	California	1	Willamette VF
+192	SCT_0261	2010	Davis	California	1	PI 564169
+193	SCT_0153	2010	Davis	California	1	091004-4
+194	SCT_0258	2010	Davis	California	1	Oregon Spring
+195	SCT_0171	2010	Davis	California	1	88019 N
+196	SCT_0156	2010	Davis	California	1	091013/091031
+197	SCT_0157	2010	Davis	California	1	091109-3
+198	SCT_0197	2010	Davis	California	1	Fla. 8249
+199	SCT_0201	2010	Davis	California	1	Fla. 8476
+200	SCT_0161	2010	Davis	California	1	091135-1
+201	SCT_0276	2010	Davis	California	1	UC-MR20
+202	SCT_0185	2010	Davis	California	1	Fla. 7781
+203	SCT_0224	2010	Davis	California	1	Legend
+204	SCT_0217	2010	Davis	California	1	LA0797
+205	SCT_0251	2010	Davis	California	1	NCEBR-6
+206	SCT_0283	2010	Davis	California	1	Ha7997
+207	SCT_0277	2010	Davis	California	1	UC-N28
+208	SCT_0183	2010	Davis	California	1	Fla. 7775
+209	SCT_0212	2010	Davis	California	1	Fla. 8653
+210	SCT_0265	2009	Davis	California	1	PI 340906
+211	SCT_0257	2010	Davis	California	1	OR11
+212	SCT_0168	2010	Davis	California	1	88003-62
+213	SCT_0182	2010	Davis	California	1	Fla. 7771
+214	SCT_0211	2010	Davis	California	1	Fla. 8646
+215	SCT_0245	2010	Davis	California	1	NC99471-3
+216	SCT_0151	2010	Davis	California	1	091004-16
+217	SCT_0160	2010	Davis	California	1	091120-7
+218	SCT_0144	2010	Davis	California	1	071820-2
+219	SCT_0165	2010	Davis	California	1	091166-3
+220	SCT_0268	2010	Davis	California	1	Piedmont
+221	SCT_0344	2010	Davis	California	1	PI 128586
+222	SCT_0177	2010	Davis	California	1	Fla. 726
+223	SCT_0255	2010	Davis	California	1	Ohio11
+224	SCT_0184	2010	Davis	California	1	Fla. 7776
+225	SCT_0220	2010	Davis	California	1	LA3163
+226	SCT_0213	2010	Davis	California	1	Fla. 8735
+227	SCT_0190	2010	Davis	California	1	Fla. 8044
+228	SCT_0148	2010	Davis	California	1	091003-35
+229	SCT_0264	2010	Davis	California	1	PI 281553
+230	SCT_0164	2010	Davis	California	1	091153-1
+231	SCT_0275	2010	Davis	California	1	Tropic
+232	SCT_0174	2010	Davis	California	1	Fla. 678
+233	SCT_0146	2010	Davis	California	1	091003-29
+234	SCT_0150	2010	Davis	California	1	091004-15
+235	SCT_0145	2010	Davis	California	1	091003-21
+236	SCT_0191	2010	Davis	California	1	Fla. 8059
+237	SCT_0203	2010	Davis	California	1	Fla. 8539
+238	SCT_0194	2010	Davis	California	1	Fla. 8111BH
+239	SCT_0172	2010	Davis	California	2	Campbell28
+240	SCT_0229	2010	Davis	California	2	NC13G
+241	SCT_0248	2010	Davis	California	2	NCEBR-3
+242	SCT_0253	2010	Davis	California	2	NCEBR-8
+243	SCT_0245	2010	Davis	California	2	NC99471-3
+244	SCT_0206	2010	Davis	California	2	Fla. 8599
+245	SCT_0227	2010	Davis	California	2	NC123S
+246	SCT_0207	2010	Davis	California	2	Fla. 8608
+247	SCT_0240	2010	Davis	California	2	NC714-3B(2007)
+248	SCT_0214	2010	Davis	California	2	Fla. 8737
+249	SCT_0222	2010	Davis	California	2	LA4425
+250	SCT_0267	2010	Davis	California	2	PI 65023
+251	SCT_0170	2010	Davis	California	2	88018 N
+252	SCT_0344	2010	Davis	California	2	PI 128586
+253	SCT_0269	2010	Davis	California	2	RioGrande
+254	SCT_0280	2010	Davis	California	2	UC-TR51
+255	SCT_0236	2010	Davis	California	2	NC2Y
+256	SCT_0283	2010	Davis	California	2	Ha7997
+257	SCT_0197	2010	Davis	California	2	Fla. 8249
+258	SCT_0169	2010	Davis	California	2	88003-81
+259	SCT_0145	2010	Davis	California	2	091003-21
+260	SCT_0237	2010	Davis	California	2	NC33EB-1
+261	SCT_0176	2010	Davis	California	2	Fla. 7060
+262	SCT_0201	2010	Davis	California	2	Fla. 8476
+263	SCT_0203	2010	Davis	California	2	Fla. 8539
+264	SCT_0193	2010	Davis	California	2	Fla. 8109
+265	SCT_0250	2010	Davis	California	2	NCEBR-5
+266	SCT_0179	2010	Davis	California	2	Fla. 7547
+267	SCT_0178	2010	Davis	California	2	Fla. 7481
+268	SCT_0266	2010	Davis	California	2	PI 470262
+269	SCT_0284	2010	Davis	California	2	Ha7998
+270	SCT_0261	2010	Davis	California	2	PI 564169
+271	SCT_0188	2010	Davis	California	2	Fla. 7946
+272	SCT_0224	2010	Davis	California	2	Legend
+273	SCT_0192	2010	Davis	California	2	Fla. 8083
+274	SCT_0160	2010	Davis	California	2	091120-7
+275	SCT_0144	2010	Davis	California	2	071820-2
+276	SCT_0210	2010	Davis	California	2	Fla. 8629
+277	SCT_0174	2010	Davis	California	2	Fla. 678
+278	SCT_0231	2010	Davis	California	2	NC161L-1W(2007)
+279	SCT_0159	2010	Davis	California	2	091120-2
+280	SCT_0204	2010	Davis	California	2	Fla. 8543
+281	SCT_0249	2010	Davis	California	2	NCEBR-4
+282	SCT_0256	2010	Davis	California	2	Ohio MR13
+283	SCT_0153	2010	Davis	California	2	091004-4
+284	SCT_0202	2010	Davis	California	2	Fla. 8516
+285	SCT_0483	2010	Davis	California	2	NC13
+286	SCT_0279	2010	Davis	California	2	UC-TR44
+287	SCT_0246	2010	Davis	California	2	NCEBR-1
+288	SCT_0265	2010	Davis	California	2	PI 340906
+289	SCT_0226	2010	Davis	California	2	NC 7 P rep-8 (2006) - 96
+290	SCT_0191	2010	Davis	California	2	Fla. 8059
+291	SCT_0205	2010	Davis	California	2	Fla. 8561B-6
+292	SCT_0258	2010	Davis	California	2	Oregon Spring
+293	SCT_0277	2010	Davis	California	2	UC-N28
+294	SCT_0173	2010	Davis	California	2	'Cherokee'
+295	SCT_0221	2010	Davis	California	2	LA3736
+296	SCT_0241	2010	Davis	California	2	NC8276
+297	SCT_0186	2010	Davis	California	2	Fla. 7804
+298	SCT_0219	2010	Davis	California	2	LA2378
+299	SCT_0271	2010	Davis	California	2	Siletz
+300	SCT_0259	2010	Davis	California	2	Oregon Star
+301	SCT_0223	2010	Davis	California	2	Large German Cherry
+302	SCT_0166	2010	Davis	California	2	091183-1
+303	SCT_0187	2010	Davis	California	2	Fla. 7907B
+304	SCT_0235	2010	Davis	California	2	NC2C
+305	SCT_0164	2010	Davis	California	2	091153-1
+306	SCT_0168	2010	Davis	California	2	88003-62
+307	SCT_0252	2010	Davis	California	2	NCEBR-7
+308	SCT_0180	2010	Davis	California	2	Fla. 7600
+309	SCT_0162	2010	Davis	California	2	091144-1
+310	SCT_0230	2010	Davis	California	2	NC140
+311	SCT_0211	2010	Davis	California	2	Fla. 8646
+312	SCT_0161	2010	Davis	California	2	091135-1
+313	SCT_0165	2010	Davis	California	2	091166-3
+314	SCT_0281	2010	Davis	California	2	Willamette VF
+315	SCT_0183	2010	Davis	California	2	Fla. 7775
+316	SCT_0163	2010	Davis	California	2	091144-2
+317	SCT_0242	2010	Davis	California	2	NC8288
+318	SCT_0239	2010	Davis	California	2	NC50-7
+319	SCT_0200	2010	Davis	California	2	Fla. 8352
+320	SCT_0273	2010	Davis	California	2	T-5
+321	SCT_0257	2010	Davis	California	2	OR11
+322	SCT_0268	2010	Davis	California	2	Piedmont
+323	SCT_0190	2010	Davis	California	2	Fla. 8044
+324	SCT_0198	2010	Davis	California	2	Fla. 8293
+325	SCT_0238	2010	Davis	California	2	NC47NC2
+326	SCT_0254	2010	Davis	California	2	NCHS-1
+327	SCT_0216	2010	Davis	California	2	Gold Nugget
+328	SCT_0260	2010	Davis	California	2	P20-3-1
+329	SCT_0167	2010	Davis	California	2	88003-59
+330	SCT_0251	2010	Davis	California	2	NCEBR-6
+331	SCT_0185	2010	Davis	California	2	Fla. 7781
+332	SCT_0272	2010	Davis	California	2	Summit
+333	SCT_0276	2010	Davis	California	2	UC-MR20
+334	SCT_0171	2010	Davis	California	2	88019 N
+335	SCT_0247	2010	Davis	California	2	NCEBR-2
+336	SCT_0199	2010	Davis	California	2	Fla. 8344
+337	SCT_0208	2010	Davis	California	2	Fla. 8624
+338	SCT_0150	2010	Davis	California	2	091004-15
+339	SCT_0262	2010	Davis	California	2	PI 647532
+340	SCT_0151	2010	Davis	California	2	091004-16
+341	SCT_0189	2010	Davis	California	2	Fla. 8000
+342	SCT_0234	2010	Davis	California	2	NC265-1(93)-3-4
+343	SCT_0220	2010	Davis	California	2	LA3163
+344	SCT_0181	2010	Davis	California	2	Fla. 7770
+345	SCT_0213	2010	Davis	California	2	Fla. 8735
+346	SCT_0182	2010	Davis	California	2	Fla. 7771
+347	SCT_0209	2010	Davis	California	2	Fla. 8626
+348	SCT_0157	2010	Davis	California	2	091109-3
+349	SCT_0218	2010	Davis	California	2	LA1996
+350	SCT_0143	2010	Davis	California	2	071733-1
+351	SCT_0156	2010	Davis	California	2	091013/091031
+352	SCT_0244	2010	Davis	California	2	NC860-1(2008)
+353	SCT_0243	2010	Davis	California	2	NC84173
+354	SCT_0274	2010	Davis	California	2	T-9
+355	SCT_0264	2010	Davis	California	2	PI 281553
+356	SCT_0158	2010	Davis	California	2	091119-2
+357	SCT_0195	2010	Davis	California	2	Fla. 8124C
+358	SCT_0215	2010	Davis	California	2	Flora-Dade
+359	SCT_0175	2010	Davis	California	2	Fla. 701
+360	SCT_0255	2010	Davis	California	2	Ohio11
+361	SCT_0196	2010	Davis	California	2	Fla. 8233
+362	SCT_0217	2010	Davis	California	2	LA0797
+363	SCT_0270	2010	Davis	California	2	Severianin
+364	SCT_0177	2010	Davis	California	2	Fla. 726
+365	SCT_0148	2010	Davis	California	2	091003-35
+366	SCT_0146	2010	Davis	California	2	091003-29
+367	SCT_0225	2010	Davis	California	2	Medford
+368	SCT_0212	2010	Davis	California	2	Fla. 8653
+369	SCT_0233	2010	Davis	California	2	NC23E-2 (93)
+370	SCT_0147	2010	Davis	California	2	091003-30
+371	SCT_0282	2010	Davis	California	2	Ha7981
+372	SCT_0232	2010	Davis	California	2	NC1CS
+373	SCT_0194	2010	Davis	California	2	Fla. 8111BH
+374	SCT_0184	2010	Davis	California	2	Fla. 7776
+375	SCT_0278	2010	Davis	California	2	UC-T338
+376	SCT_0275	2010	Davis	California	2	Tropic

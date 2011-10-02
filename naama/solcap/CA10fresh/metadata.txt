@@ -1,0 +1,18 @@
+#data file for the solcap vintage 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap fresh tomatoes 2010, Davis, OH	solcap fresh tomatoes. Hutchinson Drive, Davis CA	Hutchinson Drive, Davis CA	38.35	-121.783	WGS84	60	2010/04/10	2010/05/01	2010/08/10	2010/09/28	2010	Hutchinson Drive, Davis CA
+												
+												
+												
+												
+												
+Degrees and minutes followed by N(North) or S(South) Longitude	38 32 N											
+Degrees and minutes followed by E(East) or W(West)	121 46 W											
+Elevation (m asl)	62 ft											
+Name of farm or institute	UC Davis											
+Street address	Hutchinson Drive, Davis CA											
+Year (YYYY)	2010											
+Sowing date (MM/DD/YY)	2010/04/10											
+Transplanting Date (MM/DD/YY)	2010/05/01											
+First Harvest Date (MM/DD/YY)	2010/08/10											
+Last Harvest Date(MM/DD/YY)	2010/09/28											
