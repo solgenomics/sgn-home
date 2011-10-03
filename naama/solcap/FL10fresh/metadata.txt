@@ -1,0 +1,14 @@
+#data file for the solcap vintage 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap fresh tomatoes 2010, Wimauma, FL	solcap fresh tomatoes. 14625 CR 672 Wimauma, FL 33598	University of Florida/ IFAS Gulf Coast Research & Education Center	27.76273	-82.23227	WGS84	144	2010/02/03	2010/03/19			2010	14625 CR 672 Wimauma, FL 33598
+												
+												
+												
+												
+												
+												
+			Name of farm or institute	University of Florida/ IFAS Gulf Coast Research & Education Center								
+			Street address	14625 CR 672 Wimauma, FL 33598								
+			Year (YYYY)	2010								
+			Sowing date (MM/DD/YY)	2010/02/03								
+			Transplanting Date (MM/DD/YY)	2010/03/19								
