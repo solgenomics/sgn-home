@@ -1,0 +1,171 @@
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:		
+2001	SCT_0325	2010	Mills River	NC	1	Ailsa Craig		
+2011	SCT_0231	2010	Mills River	NC	1	VFNT Cherry		
+2021	SCT_0286	2010	Mills River	NC	1	Amish Paste		
+2031	SCT_0287	2010	Mills River	NC	1	Beauty		
+2041	SCT_0290	2010	Mills River	NC	1	Brandywine ( Sudduth/Quisenberry)		
+2051	SCT_0289	2010	Mills River	NC	1	BlackPlum		
+2061	SCT_0292	2010	Mills River	NC	1	Cherokee Purple		
+2071	SCT_0293	2010	Mills River	NC	1	Costoluto Genovese		
+2081	SCT_0294	2010	Mills River	NC	1	D' Olvia x Industria		
+2091	SCT_0295	2010	Mills River	NC	1	Favorite		
+2101	SCT_0296	2010	Mills River	NC	1	Globe		
+2111	SCT_0297	2010	Mills River	NC	1	GoldBall		
+2121	SCT_0298	2010	Mills River	NC	1	Grushovka		
+2131	SCT_0299	2010	Mills River	NC	1	HowardGerman		
+2141	SCT_0300	2010	Mills River	NC	1	Juane Flammee		
+2151	SCT_0301	2010	Mills River	NC	1	King Humbert		
+2161	SCT_0302	2010	Mills River	NC	1	LYC1903		
+2171	SCT_0303	2010	Mills River	NC	1	Marglobe		
+2181	SCT_0304	2010	Mills River	NC	1	Moneymaker		
+2191	SCT_0305	2010	Mills River	NC	1	Opalka		
+2201	SCT_0306	2010	Mills River	NC	1	Orange Strawberry		
+2211	SCT_0307	2010	Mills River	NC	1	Oxheart		
+2221	SCT_0308	2010	Mills River	NC	1	PARAGON		
+2231	SCT_0310	2010	Mills River	NC	1	PrincipeBorghese		
+2241	SCT_0311	2010	Mills River	NC	1	Purple Clabash		
+2251	SCT_0312	2010	Mills River	NC	1	RomaVF		
+2261	SCT_0313	2010	Mills River	NC	1	Rutgers		
+2271	SCT_0314	2010	Mills River	NC	1	SanMarzano		
+2281	SCT_0315	2010	Mills River	NC	1	Sponzillo		
+2291	SCT_0316	2010	Mills River	NC	1	Stupice		
+2301	SCT_0317	2010	Mills River	NC	1	T1003		
+2311	SCT_0318	2010	Mills River	NC	1	T1693		
+2321	SCT_0319	2010	Mills River	NC	1	T1697		
+2331	SCT_0320	2010	Mills River	NC	1	Tres Cantos		
+2341	SCT_0322	2010	Mills River	NC	1	White Queen		
+2351	SCT_0323	2010	Mills River	NC	1	Yellow Pear		 
+2361	SCT_0324	2010	Mills River	NC	1	Yellow Stuffer		 
+2371	SCT_0285	2010	Mills River	NC	1	Aker's West Virginia		
+2381	SCT_0288	2010	Mills River	NC	1	Black From Tula		
+2391	SCT_0291	2010	Mills River	NC	1	Burbank		
+2401	SCT_0309	2010	Mills River	NC	1	Peron		
+2411	SCT_0326	2010	Mills River	NC	1	Marveille des Marches		
+2421	SCT_0327	2010	Mills River	NC	1	Ponderosa		
+2431	SCT_0328	2010	Mills River	NC	1	Tainan (AVRDC #6)		
+2441	SCT_0344	2010	Mills River	NC	1	PI 128586		
+2451	SCT_0360	2010	Mills River	NC	1	Rinon PI118783		
+2461	SCT_0364	2010	Mills River	NC	1	Tomate		
+2471	SCT_0363	2010	Mills River	NC	1	Sao Paulo		
+2481	SCT_0360	2010	Mills River	NC	1	Rinon PI118783		
+2491	SCT_0332	2010	Mills River	NC	1	Abel		
+2501	SCT_0341	2010	Mills River	NC	1	PI 124035		
+2511	SCT_0342	2010	Mills River	NC	1	PI 124037		
+2521	SCT_0362	2010	Mills River	NC	1	Rumi Banjan		
+2531	SCT_0343	2010	Mills River	NC	1	PI 127820		
+2541	SCT_0344	2010	Mills River	NC	1	PI 128592		
+2551	SCT_0345	2010	Mills River	NC	1	PI 129026		
+2561	SCT_0346	2010	Mills River	NC	1	PI 129033		
+2571	SCT_0347	2010	Mills River	NC	1	PI 129084		
+2581	SCT_0348	2010	Mills River	NC	1	PI 129128		
+2591	SCT_0349	2010	Mills River	NC	1	PI 129142		
+2601	SCT_0350	2010	Mills River	NC	1	PI 155372		
+2611	SCT_0351	2010	Mills River	NC	1	Prospero		
+2621	SCT_0333	2010	Mills River	NC	1	Chih-mu-tao-se		
+2631	SCT_0352	2010	Mills River	NC	1	PI159009		
+2641	SCT_0353	2010	Mills River	NC	1	PI196297		
+2651	SCT_0366	2010	Mills River	NC	1	Turrialba		
+2661	SCT_0339	2010	Mills River	NC	1	LA 410		
+2671	SCT_0334	2010	Mills River	NC	1	Cotaxtla I		
+2681	SCT_0355	2010	Mills River	NC	1	PI 270430		
+2691	SCT_0356	2010	Mills River	NC	1	PI 272703		
+2701	SCT_0338	2010	Mills River	NC	1	Kiyosu No. 2		
+2711	SCT_0337	2010	Mills River	NC	1	Hong Kong		
+2721	SCT_0335	2010	Mills River	NC	1	Devon Surprise		
+2731	SCT_0336	2010	Mills River	NC	1	Heinz 1370		
+2741	SCT_0368	2010	Mills River	NC	1	W-C 1537		
+2751	SCT_0330	2010	Mills River	NC	1	A-1770		
+2761	SCT_0331	2010	Mills River	NC	1	A-1771		
+2771	SCT_0329	2010	Mills River	NC	1	1091-Chonto 21 (mataverde (3-21-2)		
+2781	SCT_0340	2010	Mills River	NC	1	Peto 460		
+2791	SCT_0361	2010	Mills River	NC	1	Rosa o Monserrat		
+2801	SCT_0365	2010	Mills River	NC	1	Tomate del lugar		
+2811	SCT_0357	2010	Mills River	NC	1	Pomodoro Superselezione di Marmande		
+2821	SCT_0354	2010	Mills River	NC	1	PI270408		
+2831	SCT_0367	2010	Mills River	NC	1	W-C 1050		
+2841	SCT_0369	2010	Mills River	NC	1	Zhongza No. 4		
+2002	SCT_0325	2010	Mills River	NC	2	Ailsa Craig		
+2012	SCT_0231	2010	Mills River	NC	2	VFNT Cherry		
+2022	SCT_0286	2010	Mills River	NC	2	Amish Paste		
+2032	SCT_0287	2010	Mills River	NC	2	Beauty		
+2042	SCT_0290	2010	Mills River	NC	2	Brandywine ( Sudduth/Quisenberry)		
+2052	SCT_0289	2010	Mills River	NC	2	BlackPlum		
+2062	SCT_0292	2010	Mills River	NC	2	Cherokee Purple		
+2072	SCT_0293	2010	Mills River	NC	2	Costoluto Genovese		
+2082	SCT_0294	2010	Mills River	NC	2	D' Olvia x Industria		
+2092	SCT_0295	2010	Mills River	NC	2	Favorite		
+2102	SCT_0296	2010	Mills River	NC	2	Globe		
+2112	SCT_0297	2010	Mills River	NC	2	GoldBall		
+2122	SCT_0298	2010	Mills River	NC	2	Grushovka		
+2132	SCT_0299	2010	Mills River	NC	2	HowardGerman		
+2142	SCT_0300	2010	Mills River	NC	2	Juane Flammee		
+2152	SCT_0301	2010	Mills River	NC	2	King Humbert		
+2162	SCT_0302	2010	Mills River	NC	2	LYC1903		
+2172	SCT_0303	2010	Mills River	NC	2	Marglobe		
+2182	SCT_0304	2010	Mills River	NC	2	Moneymaker		
+2192	SCT_0305	2010	Mills River	NC	2	Opalka		
+2202	SCT_0306	2010	Mills River	NC	2	Orange Strawberry		
+2212	SCT_0307	2010	Mills River	NC	2	Oxheart		
+2222	SCT_0308	2010	Mills River	NC	2	PARAGON		
+2232	SCT_0310	2010	Mills River	NC	2	PrincipeBorghese		
+2242	SCT_0311	2010	Mills River	NC	2	Purple Clabash		
+2252	SCT_0312	2010	Mills River	NC	2	RomaVF		
+2262	SCT_0313	2010	Mills River	NC	2	Rutgers		
+2272	SCT_0314	2010	Mills River	NC	2	SanMarzano		
+2282	SCT_0315	2010	Mills River	NC	2	Sponzillo		
+2292	SCT_0316	2010	Mills River	NC	2	Stupice		
+2302	SCT_0317	2010	Mills River	NC	2	T1003		
+2312	SCT_0318	2010	Mills River	NC	2	T1693		
+2322	SCT_0319	2010	Mills River	NC	2	T1697		
+2332	SCT_0320	2010	Mills River	NC	2	Tres Cantos		
+2342	SCT_0322	2010	Mills River	NC	2	White Queen		
+2352	SCT_0323	2010	Mills River	NC	2	Yellow Pear		
+2362	SCT_0324	2010	Mills River	NC	2	Yellow Stuffer		
+2372	SCT_0285	2010	Mills River	NC	2	Aker's West Virginia		
+2382	SCT_0288	2010	Mills River	NC	2	Black From Tula		
+2392	SCT_0291	2010	Mills River	NC	2	Burbank		
+2402	SCT_0309	2010	Mills River	NC	2	Peron		
+2412	SCT_0326	2010	Mills River	NC	2	Marveille des Marches		
+2422	SCT_0327	2010	Mills River	NC	2	Ponderosa		
+2432	SCT_0328	2010	Mills River	NC	2	Tainan (AVRDC #6)		
+2442	SCT_0344	2010	Mills River	NC	2	PI 128586		
+2452	SCT_0360	2010	Mills River	NC	2	Rinon PI118783		
+2462	SCT_0364	2010	Mills River	NC	2	Tomate		
+2472	SCT_0363	2010	Mills River	NC	2	Sao Paulo		
+2482	SCT_0360	2010	Mills River	NC	2	Rinon PI118783		
+2492	SCT_0332	2010	Mills River	NC	2	Abel		
+2502	SCT_0341	2010	Mills River	NC	2	PI 124035		
+2512	SCT_0342	2010	Mills River	NC	2	PI 124037		
+2522	SCT_0362	2010	Mills River	NC	2	Rumi Banjan		
+2532	SCT_0343	2010	Mills River	NC	2	PI 127820		
+2542	SCT_0344	2010	Mills River	NC	2	PI 128592		
+2552	SCT_0345	2010	Mills River	NC	2	PI 129026		
+2562	SCT_0346	2010	Mills River	NC	2	PI 129033		
+2572	SCT_0347	2010	Mills River	NC	2	PI 129084		
+2582	SCT_0348	2010	Mills River	NC	2	PI 129128		
+2592	SCT_0349	2010	Mills River	NC	2	PI 129142		
+2602	SCT_0350	2010	Mills River	NC	2	PI 155372		
+2612	SCT_0351	2010	Mills River	NC	2	Prospero		
+2622	SCT_0333	2010	Mills River	NC	2	Chih-mu-tao-se		
+2632	SCT_0352	2010	Mills River	NC	2	PI159009		
+2642	SCT_0353	2010	Mills River	NC	2	PI196297		
+2652	SCT_0366	2010	Mills River	NC	2	Turrialba		
+2662	SCT_0339	2010	Mills River	NC	2	LA 410		
+2672	SCT_0334	2010	Mills River	NC	2	Cotaxtla I		
+2682	SCT_0355	2010	Mills River	NC	2	PI 270430		
+2692	SCT_0356	2010	Mills River	NC	2	PI 272703		
+2702	SCT_0338	2010	Mills River	NC	2	Kiyosu No. 2		
+2712	SCT_0337	2010	Mills River	NC	2	Hong Kong		
+2722	SCT_0335	2010	Mills River	NC	2	Devon Surprise		
+2732	SCT_0336	2010	Mills River	NC	2	Heinz 1370		
+2742	SCT_0368	2010	Mills River	NC	2	W-C 1537		
+2752	SCT_0330	2010	Mills River	NC	2	A-1770		
+2762	SCT_0331	2010	Mills River	NC	2	A-1771		
+2772	SCT_0329	2010	Mills River	NC	2	1091-Chonto 21 (mataverde (3-21-2)		
+2782	SCT_0340	2010	Mills River	NC	2	Peto 460		
+2792	SCT_0361	2010	Mills River	NC	2	Rosa o Monserrat		
+2802	SCT_0365	2010	Mills River	NC	2	Tomate del lugar		
+2812	SCT_0357	2010	Mills River	NC	2	Pomodoro Superselezione di Marmande		
+2822	SCT_0354	2010	Mills River	NC	2	PI270408		
+2832	SCT_0367	2010	Mills River	NC	2	W-C 1050		
+2842	SCT_0369	2010	Mills River	NC	2	Zhongza No. 4		

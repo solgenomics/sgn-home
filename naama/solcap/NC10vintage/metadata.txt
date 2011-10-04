@@ -1,0 +1,17 @@
+#data file for the solcap vintage 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap vintage tomatoes 2010, NC State University	solcap vintage tomatoes 2010, NC State University	Mills River, North Carolina	35.4	-82.6	WGS84	774	2010/04/07	2010/04/15	2010/05/17	2010/08/24	2010	455 Research Dr., Mills River NC 28759
+												
+												
+												
+												
+	Degrees and minutes followed by N(North) or S(South) Longitude	35.4 N										
+	Degrees and minutes followed by E(East) or W(West)	82.6 W										
+	Elevation (m asl)	774										
+	Name of farm or institute	NC State University										
+	Street address	455 Research Dr., Mills River NC 28759										
+	Year (YYYY)	2010										
+	Sowing date (MM/DD/YY)	2010/04/07										
+	Transplanting Date (MM/DD/YY)	2010/04/15										
+	First Harvest Date (MM/DD/YY)	2010/05/17										
+	Last Harvest Date(MM/DD/YY)	2010/08/24										
