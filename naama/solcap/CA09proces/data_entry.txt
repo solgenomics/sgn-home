@@ -1,7 +1,7 @@
 	Tomato Data Entry			Characterization Descriptors									Quality Measures					
-	Line #	Plot	Replicate Number	Seedling	Plant	Inflorescence	Flower: fasciation	Peduncle	Date of flowering (third truss)	Date of Maturity (third set)	Fruit	Yield (kg/ha)	Brix	pH	titratable acids (g citric acid /100 ml) 		Form 	
+	Line #	Plot	Replicate Number	Seedling	Plant	Inflorescence	Flower: fasciation	Peduncle	Date of flowering (third truss)	Date of Maturity (third set)	Fruit	Yield (kg/ha)	Brix	pH	titratable acids (g citric acid /100 ml)		Form	
 				anthocyanin coloration of hypocotyl: absent/present	growth type: determinate/indeterminate	2nd and 3rd truss - simple/intermediate/compound	1st flower of inflorescenses - absent/present	abscission layer - absent/present	MM/DD/YY	MM/DD/YY	size of blossom scar(mm)							
-unique#	Line #	Plot Number	Replicate Number	SP:0000344	SP:0000128	SP:0000071	SP:0000363	SP:0000364	SP:0000126	SP:0000366	SP:0000368	SP:0000198	SP:0000165	SP:0000170	SP:0000345	Comment		
+unique#	Line #	Plot Number	Replicate Number	SP:0000344	SP:0000128	SP:0000071	SP:0000363	SP:0000364	SP:0000126	SP:0000366	SP:0000368	SP:0000198|unit:kiogram per hectare	SP:0000165	SP:0000170	SP:0000345|unit:gram per deciliter	Comment		
 101-1	SCT_0036	101	1	.	.	.	.	.	.	2009/09/16	.	37353.1390811425	4.7	4.45	0.390668042158104		0	.
 102-1	SCT_0073	102	1	.	.	.	.	.	.	.	.	.	.	.	.		50.85	.
 103-1	SCT_0023	103	1	.	.	.	.	.	.	2009/09/23	.	50283.0718399995	4.65	4.44	0.313297244408521		50.85	.
