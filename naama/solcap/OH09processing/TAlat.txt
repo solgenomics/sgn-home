@@ -1,6 +1,6 @@
 	Tomato Analyzer - Latitudinal Shape - Individual Data						
 	Plot #	image files	Fruit	  Lobedness Degree	  Pericarp Area	  Pericarp Thickness	comment
-unique#	Plot #	image files	Fruit	SP:0000103	SP:0000095	SP:0000372	
+unique#	Plot #	image files	Fruit	SP:0000103	SP:0000095|unit:square centimeter	SP:0000372|unit:centimeter	
 3801-1	3801	2009_oh_3801_fruit-c.jpg	1	0.7189	0.4497	0.2563	
 3801-2	3801	2009_oh_3801_fruit-c.jpg	2	0.8169	0.4492	0.2537	
 3801-3	3801	2009_oh_3801_fruit-c.jpg	3	0.5239	0.4464	0.2562	
