@@ -1,6 +1,6 @@
 #data file for the solcap vintage 2009 metadata, #including project name, geolocation, and planting dates												
 project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
-solcap processing tomatoes 2009, Davis, OH	solcap processing tomatoes 2009. 28605 County Road 104, Davis, CA	Campbell's Soup Company	38.521417	-121.783333	WGS84	10.4	2009/04/04	2009/05/16	2009/09/09	2009/10/11	2009	28605 County Road 104, Davis, CA
+solcap processing tomatoes 2009, Davis, CA	solcap processing tomatoes 2009. 28605 County Road 104, Davis, CA	Campbell's Soup Company	38.521417	-121.783333	WGS84	10.4	2009/04/04	2009/05/16	2009/09/09	2009/10/11	2009	28605 County Road 104, Davis, CA
 												
 												
 												
