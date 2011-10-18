@@ -88,7 +88,7 @@ sub format_cds_attributes {
 }
 sub format_gene_attributes {
     my ( $gene ) = @_;
-    return format_attributes( [ [ locus_id => $gene->get_tag_values('Alias') ]  ]);
+    return format_attributes( [ map [ locus_id => $_ ], $gene->get_tag_values('Alias') ]);
 }
 
 sub format_attributes {
