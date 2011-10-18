@@ -14,46 +14,65 @@ my $in = Bio::FeatureIO->new(
     -file    => $ARGV[0],
     );
 
+my %handlers = (
+    gene => \&handle_gene,
+);
 while( my @f = $in->next_feature_group ) {
-    for my $gene ( @f ) {
-        my $fh = get_output_fh( $gene );
+    for my $feature ( @f ) {
+        my $fh = get_output_fh( $feature );
 
-        $gene->primary_tag eq 'gene'
-            or die "top-level feature not a gene?";
+        no strict 'refs';
 
-        $fh->print_tab(
-            [ $gene->start, $gene->end, 'gene' ],
-            format_gene_attributes( $gene ),
-        );
-
-        for my $mrna ( $gene->get_SeqFeatures ) {
-            $mrna->primary_tag eq 'mRNA'
-                or die "second-level feature not an mRNA?";
-
-            my @exon_tabs =
-                map [ $_->start, $_->end, undef ],
-                grep $_->primary_tag eq 'exon',
-                $mrna->get_SeqFeatures;
-            $exon_tabs[0][2] = 'mRNA';
-
-            push @exon_tabs,
-                format_mrna_attributes( $mrna );
-
-            $fh->print_tab( @exon_tabs );
-
-            my @cds_tabs =
-                map [ $_->start, $_->end, undef ],
-                grep $_->primary_tag eq 'CDS',
-                $mrna->get_SeqFeatures;
-            $cds_tabs[0][2] = 'CDS';
-
-            push @cds_tabs,
-                format_cds_attributes( $mrna );
-
-            $fh->print_tab( @cds_tabs );
-        }
+        my $type = $feature->primary_tag;
+        my $handler = $handlers{$type}
+            or die "no handler defined for top-level $type features";
+        $handler->( $fh, $feature );
     }
 }
+
+exit;
+
+################ subroutines ################
+
+sub handle_gene {
+    my ( $fh, $gene ) = @_;
+
+    $gene->primary_tag eq 'gene'
+        or die "not a gene?";
+
+    $fh->print_tab(
+        [ $gene->start, $gene->end, 'gene' ],
+        format_gene_attributes( $gene ),
+    );
+
+    for my $mrna ( $gene->get_SeqFeatures ) {
+        $mrna->primary_tag eq 'mRNA'
+            or die "second-level feature not an mRNA?";
+
+        my @exon_tabs =
+            map [ $_->start, $_->end, undef ],
+            grep $_->primary_tag eq 'exon',
+            $mrna->get_SeqFeatures;
+        $exon_tabs[0][2] = 'mRNA';
+
+        push @exon_tabs,
+            format_mrna_attributes( $mrna );
+
+        $fh->print_tab( @exon_tabs );
+
+        my @cds_tabs =
+            map [ $_->start, $_->end, undef ],
+            grep $_->primary_tag eq 'CDS',
+            $mrna->get_SeqFeatures;
+        $cds_tabs[0][2] = 'CDS';
+
+        push @cds_tabs,
+            format_cds_attributes( $mrna );
+
+        $fh->print_tab( @cds_tabs );
+    }
+}
+
 
 sub format_mrna_attributes {
     my ( $mrna ) = @_;
