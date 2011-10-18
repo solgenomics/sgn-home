@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use 5.10.0;
 
 use lib '/home/rob/dev/bioperl/Bio-FeatureIO/lib';
 
@@ -19,7 +20,8 @@ my %handlers = (
 );
 while( my @f = $in->next_feature_group ) {
     for my $feature ( @f ) {
-        my $fh = get_output_fh( $feature );
+        my $fh = get_output_fh( $feature )
+            or next;
 
         no strict 'refs';
 
@@ -122,16 +124,41 @@ sub format_attributes {
         @$attributes;
 }
 
+
+use Data::Dumper;
+
 my %filehandle_cache;
 sub get_output_fh {
     my ( $feat ) = @_;
     my $seq_id = $feat->seq_id or die "no seq_id on feature!";
-    return $filehandle_cache{$seq_id} ||= do {
-        my $fh = mytabfile->new( "$seq_id.tbl", '>' )
-            or die "$! writing $seq_id.tbl";
 
-        $fh->print( ">Feature $seq_id\n" );
-        $fh
+    return $filehandle_cache{$seq_id} //= do {
+
+        my $accession = {qw(
+            SL2.40ch01	CM001064.1
+            SL2.40ch02	CM001065.1
+            SL2.40ch03	CM001066.1
+            SL2.40ch04	CM001067.1
+            SL2.40ch05	CM001068.1
+            SL2.40ch06	CM001069.1
+            SL2.40ch07	CM001070.1
+            SL2.40ch08	CM001071.1
+            SL2.40ch09	CM001072.1
+            SL2.40ch10	CM001073.1
+            SL2.40ch11	CM001074.1
+            SL2.40ch12	CM001075.1
+        )}->{$seq_id};
+
+        unless( $accession ) {
+            warn "I don't know the genbank accession for $seq_id, skipping all features on that sequence";
+            0
+        } else {
+            my $fh = mytabfile->new( "$accession.tbl", '>' )
+                or die "$! writing $accession.tbl";
+
+            $fh->print( ">Feature $accession\n" );
+            $fh
+        }
     };
 }
 
