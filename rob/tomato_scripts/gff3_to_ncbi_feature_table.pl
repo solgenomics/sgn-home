@@ -87,8 +87,10 @@ sub format_mrna_attributes {
         if( my ( $product ) = $desc =~ /^(.+)(?=\(A[A-Z]+)/ ) {
             push @attributes, [ product => $product ];
         }
+
         if( my @interpro = $desc =~ /\b(IPR\d+)\b/g ) {
             push @attributes, map [ dbxref => "InterPro:$_" ], @interpro;
+            push @attributes, map [ inference => "protein motif:InterPro:$_" ], @interpro;
         }
 
         push @attributes, [ note => $desc ];
