@@ -11,6 +11,7 @@ our $schema = Bio::Chado::Schema->connect(shift);
 
 while(<>) {
     s/ (PGSC\d{4}DMP\d+) (\([^\)]+\) \s+)/pgsc_protein_to_gene($1,$2)/egx;
+    s/ ( (?:AT|Solyc)\d+G\d+) (\.\d+)+ /$1/xig;
     print;
     last;
 }
