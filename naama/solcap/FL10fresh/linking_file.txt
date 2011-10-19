@@ -1,0 +1,276 @@
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:	Comment	
+5201	SCT_0172	2010	Wimauma	Florida	1	Campbell28		
+5202	SCT_0173	2010	Wimauma	Florida	1	'Cherokee'		
+5203	SCT_0174	2010	Wimauma	Florida	1	Fla. 678		
+5204	SCT_0175	2010	Wimauma	Florida	1	Fla. 701		
+5205	SCT_0176	2010	Wimauma	Florida	1	Fla. 7060		
+5206	SCT_0177	2010	Wimauma	Florida	1	Fla. 726		
+5207	SCT_0178	2010	Wimauma	Florida	1	Fla. 7481		
+5208	SCT_0179	2010	Wimauma	Florida	1	Fla. 7547		
+5209	SCT_0180	2010	Wimauma	Florida	1	Fla. 7600		
+5210	SCT_0181	2010	Wimauma	Florida	1	Fla. 7770		
+5211	SCT_0182	2010	Wimauma	Florida	1	Fla. 7771		
+5212	SCT_0183	2010	Wimauma	Florida	1	Fla. 7775		
+5213	SCT_0184	2010	Wimauma	Florida	1	Fla. 7776		
+5214	SCT_0185	2010	Wimauma	Florida	1	Fla. 7781		
+5215	SCT_0186	2010	Wimauma	Florida	1	Fla. 7804		
+5216	SCT_0187	2010	Wimauma	Florida	1	Fla. 7907B		
+5217	SCT_0188	2010	Wimauma	Florida	1	Fla. 7946		
+5218	SCT_0189	2010	Wimauma	Florida	1	Fla. 8000		
+5219	SCT_0190	2010	Wimauma	Florida	1	Fla. 8044		
+5220	SCT_0191	2010	Wimauma	Florida	1	Fla. 8059		
+5221	SCT_0192	2010	Wimauma	Florida	1	Fla. 8083		
+5222	SCT_0193	2010	Wimauma	Florida	1	Fla. 8109		
+5223	SCT_0194	2010	Wimauma	Florida	1	Fla. 8111BH		
+5224	SCT_0195	2010	Wimauma	Florida	1	Fla. 8124C		
+5225	SCT_0196	2010	Wimauma	Florida	1	Fla. 8233		
+5226	SCT_0197	2010	Wimauma	Florida	1	Fla. 8249		
+5227	SCT_0198	2010	Wimauma	Florida	1	Fla. 8293		
+5228	SCT_0199	2010	Wimauma	Florida	1	Fla. 8344		
+5229	SCT_0200	2010	Wimauma	Florida	1	Fla. 8352		
+5230	SCT_0201	2010	Wimauma	Florida	1	Fla. 8476		
+5231	SCT_0202	2010	Wimauma	Florida	1	Fla. 8516		
+5232	SCT_0203	2010	Wimauma	Florida	1	Fla. 8539		
+5233	SCT_0204	2010	Wimauma	Florida	1	Fla. 8543		
+5234	SCT_0205	2010	Wimauma	Florida	1	Fla. 8561B-6		
+5235	SCT_0206	2010	Wimauma	Florida	1	Fla. 8599		
+5236	SCT_0207	2010	Wimauma	Florida	1	Fla. 8608		
+5237	SCT_0208	2010	Wimauma	Florida	1	Fla. 8624		
+5238	SCT_0209	2010	Wimauma	Florida	1	Fla. 8626		
+5239	SCT_0210	2010	Wimauma	Florida	1	Fla. 8629		
+5240	SCT_0211	2010	Wimauma	Florida	1	Fla. 8646		
+5241	SCT_0212	2010	Wimauma	Florida	1	Fla. 8653		
+5242	SCT_0213	2010	Wimauma	Florida	1	Fla. 8735		
+5243	SCT_0214	2010	Wimauma	Florida	1	Fla. 8737		
+5244	SCT_0215	2010	Wimauma	Florida	1	Flora-Dade		
+5245	SCT_0216	2010	Wimauma	Florida	1	Gold Nugget		
+5246	SCT_0282	2010	Wimauma	Florida	1	Ha7981		
+5247	SCT_0283	2010	Wimauma	Florida	1	Ha7997		
+5248	SCT_0284	2010	Wimauma	Florida	1	Ha7998		
+5249	SCT_0217	2010	Wimauma	Florida	1	LA0797		
+5250	SCT_0218	2010	Wimauma	Florida	1	LA1996		
+5251	SCT_0219	2010	Wimauma	Florida	1	LA2378		
+5252	SCT_0220	2010	Wimauma	Florida	1	LA3163		
+5253	SCT_0222	2010	Wimauma	Florida	1	LA4425		
+5254	SCT_0221	2010	Wimauma	Florida	1	LA3736		
+5255	SCT_0223	2010	Wimauma	Florida	1	LargeGermanCherry		
+5256	SCT_0224	2010	Wimauma	Florida	1	Legend		
+5257	SCT_0225	2010	Wimauma	Florida	1	Medford 		
+5258	SCT_0226	2010	Wimauma	Florida	1	NC 7 P rep-8 (2006) - 96		
+5259	SCT_0227	2010	Wimauma	Florida	1	NC123S		
+5260	SCT_0229	2010	Wimauma	Florida	1	NC13G		
+5261	SCT_0230	2010	Wimauma	Florida	1	NC140		
+5262	SCT_0231	2010	Wimauma	Florida	1	NC161L-1W(2007)		
+5263	SCT_0232	2010	Wimauma	Florida	1	NC1CS		
+5264	SCT_0233	2010	Wimauma	Florida	1	NC23E-2 (93)		
+5265	SCT_0234	2010	Wimauma	Florida	1	NC265-1(93)-3-4		
+5266	SCT_0235	2010	Wimauma	Florida	1	NC2C		
+5267	SCT_0236	2010	Wimauma	Florida	1	NC2Y		
+5268	SCT_0237	2010	Wimauma	Florida	1	NC33EB-1		
+5269	SCT_0238	2010	Wimauma	Florida	1	NC47NC2		
+5270	SCT_0239	2010	Wimauma	Florida	1	NC50-7		
+5271	SCT_0240	2010	Wimauma	Florida	1	NC714-3B(2007)		
+5272	SCT_0241	2010	Wimauma	Florida	1	NC8276		
+5273	SCT_0242	2010	Wimauma	Florida	1	NC8288		
+5274	SCT_0243	2010	Wimauma	Florida	1	NC84173		
+5275	SCT_0244	2010	Wimauma	Florida	1	NC860-1(2008)		
+5276	SCT_0245	2010	Wimauma	Florida	1	NC99471-3		
+5277	SCT_0246	2010	Wimauma	Florida	1	NCEBR-1		
+5278	SCT_0247	2010	Wimauma	Florida	1	NCEBR-2		
+5279	SCT_0248	2010	Wimauma	Florida	1	NCEBR-3		
+5280	SCT_0249	2010	Wimauma	Florida	1	NCEBR-4		
+5281	SCT_0250	2010	Wimauma	Florida	1	NCEBR-5		
+5282	SCT_0251	2010	Wimauma	Florida	1	NCEBR-6		
+5283	SCT_0252	2010	Wimauma	Florida	1	NCEBR-7		
+5284	SCT_0253	2010	Wimauma	Florida	1	NCEBR-8		
+5285	SCT_0254	2010	Wimauma	Florida	1	NCHS-1		
+5287	SCT_0255	2010	Wimauma	Florida	1	Ohio11		
+5288	SCT_0256	2010	Wimauma	Florida	1	OhioMR13		
+5289	SCT_0257	2010	Wimauma	Florida	1	OR11		
+5290	SCT_0258	2010	Wimauma	Florida	1	Oregon Spring		
+5291	SCT_0259	2010	Wimauma	Florida	1	Oregon Star		
+5292	SCT_0260	2010	Wimauma	Florida	1	P20-3-1		
+5293	SCT_0261	2010	Wimauma	Florida	1	PI 564169		
+5294	SCT_0262	2010	Wimauma	Florida	1	PI 647532		
+5295	SCT_0263	2010	Wimauma	Florida	1	PI128586		
+5296	SCT_0264	2010	Wimauma	Florida	1	PI281553		
+5297	SCT_0265	2010	Wimauma	Florida	1	PI340906		
+5298	SCT_0266	2010	Wimauma	Florida	1	PI470262		
+5299	SCT_0267	2010	Wimauma	Florida	1	PI65023		
+5300	SCT_0268	2010	Wimauma	Florida	1	'Piedmont'		
+5301	SCT_0269	2010	Wimauma	Florida	1	RioGrande		
+5302	SCT_0270	2010	Wimauma	Florida	1	Severianin		
+5303	SCT_0271	2010	Wimauma	Florida	1	Siletz		
+5304	SCT_0272	2010	Wimauma	Florida	1	'Summit'		
+5305	SCT_0486	2010	Wimauma	Florida	1	OH-6405		
+5306	SCT_0274	2010	Wimauma	Florida	1	T-9		
+5307	SCT_0275	2010	Wimauma	Florida	1	Tropic		
+5308	SCT_0276	2010	Wimauma	Florida	1	UC-MR20		
+5309	SCT_0277	2010	Wimauma	Florida	1	UC-N28		
+5310	SCT_0278	2010	Wimauma	Florida	1	UC-T338		
+5311	SCT_0279	2010	Wimauma	Florida	1	UC-TR44		
+5312	SCT_0280	2010	Wimauma	Florida	1	UC-TR51		
+5313	SCT_0281	2010	Wimauma	Florida	1	Willamette VF		
+5314	SCT_0143	2010	Wimauma	Florida	1	071733-1		
+5315	SCT_0157	2010	Wimauma	Florida	1	091109-3		
+5316	SCT_0162	2010	Wimauma	Florida	1	091144-1		
+5317	SCT_0163	2010	Wimauma	Florida	1	091144-2		
+5318	SCT_0159	2010	Wimauma	Florida	1	091120-2		
+5319	SCT_0160	2010	Wimauma	Florida	1	091120-7		
+5320	SCT_0158	2010	Wimauma	Florida	1	091119-2		
+5321	SCT_0161	2010	Wimauma	Florida	1	091135-1		
+5322	SCT_0144	2010	Wimauma	Florida	1	071820-2		
+5323	SCT_0164	2010	Wimauma	Florida	1	091153-1		
+5324	SCT_0165	2010	Wimauma	Florida	1	091166-3		
+5325	SCT_0166	2010	Wimauma	Florida	1	091183-1		
+5326	SCT_0167	2010	Wimauma	Florida	1	88003-59		
+5327	SCT_0169	2010	Wimauma	Florida	1	88003-81		
+5328	SCT_0168	2010	Wimauma	Florida	1	88003-62		
+5329	SCT_0156	2010	Wimauma	Florida	1	091013/091031		
+5330	SCT_0170	2010	Wimauma	Florida	1	88018 N		
+5331	SCT_0171	2010	Wimauma	Florida	1	88019 N		
+5332	SCT_0145	2010	Wimauma	Florida	1	091003-21		
+5333	SCT_0146	2010	Wimauma	Florida	1	091003-29		
+5335	SCT_0148	2010	Wimauma	Florida	1	091003-35		
+6201	SCT_0172	2010	Wimauma	Florida	2	Campbell28		
+6202	SCT_0173	2010	Wimauma	Florida	2	'Cherokee'		
+6203	SCT_0174	2010	Wimauma	Florida	2	Fla. 678		
+6204	SCT_0175	2010	Wimauma	Florida	2	Fla. 701		
+6205	SCT_0176	2010	Wimauma	Florida	2	Fla. 7060		
+6206	SCT_0177	2010	Wimauma	Florida	2	Fla. 726		
+6207	SCT_0178	2010	Wimauma	Florida	2	Fla. 7481		
+6208	SCT_0179	2010	Wimauma	Florida	2	Fla. 7547		
+6209	SCT_0180	2010	Wimauma	Florida	2	Fla. 7600		
+6210	SCT_0181	2010	Wimauma	Florida	2	Fla. 7770		
+6211	SCT_0182	2010	Wimauma	Florida	2	Fla. 7771		
+6212	SCT_0183	2010	Wimauma	Florida	2	Fla. 7775		
+6213	SCT_0184	2010	Wimauma	Florida	2	Fla. 7776		
+6214	SCT_0185	2010	Wimauma	Florida	2	Fla. 7781		
+6215	SCT_0186	2010	Wimauma	Florida	2	Fla. 7804		
+6216	SCT_0187	2010	Wimauma	Florida	2	Fla. 7907B		
+6217	SCT_0188	2010	Wimauma	Florida	2	Fla. 7946		
+6218	SCT_0189	2010	Wimauma	Florida	2	Fla. 8000		
+6219	SCT_0190	2010	Wimauma	Florida	2	Fla. 8044		
+6220	SCT_0191	2010	Wimauma	Florida	2	Fla. 8059		
+6221	SCT_0192	2010	Wimauma	Florida	2	Fla. 8083		
+6222	SCT_0193	2010	Wimauma	Florida	2	Fla. 8109		
+6223	SCT_0194	2010	Wimauma	Florida	2	Fla. 8111BH		
+6224	SCT_0195	2010	Wimauma	Florida	2	Fla. 8124C		
+6225	SCT_0196	2010	Wimauma	Florida	2	Fla. 8233		
+6226	SCT_0197	2010	Wimauma	Florida	2	Fla. 8249		
+6227	SCT_0198	2010	Wimauma	Florida	2	Fla. 8293		
+6228	SCT_0199	2010	Wimauma	Florida	2	Fla. 8344		
+6229	SCT_0200	2010	Wimauma	Florida	2	Fla. 8352		
+6230	SCT_0201	2010	Wimauma	Florida	2	Fla. 8476		
+6231	SCT_0202	2010	Wimauma	Florida	2	Fla. 8516		
+6232	SCT_0203	2010	Wimauma	Florida	2	Fla. 8539		
+6233	SCT_0204	2010	Wimauma	Florida	2	Fla. 8543		
+6234	SCT_0205	2010	Wimauma	Florida	2	Fla. 8561B-6		
+6235	SCT_0206	2010	Wimauma	Florida	2	Fla. 8599		
+6236	SCT_0207	2010	Wimauma	Florida	2	Fla. 8608		
+6237	SCT_0208	2010	Wimauma	Florida	2	Fla. 8624		
+6238	SCT_0209	2010	Wimauma	Florida	2	Fla. 8626		
+6239	SCT_0210	2010	Wimauma	Florida	2	Fla. 8629		
+6240	SCT_0211	2010	Wimauma	Florida	2	Fla. 8646		
+6241	SCT_0212	2010	Wimauma	Florida	2	Fla. 8653		
+6242	SCT_0213	2010	Wimauma	Florida	2	Fla. 8735		
+6243	SCT_0214	2010	Wimauma	Florida	2	Fla. 8737		
+6244	SCT_0215	2010	Wimauma	Florida	2	Flora-Dade		
+6245	SCT_0216	2010	Wimauma	Florida	2	Gold Nugget		
+6246	SCT_0282	2010	Wimauma	Florida	2	Ha7981		
+6247	SCT_0283	2010	Wimauma	Florida	2	Ha7997		
+6248	SCT_0284	2010	Wimauma	Florida	2	Ha7998		
+6249	SCT_0217	2010	Wimauma	Florida	2	LA0797		
+6250	SCT_0218	2010	Wimauma	Florida	2	LA1996		
+6251	SCT_0219	2010	Wimauma	Florida	2	LA2378		
+6252	SCT_0220	2010	Wimauma	Florida	2	LA3163		
+6253	SCT_0222	2010	Wimauma	Florida	2	LA4425		
+6254	SCT_0221	2010	Wimauma	Florida	2	LA3736		
+6255	SCT_0223	2010	Wimauma	Florida	2	LargeGermanCherry		
+6256	SCT_0224	2010	Wimauma	Florida	2	Legend		
+6257	SCT_0225	2010	Wimauma	Florida	2	Medford 		
+6258	SCT_0226	2010	Wimauma	Florida	2	NC 7 P rep-8 (2006) - 96		
+6259	SCT_0227	2010	Wimauma	Florida	2	NC123S		
+6260	SCT_0229	2010	Wimauma	Florida	2	NC13G		
+6261	SCT_0230	2010	Wimauma	Florida	2	NC140		
+6262	SCT_0231	2010	Wimauma	Florida	2	NC161L-1W(2007)		
+6263	SCT_0232	2010	Wimauma	Florida	2	NC1CS		
+6264	SCT_0233	2010	Wimauma	Florida	2	NC23E-2 (93)		
+6265	SCT_0234	2010	Wimauma	Florida	2	NC265-1(93)-3-4		
+6266	SCT_0235	2010	Wimauma	Florida	2	NC2C		
+6267	SCT_0236	2010	Wimauma	Florida	2	NC2Y		
+6268	SCT_0237	2010	Wimauma	Florida	2	NC33EB-1		
+6269	SCT_0238	2010	Wimauma	Florida	2	NC47NC2		
+6270	SCT_0239	2010	Wimauma	Florida	2	NC50-7		
+6271	SCT_0240	2010	Wimauma	Florida	2	NC714-3B(2007)		
+6272	SCT_0241	2010	Wimauma	Florida	2	NC8276		
+6273	SCT_0242	2010	Wimauma	Florida	2	NC8288		
+6274	SCT_0243	2010	Wimauma	Florida	2	NC84173		
+6275	SCT_0244	2010	Wimauma	Florida	2	NC860-1(2008)		
+6276	SCT_0245	2010	Wimauma	Florida	2	NC99471-3		
+6277	SCT_0246	2010	Wimauma	Florida	2	NCEBR-1		
+6278	SCT_0247	2010	Wimauma	Florida	2	NCEBR-2		
+6279	SCT_0248	2010	Wimauma	Florida	2	NCEBR-3		
+6280	SCT_0249	2010	Wimauma	Florida	2	NCEBR-4		
+6281	SCT_0250	2010	Wimauma	Florida	2	NCEBR-5		
+6282	SCT_0251	2010	Wimauma	Florida	2	NCEBR-6		
+6283	SCT_0252	2010	Wimauma	Florida	2	NCEBR-7		
+6284	SCT_0253	2010	Wimauma	Florida	2	NCEBR-8		
+6285	SCT_0254	2010	Wimauma	Florida	2	NCHS-1		
+6287	SCT_0255	2010	Wimauma	Florida	2	Ohio11		
+6288	SCT_0256	2010	Wimauma	Florida	2	OhioMR13		
+6289	SCT_0257	2010	Wimauma	Florida	2	OR11		
+6290	SCT_0258	2010	Wimauma	Florida	2	Oregon Spring		
+6291	SCT_0259	2010	Wimauma	Florida	2	Oregon Star		
+6292	SCT_0260	2010	Wimauma	Florida	2	P20-3-1		
+6293	SCT_0261	2010	Wimauma	Florida	2	PI 564169		
+6294	SCT_0262	2010	Wimauma	Florida	2	PI 647532		
+6295	SCT_0263	2010	Wimauma	Florida	2	PI128586		
+6296	SCT_0264	2010	Wimauma	Florida	2	PI281553		
+6297	SCT_0265	2010	Wimauma	Florida	2	PI340906		
+6298	SCT_0266	2010	Wimauma	Florida	2	PI470262		
+6299	SCT_0267	2010	Wimauma	Florida	2	PI65023		
+6300	SCT_0268	2010	Wimauma	Florida	2	'Piedmont'		
+6301	SCT_0269	2010	Wimauma	Florida	2	RioGrande		
+6302	SCT_0270	2010	Wimauma	Florida	2	Severianin		
+6303	SCT_0271	2010	Wimauma	Florida	2	Siletz		
+6304	SCT_0272	2010	Wimauma	Florida	2	'Summit'		
+6305	SCT_0486	2010	Wimauma	Florida	2	OH-6405		
+6306	SCT_0274	2010	Wimauma	Florida	2	T-9		
+6307	SCT_0275	2010	Wimauma	Florida	2	Tropic		
+6308	SCT_0276	2010	Wimauma	Florida	2	UC-MR20		
+6309	SCT_0277	2010	Wimauma	Florida	2	UC-N28		
+6310	SCT_0278	2010	Wimauma	Florida	2	UC-T338		
+6311	SCT_0279	2010	Wimauma	Florida	2	UC-TR44		
+6312	SCT_0280	2010	Wimauma	Florida	2	UC-TR51		
+6313	SCT_0281	2010	Wimauma	Florida	2	Willamette VF		
+6314	SCT_0143	2010	Wimauma	Florida	2	071733-1		
+6315	SCT_0157	2010	Wimauma	Florida	2	091109-3		
+6316	SCT_0162	2010	Wimauma	Florida	2	091144-1		
+6317	SCT_0163	2010	Wimauma	Florida	2	091144-2		
+6318	SCT_0159	2010	Wimauma	Florida	2	091120-2		
+6319	SCT_0160	2010	Wimauma	Florida	2	091120-7		
+6320	SCT_0158	2010	Wimauma	Florida	2	091119-2		
+6321	SCT_0161	2010	Wimauma	Florida	2	091135-1		
+6322	SCT_0144	2010	Wimauma	Florida	2	071820-2		
+6323	SCT_0164	2010	Wimauma	Florida	2	091153-1		
+6324	SCT_0165	2010	Wimauma	Florida	2	091166-3		
+6325	SCT_0166	2010	Wimauma	Florida	2	091183-1		
+6326	SCT_0167	2010	Wimauma	Florida	2	88003-59		
+6327	SCT_0169	2010	Wimauma	Florida	2	88003-81		
+6328	SCT_0168	2010	Wimauma	Florida	2	88003-62		
+6329	SCT_0156	2010	Wimauma	Florida	2	091013/091031		
+6330	SCT_0170	2010	Wimauma	Florida	2	88018 N		
+6331	SCT_0171	2010	Wimauma	Florida	2	88019 N		
+6332	SCT_0145	2010	Wimauma	Florida	2	091003-21		
+6333	SCT_0146	2010	Wimauma	Florida	2	091003-29		
+6335	SCT_0148	2010	Wimauma	Florida	2	091003-35		
+								
+								
+								
+								
+								
+								
+								
+	5286	SCT_0228/229	2010	Wimauma	Florida	1	NC13	Unknown if this is NC13G or NC13E 
+	6286	SCT_0228/229	2010	Wimauma	Florida	2	NC13	Unknown if this is NC13G or NC13E 

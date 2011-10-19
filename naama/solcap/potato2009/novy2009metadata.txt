@@ -1,0 +1,26 @@
+#data file for the solcap potato 2009 metadata, #including project name, geolocation, and planting dates												
+project_name	project_description	geo_description	latitude	longitude	datum	altitude	Sowing_date	Transplanting_date	First_Harvest_date	Last_Harvest_date	year	address
+solcap potato Novy data 2009. Aberdeen, Idaho	solcap potato Novy data. UofI R&E Center, Aberdeen, Idaho  83210	UofI R&E Center, Aberdeen, Idaho	-112.84	42.94	WGS84	4403		2009/05/08	2009/09/22		2009	UofI R&E Center, Aberdeen, Idaho  83210
+												
+												
+												
+												
+Location:												
+Degrees and minutes followed by N(North) or S(South) Longitude	42.94 N											
+Degrees and minutes followed by E(East) or W(West)	-112.84 W											
+Elevation (m asl)	4403											
+Name of farm or institute	USDA-ARS National Small Grains and Potato Germplasm Research Unit											
+Street address	UofI R&E Center, Aberdeen, Idaho  83210											
+Year (YYYY)	2009											
+Planting date (MM/DD/YY)	2009/05/08											
+First Harvest Date (MM/DD/YY)	2009/09/22											
+Seasonal:												
+Rainfall	17.96 cm											
+Irrigation	Solid Set Sprinkler as need, typically 5-7 days											
+Soil Description												
+Texture	declo silt loam											
+Fertilization practices	220N-20P-0K-0S-30SO-10Zn at 590 lbs/acre											
+Herbicides used	Metri DF at .67 lbs/acre and Matrix at 1.5 oz/acre on 06/05/09 (one application)											
+Disease management	Dithane 06/26/09 at 1.5qt/acre (one application)											
+Insect Management	Admire shanked in at hilling on 06/01/09 at 8.7 oz/acre. Fulfill injected through irrigation at 2.75 oz/acre on 08/03/09 (one application)											
+Sugar and fry analysis (Include date and temperature)	Measurements on 2/9/2010 were done on tubers stored at 42F											

@@ -355,7 +355,7 @@ $phygepaml0->predict_cds({ method    => 'longest6frame',
 my %cds1 = %{$phygepaml0->get_cds()};
 
 is($cds1{cl_id1}->seq(), 
-   'ATGGAGWYTAGACAGTTGACCAGGWATACVMKGAGATCAGAGYCAGGG', 
+   'ATGGAGWYTAGACAGTTGACCAGGWATACVMKGAGATCAGAGYCAGGGAWTWTC', 
    "Testing predict_cds, checking sequence of the consensus")
     or diag("looks like this has failed");
 
@@ -384,7 +384,7 @@ is(join(',', sort $mlmtx1->column_names()), 'seq0,seq1,seq2,seq3',
     "Testing run_codeml, checking column names for mlmatrix (cl_id1)")
     or diag("Looks like this has failed");
 
-is($mlmtx1->entry('seq3', 'seq2')->{'dS'}, 0.0006,
+is($mlmtx1->entry('seq3', 'seq2')->{'dS'}, 0.0005,
     "Testing run_codeml, checking dS value for mlmatrix (seq3,seq2)")
     or diag("Looks like this has failed");
 

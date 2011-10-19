@@ -9,11 +9,14 @@
 
 =head1 SYPNOSIS
 
- multilib_expression_tool.pl -i <input_file> -l <library_files> -o <output_file>
+ multilib_expression_tool.pl [-h] -i <input_file> -l <library_files> 
+                             -o <output_file> [-r <ref_sequence>]
+                              
 
 =head1 EXAMPLE 
 
- multilib_expression_tool.pl -i contig_read.tab -l lib_H01.tab,lib_H02.tab,lib_P01.tab,lib_P02.tab
+ multilib_expression_tool.pl -i contig_read.tab 
+                             -l lib_H01.tab,lib_H02.tab,lib_P01.tab,lib_P02.tab
 
 =head2 I<Flags:>
 
@@ -22,15 +25,24 @@
 
 =item -i
 
-B<input_file>                   input file, two columns -f1 contig name and -f2 sequence_id (mandatory)
+B<input_file>                   input file, two columns -f1 contig name and 
+                                -f2 sequence_id (mandatory)
 
 =item -l
 
-B<library_file>                 library files with -f1 sequence_id and -f2 library id in the second (mandatory)
+B<library_file>                 library files with -f1 sequence_id and 
+                                -f2 library id in the second (mandatory)
 
 =item -o
 
-B<output_file>                  output_file (by default: <input_file>.analyzed.tab)
+B<output_file>                  output_file 
+                                (by default: <input_file>.analyzed.tab)
+
+=item -r
+
+B<ref_sequence>                 a fasta file with the reference sequences to
+                                extract the sequence length and use it to 
+                                calculate RPKM
 
 =item -h
 
@@ -47,8 +59,10 @@ B<help>                         print the help
     Produce an output file with:
       -f1: contig_name
       -f2: n_total_reads
-      -f(3,4,5)xL: library name, n_reads_in_this_contig_for_this_library and normalized value in ppm 
-                   (N_contigreads_lib / N_read_lib * 1000000)
+      -f(3,4,5)xL: library name, n_reads_in_this_contig_for_this_library and 
+                   normalized value in ppm 
+                   (N_contigreads_lib / N_read_lib * 1000000) or RPKM
+                   (Reads per Kilobase per Million mapped reads)
 
       -f_last: R value calculated according: 
 
@@ -99,10 +113,11 @@ use warnings;
 use File::Basename;
 use Getopt::Std;
 use Math::BigFloat;
+use Bio::SeqIO;
 
-our ($opt_i, $opt_l, $opt_o, $opt_h);
-getopts("i:l:o:h");
-if (!$opt_i && !$opt_l && !$opt_o && !$opt_h) {
+our ($opt_i, $opt_l, $opt_o, $opt_r, $opt_h);
+getopts("i:l:o:r:h");
+if (!$opt_i && !$opt_l && !$opt_o && !$opt_r && !$opt_h) {
     print "There are n\'t any tags. Print help\n\n";
     help();
 }
@@ -111,6 +126,16 @@ my $input_file = $opt_i || die("\nMANDATORY ARGUMENT ERROR: -i <input_file> argu
 my $library_files = $opt_l || die("\nMANDATORY ARGUMENT ERROR: -l <library_files> argument was not supplied.\n");
 
 my $output_file = $opt_o || $input_file . '.expression_analysis.tab';
+my $ref = $opt_r;
+
+my %reflength = ();
+my $refseqio = Bio::SeqIO->new( -file => $ref, -format => 'fasta' );
+foreach my $seq ($refseqio->next_seq()) {
+    $reflength{$seq->display_id()} = $seq->length();
+}
+
+
+
 
 ## Parse the library files
 
@@ -281,6 +306,14 @@ foreach my $contig_comp_name (sort keys %contig_comp) {
 	my $ppm_coef = Math::BigFloat->new('1000000');
 	my $Xij_c = $Xij->copy();
 	$Xij_c->bdiv($Ni);
+
+	## divide by read length for RPKM
+	
+	if (defined $ref && exists $reflength{$contig_comp_name}) {
+	    my $CLij = Math::BigFloat->new($reflength{$contig_comp_name} / 1000);
+	    $Xij_c->bdiv($CLij);
+	}
+
 	$Xij_c->bmul($ppm_coef);
 	my $norm_value = $Xij_c->bfround(-2);
 
@@ -340,6 +373,7 @@ sub help {
 
     Description:   
       This script get the composition of each contig, by libraries and calculate the abundance of them. 
+      If a reference sequence file is used, the expression will be returned as RPKM unit (Reads Per Kilobase per Million mapped Reads)
 
       Produce an output file with:
       -f1: contig_name
@@ -373,7 +407,7 @@ sub help {
 	+====+=================+
 
     Usage:
-      multilib_expression_tool.pl [-h] -i <input_file> -l <library_file> [-o <output_file>]
+      multilib_expression_tool.pl [-h] -i <input_file> -l <library_file> [-o <output_file>] [-r <ref_sequence>]
 
     Example:
       multilib_expression_tool.pl -i contig_read.tab -l lib_H01.tab,lib_H02.tab,lib_P01.tab,lib_P02.tab
@@ -382,6 +416,7 @@ sub help {
       -i <input_file>         input file in tab format with -f1 contig_name and -f2 sequence_id (mandatory)
       -l <library_file>       library files with -f1 sequence_id and -f2 library id in the second (mandatory)
       -o <output_file>        output_file (by default: <input_file>.analyzed.tab)
+      -r <ref_sequence>       fasta file with reference sequences to be used to calculate RPKM
       -h <help>               print the help
 
 EOF

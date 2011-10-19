@@ -1,0 +1,72 @@
+The following scripts are used to integrate BAC data into 
+current agp and tpf contig/gap files:
+
+limit_bac_output.pl:
+
+	this file is used to select biased the BLAST 
+	information that is of importance to you.  You can 
+	specify the parameters of the search near the top 
+	of the file.
+
+	The script requires in input of the BLAST results to
+	be searched and a file containing two columns: first 
+	the BAC id and second the correct BAC length.
+
+
+
+bac_chr_position.pl:
+
+	Able to input options.  -d for the folder containing the 
+	current agp and tpf files, and -t for a transformation 
+	file.  The transformation file contins two colums first 
+	of BAC ID and second of GenBank ID.  This gives output 
+	as many BAC IDs, put in the print (can be output wiht 
+	">" to a error file), are not in current transformation 
+	file (mainly chromosome 8).  In this case file uses 
+	original BAC ID.
+
+	This script requires an input of the BAC data to be 
+	integrated (from limit_bac_output.pl), and a folder 
+	containing both the current agp and tpf files for 
+	chromosomes of interest (use all chromosomes if you 
+	do not know which your BAC information will map to).
+	It is possible to input BLAST information not from 
+	BACS, and the script should run this similarly,
+	however this has yet to be tested.
+
+	This script looks at each chromosome individually, 
+	taking the BAC information mapping to the chromosome 
+	and adding it to the chromosome information.  After 
+	all BACs have been checked the start positions are 
+	used to sort the data	After sorting is completed, 
+	orientation	information is added and BACs are 
+	used to replace current contigs and gaps where 
+	possible.
+
+	A standard error output is generated when an unknown 
+	gap is removed by a BAC, as the estimated length of 
+	all such gaps is 100bp.  These locations will need to 
+	be tested to find the correct gap length, and test if 
+	the BAC truly spans the gap. The following data start 
+	and end positions as well as contained information 
+	will need to be corrected accordingly.  Until more 
+	information is known the script assumes 100bp to be 
+	the correct length of such gaps.
+
+	The script will automatically create a new folder in the
+	location the program is called.  Within this folder there
+	will be new agp and tpf files created for each chromosome
+	named the same as the input files.  The output files will 
+	contain the BACs associated with the given chromosome, as
+	well as all the BAC and contained information.
+
+
+itag2annotate.pl:
+
+	This file is to integrate .gff3 files to annotation for 
+	Genbank. It currently is not working correctly, it will 
+	not note the multiple elements of a given type, and needs 
+	work, possibly re-writing.
+	##########################################
+	##########NOT WORKING CORRECTLY###########
+	##########################################

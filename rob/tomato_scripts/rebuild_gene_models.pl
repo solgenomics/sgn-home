@@ -6,15 +6,16 @@ use feature 'say';
 
 use lib '/home/rob/dev/bioperl/Bio-FeatureIO/lib';
 
-use List::MoreUtils qw/ minmax /;
+use List::MoreUtils qw/ minmax any /;
 
 use Bio::Range;
 use Bio::FeatureIO;
 
 
-#my $rebuild_list = read_rebuild_list( $ARGV[1] );
+my $rebuild_list = read_rebuild_list( $ARGV[1] );
+#my $rebuild_list = { ('Solyc07g054880.2') x 2 };
 
-process_gff3( $ARGV[0], \*STDOUT, { ('Solyc07g054880.2') x 2 } );
+process_gff3( $ARGV[0], \*STDOUT, $rebuild_list );
 
 sub process_gff3 {
     my ( $gff3_file, $out_fh, $rebuild_list ) = @_;
@@ -46,7 +47,7 @@ sub rebuild_gene {
     my @features = $mrna->get_SeqFeatures;
 
     # recalculate the UTRs
-    recalculate_utrs( $mrna );
+    recalculate_utrs( $mrna, $gene );
 
     # just remove the intron subfeatures rather than fix them
     remove_introns( $mrna );
@@ -66,14 +67,31 @@ sub remove_introns {
 }
 
 sub recalculate_utrs {
-    my ( $mrna ) = @_;
+    my ( $mrna, $gene ) = @_;
 
     my @features = grep $_->primary_tag !~ /_UTR$/i,# && $_->primary_tag ne 'intron',
                    $mrna->remove_SeqFeatures;
 
     my @exons =
+        sort { $a->start <=> $b->start }
         grep { $_->primary_tag eq 'exon' }
         @features;
+
+    my @cds =
+        grep { $_->primary_tag eq 'CDS' }
+        @features;
+
+    # merge any exons that place a CDS in an intron
+    my @new_exons;
+    for( my $i = 0; $i<@exons; $i++ ) {
+        next unless $exons[$i];
+        if( any { $_->contains( $exons[$i]->end + 1 ) || $exons[$i+1] && $_->contains( $exons[$i+1]->start - 1 ) } @cds ) {
+            #warn "contains, merging";
+            $exons[$i]->end( $exons[$i+1]->end );
+            $exons[$i+1] = undef;
+        }
+        push @new_exons, $exons[$i];
+    }
 
     # find transcription range
     my $cds_range =
@@ -113,7 +131,7 @@ sub recalculate_utrs {
                      ()
                  }
              }
-             @exons
+             @new_exons
        }
        # make UTR features
        map Bio::SeqFeature::Generic->new( %$_ ),
@@ -130,10 +148,31 @@ sub recalculate_utrs {
            -primary_tag => ( $mrna->strand > 0 ? 'three_prime_UTR' : 'five_prime_UTR' ),
        };
 
+    for my $feature( @utrs, @new_exons, @cds, $mrna, $gene ) {
+        for my $tagname ('ID','Name') {
+            if( $feature->has_tag( $tagname ) ) {
+                my @ids = $feature->remove_tag( $tagname );
+                s/\.(\d+)/'.'.($1+1)/e for @ids;
+                $feature->add_tag_value( $tagname, $_ ) for @ids;
+            }
+        }
+    }
+
     $mrna->add_SeqFeature($_)
        for sort {$a->start <=> $b->start || $a->primary_tag cmp $b->primary_tag }
-           @utrs, @features;
+           @utrs, @new_exons, @cds;
 
     return $mrna;
 }
 
+sub read_rebuild_list {
+    my $file = shift;
+    open my $f, '<', $file or die "$! reading $file";
+    my %list;
+    while(<$f>) {
+        chomp;
+        s/\.\d+$//;
+        $list{$_} = 1;
+    }
+    return \%list;
+}
