@@ -24,7 +24,7 @@ use GD;
 
 our %args;
 
-getopts('i:x:y:e:N:M:p:m:', \%args);
+getopts('i:x:y:e:N:M:p:m:g:', \%args);
 
 my $x = $args{x} || 400;
 my $y = $args{y} || 400;
@@ -51,6 +51,17 @@ my $y_scale = $max_subject / $y;
 print STDERR "x-scale: $x_scale. y-scale: $y_scale\n";
 my $bg = $image->colorResolve(255, 255, 255);
 my $color = $image->colorResolve(200, 0, 0);
+
+# draw coordinate system if -g
+if ($args{g}) { 
+    my $gcolor = $image->colorResolve(50, 50, 50);
+    foreach my $x (1..$max_query % $args{g}) { 
+	$image->line($x / $x_scale, 0, $x /$x_scale, $y_scale, $gcolor);
+    }
+    foreach my $y (1..$max_subject % $args{g}) { 
+	$image->line(0, $y /$y_scale, $x_scale, $y/$y_scale, $gcolor);
+    }
+}
 
 while (<$F>) { 
     chomp;
