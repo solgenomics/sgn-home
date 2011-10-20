@@ -10,15 +10,30 @@ use Bio::Chado::Schema;
 our $schema = Bio::Chado::Schema->connect(shift);
 
 while(<>) {
-    s/ (PGSC\d{4}DMP\d+) (\([^\)]+\) \s+)/pgsc_protein_to_gene($1,$2)/egx;
-    s/ ( (?:AT|Solyc)\d+G\d+) (\.\d+)+ /$1/xig;
+    s/ (PGSC\d{4}DMP\d+) (\([^\)]+\) \s+) /gene_for_polypeptide($1,$2)/egx; #potato
+    s/ GSVIVT(\d+) (\([^\)]+\) \s+)       /gene_for_polypeptide("GSVIV12X_T$1",$2)/egx; #grape
+    s/ (Os\d+)t(\d+)\-\d+                 /confirm_gene($1.'g'.$2)/exg; #rice
+    s/ (Solyc\d+g\d+\.\d+)(\.\d+)+        /confirm_gene($1)/exig; # tomato
+    s/ (AT\d+G\d+)(\.\d+)+                /confirm_gene($1)/exig; # arabidopsis
     print;
-    last;
 }
 
+sub confirm_gene {
+    my $gene_name = shift;
 
-sub pgsc_protein_to_gene {
+    return $gene_name
+      if $schema->resultset('Sequence::Feature')
+                ->find({
+                    name => $gene_name,
+                    type => cvterm( sequence => 'gene' ),
+                  });
+
+    die "gene $gene_name not found\n";
+}
+
+sub gene_for_polypeptide {
     my ( $protein_name, $trailing_text ) = @_;
+    $trailing_text ||= '';
 
     my ( $gene ) = my @genes = $schema->resultset('Sequence::Feature')
            ->search({
@@ -37,12 +52,12 @@ sub pgsc_protein_to_gene {
              });
 
     if( @genes > 1 ) {
-        die "multiple genes found for potato polypeptide $protein_name: ".join(", ", map $_->name.' ('.$_->feature_id.')', @genes)."\n";
+        die "multiple genes found for polypeptide $protein_name: ".join(", ", map $_->name.' ('.$_->feature_id.')', @genes)."\n";
     }
     elsif( !@genes ) {
         warn "WARNING, no gene found for $protein_name, removing this member\n";
         return '';
-        #die "no genes found for potato polypeptide $protein_name\n";
+        #die "no genes found for polypeptide $protein_name\n";
     }
 
     return $gene->name.$trailing_text;
