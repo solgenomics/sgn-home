@@ -5,16 +5,27 @@ use warnings;
 use Memoize;
 memoize('cvterm');
 
+use List::MoreUtils 'uniq';
 use Bio::Chado::Schema;
 
 our $schema = Bio::Chado::Schema->connect(shift);
 
 while(<>) {
+
+    # convert peptide names to gene names, with varying degrees of
+    # difficulty depending on the organism.  also remove any genes
+    # that are not already found in the db
     s/ (PGSC\d{4}DMP\d+) (\([^\)]+\) \s+) /gene_for_polypeptide($1,$2)/egx; #potato
     s/ GSVIVT(\d+) (\([^\)]+\) \s+)       /gene_for_polypeptide("GSVIV12X_T$1",$2)/egx; #grape
     s/ (Os\d+)t(\d+)\-\d+                 /confirm_gene($1.'g'.$2)/exg; #rice
     s/ (Solyc\d+g\d+\.\d+)(\.\d+)+        /confirm_gene($1)/exig; # tomato
     s/ (AT\d+G\d+)(\.\d+)+                /confirm_gene($1)/exig; # arabidopsis
+
+    # correct the gene and taxa counts in case we removed some.
+    my ( $cluster, @genes ) = split;
+    my @taxa = uniq( /\(([^\)]+)\)/g );
+    s/\(\d+ genes,\d+ taxa\)/'('.@genes.' genes,'.(@taxa-1).' taxa)'/e or die;
+
     print;
 }
 
