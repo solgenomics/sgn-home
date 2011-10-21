@@ -57,12 +57,12 @@ my $green = $image-> colorResolve(0, 0, 150);
 
 # draw coordinate system if -g
 if ($args{g}) { 
-    my $gcolor = $image->colorResolve(50, 50, 50);
+    my $gcolor = $image->colorResolve(200, 200, 200);
     foreach my $x (1..$max_query % $args{g}) { 
-	$image->line($x / $x_scale, 0, $x /$x_scale, $y_scale, $gcolor);
+	$image->line($x * $args{g} / $x_scale, 0, $x*$args{g} /$x_scale, $y_scale, $gcolor);
     }
     foreach my $y (1..$max_subject % $args{g}) { 
-	$image->line(0, $y /$y_scale, $x_scale, $y/$y_scale, $gcolor);
+	$image->line(0, $y* $args{g} /$y_scale, $x_scale, $y * $args{g}/$y_scale, $gcolor);
     }
 }
 
