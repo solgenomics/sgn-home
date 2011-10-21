@@ -11,6 +11,7 @@ use Bio::Chado::Schema;
 our $schema = Bio::Chado::Schema->connect(shift);
 
 while(<>) {
+    chomp;
 
     # convert peptide names to gene names, with varying degrees of
     # difficulty depending on the organism.  also remove any genes
@@ -26,7 +27,7 @@ while(<>) {
     my @taxa = uniq( /\(([^\)]+)\)/g );
     s/\(\d+ genes,\d+ taxa\)/'('.@genes.' genes,'.(@taxa-1).' taxa)'/e or die;
 
-    print;
+    print "$_\n";
 }
 
 sub confirm_gene {
