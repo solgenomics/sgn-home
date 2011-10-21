@@ -19,7 +19,7 @@ while(<>) {
     s/ GSVIVT(\d+) (\([^\)]+\) \s+)       /gene_for_polypeptide("GSVIV12X_T$1",$2)/egx; #grape
     s/ (Os\d+)t(\d+)\-\d+                 /confirm_gene($1.'g'.$2)/exg; #rice
     s/ (Solyc\d+g\d+\.\d+)(\.\d+)+        /confirm_gene($1)/exig; # tomato
-    s/ (AT\d+G\d+)(\.\d+)+                /confirm_gene($1)/exig; # arabidopsis
+    s/ (AT\w+)(\.\d+)+                    /confirm_gene($1)/exig; # arabidopsis
 
     # correct the gene and taxa counts in case we removed some.
     my ( $cluster, @genes ) = split;
