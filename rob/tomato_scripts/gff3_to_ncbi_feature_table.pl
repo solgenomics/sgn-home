@@ -7,12 +7,17 @@ use lib '/home/rob/dev/bioperl/Bio-FeatureIO/lib';
 
 use IO::File;
 
+use List::AllUtils qw( part );
+
+use Bio::Chado::Schema;
 use Bio::FeatureIO;
+
+my $bcs_dsn = shift;
 
 my $in = Bio::FeatureIO->new(
     -format  => 'gff',
     -version => 3,
-    -file    => $ARGV[0],
+    -file    => shift,
     );
 
 my %handlers = (
@@ -102,11 +107,48 @@ sub format_mrna_attributes {
     }
 
     if( my @terms = eval { $mrna->get_tag_values( 'Ontology_term' ) }) {
-        push @attributes, map [ dbxref => $_ ], @terms;
+        my ( $goterms, $other ) = part { /^GO:/ ? 0 : 1 } @terms;
+        push @attributes, map format_go_attributes( $_ ), @{ $goterms || [] };
+        push @attributes, map [ dbxref => $_ ], @{ $other || [] };
     }
 
     return format_attributes( \@attributes );
 }
+
+{ my $schema;
+  sub bcs {
+      $schema ||= Bio::Chado::Schema->connect( $bcs_dsn );
+  }
+
+  my $go_db; sub go_db { $go_db ||= bcs->resultset('General::Db')->find({ name => 'GO' }) }
+}
+
+sub format_go_attributes {
+    my ( $go_term ) = @_;
+    my $go_num = $go_term =~ /(\d+)/;
+    my ( $cvterm ) = my @matching_terms =
+        go_db()->search_related('dbxrefs', { accession => $go_num } )
+               ->search_related('cvterm', undef, { prefetch => 'cv' } );
+    die "multiple terms found matching $go_term" if @matching_terms > 1;
+    die "no cvterm found for $go_term" unless $cvterm;
+
+    my $go_qualifier = {
+        biological_process => 'go_process',
+        molecular_function => 'go_function',
+        cellular_component => 'go_component',
+    }->{ $cvterm->cv->name } || die "unknown cv ".$cvterm->cv->name;
+
+    return [
+        $go_qualifier => join( '|', (
+            $cvterm->name,
+            $go_num,
+            '',
+            'ISS',
+         )),
+    ];
+
+}
+
 
 sub format_cds_attributes {
     my ( $mrna ) = @_;
