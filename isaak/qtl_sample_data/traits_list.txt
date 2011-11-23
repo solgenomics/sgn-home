@@ -1,0 +1,41 @@
+traits	definition	unit
+fruit perimeter	fruit perimeter	cm
+fruit area	fruit area	cm sq.
+fruit mid-height width	fruit mid-height width	cm
+fruit widest width	fruit widest width	
+fruit length mid-width	fruit length mid-width	
+fruit longest length	fruit longest length	
+fruit shape index external	fruit shape index external	
+fruit shape index external 2	fruit shape index external 2	
+proximal fruit end blockiness 5%	proximal fruit end blockiness 5%	
+distal fruit end blockiness 5%	distal fruit end blockiness 5%	
+fruit shape triangle 5%	fruit shape triangle 5%	
+proximal fruit end blockiness 10%	proximal fruit end blockiness 10%	
+distal fruit end blockiness 10%	distal fruit end blockiness 10%	
+fruit shape triangle 10%	fruit shape triangle 10%	
+proximal fruit end blockiness 20%	proximal fruit end blockiness 20%	
+distal fruit end blockiness 20%	distal fruit end blockiness 20%	
+fruit shape triangle 20%	fruit shape triangle 20%	
+proximal fruit end blockiness 30%	proximal fruit end blockiness 30%	
+distal fruit end blockiness 30%	distal fruit end blockiness 30%	
+fruit shape triangle 30%	fruit shape triangle 30%	
+distal angle micro 2%	distal angle micro 2%	
+distal angle micro 5%	distal angle micro 5%	
+distal angle macro 10%	distal angle macro 10%	
+distal angle macro 15%	distal angle macro 15%	
+distal angle macro 20%	distal angle macro 20%	
+distal angle macro 25%	distal angle macro 25%	
+proximal fruit end height	proximal fruit end height	
+proximal fruit end angle	proximal fruit end angle	
+proximal fruit end indentation	proximal fruit end indentation	
+distal fruit end indentation	distal fruit end indentation	
+distal fruit end protrusion	distal fruit end protrusion	
+obovoid	obovoid	
+ovoid	ovoid	
+vertical asymmetry	vertical asymmetry	
+horizontal asymmetry obovoid	horizontal asymmetry obovoid	
+horizontal asymmetry ovoid	horizontal asymmetry ovoid	
+heart shape	heart shape	
+fruit shape ellipsoid	fruit shape ellipsoid	
+fruit shape circular	fruit shape circular	
+fruit shape rectangular	fruit shape rectangular	
