@@ -78,11 +78,13 @@ sub handle_gene {
 
 sub format_mrna_attributes {
     my ( $mrna ) = @_;
-    my ( $id ) = $mrna->get_tag_values( 'Name' );
+    my ( $locus_tag ) = $mrna->get_tag_values( 'Name' );
+    $locus_tag =~ s/(\.\d+)/.x/;
 
+    my $prefix = "gnl|WGS:AEKE|";
     my @attributes = (
-        [ protein_id    => $id ],
-        [ transcript_id => $id ],
+        [ protein_id    => $prefix.$locus_tag ],
+        [ transcript_id => $prefix."mRNA:$locus_tag" ],
     );
 
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
