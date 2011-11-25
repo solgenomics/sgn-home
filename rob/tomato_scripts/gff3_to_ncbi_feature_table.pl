@@ -95,7 +95,7 @@ sub format_mrna_attributes {
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
         if( my ( $product ) = $desc =~ /^(.+)(?=\(A[A-Z]+)/ ) {
             $product =~ s/^\s+|\s+$//g;
-            $product =~ s/(\w+)/my $x = $1; ($x =~ m![A-Z][a-z]{2,}! ? lc $x : $x)/eg;
+            $product =~ s/(\w+)/munge_product_word($1)/eg;
             push @attributes, [ product => $product ];
         }
 
@@ -125,6 +125,16 @@ sub format_mrna_attributes {
   }
 
   my $go_db; sub go_db { $go_db ||= bcs->resultset('General::Db')->find({ name => 'GO' }) }
+}
+
+sub munge_product_word {
+    my $w = shift;
+    # lowercase non-acronym words that are 3 chars or more
+    $w = lc $w if $w =~ m![A-Z][a-z]{2,}!;
+    # replace 'unknown' with 'hypothetical'
+    return 'hypothetical' if $w eq 'unknown';
+    return 'putative' if $w =~ / ^ ( probable | possible | predicted ) $ /x;
+    return $w;
 }
 
 sub format_go_attributes {
