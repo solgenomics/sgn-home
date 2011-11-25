@@ -99,7 +99,7 @@ sub format_mrna_attributes {
         }
 
         if( my @interpro = $desc =~ /\b(IPR\d+)\b/g ) {
-            push @attributes, map [ dbxref => "InterPro:$_" ], @interpro;
+            push @attributes, map [ db_xref => "InterPro:$_" ], @interpro;
             push @attributes, map [ inference => "protein motif:InterPro:$_" ], @interpro;
         }
 
@@ -109,7 +109,7 @@ sub format_mrna_attributes {
     if( my @terms = eval { $mrna->get_tag_values( 'Ontology_term' ) }) {
         my ( $goterms, $other ) = part { /^GO:/ ? 0 : 1 } @terms;
         push @attributes, map format_go_attributes( $_ ), @{ $goterms || [] };
-        push @attributes, map [ dbxref => $_ ], @{ $other || [] };
+        push @attributes, map [ db_xref => $_ ], @{ $other || [] };
     }
 
     return format_attributes( \@attributes );
