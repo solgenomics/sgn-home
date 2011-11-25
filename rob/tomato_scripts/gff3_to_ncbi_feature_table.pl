@@ -103,11 +103,10 @@ sub format_mrna_attributes {
             push @attributes, map [ inference => "protein motif:InterPro:$_" ], @interpro;
         }
 
-        if( my ( $similar ) = $desc =~ m! \( [^\)]+ \s ([^\s\)]+) \) !x ) {
+        if( my ( $ev_desc, $similar ) = $desc =~ m! \(AHRD \s+ V\d+ \s+ ([-\*]+) \s+ ([^\s\)]+) \) !x ) {
+            # currently not using the evidence desc
             push @attributes, [ note => "similar to $similar" ];
         }
-
-        push @attributes, [ note => $desc ];
     }
 
     if( my @terms = eval { $mrna->get_tag_values( 'Ontology_term' ) }) {
