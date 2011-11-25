@@ -142,34 +142,38 @@ sub format_go_attributes {
     my ( $go_num ) = $go_term =~ /(\d+)/;
     my $dbxref = go_db()->search_related('dbxrefs', { accession => $go_num } );
 
-    my ( $cvterm ) = my @matching_terms =
-        $dbxref->search_related('cvterm', undef, { prefetch => 'cv' } );
+    my @matching_terms = do {
+        my %seen_term;
 
-    unless( $cvterm ) {
-        # try through cvterm_dbxref
-        ( $cvterm ) = @matching_terms =
+        grep !$seen_term{$_->cvterm_id}++, (
+
+            $dbxref->search_related('cvterm', undef, { prefetch => 'cv' } ),
+
             $dbxref->search_related( 'cvterm_dbxrefs' )
-                   ->search_related( 'cvterm', undef, { prefetch => 'cv' } );
-    }
+                   ->search_related( 'cvterm', undef, { prefetch => 'cv' } ),
 
-    die "multiple terms found matching $go_term" if @matching_terms > 1;
-    die "no cvterm found for $go_term" unless $cvterm;
+        )
+    };
 
-    my $go_qualifier = {
-        biological_process => 'go_process',
-        molecular_function => 'go_function',
-        cellular_component => 'go_component',
-    }->{ $cvterm->cv->name } || die "unknown cv ".$cvterm->cv->name;
+    die "no cvterm found for $go_term" unless @matching_terms;
 
-    return [
-        $go_qualifier => join( '|', (
+    return map {
+        my $cvterm = $_;
+
+        my $go_qualifier = {
+            biological_process => 'go_process',
+            molecular_function => 'go_function',
+            cellular_component => 'go_component',
+        }->{ $cvterm->cv->name } || die "unknown cv ".$cvterm->cv->name;
+
+        [ $go_qualifier => join( '|', (
             $cvterm->name,
             $go_num,
             '',
             'ISS',
-         )),
-    ];
-
+          )),
+        ]
+    } @matching_terms;
 }
 
 
