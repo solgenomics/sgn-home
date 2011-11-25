@@ -125,10 +125,19 @@ sub format_mrna_attributes {
 
 sub format_go_attributes {
     my ( $go_term ) = @_;
-    my $go_num = $go_term =~ /(\d+)/;
+    my ( $go_num ) = $go_term =~ /(\d+)/;
+    my $dbxref = go_db()->search_related('dbxrefs', { accession => $go_num } );
+
     my ( $cvterm ) = my @matching_terms =
-        go_db()->search_related('dbxrefs', { accession => $go_num } )
-               ->search_related('cvterm', undef, { prefetch => 'cv' } );
+        $dbxref->search_related('cvterm', undef, { prefetch => 'cv' } );
+
+    unless( $cvterm ) {
+        # try through cvterm_dbxref
+        ( $cvterm ) = @matching_terms =
+            $dbxref->search_related( 'cvterm_dbxrefs' )
+                   ->search_related( 'cvterm', undef, { prefetch => 'cv' } );
+    }
+
     die "multiple terms found matching $go_term" if @matching_terms > 1;
     die "no cvterm found for $go_term" unless $cvterm;
 
