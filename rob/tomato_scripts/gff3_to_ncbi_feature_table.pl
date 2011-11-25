@@ -95,6 +95,7 @@ sub format_mrna_attributes {
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
         if( my ( $product ) = $desc =~ /^(.+)(?=\(A[A-Z]+)/ ) {
             $product =~ s/^\s+|\s+$//g;
+            $product =~ s/(\w+)/my $x = $1; ($x =~ m![A-Z][a-z]{2,}! ? lc $x : $x)/eg;
             push @attributes, [ product => $product ];
         }
 
