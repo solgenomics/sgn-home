@@ -103,6 +103,10 @@ sub format_mrna_attributes {
             push @attributes, map [ inference => "protein motif:InterPro:$_" ], @interpro;
         }
 
+        if( my ( $similar ) = $desc =~ m! \( [^\)]+ \s ([^\s\)]+) \) !x ) {
+            push @attributes, [ note => "similar to $similar" ];
+        }
+
         push @attributes, [ note => $desc ];
     }
 
