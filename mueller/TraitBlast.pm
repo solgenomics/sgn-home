@@ -56,12 +56,12 @@ has 'contrast_group' => (is=> 'rw',
 
 has 'min_ingroups' => (is=>'rw',
 		       isa=> 'Int',
-		       default => 6,
+		       default => 5,
     );
 
 has 'min_outgroups' => (is=>'rw',
 			isa =>'Int',
-			default => 5,
+			default => 4,
     );
 
 
@@ -100,7 +100,7 @@ sub is_in_list {
 sub run { 
     my $self = shift;
 
-    $self->outgroup( [ qw | rice maize brachypodium sorghum | ]);
+    $self->outgroup( [ qw | rice maize brachypodium sorghum selaginella | ]);
     $self->ingroup( [ qw | tomato poplar vitis papaya soybean castorbean cucumber | ]);
     $self->contrast_group ([ qw | arabidopsis lyrata |]);
     
@@ -224,7 +224,7 @@ sub id2species {
     if ($id =~ /Bradi/)    { return "brachypodium"; }
     if ($id =~ /\d{5}\_?\.?m\d{5,6}/) { return "castorbean"; }
     if ($id =~ /^Csa/) { return "cucumber"; }
-    if ($id =~ /Selmo1/)   { return "selginella"; }
+    if ($id =~ /Selmo1/)   { return "selaginella"; }
     if ($id =~ /Araly1/i)   { return "lyrata"; }
     if ($id =~ /Poptr1_1/) { return "poplar"; }
     
