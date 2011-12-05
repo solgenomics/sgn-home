@@ -232,7 +232,7 @@ sub get_output_fh {
             my $fh = mytabfile->new( "$accession.tbl", '>' )
                 or die "$! writing $accession.tbl";
 
-            $fh->print( ">Feature $accession\n" );
+            $fh->print( ">Feature gb|$accession|\n" );
             $fh
         }
     };
