@@ -116,7 +116,7 @@ sub format_mrna_attributes {
     );
 
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
-        if( my ( $product ) = $desc =~ /^(.+)(?=\(A[A-Z]+)/ ) {
+        if( my ( $product ) = $desc =~ /^(.+)(?=\(AHRD)/ ) {
             $product =~ s/^\s+|\s+$//g;
             $product =~ s/(\w+)/munge_product_word($1)/eg;
             push @attributes, [ product => $product ];
@@ -189,8 +189,11 @@ sub format_go_attributes {
             cellular_component => 'go_component',
         }->{ $cvterm->cv->name } || die "unknown cv ".$cvterm->cv->name;
 
+        my $name = $cvterm->name;
+        $name =~ s/\(obsolete.+//;
+
         [ $go_qualifier => join( '|', (
-            $cvterm->name,
+            $name,
             $go_num,
             '',
             'ISS',
