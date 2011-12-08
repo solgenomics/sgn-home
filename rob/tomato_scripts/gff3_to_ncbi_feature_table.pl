@@ -178,8 +178,9 @@ sub format_go_attributes {
 
         )
     };
-
     die "no cvterm found for $go_term" unless @matching_terms;
+
+    @matching_terms = ( $matching_terms[0] );
 
     return map {
         my $cvterm = $_;
