@@ -119,6 +119,19 @@ sub start_end_strand {
 
 sub format_mrna_attributes {
     my ( $mrna ) = @_;
+    my $attributes = _format_transcript_attributes( $mrna );
+
+    # remove any (EC XXX) in the product descriptions for mrnas
+    for my $product_attr ( @$attributes ) {
+        next unless $product_attr->[0] && $product_attr->[0] eq 'product';
+        $product_attr->[1] =~ s/ \( \s* EC \s* (\d[^\s\)]+) \s* \)//gx;
+    }
+
+    return format_attributes( $attributes );
+}
+
+sub _format_transcript_attributes {
+    my ( $mrna ) = @_;
     my ( $locus_tag ) = $mrna->get_tag_values( 'Name' );
     $locus_tag =~ s/(\.\d+)/.x/;
 
@@ -130,14 +143,9 @@ sub format_mrna_attributes {
 
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
         ( my $product = $desc ) =~ s/\(AHRD.+//;
+        $product =~ s/^\s+|\s+$//g;
         $product = '' if $product =~ /\-$/; # we have some bad HRDs that end with hyphens, just discard them
         $product ||= 'hypothetical protein';
-        $product =~ s/^\s+|\s+$//g;
-
-        # also remove any EC numbers from the product name and put those in their own qualifier
-        while( $product =~ s/ \( \s* EC \s* (\d[^\s\)]+) \s* \)//g ) {
-            push @attributes, [ EC_number => $1 ];
-        }
 
         $product =~ s/(\w+)/munge_product_word($1)/eg;
         push @attributes, [ product => $product ];
@@ -159,7 +167,7 @@ sub format_mrna_attributes {
         push @attributes, map [ db_xref => $_ ], @{ $other || [] };
     }
 
-    return format_attributes( \@attributes );
+    return \@attributes;
 }
 
 { my $schema;
@@ -214,8 +222,28 @@ sub format_go_attributes {
 
 sub format_cds_attributes {
     my ( $mrna ) = @_;
-    return format_mrna_attributes( $mrna );
+
+    my $attributes = _format_transcript_attributes( $mrna );
+
+    # munge products to remove EC numbers from the product name and
+    # put them in their own attribute
+    for my $product_attr ( @$attributes ) {
+        next unless $product_attr->[0] && $product_attr->[0] eq 'product';
+
+        my $product = $product_attr->[1];
+
+        my $found_ec;
+        while( $product =~ s/ \( \s* EC \s* (\d[^\s\)]+) \s* \)//gx ) {
+            $found_ec++;
+            push @$attributes, [ EC_number => $1 ];
+        }
+
+        $product_attr->[1] = $product if $found_ec;
+    }
+
+    return format_attributes( \@$attributes );
 }
+
 sub format_gene_attributes {
     my ( $gene ) = @_;
     return format_attributes([
