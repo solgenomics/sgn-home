@@ -129,7 +129,8 @@ sub format_mrna_attributes {
     );
 
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
-        if( my ( $product ) = $desc =~ /^(.+)(?=\(AHRD)/ ) {
+        ( my $product = $desc ) =~ s/\(AHRD.+//;
+        if( $product ) {
             $product =~ s/^\s+|\s+$//g;
             unless( $product =~ /\-$/ ) { # we have some bad HRDs that end with hyphens, just leave them out
                 # also remove any EC numbers from the product name and put those in their own qualifier
