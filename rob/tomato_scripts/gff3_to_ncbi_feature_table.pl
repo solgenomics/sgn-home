@@ -65,6 +65,11 @@ exit;
 
 ################ subroutines ################
 
+sub reverse_if_rev_strand {
+    my ( $feat, @list ) = @_;
+    return $feat->strand == -1 ? reverse(@list) : @list;
+}
+
 sub handle_gene {
     my ( $fh, $gene ) = @_;
 
@@ -72,7 +77,7 @@ sub handle_gene {
         or die "not a gene?";
 
     $fh->print_tab(
-        [ $gene->start, $gene->end, 'gene' ],
+        [ start_end_strand( $gene ), 'gene' ],
         format_gene_attributes( $gene ),
     );
 
@@ -81,7 +86,8 @@ sub handle_gene {
             or die "second-level feature not an mRNA?";
 
         my @exon_tabs =
-            map [ $_->start, $_->end, undef ],
+            reverse_if_rev_strand $mrna,
+            map [ start_end_strand( $_ ), undef ],
             grep $_->primary_tag eq 'exon',
             $mrna->get_SeqFeatures;
         $exon_tabs[0][2] = 'mRNA';
@@ -92,7 +98,8 @@ sub handle_gene {
         $fh->print_tab( @exon_tabs );
 
         my @cds_tabs =
-            map [ $_->start, $_->end, undef ],
+            reverse_if_rev_strand $mrna,
+            map [ start_end_strand( $_ ), undef ],
             grep $_->primary_tag eq 'CDS',
             $mrna->get_SeqFeatures;
         $cds_tabs[0][2] = 'CDS';
@@ -104,6 +111,11 @@ sub handle_gene {
     }
 }
 
+
+sub start_end_strand {
+    my ($feat) = @_;
+    return $feat->strand == -1 ? ( $feat->end, $feat->start ) : ( $feat->start, $feat->end );
+}
 
 sub format_mrna_attributes {
     my ( $mrna ) = @_;
