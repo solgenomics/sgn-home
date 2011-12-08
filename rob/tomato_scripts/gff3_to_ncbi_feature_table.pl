@@ -130,17 +130,17 @@ sub format_mrna_attributes {
 
     if( my ( $desc ) = eval { $mrna->get_tag_values( 'Note' ) }) {
         ( my $product = $desc ) =~ s/\(AHRD.+//;
-        if( $product ) {
-            $product =~ s/^\s+|\s+$//g;
-            unless( $product =~ /\-$/ ) { # we have some bad HRDs that end with hyphens, just leave them out
-                # also remove any EC numbers from the product name and put those in their own qualifier
-                while( $product =~ s/ \( \s* EC \s* (\d[^\s\)]+) \s* \)//g ) {
-                    push @attributes, [ EC_number => $1 ];
-                }
-                $product =~ s/(\w+)/munge_product_word($1)/eg;
-                push @attributes, [ product => $product ];
-            }
+        $product = '' if $product =~ /\-$/; # we have some bad HRDs that end with hyphens, just discard them
+        $product ||= 'hypothetical protein';
+        $product =~ s/^\s+|\s+$//g;
+
+        # also remove any EC numbers from the product name and put those in their own qualifier
+        while( $product =~ s/ \( \s* EC \s* (\d[^\s\)]+) \s* \)//g ) {
+            push @attributes, [ EC_number => $1 ];
         }
+
+        $product =~ s/(\w+)/munge_product_word($1)/eg;
+        push @attributes, [ product => $product ];
 
         if( my @interpro = $desc =~ /\b(IPR\d+)\b/g ) {
             push @attributes, map [ db_xref => "InterPro:$_" ], @interpro;
