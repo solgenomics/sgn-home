@@ -27,10 +27,11 @@ open my $fasta_in, '<', shift
 my %handlers = (
     gene => \&handle_gene,
 );
-while( my @f = $feature_in->next_feature_group ) {
-    for my $feature ( @f ) {
-        my $fh = get_tbl_output_fh( $feature )
-            or next;
+  while( my @f = $feature_in->next_feature_group ) {
+      my $fh = get_tbl_output_fh( $f[0] )
+          or next;
+
+      for my $feature ( @f ) {
 
         no strict 'refs';
 
