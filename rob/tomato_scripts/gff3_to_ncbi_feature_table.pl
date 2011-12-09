@@ -241,7 +241,7 @@ sub format_cds_attributes {
         $product_attr->[1] = $product if $found_ec;
     }
 
-    return format_attributes( \@$attributes );
+    return format_attributes( $attributes );
 }
 
 sub format_gene_attributes {
