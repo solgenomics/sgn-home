@@ -16,9 +16,11 @@ while( my @f = $features_in->next_feature_group ) {
     for my $feature ( @f ) {
         my ( $name ) = eval { $feature->get_tag_values('Name') };
         if( my $trim = $name && $trims->{$name} ) {
-            trim_feature( $feature, $trim );
+            #use Data::Dump 'dump';
+            #print "# TRIMMING $name: ".dump( $trim )."\n";
+            $feature = undef unless trim_feature( $feature, $trim );
         }
-        $features_out->write_feature( $feature );
+        $features_out->write_feature( $feature ) if $feature;
     }
 }
 
@@ -27,12 +29,10 @@ while( my @f = $features_in->next_feature_group ) {
 sub trim_feature {
     my ( $feature, $trim ) = @_;
 
-    my ( $name ) = eval { $feature->get_tag_values('Name') } or return;
-
     $feature->primary_tag eq 'gene'
-        or die "don't know how to handle ".$feature->primary_tag." feature $name";
+        or die "don't know how to handle ".$feature->primary_tag." feature ".$feature->get_tag_values('Name');
 
-    my ( $start, $end ) = $feature->start, $feature->end;
+    my ( $start, $end ) = ( $feature->start, $feature->end );
 
     my ( $trim_start, $trim_end ) = ( $trim->{"5'"}, $trim->{"3'"} );
     ( $trim_start, $trim_end ) = ( $trim_end, $trim_start ) if $feature->strand == -1;
@@ -40,16 +40,23 @@ sub trim_feature {
     $start += $trim_start if $trim_start;
     $end   -= $trim_end   if $trim_end;
 
-    recursive_trim_to_bounds( $feature, $start, $end );
+    #print "# TRIMMING to bounds $start, $end\n";
+
+    return recursive_trim_to_bounds( $feature, $start, $end );
 }
 
 sub recursive_trim_to_bounds {
     my ( $feature, $start, $end ) = @_;
 
-    recursive_trim_to_bounds( $_, $start, $end ) for $feature->get_SeqFeatures;
+    # trim the subfeatures, deleting any that disappear
+    $feature->add_SeqFeature( $_ )
+        for grep recursive_trim_to_bounds( $_, $start, $end ),
+            $feature->remove_SeqFeatures;
 
     $feature->start( $start ) if $start && $feature->start < $start;
-    $feature->end( $end )     if $end   && $feature->end   < $end;
+    $feature->end( $end )     if $end   && $feature->end   > $end;
+
+    return $feature->start < $feature->end;
 }
 
 sub find_trim_regions {
