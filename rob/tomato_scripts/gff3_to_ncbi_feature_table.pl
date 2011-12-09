@@ -104,6 +104,15 @@ sub handle_gene {
             $mrna->get_SeqFeatures;
         $cds_tabs[0][2] = 'CDS';
 
+        # munge coordinates to add indicators for partial gene models
+        my %partials = map { $_ => 1 } eval { $mrna->get_tag_values('partial') };
+        if( $partials{"5'"} ) {
+            $cds_tabs[0][0] = '<'.$cds_tabs[0][0];
+        }
+        if( $partials{"3'"} ) {
+            $cds_tabs[-1][1] = '>'.$cds_tabs[-1][1];
+        }
+
         push @cds_tabs,
             format_cds_attributes( $mrna );
 
