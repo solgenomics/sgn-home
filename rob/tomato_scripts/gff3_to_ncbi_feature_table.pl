@@ -198,7 +198,7 @@ sub munge_product_word {
     $w = lc $w if $w =~ m![A-Z][a-z]{2,}!;
     # replace 'unknown' with 'hypothetical'
     return 'hypothetical' if $w eq 'unknown';
-    return 'putative' if $w =~ / ^ ( probable | possible | predicted ) $ /x;
+    return 'putative' if $w =~ / ^ ( probable | possible | predicted | potential ) $ /x;
     return $w;
 }
 
