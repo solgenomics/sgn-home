@@ -2,6 +2,8 @@
 use strict;
 use warnings FATAL => 'all';
 
+use POSIX 'ceil';
+
 use lib '/home/rob/dev/bioperl/Bio-FeatureIO/lib';
 use Bio::SeqIO;
 use Bio::FeatureIO;
@@ -35,6 +37,8 @@ sub trim_feature {
     my ( $start, $end ) = ( $feature->start, $feature->end );
 
     my ( $trim_start, $trim_end ) = ( $trim->{"5'"}, $trim->{"3'"} );
+    # round the trim start up to the nearest codon to avoid frameshifts
+    $trim_start = ceil($trim_start/3)*3 if $trim_start;
     ( $trim_start, $trim_end ) = ( $trim_end, $trim_start ) if $feature->strand == -1;
 
     $start += $trim_start if $trim_start;
