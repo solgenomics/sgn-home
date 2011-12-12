@@ -157,6 +157,11 @@ sub _format_transcript_attributes {
         $product ||= 'hypothetical protein';
 
         $product =~ s/(\w+)/munge_product_word($1)/eg;
+
+        while( $product =~ s/ \(? (At[\dMC]g\d+) \)? //xg ) {
+            push @attributes, [ note => 'similar to '.$1 ],
+        }
+
         push @attributes, [ product => $product ];
 
         if( my @interpro = $desc =~ /\b(IPR\d+)\b/g ) {
