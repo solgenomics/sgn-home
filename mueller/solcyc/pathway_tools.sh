@@ -33,7 +33,7 @@ SCRIPTNAME=/etc/init.d/$NAME.sh
 #	Function that starts the daemon/service.
 #
 function d_start() {
-# Warn and exit if something is already listening on port 1555.                                                                           
+# Warn and exit if something is already listening on port 1555.                                                                            
     if [ `netstat -a | fgrep 1555 | fgrep -c LISTEN` == 1 ] 
 	then
 	echo "Something is already listening on port 1555.";
@@ -52,14 +52,16 @@ function d_start() {
 ## Start Xvfb as X-server display #1. If it's already been started, no harm done.
 # Start Xvfb as X-server display #1. If it's already been started, kill it.
 # This works in conjunction with the pathway-tools script which needs to have:                                                            
-#   setenv DISPLAY localhost:1                                                                                                            
+    
+    export DISPLAY=localhost:1;
 	pkill Xvfb;
 	sleep 2;
 	echo "STARTING Xvfb..."
 	/usr/X11R6/bin/Xvfb :1 &
 # Start GNU screen (hit Ctrl-A Ctrl-D to detach). Within it, start Pathway Tools.                                                         
 	echo "STARTING screen...";
-	/usr/bin/screen -m -L -d /usr/local/bin/pathway-tools-bg -www -www-publish public -org lyco -gene-link-db SGN  -no-blast -allow-webcrawlers;
+
+	/usr/bin/screen -m -L -d /usr/local/pathway-tools/aic-export/pathway-tools/pttols/15.5/pathway-tools -www -www-publish public -org lyco -gene-link-db SGN  -no-blast -allow-webcrawlers;
 
 	echo "Determine PID after wait...";
 	sleep 2;
