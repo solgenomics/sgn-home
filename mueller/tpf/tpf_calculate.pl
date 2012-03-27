@@ -1,5 +1,25 @@
 #!/usr/bin/perl
 
+=head1 NAME
+
+tpf_calculate.pl - calculates BAC alignments used for the integration into the tpf files.
+
+=head1 SYNOPSIS
+
+tpf_calculate.pl -C config_file -f <gff|tab> -c
+
+ -C provides the config file
+ -f provides output data
+ -c calculate the alignments. If omitted, just format the present files.
+
+Requires the mummer package.
+
+=head1 AUTHOR
+
+Lukas Mueller <lam87@cornell.edu>
+
+=cut
+
 use strict;
 use warnings;
 
@@ -10,11 +30,9 @@ use Getopt::Std;
 
 our %args;
 
-getopts('i:a:t:f:cC:q:s:', \%args);
+getopts('i:f:cC:q:s:', \%args);
 
 # i: input file
-# a: apg file
-# t: tpf file
 # f: output format (gff3)
 # c: compute alignments (query file -q, subject file -s)
 # s: subject file for -c
@@ -125,7 +143,7 @@ sub calculate_alignments {
 
     #chdir($dir);
 
-    `nucmer --prefix=$ref_fasta $ref_fasta $qry_fasta`;
+    `nucmer -g 500 -b 2000 --prefix=$ref_fasta $ref_fasta $qry_fasta`;
 
     `show-coords -rcl $ref_fasta.delta > $ref_fasta.coords`;
 
