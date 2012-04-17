@@ -11,6 +11,17 @@
 # Version:	@(#)skeleton  2.85-23  28-Jul-2004  miquels@cistron.nl
 #
 
+### BEGIN INIT INFO
+# Provides:          pathway_tools.sh
+# Required-Start:    $all
+# Required-Stop:     
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Pathway Tools at boot time
+# Description:       Run Pathway Tools as a webserver at bootup
+### END INIT INFO
+
+
 #set -e
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
