@@ -1,0 +1,26 @@
+Author: Andrew Dunford
+
+This entire application should be placed in a directory where it may be accessed at solgenomics.net/CytoScape/  The version currently on the live site does not load, giving the error "jar file cytoscape.jar could not be found."  I believe this is because the application is not currently located where it is supposed to be.  It was in /cxgn/sgn/static/ when I pushed my version of the website.
+
+This application consists of a main jar file:
+cytoscape.jar
+
+And multiple supporting jar files in lib and plugins.  Each jar file must be signed with the same key, and only that key.  More information on Cytoscape Java Web Start can be found here:
+
+http://wiki.cytoscape.org/Cytoscape_via_Java_Web_Start
+
+It was generated from the latest build of cytoscape available off of their svn server, which included a "webstart" directory and README file with a command that automatically built the application and created a .jnlp file.  
+
+In our environment, if this CytoScape application is rebuilt or updated, the Interactomics.pm controller must also be updated with the text of the .jnlp file.  Replace the "codebase" variable declared in the header with the $codebase perl variable.  
+
+Replace the "href" with an empty string "".  In this case, you don't need to include the .jnlp file alongside the CytoScape build, as it will be generated automatically upon user request.  
+
+To load data, make sure this is at the bottom of the jnlp text:
+
+<argument>-N</argument>
+<argument>".$file."</argument>
+
+The $file variable should be the absolute URL passed by the mason file to the controller.
+
+coffee.cys is the coffee interactomic data.  Someone may want to move that to the ftp server.  Where it does get moved, just remember to change the URL specified in the mason file.
+
