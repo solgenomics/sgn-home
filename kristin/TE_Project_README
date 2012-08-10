@@ -1,0 +1,19 @@
+TE Pipeline Project README
+
+Run steps 1-4 of REPET TEdenovo pipeline.
+	* Installation instructions on wiki. (Solandra is already set up to run).
+     	* Must delete jobs table from MySQL database after each step.
+
+
+Run filtering script.
+     	* Directory where the script is running must also contain 
+		- consensus sequences fasta file from REPET results
+		- the database or sequence that you want to blast consensus seq results against (formatted with formatdb).
+	* Criteria for passable hits is set at percent identity >= 98% and  aligned length >= 200bp.
+
+
+Results:
+- Files ending with no suffix contain the consensus sequence associated with the label that is the file name.
+- Files ending in .output are the raw blast results.
+- Files ending in .hp are blast results that meet the filtering criteria.
+- Results file contains label of TE and number of passable blast hits.
