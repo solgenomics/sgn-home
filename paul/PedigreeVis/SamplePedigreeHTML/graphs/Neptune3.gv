@@ -1,0 +1,68 @@
+graph neptune {
+	graph [bgcolor="#FAFAFA", ranksep=".9"];
+	node [label="\N", shape=box, color=red, fontsize=11, fontname=Helvetica];
+	graph [bb="0,0,512,484",
+		_draw_="c 9 -#fafafaff C 9 -#fafafaff P 4 0 -1 0 484 513 484 513 -1 ",
+		xdotversion="1.2"];
+	subgraph Generation0 {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		Walter [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="27,466", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 54 484 0 484 0 448 54 448 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 27 463 0 32 6 -Walter "];
+		MH_11 [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="157,466", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 184 484 130 484 130 448 184 448 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 157 463 0 36 5 -MH_11 "];
+		walterandmh [shape=point, pos="92,466", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 92 466 2 2 "];
+		Walter -- walterandmh [pos="54.168,466 66.089,466 78.01,466 89.931,466", _draw_="c 9 -#000000ff B 4 54 466 66 466 78 466 90 466 "];
+		walterandmh -- MH_11 [pos="94.031,466 106,466 117.97,466 129.94,466", _draw_="c 9 -#000000ff B 4 94 466 106 466 118 466 130 466 "];
+	}
+	subgraph Generation0kids {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		Cl_11d [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="197,346", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 224 364 170 364 170 328 224 328 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 197 343 0 35 6 -Cl_11d "];
+		f5joint [shape=point, pos="92,346", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 92 346 2 2 "];
+		f5jointandcl [shape=point, pos="132,346", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 132 346 2 2 "];
+		f5joint -- f5jointandcl [pos="93.875,346 105.89,346 117.9,346 129.92,346", _draw_="c 9 -#000000ff B 4 94 346 106 346 118 346 130 346 "];
+		f5jointandcl -- Cl_11d [pos="134.03,346 146,346 157.97,346 169.94,346", _draw_="c 9 -#000000ff B 4 134 346 146 346 158 346 170 346 "];
+	}
+	subgraph Generation1kids {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		Campbell_28 [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="250,226", width="1.1111", height="0.5", _draw_="c 9 -#ff0000ff p 4 290 244 210 244 210 208 290 208 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 250 223 0 64 11 -Campbell_28 "];
+		645 [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="335,226", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 362 244 308 244 308 208 362 208 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 335 223 0 19 3 -645 "];
+		Hawaii_997 [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="475,226", width="1.0278", height="0.5", _draw_="c 9 -#ff0000ff p 4 512 244 438 244 438 208 512 208 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 475 223 0 58 10 -Hawaii_997 "];
+		hawaiiand645 [shape=point, pos="400,226", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 400 226 2 2 "];
+		f6joint [shape=point, pos="132,226", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 132 226 2 2 "];
+		f6jointandcampbell [shape=point, pos="172,226", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 172 226 2 2 "];
+		f6joint -- f6jointandcampbell [pos="133.88,226 145.89,226 157.9,226 169.92,226", _draw_="c 9 -#000000ff B 4 134 226 146 226 158 226 170 226 "];
+		f6jointandcampbell -- Campbell_28 [pos="173.83,226 185.83,226 197.83,226 209.83,226", _draw_="c 9 -#000000ff B 4 174 226 186 226 198 226 210 226 "];
+		645 -- hawaiiand645 [pos="362.17,226 374.09,226 386.01,226 397.93,226", _draw_="c 9 -#000000ff B 4 362 226 374 226 386 226 398 226 "];
+		hawaiiand645 -- Hawaii_997 [pos="402.05,226 414.02,226 425.99,226 437.96,226", _draw_="c 9 -#000000ff B 4 402 226 414 226 426 226 438 226 "];
+	}
+	subgraph Generation2kids {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		f4joint [shape=point, pos="172,122", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 172 122 2 2 "];
+		f7joint [shape=point, pos="400,122", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 400 122 2 2 "];
+		f4jointandf7joint [shape=point, pos="286,122", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 286 122 2 2 "];
+		f4joint -- f4jointandf7joint [pos="174.23,122 210.76,122 247.29,122 283.82,122", _draw_="c 9 -#000000ff B 4 174 122 211 122 247 122 284 122 "];
+		f4jointandf7joint -- f7joint [pos="288.23,122 324.76,122 361.29,122 397.82,122", _draw_="c 9 -#000000ff B 4 288 122 325 122 361 122 398 122 "];
+	}
+	subgraph Generation3kids {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		Neptune [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="286,18", width="0.80556", height="0.5", _draw_="c 9 -#ff0000ff p 4 315 36 257 36 257 0 315 0 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 286 15 0 42 7 -Neptune "];
+	}
+	walterandmh -- f5joint [label=F5, labeldistance=3, pos="92,463.92 92,449.35 92,362.89 92,348.14", lp="101,406", _draw_="c 9 -#000000ff B 4 92 464 92 449 92 363 92 348 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 101 401 0 18 2 -F5 "];
+	f5jointandcl -- f6joint [label=F6, labeldistance=1, pos="132,343.92 132,329.35 132,242.89 132,228.14", lp="141,286", _draw_="c 9 -#000000ff B 4 132 344 132 329 132 243 132 228 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 141 281 0 18 2 -F6 "];
+	hawaiiand645 -- f7joint [label=F7, labeldistance=1, pos="400,224.19 400,211.57 400,136.64 400,123.85", lp="409,166", _draw_="c 9 -#000000ff B 4 400 224 400 212 400 137 400 124 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 409 161 0 18 2 -F7 "];
+	f6jointandcampbell -- f4joint [label=F4, labeldistance=1, pos="172,224.19 172,211.57 172,136.64 172,123.85", lp="181,166", _draw_="c 9 -#000000ff B 4 172 224 172 212 172 137 172 124 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 181 161 0 18 2 -F4 "];
+	f4jointandf7joint -- Neptune [label=F11, labeldistance=1, pos="286,120.19 286,110.38 286,62.866 286,36.22", lp="299.5,78", _draw_="c 9 -#000000ff B 4 286 120 286 110 286 63 286 36 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 300 73 0 27 3 -F11 "];
+}

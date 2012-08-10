@@ -1,0 +1,19 @@
+The code for pedigree visualization is in the solgenomics/bio-geneticrelationships repository on github.
+
+Located here is the HTML, Javascript, and CSS files that comprise a sample pedigree Visualization website/implementation.
+It uses some server side scripting, so running it locally won't work. The graphviz graph files must be located in the /graphs directory,
+and they must have the .gv file extension. All filenames for the files that will be loaded must also be noted in the array in pedlist.js.
+
+To get Graphviz files to display on webpages properly, the Javascipt library Canviz must be used: http://code.google.com/p/canviz/
+
+Currently there are Javascript hover effects in place which use the JS files main.js and popupstyle.js.
+However, text pop ups might not be necessary for the final implementation. Really, all that is needed is the href property of a
+Graphviz node to be set to a link to the organism or stock page which would contain the more detailed information.
+
+If the javascript hover effects are not needed, remove the "onmouseout" and "onmouseover" attributes in Pedigree.pm. Honestly, they
+are probably more trouble than they are worth. The href property is all you really need.
+
+Selfing is denoted by a double line is the generated pedigree picture, however there won't yet be a label on the lines to denote the
+number of generations of selfing. I don't know how this is represented in the database.
+
+

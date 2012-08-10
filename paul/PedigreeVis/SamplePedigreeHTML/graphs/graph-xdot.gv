@@ -1,0 +1,28 @@
+graph neptune {
+	graph [nodesep="1.2", ranksep=".9"];
+	node [label="\N", href="javascript:void(0)", onMouseOver="stm(Text[14],Style[12])", onMouseOut="htm()", shape=box, color=red, fontsize=11, fontname=Helvetica];
+	graph [bb="0,0,620,408",
+		_draw_="c 9 -#ffffffff C 9 -#ffffffff P 4 0 -1 0 408 621 408 621 -1 ",
+		xdotversion="1.2"];
+	"Neptune F11" [pos="355,390", width="1.1111", height="0.5", _draw_="c 9 -#ff0000ff p 4 395 408 315 408 315 372 395 372 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 355 387 0 64 11 -Neptune F11 "];
+	"Neptune F4 Joint" [shape=point, pos="280,305", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 280 305 2 2 "];
+	"Neptune F7 Joint" [shape=point, pos="431,305", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 431 305 2 2 "];
+	645 [pos="431,220", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 458 238 404 238 404 202 458 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 431 217 0 19 3 -645 "];
+	"Hawaii 7997" [pos="582,220", width="1.0556", height="0.5", _draw_="c 9 -#ff0000ff p 4 620 238 544 238 544 202 620 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 582 217 0 61 11 -Hawaii 7997 "];
+	"Neptune F6 Joint" [shape=point, pos="154,220", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 154 220 2 2 "];
+	"Neptune F5 Joint" [shape=point, pos="97,119", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 97 119 2 2 "];
+	"Campbell 28" [pos="280,220", width="1.0556", height="0.5", _draw_="c 9 -#ff0000ff p 4 318 238 242 238 242 202 318 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 280 217 0 61 11 -Campbell 28 "];
+	"Cl 11d" [pos="212,119", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 239 137 185 137 185 101 239 101 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 212 116 0 32 6 -Cl 11d "];
+	Walter [pos="27,18", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 54 36 0 36 0 0 54 0 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 27 15 0 32 6 -Walter "];
+	"MH 11" [pos="167,18", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 194 36 140 36 140 0 194 0 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 167 15 0 33 5 -MH 11 "];
+	"Neptune F11" -- "Neptune F4 Joint" [taillabel=" F4", labeldistance=5, pos="339.09,371.97 319.49,349.75 287.93,313.99 281.26,306.43", tail_lp="293.27,351.98", _draw_="c 9 -#000000ff B 4 339 372 319 350 288 314 281 306 ", _tldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 293 347 0 22 3 - F4 "];
+	"Neptune F11" -- "Neptune F7 Joint" [labeldistance=5, headlabel=" F7", pos="371.12,371.97 390.99,349.75 422.96,313.99 429.72,306.43", head_lp="415.27,354.3", _draw_="c 9 -#000000ff B 4 371 372 391 350 423 314 430 306 ", _hldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 415 349 0 22 3 - F7 "];
+	"Neptune F7 Joint" -- 645 [pos="431,302.9 431,294.1 431,259.71 431,238.08", _draw_="c 9 -#000000ff B 4 431 303 431 294 431 260 431 238 "];
+	"Neptune F7 Joint" -- "Hawaii 7997" [pos="432.7,304.05 444.04,297.66 509.64,260.73 550.02,238", _draw_="c 9 -#000000ff B 4 433 304 444 298 510 261 550 238 "];
+	"Neptune F4 Joint" -- "Neptune F6 Joint" [taillabel=" F6", labeldistance=6, pos="278.22,303.8 263.98,294.19 168.85,230.02 155.54,221.04", tail_lp="218.96,294.41", _draw_="c 9 -#000000ff B 4 278 304 264 294 169 230 156 221 ", _tldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 219 289 0 22 3 - F6 "];
+	"Neptune F4 Joint" -- "Campbell 28" [pos="280,302.9 280,294.1 280,259.71 280,238.08", _draw_="c 9 -#000000ff B 4 280 303 280 294 280 260 280 238 "];
+	"Neptune F6 Joint" -- "Neptune F5 Joint" [taillabel=" F5", labeldistance=4, pos="153.01,218.25 146.09,205.99 105.02,133.22 98.017,120.8", tail_lp="120.47,194.98", _draw_="c 9 -#000000ff B 4 153 218 146 206 105 133 98 121 ", _tldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 120 190 0 22 3 - F5 "];
+	"Neptune F6 Joint" -- "Cl 11d" [pos="155.01,218.25 160.45,208.76 186.69,163.08 201.59,137.12", _draw_="c 9 -#000000ff B 4 155 218 160 209 187 163 202 137 "];
+	"Neptune F5 Joint" -- Walter [pos="95.785,117.25 89.213,107.76 57.549,62.078 39.56,36.122", _draw_="c 9 -#000000ff B 4 96 117 89 108 58 62 40 36 "];
+	"Neptune F5 Joint" -- "MH 11" [pos="98.215,117.25 104.79,107.76 136.45,62.078 154.44,36.122", _draw_="c 9 -#000000ff B 4 98 117 105 108 136 62 154 36 "];
+}

@@ -1,0 +1,30 @@
+graph neptune {
+	graph [nodesep="1.2", bgcolor="#FAFAFA", ranksep=".9"];
+	node [label="\N", shape=box, color=red, fontsize=11, fontname=Helvetica];
+	graph [bb="0,0,468,477",
+		_draw_="c 9 -#fafafaff C 9 -#fafafaff P 4 0 -1 0 477 469 477 469 -1 ",
+		xdotversion="1.2"];
+	Neptune [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="221,459", width="0.80556", height="0.5", _draw_="c 9 -#ff0000ff p 4 250 477 192 477 192 441 250 441 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 221 456 0 42 7 -Neptune "];
+	645 [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="279,220", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 306 238 252 238 252 202 306 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 279 217 0 19 3 -645 "];
+	"Hawaii 7997" [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="430,220", width="1.0556", height="0.5", _draw_="c 9 -#ff0000ff p 4 468 238 392 238 392 202 468 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 430 217 0 61 11 -Hawaii 7997 "];
+	"Campbell 28" [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="38,220", width="1.0556", height="0.5", _draw_="c 9 -#ff0000ff p 4 76 238 0 238 0 202 76 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 38 217 0 61 11 -Campbell 28 "];
+	"Cl 11d" [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="106,119", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 133 137 79 137 79 101 133 101 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 106 116 0 32 6 -Cl 11d "];
+	Walter [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="151,18", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 178 36 124 36 124 0 178 0 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 151 15 0 32 6 -Walter "];
+	"MH 11" [href="#", onmouseover="stm(Text[14],Style[12])", onmouseout="htm()", pos="291,18", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 318 36 264 36 264 0 318 0 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 291 15 0 33 5 -MH 11 "];
+	"Neptune F11 Joint" [shape=point, pos="221,374", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 221 374 2 2 "];
+	"Neptune F4 Joint" [shape=point, pos="164,305", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 164 305 2 2 "];
+	"Neptune F7 Joint" [shape=point, pos="279,305", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 279 305 2 2 "];
+	"Neptune F6 Joint" [shape=point, pos="164,220", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 164 220 2 2 "];
+	"Neptune F5 Joint" [shape=point, pos="221,119", width="0.055556", height="0.055556", _draw_="c 9 -#ff0000ff C 9 -#ff0000ff E 221 119 2 2 "];
+	Neptune -- "Neptune F11 Joint" [headlabel=" F11", labeldistance=5, pos="221,440.97 221,419.14 221,384.24 221,375.85", head_lp="242.13,421.17", _draw_="c 9 -#000000ff B 4 221 441 221 419 221 384 221 376 ", _hldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 242 416 0 31 4 - F11 "];
+	"Neptune F11 Joint" -- "Neptune F4 Joint" [labeldistance=5, taillabel=" F4", pos="219.81,372.56 212.39,363.58 172.58,315.39 165.18,306.43", tail_lp="174.66,351.08", _draw_="c 9 -#000000ff B 4 220 373 212 364 173 315 165 306 ", _tldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 175 346 0 22 3 - F4 "];
+	"Neptune F11 Joint" -- "Neptune F7 Joint" [headlabel=" F7", labeldistance=5, pos="222.21,372.56 229.76,363.58 270.27,315.39 277.8,306.43", head_lp="264.81,354.72", _draw_="c 9 -#000000ff B 4 222 373 230 364 270 315 278 306 ", _hldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 265 350 0 22 3 - F7 "];
+	"Neptune F7 Joint" -- 645 [pos="279,302.9 279,294.1 279,259.71 279,238.08", _draw_="c 9 -#000000ff B 4 279 303 279 294 279 260 279 238 "];
+	"Neptune F7 Joint" -- "Hawaii 7997" [pos="280.7,304.05 292.04,297.66 357.64,260.73 398.02,238", _draw_="c 9 -#000000ff B 4 281 304 292 298 358 261 398 238 "];
+	"Neptune F4 Joint" -- "Neptune F6 Joint" [headlabel=" F6", labeldistance=4, pos="164,302.9 164,291.14 164,233.6 164,222.03", head_lp="180.9,258.28", _draw_="c 9 -#000000ff B 4 164 303 164 291 164 234 164 222 ", _hldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 181 253 0 22 3 - F6 "];
+	"Neptune F4 Joint" -- "Campbell 28" [pos="162.22,303.8 151.81,296.78 98.164,260.59 64.866,238.12", _draw_="c 9 -#000000ff B 4 162 304 152 297 98 261 65 238 "];
+	"Neptune F6 Joint" -- "Neptune F5 Joint" [headlabel=" F5", labeldistance=4, pos="164.99,218.25 171.91,205.99 212.98,133.22 219.98,120.8", head_lp="216.89,160.68", _draw_="c 9 -#000000ff B 4 165 218 172 206 213 133 220 121 ", _hldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 217 156 0 22 3 - F5 "];
+	"Neptune F6 Joint" -- "Cl 11d" [pos="162.99,218.25 157.55,208.76 131.31,163.08 116.41,137.12", _draw_="c 9 -#000000ff B 4 163 218 158 209 131 163 116 137 "];
+	"Neptune F5 Joint" -- Walter [pos="219.79,117.25 213.21,107.76 181.55,62.078 163.56,36.122", _draw_="c 9 -#000000ff B 4 220 117 213 108 182 62 164 36 "];
+	"Neptune F5 Joint" -- "MH 11" [pos="222.21,117.25 228.79,107.76 260.45,62.078 278.44,36.122", _draw_="c 9 -#000000ff B 4 222 117 229 108 260 62 278 36 "];
+}

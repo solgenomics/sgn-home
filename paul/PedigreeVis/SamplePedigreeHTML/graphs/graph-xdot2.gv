@@ -1,0 +1,54 @@
+digraph graph2 {
+	node [label="\N", href="javascript:void(click_node('\N'))"];
+	graph [bb="0,0,267,260",
+		_draw_="c 9 -#ffffffff C 9 -#ffffffff P 4 0 -1 0 260 268 260 268 -1 ",
+		xdotversion="1.2"];
+	{
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		A [pos="27,241", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 27 241 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 27 236 0 10 1 -A "];
+		B [pos="121,241", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 121 241 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 121 236 0 10 1 -B "];
+		AB [shape=point, pos="74,241", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 74 241 2 2 "];
+	}
+	{
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		ABmid [shape=point, pos="74,167", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 74 167 2 2 "];
+		Dot1 [shape=point, pos="118,167", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 118 167 2 2 "];
+		Dot2 [shape=point, pos="96,167", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 96 167 2 2 "];
+	}
+	{
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		E [pos="168,93", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 168 93 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 168 88 0 10 1 -E "];
+		F [pos="240,93", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 240 93 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 240 88 0 9 1 -F "];
+		G [pos="74,93", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 74 93 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 74 88 0 12 1 -G "];
+		EG [shape=point, pos="121,93", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 121 93 2 2 "];
+	}
+	{
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		H [pos="121,19", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 121 19 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 121 14 0 11 1 -H "];
+	}
+	C [pos="240,167", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 240 167 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 240 162 0 10 1 -C "];
+	D [pos="168,167", width="0.75", height="0.51389", _draw_="c 9 -#000000ff e 168 167 27 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 168 162 0 12 1 -D "];
+	B -> AB [dir=none, pos="93.831,241 87.833,241 81.834,241 75.836,241", _draw_="c 9 -#000000ff B 4 94 241 88 241 82 241 76 241 "];
+	A -> AB [dir=none, pos="54.172,241 60.162,241 66.151,241 72.141,241", _draw_="c 9 -#000000ff B 4 54 241 60 241 66 241 72 241 "];
+	AB -> ABmid [dir=none, pos="74,239.17 74,229.02 74,179.7 74,169.04", _draw_="c 9 -#000000ff B 4 74 239 74 229 74 180 74 169 "];
+	ABmid -> Dot1 [dir=none, pos="74.341,169 75.942,177.87 83.269,212.78 98,204 111.55,195.92 116.47,175.14 117.68,168.84", _draw_="c 9 -#000000ff B 7 74 169 76 178 83 213 98 204 112 196 116 175 118 169 "];
+	Dot2 -> ABmid [dir=none, pos="94.131,167 88.108,167 82.085,167 76.062,167", _draw_="c 9 -#000000ff B 4 94 167 88 167 82 167 76 167 "];
+	ABmid -> G [dir=none, pos="74,165.17 74,157.92 74,130.64 74,111.78", _draw_="c 9 -#000000ff B 4 74 165 74 158 74 131 74 112 "];
+	C -> F [dir=none, pos="240,148.33 240,137.11 240,122.88 240,111.67", _draw_="c 9 -#000000ff B 4 240 148 240 137 240 123 240 112 "];
+	D -> E [dir=none, pos="168,148.33 168,137.11 168,122.88 168,111.67", _draw_="c 9 -#000000ff B 4 168 148 168 137 168 123 168 112 "];
+	G -> EG [dir=none, pos="101.17,93 107.16,93 113.15,93 119.14,93", _draw_="c 9 -#000000ff B 4 101 93 107 93 113 93 119 93 "];
+	E -> EG [dir=none, pos="140.83,93 134.83,93 128.83,93 122.84,93", _draw_="c 9 -#000000ff B 4 141 93 135 93 129 93 123 93 "];
+	EG -> H [dir=none, pos="121,91.171 121,83.915 121,56.64 121,37.781", _draw_="c 9 -#000000ff B 4 121 91 121 84 121 57 121 38 "];
+}

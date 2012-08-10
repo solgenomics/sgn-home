@@ -1,0 +1,7 @@
+ortholist60.out contains the orthologs in the gene families found from Tom's ortholog scripts. The numbers represent bootstrap values out of 100.
+The value of 60 was used as a cutoff.
+
+orthoparser.pl parses the ortholog files outputted from Tom's ortholog finding script: ortholog_support.pl.
+It creates a file containing each gene family with only the orthologs of each gene with a minimum NJ bootstrap value specified in the code.
+
+

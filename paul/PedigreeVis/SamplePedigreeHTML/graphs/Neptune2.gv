@@ -1,0 +1,20 @@
+graph Pedigree {
+	graph [bgcolor="#FAFAFA", ranksep=".9", nodesep="1.2"];
+	node [label="\N", color=red, fontsize=11, fontname=Helvetica];
+	graph [bb="0,0,297,339",
+		_draw_="c 9 -#fafafaff C 9 -#fafafaff P 4 0 -1 0 339 298 339 298 -1 ",
+		xdotversion="1.2"];
+	Campbell_28 [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=box, pos="190,119", width="1.1111", height="0.5", _draw_="c 9 -#ff0000ff p 4 230 137 150 137 150 101 230 101 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 190 116 0 64 11 -Campbell_28 "];
+	Hawaii_997 [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=box, pos="37,220", width="1.0278", height="0.5", _draw_="c 9 -#ff0000ff p 4 74 238 0 238 0 202 74 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 37 217 0 58 10 -Hawaii_997 "];
+	645 [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=ellipse, pos="37,119", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff e 37 119 27 18 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 37 116 0 19 3 -645 "];
+	Walter [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=box, pos="116,321", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 143 339 89 339 89 303 143 303 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 116 318 0 32 6 -Walter "];
+	Cl_11d [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=box, pos="190,220", width="0.75", height="0.5", _draw_="c 9 -#ff0000ff p 4 217 238 163 238 163 202 217 202 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 190 217 0 35 6 -Cl_11d "];
+	Neptune [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=ellipse, pos="113,18", width="1.0278", height="0.5", _draw_="c 9 -#ff0000ff e 113 18 37 18 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 113 15 0 42 7 -Neptune "];
+	MH_11 [href="#", onmouseover="load_tooltip_text('\N')", onmouseout="htm()", shape=ellipse, pos="263,321", width="0.94444", height="0.5", _draw_="c 9 -#ff0000ff e 263 321 34 18 ", _ldraw_="F 11.000000 9 -Helvetica c 9 -#000000ff T 263 318 0 36 5 -MH_11 "];
+	Campbell_28 -- Neptune [pos="176.23,100.94 161.96,82.219 139.82,53.175 125.88,34.893", _draw_="c 9 -#000000ff B 4 176 101 162 82 140 53 126 35 "];
+	Hawaii_997 -- 645 [color="black:black", pos="37,201.94 37,183.67 37,155.58 37,137.24", _draw_="c 9 -#000000ff B 4 36 202 36 184 36 156 36 137 c 9 -#000000ff B 4 38 202 38 184 38 156 38 137 "];
+	645 -- Neptune [pos="49.211,102.77 63.141,84.259 85.827,54.111 100.06,35.201", _draw_="c 9 -#000000ff B 4 49 103 63 84 86 54 100 35 "];
+	Walter -- Cl_11d [pos="129.23,302.94 142.62,284.67 163.2,256.58 176.64,238.24", _draw_="c 9 -#000000ff B 4 129 303 143 285 163 257 177 238 "];
+	Cl_11d -- Campbell_28 [color="black:black", pos="190,201.94 190,183.67 190,155.58 190,137.24", _draw_="c 9 -#000000ff B 4 189 202 189 184 189 156 189 137 c 9 -#000000ff B 4 191 202 191 184 191 156 191 137 "];
+	MH_11 -- Cl_11d [pos="250.62,303.87 237.44,285.63 216.66,256.89 203.19,238.24", _draw_="c 9 -#000000ff B 4 251 304 237 286 217 257 203 238 "];
+}

@@ -1,0 +1,86 @@
+digraph simpsons {
+	graph [ranksep="1.1"];
+	node [label="\N", href="javascript:void(click_node('\N'))"];
+	graph [bb="0,0,383,432",
+		_draw_="c 9 -#ffffffff C 9 -#ffffffff P 4 0 -1 0 432 384 432 384 -1 ",
+		xdotversion="1.2"];
+	subgraph Generation0 {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		John [shape=box, color=blue, pos="27,414", width="0.75", height="0.5", _draw_="c 9 -#0000ffff p 4 54 432 0 432 0 396 54 396 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 27 409 0 31 4 -John "];
+		Allison [shape=box, color=pink, pos="130,414", width="0.86111", height="0.5", _draw_="c 9 -#ffc0cbff p 4 161 432 99 432 99 396 161 396 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 130 409 0 46 7 -Allison "];
+		JohnAndAllison [shape=point, pos="74,414", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 74 414 2 2 "];
+		Thomas [shape=box, color=blue, pos="224,414", width="0.97222", height="0.5", _draw_="c 9 -#0000ffff p 4 259 432 189 432 189 396 259 396 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 224 409 0 55 6 -Thomas "];
+		Jackeline [shape=box, color=pink, pos="342,414", width="1.0556", height="0.5", _draw_="c 9 -#ffc0cbff p 4 380 432 304 432 304 396 380 396 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 342 409 0 61 9 -Jackeline "];
+		ThomasAndJackeline [shape=point, pos="284,414", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 284 414 2 2 "];
+		John -> JohnAndAllison [dir=none, pos="54.172,414 60.162,414 66.151,414 72.141,414", _draw_="c 9 -#000000ff B 4 54 414 60 414 66 414 72 414 "];
+		JohnAndAllison -> Allison [dir=none, pos="76.188,414 83.755,414 91.322,414 98.89,414", _draw_="c 9 -#000000ff B 4 76 414 84 414 91 414 99 414 "];
+		Thomas -> ThomasAndJackeline [dir=none, pos="259.16,414 266.79,414 274.42,414 282.06,414", _draw_="c 9 -#000000ff B 4 259 414 267 414 274 414 282 414 "];
+		ThomasAndJackeline -> Jackeline [dir=none, pos="285.81,414 291.81,414 297.81,414 303.81,414", _draw_="c 9 -#000000ff B 4 286 414 292 414 298 414 304 414 "];
+	}
+	subgraph Generation0Sons {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		JohnAndAllisonSons [shape=point, pos="74,315", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 74 315 2 2 "];
+		JimSon [shape=point, pos="36,315", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 36 315 2 2 "];
+		RandySon [shape=point, pos="111,315", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 111 315 2 2 "];
+		SansaSon [shape=point, pos="210,315", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 210 315 2 2 "];
+		AnneSon [shape=point, pos="284,315", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 284 315 2 2 "];
+		AryaSon [shape=point, pos="356,315", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 356 315 2 2 "];
+		JimSon -> JohnAndAllisonSons [dir=none, pos="38.078,315 49.397,315 60.716,315 72.036,315", _draw_="c 9 -#000000ff B 4 38 315 49 315 61 315 72 315 "];
+		RandySon -> JohnAndAllisonSons [dir=none, pos="109.09,315 98.066,315 87.045,315 76.023,315", _draw_="c 9 -#000000ff B 4 109 315 98 315 87 315 76 315 "];
+		SansaSon -> AnneSon [dir=none, pos="212.02,315 235.36,315 258.7,315 282.03,315", _draw_="c 9 -#000000ff B 4 212 315 235 315 259 315 282 315 "];
+		AnneSon -> AryaSon [dir=none, pos="285.97,315 308.67,315 331.38,315 354.09,315", _draw_="c 9 -#000000ff B 4 286 315 309 315 331 315 354 315 "];
+	}
+	subgraph Generation1 {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		Jim [shape=box, color=blue, pos="36,216", width="0.75", height="0.5", _draw_="c 9 -#0000ffff p 4 63 234 9 234 9 198 63 198 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 36 211 0 22 3 -Jim "];
+		Randy [shape=box, color=blue, pos="111,216", width="0.83333", height="0.5", _draw_="c 9 -#0000ffff p 4 141 234 81 234 81 198 141 198 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 111 211 0 44 5 -Randy "];
+		Sansa [shape=box, color=pink, pos="210,216", width="0.80556", height="0.5", _draw_="c 9 -#ffc0cbff p 4 239 234 181 234 181 198 239 198 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 210 211 0 42 5 -Sansa "];
+		Anne [shape=box, color=pink, pos="284,216", width="0.75", height="0.5", _draw_="c 9 -#ffc0cbff p 4 311 234 257 234 257 198 311 198 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 284 211 0 37 4 -Anne "];
+		Arya [shape=box, color=pink, pos="356,216", width="0.75", height="0.5", _draw_="c 9 -#ffc0cbff p 4 383 234 329 234 329 198 383 198 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 356 211 0 33 4 -Arya "];
+		RandyAndSansa [shape=point, pos="161,216", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 161 216 2 2 "];
+		Randy -> RandyAndSansa [dir=none, pos="141.08,216 147.1,216 153.11,216 159.13,216", _draw_="c 9 -#000000ff B 4 141 216 147 216 153 216 159 216 "];
+		Sansa -> RandyAndSansa [dir=none, pos="180.94,216 174.93,216 168.92,216 162.91,216", _draw_="c 9 -#000000ff B 4 181 216 175 216 169 216 163 216 "];
+	}
+	subgraph Generation1Sons {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		StanSon [shape=point, pos="89,117", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 89 117 2 2 "];
+		ElizaSon [shape=point, pos="161,117", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 161 117 2 2 "];
+		DaniSon [shape=point, pos="259,117", width="0.055556", height="0.055556", _draw_="c 9 -#000000ff C 9 -#000000ff E 259 117 2 2 "];
+		StanSon -> ElizaSon [dir=none, pos="90.969,117 113.67,117 136.38,117 159.09,117", _draw_="c 9 -#000000ff B 4 91 117 114 117 136 117 159 117 "];
+		ElizaSon -> DaniSon [dir=none, pos="162.91,117 194.32,117 225.72,117 257.12,117", _draw_="c 9 -#000000ff B 4 163 117 194 117 226 117 257 117 "];
+	}
+	subgraph Generation2 {
+		graph [rank=same,
+			bb="",
+			_draw_="",
+			xdotversion=""];
+		Stan [shape=box, color=blue, pos="89,18", width="0.75", height="0.5", _draw_="c 9 -#0000ffff p 4 116 36 62 36 62 0 116 0 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 89 13 0 33 4 -Stan "];
+		Eliza [shape=box, color=pink, pos="161,18", width="0.75", height="0.5", _draw_="c 9 -#ffc0cbff p 4 188 36 134 36 134 0 188 0 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 161 13 0 34 5 -Eliza "];
+		Dani [shape=box, color=pink, pos="259,18", width="0.75", height="0.5", _draw_="c 9 -#ffc0cbff p 4 286 36 232 36 232 0 286 0 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 259 13 0 33 4 -Dani "];
+		Ming [shape=box, color=blue, pos="356,18", width="0.75", height="0.5", _draw_="c 9 -#0000ffff p 4 383 36 329 36 329 0 383 0 ", _ldraw_="F 14.000000 11 -Times-Roman c 9 -#000000ff T 356 13 0 34 4 -Ming "];
+	}
+	JohnAndAllison -> JohnAndAllisonSons [dir=none, pos="74,411.93 74,399.05 74,329.91 74,317.06", _draw_="c 9 -#000000ff B 4 74 412 74 399 74 330 74 317 "];
+	ThomasAndJackeline -> AnneSon [dir=none, pos="284,411.93 284,399.05 284,329.91 284,317.06", _draw_="c 9 -#000000ff B 4 284 412 284 399 284 330 284 317 "];
+	JimSon -> Jim [dir=none, pos="36,312.93 36,302.99 36,259.56 36,234.33", _draw_="c 9 -#000000ff B 4 36 313 36 303 36 260 36 234 "];
+	RandySon -> Randy [dir=none, pos="111,312.93 111,302.99 111,259.56 111,234.33", _draw_="c 9 -#000000ff B 4 111 313 111 303 111 260 111 234 "];
+	SansaSon -> Sansa [dir=none, pos="210,312.93 210,302.99 210,259.56 210,234.33", _draw_="c 9 -#000000ff B 4 210 313 210 303 210 260 210 234 "];
+	AnneSon -> Anne [dir=none, pos="284,312.93 284,302.99 284,259.56 284,234.33", _draw_="c 9 -#000000ff B 4 284 313 284 303 284 260 284 234 "];
+	AryaSon -> Arya [dir=none, pos="356,312.93 356,302.99 356,259.56 356,234.33", _draw_="c 9 -#000000ff B 4 356 313 356 303 356 260 356 234 "];
+	RandyAndSansa -> ElizaSon [dir=none, pos="161,213.93 161,201.05 161,131.91 161,119.06", _draw_="c 9 -#000000ff B 4 161 214 161 201 161 132 161 119 "];
+	Arya -> Ming [dir=none, pos="356,197.73 356,160.01 356,73.91 356,36.228", _draw_="c 9 -#000000ff B 4 356 198 356 160 356 74 356 36 "];
+	StanSon -> Stan [dir=none, pos="89,114.93 89,104.99 89,61.562 89,36.335", _draw_="c 9 -#000000ff B 4 89 115 89 105 89 62 89 36 "];
+	ElizaSon -> Eliza [dir=none, pos="161,114.93 161,104.99 161,61.562 161,36.335", _draw_="c 9 -#000000ff B 4 161 115 161 105 161 62 161 36 "];
+	DaniSon -> Dani [dir=none, pos="259,114.93 259,104.99 259,61.562 259,36.335", _draw_="c 9 -#000000ff B 4 259 115 259 105 259 62 259 36 "];
+}

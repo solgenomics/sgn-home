@@ -1,0 +1,60 @@
+body {
+	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FAFAFA;
+	margin: 0;
+	padding: 0;
+	color: #061F46;
+}
+
+.container {
+	
+}
+
+#canviz {
+	margin: 0 auto; /* the auto value on the sides, coupled with the width, centers the layout */
+
+}
+
+#infobar {
+	position: fixed;
+	z-index: 2;
+	left: 0;
+	top: 0;
+	width: 100%;
+	min-height: 50px;
+	background: #E9E9E9;
+	border: solid #b6b6b6;
+	border-width: 0 1px 1px 0;
+	opacity: 0.90;
+	text-align: center;
+	padding-top: 5px;
+	 
+}
+
+#infodiv {
+	height: 100px;
+	margin-bottom: 10px;
+}
+
+#load {
+	position: fixed;
+	z-index: 4;
+	left: 47%;
+	top: 50%;
+	width: 150px;
+	height: 40px;
+	margin: -20px 0 0 -20px;
+	padding-top: 14px;
+	text-align: center;
+	background: #E9E9E9;
+	color: #061F46;
+	opacity: 0.90;
+	font-size: 18px;
+	border: 1px solid #b6b6b6;
+}
+
+#click_output {
+	/*text-align: center; */
+	font-size: 18px;
+
+}

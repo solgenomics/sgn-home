@@ -1,0 +1,19 @@
+##########################################################################################
+famtrackgen.pl
+
+This script generates gff3 track files for gene families to be used on GBrowse.
+It takes in as input the species name, the species gff3 file which contains the coordinates for each gene/mRNA
+and the gene family file, which in most cases is the orthomcl output file (e.g. all_orthomcl.out)
+
+If a gene family is found with less than the $max_family_amount specified containing a gene/protein of the given
+species, it takes the coordinates of that gene/protein and creates gff3 rows/glyphs for all other members in the family
+at those coordinates.
+
+The regular expressions used might need tweaking based on what is being used, namely with what feature type contains the coordinates of each gene/mRNA.
+This script has only been used on grape and rice so far.
+
+###########################################################################################
+
+
+
+
