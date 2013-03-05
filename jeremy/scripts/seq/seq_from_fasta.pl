@@ -24,7 +24,7 @@ if ($opt_h){
   exit;
 }
 if (!$opt_i || !$opt_n) {
-    print "\nFilename and fasta sequence name required\n\n\n";
+    print STDERR "\nFilename and fasta sequence name required\n\n\n";
     help();
 }
 my $filename = $opt_i;
