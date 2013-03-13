@@ -1,5 +1,5 @@
 format-version: 1.2
-date: 19:10:2011 10:02
+date: 05:11:2012 15:34
 auto-generated-by: OBO-Edit 2.1-beta4
 default-namespace: solanaceae_phenotype
 
@@ -1520,8 +1520,8 @@ id: SP:0000165
 name: total soluble solids
 def: "The total soluble solids in the fruit (usually sugars and acids)." [SGN:NM]
 synonym: "Brix" EXACT []
-is_a: SP:0000019 ! biochemical metabolites
 is_a: SP:0000167 ! fruit metabolites
+is_a: SP:0000385 ! sugars
 
 [Term]
 id: SP:0000166
@@ -1895,7 +1895,7 @@ creation_date: 2010-05-14T02:51:40Z
 id: SP:0000214
 name: sucrose
 def: "Sucrose content in mg/g fresh weight." [SGN:NM]
-relationship: part_of SP:0000165 ! total soluble solids
+is_a: SP:0000385 ! sugars
 created_by: Naama
 creation_date: 2010-05-14T03:59:01Z
 
@@ -1903,7 +1903,7 @@ creation_date: 2010-05-14T03:59:01Z
 id: SP:0000215
 name: glucose
 def: "Glucose content in mg/g fresh weight." [SGN:NM]
-relationship: part_of SP:0000165 ! total soluble solids
+is_a: SP:0000385 ! sugars
 created_by: Naama
 creation_date: 2010-05-14T04:02:11Z
 
@@ -2595,6 +2595,7 @@ name: tuber flesh color light yellow
 xref: PATO:0001264
 xref: PO:0025038
 xref: PVP:2
+xref: solcap:7
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:01:55Z
@@ -2637,6 +2638,7 @@ name: tuber flesh color purple
 xref: PATO:0000951
 xref: PO:0025038
 xref: PVP:10
+xref: solcap:2
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:05:33Z
@@ -2648,6 +2650,7 @@ synonym: "buff" RELATED []
 xref: PATO:0001286
 xref: PO:0025038
 xref: PVP:4
+xref: solcap:8
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:06:29Z
@@ -2656,7 +2659,9 @@ creation_date: 2010-05-25T11:06:29Z
 id: SP:0000295
 name: tuber flesh color pink
 xref: PATO:0000954
+xref: PO:0025038
 xref: PVP:7
+xref: solcap:4
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:07:00Z
@@ -2667,6 +2672,7 @@ name: tuber flesh color red
 xref: PATO:0000322
 xref: PO:0025038
 xref: PVP:8
+xref: solcap:3
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:07:47Z
@@ -2676,7 +2682,9 @@ id: SP:0000297
 name: tuber flesh color white
 xref: PATO:0000323
 xref: PO:0025038
+xref: PO:0025038
 xref: PVP:1
+xref: solcap:9
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:08:41Z
@@ -2687,6 +2695,7 @@ name: tuber flesh color yellow
 xref: PATO:0000324
 xref: PO:0025038
 xref: PVP:3
+xref: solcap:6
 is_a: SP:0000188 ! tuber flesh color
 created_by: Naama
 creation_date: 2010-05-25T11:09:32Z
@@ -3432,6 +3441,82 @@ def: "The ratio of the height at which the maximum width occurs, to the Maximum 
 is_a: SP:0000058 ! fruit shape eccentric
 created_by: Naama
 creation_date: 2011-09-26T10:46:06Z
+
+[Term]
+id: SP:0000385
+name: sugars
+is_a: SP:0000019 ! biochemical metabolites
+created_by: Naama
+creation_date: 2012-11-01T04:06:13Z
+
+[Term]
+id: SP:0000386
+name: fructose
+is_a: SP:0000385 ! sugars
+created_by: Naama
+creation_date: 2012-11-01T04:07:53Z
+
+[Term]
+id: SP:0000387
+name: field sucrose
+def: "sucrose measured in the field (mg/g fresh weight)" [SGN:NM]
+is_a: SP:0000214 ! sucrose
+created_by: Naama
+creation_date: 2012-11-01T04:16:50Z
+
+[Term]
+id: SP:0000388
+name: storage sucrose
+def: "sucrose measured in storage (mg/g fresh weight)" [SGN:NM]
+is_a: SP:0000197 ! post harvest quality
+is_a: SP:0000214 ! sucrose
+created_by: Naama
+creation_date: 2012-11-01T04:18:34Z
+
+[Term]
+id: SP:0000389
+name: field glucose
+def: "glucose measured in the field (mg/g fresh weight)" [SGN:NM]
+is_a: SP:0000215 ! glucose
+created_by: Naama
+creation_date: 2012-11-01T04:19:27Z
+
+[Term]
+id: SP:0000390
+name: storage glucose
+def: "glucose measured in the field (mg/g fresh weight)" [SGN:NM]
+is_a: SP:0000197 ! post harvest quality
+is_a: SP:0000215 ! glucose
+created_by: Naama
+creation_date: 2012-11-01T04:19:27Z
+
+[Term]
+id: SP:0000391
+name: potato fry color
+def: "potato fry color rating based on reflectance measured from light to dark." [SGN:NM]
+is_a: SP:0000221 ! processing quality
+created_by: Naama
+creation_date: 2012-11-01T04:24:02Z
+
+[Term]
+id: SP:0000392
+name: tuber flesh color blue
+xref: PATO:0000952
+xref: PO:0025038
+xref: solcap:1
+is_a: SP:0000188 ! tuber flesh color
+created_by: Naama
+creation_date: 2012-11-02T04:02:18Z
+
+[Term]
+id: SP:0000393
+name: tuber flesh color dark-yellow to orange
+xref: PATO:0001944
+xref: PO:0025038
+xref: solcap:5
+is_a: SP:0000188 ! tuber flesh color
+created_by: Naama
+creation_date: 2012-11-02T04:03:23Z
 
 [Term]
 id: SP:0000706
