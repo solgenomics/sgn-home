@@ -1,0 +1,1375 @@
+format-version: 1.2
+date: 20:03:2013 14:02
+saved-by: aafolabi
+auto-generated-by: OBO-Edit 2.3
+default-namespace: cassava_trait
+namespace-id-rule: * CO_334:$sequence(7,0,9999999)$
+﻿format-version: 1.2
+
+[Term]
+id: CO_334:0000000
+name: CGIAR cassava trait ontology
+namespace: cassava_trait
+def: "It is a controlled vocabulary to describe each trait as a distinguishable, characteristic, quality or phenotypic feature of a developing or mature cassava plant." [CO:mb]
+created_by: BAKARE
+creation_date: 2010-11-08T02:19:50Z
+
+[Term]
+id: CO_334:0000001
+name: agronomic trait
+namespace: cassava_trait
+def: "A characteristic in a cassava plant that will add economic value to agricultural production." [CO:mb]
+is_a: CO_334:0000000 ! CGIAR cassava trait ontology
+created_by: BAKARE
+creation_date: 2010-11-08T02:20:57Z
+
+[Term]
+id: CO_334:0000002
+name: morphological trait
+namespace: cassava_trait
+def: "Physical attributes that describe the shape or form of cassava plant." [CO:mb]
+is_a: CO_334:0000000 ! CGIAR cassava trait ontology
+created_by: BAKARE
+creation_date: 2010-11-08T02:21:59Z
+
+[Term]
+id: CO_334:0000003
+name: physiological trait
+namespace: cassava_trait
+def: "Characteristics related to the functioning of living cassava." [CO:mb]
+is_a: CO_334:0000000 ! CGIAR cassava trait ontology
+created_by: BAKARE
+creation_date: 2010-11-08T02:22:50Z
+
+[Term]
+id: CO_334:0000004
+name: quality trait
+namespace: cassava_trait
+def: "A characteristic or distinguishing feature of cassava related to its utilization after harvest." [CO:mb]
+is_a: CO_334:0000000 ! CGIAR cassava trait ontology
+created_by: BAKARE
+creation_date: 2010-11-08T02:23:55Z
+
+[Term]
+id: CO_334:0000005
+name: stress trait
+namespace: cassava_trait
+def: "A characteristic related to plant functioning in the presence of a biotic or abiotic challenge to normal or optimal growning conditions." [CO:mb]
+is_a: CO_334:0000000 ! CGIAR cassava trait ontology
+created_by: BAKARE
+creation_date: 2010-11-08T02:27:11Z
+
+[Term]
+id: CO_334:0000006
+name: abiotic stress trait
+namespace: cassava_trait
+def: "Response in terms of resistance or sensitivity to abiotic stress." [CO:mb]
+is_a: CO_334:0000005 ! stress trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:28:05Z
+
+[Term]
+id: CO_334:0000007
+name: biotic stress trait
+namespace: cassava_trait
+def: "Response in terms of resistance, susceptibility or tolerance to biotic stress." [CO:mb]
+is_a: CO_334:0000005 ! stress trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:28:59Z
+
+[Term]
+id: CO_334:0000008
+name: sprouting
+namespace: cassava_trait
+def: "Proportion of stakes germinated scored one month after planting." [CO:mb, ISBN:978-131-302-1]
+synonym: "SPROUT" EXACT []
+xref: ICASS_TRAITID:10032
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:30:26Z
+
+[Term]
+id: CO_334:0000009
+name: initial vigor
+namespace: cassava_trait
+def: "Visual assessment of plant vigor during establishment scored one month after planting." [CO:mb, ISBN:978-131-302-1]
+synonym: "VIGOR" EXACT []
+xref: ICASS_TRAITID:10021
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:32:17Z
+
+[Term]
+id: CO_334:0000010
+name: plant stands harvested
+namespace: cassava_trait
+def: "Number of plant stands at harvest." [CO:mb, ISBN:978-131-302-1]
+synonym: "NOHAV" EXACT []
+xref: ICASS_TRAITID:10056
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:36:24Z
+
+[Term]
+id: CO_334:0000011
+name: root number
+namespace: cassava_trait
+def: "Total number of storage roots harvested per plot." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTNO" EXACT []
+xref: ICASS_TRAITID:10057
+xref: TO:0000084 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:37:11Z
+
+[Term]
+id: CO_334:0000012
+name: fresh root weight
+namespace: cassava_trait
+def: "Total fresh weight of storage roots harvested per plot measured in kg." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTWT" EXACT []
+synonym: "total root fresh weight" RELATED []
+xref: ICASS_TRAITID:10058
+xref: TO:0000578 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:39:18Z
+
+[Term]
+id: CO_334:0000013
+name: fresh root yield
+namespace: cassava_trait
+def: "Fresh weight of harvested roots expressed in tons per hectares per plant." [CO:mb, ISBN:978-131-302-1]
+synonym: "FYLD" EXACT []
+xref: ICASS_TRAITID:10059
+is_a: CO_334:0000001 ! agronomic trait
+relationship: derives_from CO_334:0000012 ! fresh root weight
+created_by: BAKARE
+creation_date: 2010-11-08T02:40:53Z
+
+[Term]
+id: CO_334:0000014
+name: dry yield
+namespace: cassava_trait
+def: "Dry weight of harvested roots derived by multiplying fresh storage root yield by dry matter content expressed in tons per hectares." [CO:mb, ISBN:978-131-302-1]
+synonym: "DYLD" EXACT []
+xref: ICASS_TRAITID:10060
+is_a: CO_334:0000001 ! agronomic trait
+relationship: derives_from CO_334:0000013 ! fresh root yield
+relationship: derives_from CO_334:0000092 ! dry matter content
+created_by: BAKARE
+creation_date: 2010-11-08T02:41:35Z
+
+[Term]
+id: CO_334:0000015
+name: harvest index
+namespace: cassava_trait
+def: "Ratio of fresh root weight divided by total biomass." [CO:mb, ISBN:978-131-302-1]
+synonym: "HI" EXACT []
+xref: ICASS_TRAITID:10045
+xref: TO:0000128 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+relationship: derives_from CO_334:0000013 ! fresh root yield
+relationship: derives_from CO_334:0000017 ! top yield
+created_by: BAKARE
+creation_date: 2010-11-08T02:42:31Z
+
+[Term]
+id: CO_334:0000016
+name: fresh shoot weight
+namespace: cassava_trait
+def: "Total fresh weight of harvested foliage and stems in kilograms per plot." [CO:mb, ISBN:978-131-302-1]
+synonym: "SHTWT" EXACT []
+synonym: "total shoot fresh weight" RELATED []
+xref: ICASS_TRAITID:10054
+xref: TO:0000571 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:44:05Z
+
+[Term]
+id: CO_334:0000017
+name: top yield
+namespace: cassava_trait
+def: "Total fresh weight of harvested foliage and stems expressed in tons per hectare." [CO:mb, ISBN:978-131-302-1]
+synonym: "TYLD" EXACT []
+xref: ICASS_TRAITID:10055
+is_a: CO_334:0000001 ! agronomic trait
+relationship: derives_from CO_334:0000016 ! fresh shoot weight
+created_by: BAKARE
+creation_date: 2010-11-08T02:45:46Z
+
+[Term]
+id: CO_334:0000018
+name: plant height
+namespace: cassava_trait
+def: "Vertical height of plants from the ground to top of the canopy measured in cm." [CO:mb, ISBN:978-131-302-1]
+synonym: "PLTHT" EXACT []
+xref: ICASS_TRAITID:10053
+xref: TO:0000207 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-11-08T02:48:37Z
+
+[Term]
+id: CO_334:0000019
+name: storage root size
+namespace: cassava_trait
+def: "Visual rating of storage root size with 3 = short, 5 = medium, and 7 = long." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTSZ" EXACT []
+synonym: "storage root length" RELATED []
+xref: ICASS_TRAITID:10086
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:05:07Z
+
+[Term]
+id: CO_334:0000020
+name: storage root shape
+namespace: cassava_trait
+def: "Visual rating of storage root shape with 1 = conical, 2 = conical-cylindrical, 3 = cylindrical, and 4 = fusiform." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTSHP" EXACT []
+synonym: "storage root form" RELATED []
+xref: ICASS_TRAITID:10080
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:05:49Z
+
+[Term]
+id: CO_334:0000021
+name: storage root pulp color
+namespace: cassava_trait
+def: "Visual rating of most frequent pulp color with 1 = white or cream, 2 = yellow, and 3 = pink." [CO:mb, ISBN:978-131-302-1]
+synonym: "PLPCOL" EXACT []
+synonym: "ROOT FLESH COLOUR" RELATED []
+xref: ICASS_TRAITID:10091
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:07:20Z
+
+[Term]
+id: CO_334:0000022
+name: root neck length
+namespace: cassava_trait
+def: "Visual rating of root neck length with 0 = absent or sessile, 3 = short, 5 = intermediate, and 7 = long." [CO:mb, ISBN:978-131-302-1]
+synonym: "NKLGT" EXACT []
+xref: ICASS_TRAITID:10085
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:08:18Z
+
+[Term]
+id: CO_334:0000023
+name: petiole color
+namespace: cassava_trait
+def: "Visual rating of the petiole color with 3 = light green, 5 = dark green, 7 = green-purple, 8 = red, and 9 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "PETCOL" EXACT []
+xref: ICASS_TRAITID:10043
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:09:46Z
+
+[Term]
+id: CO_334:0000024
+name: petiole length
+namespace: cassava_trait
+def: "Visual rating of petiole length with 0 = petiole absent, 3 = short (5-10cm), 5 = medium (15-20cm), and 7 = long (25-30cm)." [CO:mb, ISBN:978-131-302-1]
+synonym: "PETLGT" EXACT []
+xref: ICASS_TRAITID:10042
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:10:34Z
+
+[Term]
+id: CO_334:0000025
+name: young stem pubescence
+namespace: cassava_trait
+def: "Visual rating of young stem pubescence with 0 = absent or glabrous, 3 = little pubescence, 5 = moderate pubescence, and 7 = high pubescence." [CO:mb, ISBN:978-131-302-1]
+synonym: "STMPUB" EXACT []
+xref: ICASS_TRAITID:10046
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:12:22Z
+
+[Term]
+id: CO_334:0000026
+name: apical pubescence
+namespace: cassava_trait
+def: "Visual rating of young leaf pubescence with 0 = absent or glabrous, 3 = little pubescence, 5 = moderate pubescence, and 7 = high pubescence." [CO:mb, ISBN:978-131-302-1]
+synonym: "APUBES" EXACT []
+synonym: "young leaf pubescence" RELATED []
+xref: ICASS_TRAITID:100037
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-08T04:15:21Z
+
+[Term]
+id: CO_334:0000027
+name: bacterial disease
+namespace: cassava_trait
+def: "Traits related to incidence and severity of cassava response to bacterial pathogens." [CO:mb]
+is_a: CO_334:0000007 ! biotic stress trait
+created_by: BAKARE
+creation_date: 2010-11-08T06:42:36Z
+
+[Term]
+id: CO_334:0000028
+name: viral disease
+namespace: cassava_trait
+def: "Traits related to incidence and severity of cassava response to viral pathogens." [CO:mb]
+is_a: CO_334:0000007 ! biotic stress trait
+created_by: BAKARE
+creation_date: 2010-11-08T06:43:31Z
+
+[Term]
+id: CO_334:0000029
+name: fungal disease
+namespace: cassava_trait
+def: "Traits related to incidence and severity of cassava response to fungal pathogens." [CO:mb]
+is_a: CO_334:0000007 ! biotic stress trait
+created_by: BAKARE
+creation_date: 2010-11-08T06:44:26Z
+
+[Term]
+id: CO_334:0000030
+name: insect damage
+namespace: cassava_trait
+def: "Traits related to damage caused by insects." [CO:mb]
+is_a: CO_334:0000007 ! biotic stress trait
+created_by: BAKARE
+creation_date: 2010-11-08T06:45:42Z
+
+[Term]
+id: CO_334:0000031
+name: cassava bacterial blight severity
+namespace: cassava_trait
+def: "Visual rating of symptoms in response to the bacterial blight disease caused by Xanthonomas axonopodis pv. Manihotis symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: water soaked angular leaf sports, blighting, wilting, defoliation, vascular necrosis of the stem.
+synonym: "CBBS" EXACT []
+xref: ICASS_TRAITID:10114
+is_a: CO_334:0000027 ! bacterial disease
+created_by: BAKARE
+creation_date: 2010-11-08T06:46:27Z
+
+[Term]
+id: CO_334:0000032
+name: cassava anthracnose disease severity
+namespace: cassava_trait
+def: "Visual rating of symptoms in response to the anthracnose disease caused by Colletotrichum gloeosporioides f. sp. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: Cankers on the stems and bases of leaf petioles.
+synonym: "CADS" EXACT []
+xref: ICASS_TRAITID:10108
+is_a: CO_334:0000029 ! fungal disease
+created_by: BAKARE
+creation_date: 2010-11-08T06:47:15Z
+
+[Term]
+id: CO_334:0000033
+name: cassava green mite severity
+namespace: cassava_trait
+def: "Visual rating of damage caused by cassava green mite, Mononychellus tanajoa. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: tiny yellow chlorotic spots causing severe defoliation, stunted growth and yield reduction, drop shoot tips.
+synonym: "CGM" EXACT []
+xref: ICASS_TRAITID:10095
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T06:49:58Z
+
+[Term]
+id: CO_334:0000034
+name: cassava mealy bug severity
+namespace: cassava_trait
+def: "Visual rating of damage caused by cassava mealy-bug, Phenacoccus Manihoti. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: reduction in the length of internodes, distorts the stem, dries up the leaves and defoliates the plants.
+synonym: "CMBS" EXACT []
+xref: ICASS_TRAITID:10097
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T06:50:30Z
+
+[Term]
+id: CO_334:0000035
+name: cassava mosaic disease severity
+namespace: cassava_trait
+def: "Visual rating of symptoms caused by cassava mosaic virus,in the family Geminiviridae and genus Begomovirus . Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: leaf discoloration with patches of normal green color mixed with light green, yellow, and white areas.
+synonym: "CMDS" EXACT []
+xref: ICASS_TRAITID:10121
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-11-08T06:52:21Z
+
+[Term]
+id: CO_334:0000036
+name: cassava brown streak disease leaf severity
+namespace: cassava_trait
+def: "Visual rating of leaf symptoms caused by cassava brown streak virus, in the family Potyviridae and genus Ipomovirus. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb]
+comment: Symptoms: patches of yellow areas mixed with normal green color on the leaves, Distorts the shape of storage roots, cracks and discoloration in the storage roots.
+synonym: "CBSDLS" EXACT []
+xref: ICASS_TRAITID:10126
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-11-08T07:09:10Z
+
+[Term]
+id: CO_334:0000037
+name: cassava bacterial blight incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing symptoms of cassava bacterial blight." [CO:mb, ISBN:978-131-302-1]
+synonym: "CBBI" EXACT []
+xref: ICASS_TRAITID:10111
+is_a: CO_334:0000027 ! bacterial disease
+created_by: BAKARE
+creation_date: 2010-11-08T08:03:05Z
+
+[Term]
+id: CO_334:0000038
+name: cassava anthracnose disease incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing symptoms of cassava anthracnose disease." [CO:mb, ISBN:978-131-302-1]
+synonym: "CADI" EXACT []
+xref: ICASS_TRAITID:10105
+is_a: CO_334:0000029 ! fungal disease
+created_by: BAKARE
+creation_date: 2010-11-08T08:03:42Z
+
+[Term]
+id: CO_334:0000039
+name: cassava mosaic disease incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing symptoms of cassava mosaic disease." [CO:mb, ISBN:978-131-302-1]
+synonym: "CMDI" EXACT []
+xref: ICASS_TRAITID:10117
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-11-08T09:25:03Z
+
+[Term]
+id: CO_334:0000040
+name: cassava brown streak disease leaf incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing leaf symptoms of cassava brown streak disease." [CO:mb]
+synonym: "CBSDLI" EXACT []
+xref: ICASS_TRAITID:10125
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-11-08T09:28:14Z
+
+[Term]
+id: CO_334:0000041
+name: cassava mealy bug incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing symptoms of cassava mealy-bug damage." [CO:mb, ISBN:978-131-302-1]
+synonym: "CMBI" EXACT []
+xref: ICASS_TRAITID:10096
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T09:29:58Z
+
+[Term]
+id: CO_334:0000042
+name: spiraling whitefly severity
+namespace: cassava_trait
+def: "Visual rating of damage caused by spiraling white fly, Aleurodicus dispersus. Symptoms rated from 1 = (clean, no damage) to 5 = (extremely severe, severely damaged)." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: growth of black mold on the plant, blackened leaves dry up and drop.
+synonym: "SWFS" EXACT []
+xref: ICASS_TRAITID:10101
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T09:33:43Z
+
+[Term]
+id: CO_334:0000043
+name: spiraling whitefly incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing evidence of colonization by spiraling whitefly." [CO:mb, ISBN:978-131-302-1]
+synonym: "SWFI" EXACT []
+xref: ICASS_TRAITID:10100
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T09:35:21Z
+
+[Term]
+id: CO_334:0000044
+name: red spider mite severity
+namespace: cassava_trait
+def: "Visual rating of damage caused by red spider mite, Oligonychus gossypii and Tetranychus spp. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely damaged)." [CO:mb, ISBN:978-131-302-1]
+comment: Symptoms: yellowish pinpricks along the main vein of mature leaves, attached leaves turn reddish, brown or rusty in color.
+synonym: "RSMS" EXACT []
+xref: ICASS_TRAITID:10099
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T10:34:51Z
+
+[Term]
+id: CO_334:0000045
+name: red spider mite incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing evidence of colonization by red spider mite." [CO:mb, ISBN:978-131-302-1]
+synonym: "RSMI" EXACT []
+xref: ICASS_TRAITID:10098
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-11-08T10:35:22Z
+
+[Term]
+id: CO_334:0000046
+name: petiole insertion angle
+namespace: cassava_trait
+def: "Visual rating of orientation or angle between the branch and petiole with 0 = no petiole, 3 = 15-30 degrees, 5 = 45-70 degrees, and 7 = 75-90 degrees." [CO:mb, ISBN:978-131-302-1]
+synonym: "PETANG" EXACT []
+xref: ICASS_TRAITID:10041
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-10T07:22:09Z
+
+[Term]
+id: CO_334:0000047
+name: abscisic acid content
+namespace: cassava_trait
+def: "Abscisic acid content of leaf sample." [CO:mb, ISBN:978-131-302-1]
+synonym: "ABSCON" EXACT []
+xref: ICASS_TRAITID:10131
+is_a: CO_334:0000003 ! physiological trait
+created_by: BAKARE
+creation_date: 2010-11-12T01:35:13Z
+
+[Term]
+id: CO_334:0000048
+name: leaf retention
+namespace: cassava_trait
+def: "Visual rating of leaf longevity using a scale of 1 =(very poor retention) to 5 = (outstanding leaf retention)." [CO:mb, ISBN:978-131-347-1]
+comment: Improved leaf retention has been suggested as a possible means to increase cassava productivity under stressed conditions. Cassava cultivars with high leaf retention have been found to produce more total fresh biomass and higher root dry matter than cultivars without the trait.
+synonym: "leaf longevity" RELATED []
+synonym: "LFRET" EXACT []
+synonym: "stay green" RELATED []
+xref: ICASS_TRAITID:10063
+is_a: CO_334:0000003 ! physiological trait
+created_by: BAKARE
+creation_date: 2010-11-12T02:47:21Z
+
+[Term]
+id: CO_334:0000049
+name: leaf life
+namespace: cassava_trait
+def: "Measures leaf life span estimated as days." [CO:mb, ISBN:978-131-302-1]
+synonym: "LFLIFE" EXACT []
+xref: ICASS_TRAITID:10132
+is_a: CO_334:0000003 ! physiological trait
+created_by: BAKARE
+creation_date: 2010-11-12T02:56:39Z
+
+[Term]
+id: CO_334:0000050
+name: storage root peduncle
+namespace: cassava_trait
+def: "Visual rating of root peduncle length using a scale of 0 = sessile, 3 = pedunculate, and 5 = mixed." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTPED" EXACT []
+xref: ICASS_TRAITID:10079
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T10:32:26Z
+
+[Term]
+id: CO_334:0000051
+name: storage root constriction
+namespace: cassava_trait
+def: "Visual scoring of mature root constrictions recorded as 0= absent and 1=present." [CO:mb, ISBN:978-131-302-1]
+comment: Another trait could be added in the future with the categories given in Fuduka (2010).
+synonym: "RTCONS" EXACT []
+xref: ICASS_TRAITID:10081
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T10:40:09Z
+
+[Term]
+id: CO_334:0000052
+name: root position
+namespace: cassava_trait
+def: "Visual rating root position in the soil with 1 = tending toward vertical, 2 = tending toward horizontal, and 3 = irregular." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTPOST" EXACT []
+xref: ICASS_TRAITID:10082
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T10:47:58Z
+
+[Term]
+id: CO_334:0000053
+name: root surface color
+namespace: cassava_trait
+def: "Visual rating of storage root surface color with 1 = white or cream, 2 =light brown, and 3 = dark brown." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTSCOL" EXACT []
+xref: ICASS_TRAITID:10083
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T10:55:06Z
+
+[Term]
+id: CO_334:0000054
+name: root surface texture
+namespace: cassava_trait
+def: "Visual rating of storage root texture with 3 = smooth, 5 = intermediate, and 7 = rough." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTSTEX" EXACT []
+xref: ICASS_TRAITID:10084
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:06:19Z
+
+[Term]
+id: CO_334:0000055
+name: storage root diameter
+namespace: cassava_trait
+def: "Visual rating of storage root diameter with 3 = short, 5 = medium and 7 = long." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTDIAM" EXACT []
+xref: ICASS_TRAITID:10087
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:13:40Z
+
+[Term]
+id: CO_334:0000056
+name: caruncle color
+namespace: cassava_trait
+def: "Visual scoring of caruncle color with 1 = white or cream, 2 = pink or red, and 3 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "CARCOL" EXACT []
+xref: ICASS_TRAITID:10078
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:32:56Z
+
+[Term]
+id: CO_334:0000057
+name: stigma color
+namespace: cassava_trait
+def: "Visual scoring of stigma color with 1 = white, 2 = orange, 3 = green, 4 = red, and 5 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "SIGCOL" EXACT []
+xref: ICASS_TRAITID:10068
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:37:46Z
+
+[Term]
+id: CO_334:0000058
+name: ovary color
+namespace: cassava_trait
+def: "Visual scoring of ovary color with 1 = white, 2 = orange, 3 = green, 4 = red, and 5 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "OVRYCOL" EXACT []
+xref: ICASS_TRAITID:10069
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:41:31Z
+
+[Term]
+id: CO_334:0000059
+name: disc color
+namespace: cassava_trait
+def: "Visual scoring of floral disc color with 1 = white, 2 = orange, 3 = green, 4 = red, and 5 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "DISCOL" EXACT []
+xref: ICASS_TRAITID:10067
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:44:36Z
+
+[Term]
+id: CO_334:0000060
+name: sepal color
+namespace: cassava_trait
+def: "Visual scoring of sepal color with 1 = white, 2 = orange, 3 = green, 4 = red, and 5 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "SEPCOL" EXACT []
+xref: ICASS_TRAITID:10068
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:49:59Z
+
+[Term]
+id: CO_334:0000061
+name: anther color
+namespace: cassava_trait
+def: "Visual scoring of anther color with 1 = cream, 2 = yellow, and 3 = other." [CO:mb, ISBN:978-131-302-1]
+synonym: "ANTCOL" EXACT []
+xref: ICASS_TRAITID:10070
+xref: TO:0000187 "Plant trait ontology"
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-21T11:55:33Z
+
+[Term]
+id: CO_334:0000062
+name: stem color
+namespace: cassava_trait
+def: "Visual scoring of stem color with 1 = silver green, 2 = light brown or orange, 3 = dark brown, and 4 = dark green." [CO:mb, ISBN:978-131-302-1]
+synonym: "STMCOL" EXACT []
+xref: ICASS_TRAITID:10047
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-22T12:02:26Z
+
+[Term]
+id: CO_334:0000063
+name: seed color
+namespace: cassava_trait
+def: "Visual scoring of seed color with 1 = brown, 2 = grey, 3 = mottled, 4 = black, and 5 = dark brown." [CO:mb, ISBN:978-131-302-1]
+synonym: "SDCOL" EXACT []
+xref: ICASS_TRAITID:10077
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-22T12:15:56Z
+
+[Term]
+id: CO_334:0000064
+name: storage root periderm color
+namespace: cassava_trait
+def: "Color of outer surface of storage root periderm (outer skin color)." [CO:mb, ISBN:978-131-302-1]
+synonym: "OUTCOL" EXACT []
+synonym: "OUTER ROOT SKIN COLOUR" RELATED []
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-11-22T12:19:54Z
+
+[Term]
+id: CO_334:0000065
+name: ascorbic acid
+namespace: cassava_trait
+def: "Antioxidant and water soluble vitamin of cassava storage root." [CO:mb]
+synonym: "Vitamin C" RELATED []
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:41:10Z
+
+[Term]
+id: CO_334:0000066
+name: ash content
+namespace: cassava_trait
+def: "Residue left behind after all organic matter has been burnt off, a measure of total mineral salts in a food." [CO:mb]
+synonym: "ASH" EXACT []
+xref: ICASS_TRAITID:10151
+xref: TO:0000607 "Plant trait ontology"
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:41:39Z
+
+[Term]
+id: CO_334:0000067
+name: fibre content
+namespace: cassava_trait
+def: "Part of tuber root that cannot be digested by humans." [CO:mb, ISBN:978-131-302-1]
+synonym: "FIBRE" EXACT []
+xref: ICASS_TRAITID:10144
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:45:39Z
+
+[Term]
+id: CO_334:0000068
+name: iron content
+namespace: cassava_trait
+def: "Total iron content in cassava storage roots." [CO:mb]
+synonym: "FE" EXACT []
+xref: ICASS_TRAITID:10141
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:45:55Z
+
+[Term]
+id: CO_334:0000069
+name: moisture content
+namespace: cassava_trait
+def: "Percentage of water contained in cassava storage root." [CO:mb]
+synonym: "MC" EXACT []
+xref: ICASS_TRAITID:10153
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:46:20Z
+
+[Term]
+id: CO_334:0000070
+name: protein content
+namespace: cassava_trait
+def: "Percentage of protein content in cassava storage root." [CO:mb]
+synonym: "PROTEIN" EXACT []
+xref: ICASS_TRAITID:10143
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:47:00Z
+
+[Term]
+id: CO_334:0000071
+name: starch content
+namespace: cassava_trait
+def: "Percentage of complex carbohydrate found in cassava storage root." [CO:mb]
+synonym: "STARCH" EXACT []
+xref: ICASS_TRAITID:10135
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:47:39Z
+
+[Term]
+id: CO_334:0000072
+name: sugar content
+namespace: cassava_trait
+def: "Sugar content in cassava storage root." [CO:mb]
+synonym: "SUGAR" EXACT []
+xref: ICASS_TRAITID:10152
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:48:03Z
+
+[Term]
+id: CO_334:0000073
+name: total carotenoid content
+namespace: cassava_trait
+def: "Total extracted carotenoids in cassava storage root as estimated by spectrophotometer and expressed in ug per gram fresh weight." [CO:mb]
+synonym: "TC" EXACT []
+xref: ICASS_TRAITID:10139
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-11-30T09:48:35Z
+
+[Term]
+id: CO_334:0000074
+name: poundability
+namespace: cassava_trait
+def: "Mealiness of boiled cassava storage root rating as 0 = Non poundable, 1 = slightly poundable, 2 = poundable, 3 = very poundable." [CO:mb, ISBN:978-131-302-1]
+synonym: "PD" EXACT []
+xref: ICASS_TRAITID:10136
+is_a: CO_334:0000004 ! quality trait
+created_by: mbakare
+creation_date: 2010-11-30T10:15:30Z
+
+[Term]
+id: CO_334:0000075
+name: amylose content
+namespace: cassava_trait
+def: "Amylose content of cassava roots." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000004 ! quality trait
+created_by: mbakare
+creation_date: 2010-11-30T10:29:08Z
+
+[Term]
+id: CO_334:0000076
+name: hydrogen cyanide potential enzymatic method
+namespace: cassava_trait
+def: "Cyanogenic potential is an indicator of the potential production of hydrogen cyanide in cassava storage roots with less than 5mg/100g fresh weight of root = low, 5-10mg/100g fresh weight of root = medium, and 10mg/100g fresh weight of root = high." [CO:mb, ISBN:978-131-302-1]
+synonym: "HCN_ENZ" EXACT []
+xref: ICASS_TRAITID:10133
+is_a: CO_334:0000004 ! quality trait
+created_by: mbakare
+creation_date: 2010-11-30T12:06:57Z
+
+[Term]
+id: CO_334:0000077
+name: post-harvest physiological deterioration
+namespace: cassava_trait
+def: "Post-harvest physiological deterioration is characterized by internal root discoloration or vascular streaking that renders cassava roots unfit for human or animal consumption." [CO:mb, ISBN:978-131-347-1]
+is_a: CO_334:0000004 ! quality trait
+created_by: mbakare
+creation_date: 2010-11-30T03:01:00Z
+
+[Term]
+id: CO_334:0000078
+name: zinc content
+namespace: cassava_trait
+def: "Total zinc content in cassava storage root." [CO:mb]
+synonym: "ZN" EXACT []
+xref: ICASS_TRAITID:10142
+is_a: CO_334:0000004 ! quality trait
+created_by: mbakare
+creation_date: 2010-11-30T03:56:58Z
+
+[Term]
+id: CO_334:0000079
+name: branching level
+namespace: cassava_trait
+def: "Count of the actual number of levels of branching at harvest." [CO:mb, ISBN:978-131-302-1]
+synonym: "BRNLEV" EXACT []
+xref: ICASS_TRAITID:10050
+is_a: CO_334:0000002 ! morphological trait
+created_by: mbakare
+creation_date: 2010-11-30T05:10:22Z
+
+[Term]
+id: CO_334:0000080
+name: branching angle
+namespace: cassava_trait
+def: "Visual rating of a measured angle between vertical plane and first primary branching with 0 = non branching, 3 = 15-30 degrees, 5 = 45-60 degrees, and 7 = 75-90 degrees." [CO:mb, ISBN:978-131-302-1]
+synonym: "BRANG" EXACT []
+xref: ICASS_TRAITID:10051
+is_a: CO_334:0000002 ! morphological trait
+created_by: mbakare
+creation_date: 2010-11-30T05:17:05Z
+
+[Term]
+id: CO_334:0000081
+name: leaf vein color
+namespace: cassava_trait
+def: "Visual scoring of leaf vein color with 3 = light green, 5 = dark green, 7 = green-purple, and 9 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "LFVNCOL" EXACT []
+xref: ICASS_TRAITID:10036
+is_a: CO_334:0000002 ! morphological trait
+created_by: mbakare
+creation_date: 2010-11-30T05:54:40Z
+
+[Term]
+id: CO_334:0000082
+name: leaf lobe number
+namespace: cassava_trait
+def: "Most common number of leaf lobes assessed on five leaves from the middle of the plant at six months after planting." [CO:mb, ISBN:978-131-302-1]
+synonym: "LFLBNO" EXACT []
+xref: ICASS_TRAITID:10039
+is_a: CO_334:0000002 ! morphological trait
+created_by: mbakare
+creation_date: 2010-11-30T05:55:35Z
+
+[Term]
+id: CO_334:0000083
+name: leaf lobe position
+namespace: cassava_trait
+def: "Visual rating of the position leaf lobes are held with 1 = erect, 2 = horizontal, 3 = deflexed, and 4 = retorse." [CO:mb, ISBN:978-131-302-1]
+synonym: "LFLBPOS" EXACT []
+xref: ICASS_TRAITID:10040
+is_a: CO_334:0000002 ! morphological trait
+created_by: mbakare
+creation_date: 2010-11-30T05:55:53Z
+
+[Term]
+id: CO_334:0000084
+name: rotted storage root
+namespace: cassava_trait
+def: "Number of rotted storage roots per plot at the time of harvest." [CO:mb, ISBN:978-131-302-1]
+synonym: "RTROT" EXACT []
+xref: ICASS_TRAITID:10092
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-01T09:17:28Z
+
+[Term]
+id: CO_334:0000085
+name: taste of boiled root
+namespace: cassava_trait
+def: "Taste of boiled root rating as 1 = bland, 2 = sweet, and 3 = bitter." [CO:mb]
+synonym: "TASTE" EXACT []
+xref: ICASS_TRAITID:10138
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-01T09:24:04Z
+
+[Term]
+id: CO_334:0000086
+name: apical branching
+namespace: cassava_trait
+def: "Number of weeks from planting to first apical branching associated with the formation of inflorescence." [CO:mb, ISBN:978-131-302-1]
+synonym: "APBRN" EXACT []
+xref: ICASS_TRAITID:10049
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-01T10:49:45Z
+
+[Term]
+id: CO_334:0000087
+name: Bemesia tabaci adult
+namespace: cassava_trait
+def: "Number of Bemesia tabaci adult white flies on the top five leaves." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-12-01T04:00:39Z
+
+[Term]
+id: CO_334:0000088
+name: Bemesia tabaci nymphs
+namespace: cassava_trait
+def: "Number of Bemesia tabaci nymphs white flies on the14th leaf." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000030 ! insect damage
+created_by: BAKARE
+creation_date: 2010-12-01T04:01:46Z
+
+[Term]
+id: CO_334:0000089
+name: cassava brown streak disease root incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot showing root symptoms of cassava brown streak disease." [CO:mb]
+synonym: "CBSDRI" EXACT []
+xref: ICASS_TRAITID:10127
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-12-01T04:15:53Z
+
+[Term]
+id: CO_334:0000090
+name: cassava brown streak disease root severity
+namespace: cassava_trait
+def: "Visual rating of root symptoms caused by cassava brown streak virus, in the family Potyviridae and genus Ipomovirus. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb]
+synonym: "CBSDRS" EXACT []
+xref: ICASS_TRAITID:10128
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-12-01T04:17:12Z
+
+[Term]
+id: CO_334:0000091
+name: hydrogen cyanide potential picrate method
+namespace: cassava_trait
+def: "Estimate of storage root cyanide content by picrate test with 1 = not detectable and 9 = very high." [CO:mb, ISBN:978-131-302-1]
+synonym: "HCN_PIC" EXACT []
+xref: ICASS_TRAITID:10134
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-01T04:41:47Z
+
+[Term]
+id: CO_334:0000092
+name: dry matter content
+namespace: cassava_trait
+def: "Percentage dry matter storage root." [CO:mb, ISBN:978-131-302-1]
+synonym: "DM" EXACT []
+xref: ICASS_TRAITID:10093
+is_a: CO_334:0000001 ! agronomic trait
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-01T04:57:48Z
+
+[Term]
+id: CO_334:0000093
+name: frog skin disease
+namespace: cassava_trait
+def: "Visual rating of symptoms caused by unknown causal agent. Symptoms rated from 1 = (clean, no infection) to 5 = (extremely severe, severely diseased)." [CO:mb]
+synonym: "FSD" EXACT []
+xref: ICASS_TRAITID:10129
+is_a: CO_334:0000028 ! viral disease
+created_by: BAKARE
+creation_date: 2010-12-02T10:35:31Z
+
+[Term]
+id: CO_334:0000094
+name: proportion lodged plants
+namespace: cassava_trait
+def: "Proportion of lodged plants (>45 degrees) in a plot." [CO:mb, ISBN:978-131-302-1]
+synonym: "LODPLT" EXACT []
+xref: ICASS_TRAITID:10062
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-02T11:39:41Z
+
+[Term]
+id: CO_334:0000095
+name: beta carotene content
+namespace: cassava_trait
+def: "Concentration of beta carotene extracted from root samples and estimated by HPLC expressed in ug per gram fresh weight." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-02T03:06:12Z
+
+[Term]
+id: CO_334:0000096
+name: gari content
+namespace: cassava_trait
+def: "Percentage gari processed from fresh storage roots." [CO:mb]
+synonym: "GARCONT" EXACT []
+xref: ICASS_TRAITID:10150
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-02T03:12:13Z
+
+[Term]
+id: CO_334:0000097
+name: fufu content
+namespace: cassava_trait
+def: "Percentage fufu processed from fresh storage roots." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-02T03:14:31Z
+
+[Term]
+id: CO_334:0000098
+name: lafun content
+namespace: cassava_trait
+def: "Percentage lafun processed from fresh storage roots." [CO:mb]
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-02T03:18:14Z
+
+[Term]
+id: CO_334:0000099
+name: plant architecture
+namespace: cassava_trait
+def: "Plant architecture on a 1-5 scale with 1 = excellent, 2 good, 3 = fair, 4 = bad, and 5 = very bad." [CO:mb]
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-21T09:34:18Z
+
+[Term]
+id: CO_334:0000100
+name: stipule length
+namespace: cassava_trait
+def: "A qualitative scoring of the length of the leaflike appendage at the base of the leaf with 3= short, 5 = medium, and 7 = long." [CO:mb, ISBN:978-131-302-1]
+synonym: "STIPLT" EXACT []
+xref: ICASS_TRAITID:10038
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T10:44:45Z
+
+[Term]
+id: CO_334:0000101
+name: unexpanded apical leaf color
+namespace: cassava_trait
+def: "Visual rating of unexpanded apical leaf color with 3 = light green, 5 = dark green, 7 = green-purple, and 9 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "LCOLAPC" EXACT []
+xref: ICASS_TRAITID:10034
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:02:12Z
+
+[Term]
+id: CO_334:0000102
+name: first fully expanded leaf color
+namespace: cassava_trait
+def: "Visual rating of first fully expanded leaf color with 3 = light green, 5 = dark green, 7 = green-purple, and 9 = purple." [CO:mb, ISBN:978-131-302-1]
+synonym: "LCOLEXP" EXACT []
+xref: ICASS_TRAITID:10035
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:04:10Z
+
+[Term]
+id: CO_334:0000103
+name: anthocyanin pigmentation
+namespace: cassava_trait
+def: "Visual rating of distribution of anthocyanin pigmentation with 0 = absent, 1 = top part, 2 = central part, 3 = totally pigmented." [CO:mb, ISBN:978-131-302-1]
+synonym: "ATHOPIG" EXACT []
+xref: ICASS_TRAITID:10044
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:10:51Z
+
+[Term]
+id: CO_334:0000104
+name: young stem growth habit
+namespace: cassava_trait
+def: "Visual rating of growth habit of young stem with 1= straight and 2 = zig-zag." [CO:mb, ISBN:978-131-302-1]
+synonym: "YSMGRHT" EXACT []
+xref: ICASS_TRAITID:10045
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:12:40Z
+
+[Term]
+id: CO_334:0000105
+name: leaf scar prominence
+namespace: cassava_trait
+def: "Visual rating of prominence leaf scars (measured on fresh scars) with 3 = little prominence, 5 = moderately prominent, and 7 = prominent." [CO:mb, ISBN:978-131-302-1]
+synonym: "LFSCAR" EXACT []
+xref: ICASS_TRAITID:10048
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:14:24Z
+
+[Term]
+id: CO_334:0000106
+name: first apical branch height
+namespace: cassava_trait
+def: "Height of first apical branch (ground level to point of first Apical branch, 9 months after planting) in cm." [CO:mb, ISBN:978-131-302-1]
+synonym: "FAPBRHT" EXACT []
+xref: ICASS_TRAITID:10052
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:16:54Z
+
+[Term]
+id: CO_334:0000107
+name: male sterile
+namespace: cassava_trait
+def: "Cassava plants that do no produce viable pollen." [CO:mb, ISBN:978-131-302-1]
+synonym: "MSTRL" EXACT []
+xref: ICASS_TRAITID:10072
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:26:08Z
+
+[Term]
+id: CO_334:0000108
+name: female staminoids
+namespace: cassava_trait
+def: "Female cassava flowers without rudimentary stamen scored as 0 = absent and 1 = present." [ISBN:978-131-302-1]
+synonym: "FSTAMEN" EXACT []
+xref: ICASS_TRAITID:10071
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:26:34Z
+
+[Term]
+id: CO_334:0000109
+name: days to flower
+namespace: cassava_trait
+def: "Days to 50 percent flowering." [CO:mb, ISBN:978-131-302-1]
+synonym: "DYFL" EXACT []
+xref: ICASS_TRAITID:10073
+xref: TO:0000344 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:31:04Z
+
+[Term]
+id: CO_334:0000110
+name: fruit set
+namespace: cassava_trait
+def: "Visual rating of cassava fruit set with 0 = absent and 1 = present." [CO:mb, ISBN:978-131-302-1]
+synonym: "FRTSET" EXACT []
+xref: ICASS_TRAITID:10074
+xref: TO:0002640 "Plant trait ontology"
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:38:37Z
+
+[Term]
+id: CO_334:0000111
+name: flower
+namespace: cassava_trait
+def: "Visual rating of flowers (50%) in plant with 0 = absent and 1 = present." [CO:mb, ISBN:978-131-302-1]
+synonym: "FLOWER" EXACT []
+xref: ICASS_TRAITID:10065
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:39:08Z
+
+[Term]
+id: CO_334:0000112
+name: fruit exocarp texture
+namespace: cassava_trait
+def: "Texture of the outer most layer of the cassava fruit scored as 3 = smooth and 7 = rough." [CO:mb, ISBN:978-131-302-1]
+synonym: "FREXCAP" EXACT []
+xref: ICASS_TRAITID:10075
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-03T11:45:45Z
+
+[Term]
+id: CO_334:0000113
+name: ploidy level
+namespace: cassava_trait
+def: "Ploidy level (n = 1,2,3,4 ) (by morphological characteristics)." [CO:mb, ISBN:978-131-302-1]
+synonym: "PLOIDY" EXACT []
+xref: ICASS_TRAITID:10076
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-03T04:22:27Z
+
+[Term]
+id: CO_334:0000114
+name: boiled tuberous root color
+namespace: cassava_trait
+def: "Colour of boiled tuberous roots with  1 = white , 2 = cream , 3 = yellow." [CO:mb]
+synonym: "RTCOL" EXACT []
+xref: ICASS_TRAITID:10137
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-06T09:25:57Z
+
+[Term]
+id: CO_334:0000115
+name: storage root cortex color
+namespace: cassava_trait
+def: "Color of outer surface of storage root cortex (inner skin color)." [CO:mb, ISBN:978-131-302-1]
+synonym: "INNCOL" EXACT []
+synonym: "INNER ROOT SKIN COLOUR" RELATED []
+xref: ICASS_TRAITID:10090
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-06T09:52:27Z
+
+[Term]
+id: CO_334:0000116
+name: ease of peeling root cortex
+namespace: cassava_trait
+def: "Visual rating of ease of peeling root cortex with 3 = easy and 7 = difficult." [CO:mb, ISBN:978-131-302-1]
+synonym: "EASEPL" EXACT []
+xref: ICASS_TRAITID:10089
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-06T10:05:56Z
+
+[Term]
+id: CO_334:0000117
+name: beta carotene retention
+namespace: cassava_trait
+def: "The percentage of beta carotene content in a prepared food product compared to the nutrient content in the raw food." [CO:mb]
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-07T08:27:22Z
+
+[Term]
+id: CO_334:0000118
+name: total carotenoid retention
+namespace: cassava_trait
+def: "The percentage of total carotene content in a prepared food product compared to the nutrient content in the raw food." [CO:mb]
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-07T08:28:06Z
+
+[Term]
+id: CO_334:0000119
+name: central leaf shape
+namespace: cassava_trait
+def: "Shape of central leaf taken from a mid-height position rated from 1 = ovoid, 2 = elliptic-lanceolate, 3 = obovate-lanceolate, 4 = oblong-lanceolate, 5 = lanceolate, 6 = straight or linear, 7 = pandurate, 8 = linear-piramidal, 9 = linear-pandurate, and 10 = linear-hostatilobalate." [CO:mb, ISBN:978-131-347-1]
+synonym: "LEAF LOBE SHAPE" RELATED []
+is_a: CO_334:0000002 ! morphological trait
+created_by: BAKARE
+creation_date: 2010-12-21T09:49:14Z
+
+[Term]
+id: CO_334:0000120
+name: suitability for intercropping
+namespace: cassava_trait
+def: "Qualitative rating of compatibility for use in intercropping with 0 = unsuitable and 1 = suitable." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000001 ! agronomic trait
+created_by: BAKARE
+creation_date: 2010-12-21T10:37:58Z
+
+[Term]
+id: CO_334:0000121
+name: amylopectin content
+namespace: cassava_trait
+def: "Amylopectin content of cassava roots." [CO:mb, ISBN:978-131-302-1]
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-07T06:17:38Z
+
+[Term]
+id: CO_334:0000122
+name: cassava green mite incidence
+namespace: cassava_trait
+def: "Proportion of plants within a plot affected by cassava green mite, Mononychellus tanajoa." []
+is_a: CO_334:0000030 ! insect damage
+created_by: aafolabi
+creation_date: 2013-03-20T14:00:04Z
+
+[Term]
+id: CO_334:0000124
+name: amylose amylopectin ratio
+namespace: cassava_trait
+def: "The amylose content of a cassava root sample divided by the amylopectin content of the same sample." [CO:mb]
+synonym: "AMYLSRT" EXACT []
+xref: ICASS_TRAITID:10149
+is_a: CO_334:0000004 ! quality trait
+created_by: BAKARE
+creation_date: 2010-12-13T08:41:13Z
+
+[Typedef]
+id: derives_from
+name: derives_from
+namespace: cassava_trait
+created_by: BAKARE
+creation_date: 2010-12-17T05:45:14Z
+
+[Typedef]
+id: method_of
+name: method_of
+is_transitive: true
+created_by: aafolabi
+creation_date: 2013-03-20T13:50:11Z
+
+[Typedef]
+id: scale_of
+name: scale_of
+is_transitive: true
+created_by: aafolabi
+creation_date: 2013-03-20T13:49:44Z
+
