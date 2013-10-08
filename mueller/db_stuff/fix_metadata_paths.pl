@@ -1,11 +1,37 @@
 
-use CXGN::Metadata::Schema;
+=head1 NAME
+
+fix_metadata_paths.pl - fix dirnames in metadata table
+
+=head1 DESCRIPTION
+
+perl fix_metadata_paths.pl -h localhost -u postgres -d cxgn
+
+Will replace /data in the paths with /export, as required for the installation in the BTI server room.
+
+Note: it will prompt for a password.
+
+=head1 AUTHOR
+
+Lukas Mueller <lam87@cornell.edu>
+
+=cut
+
+use strict;
+
+use Getopt::Std;
 use Term::ReadKey;
+use CXGN::Metadata::Schema;
 
-my $user = shift || die "need a username as first argument";
-my $dbname = shift || die "need a dbname as second argument";
+our($opt_h, $opt_d, $opt_u);
 
-my $dsn = "dbi:Pg:dbname=$dbname";
+getopts('h:d:u:');
+
+my $user = $opt_u || die "need a username with -u option";
+my $dbname = $opt_d || die "need a dbname with -d option";
+my $dbhost = $opt_h || die "need host with -h option";
+
+my $dsn = "dbi:Pg:dbname=$dbname;host=$dbhost";
 
 
 
