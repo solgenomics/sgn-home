@@ -261,7 +261,7 @@ my $coderef = sub {
     my $json_obj = JSON::Any->new;
     my $json_string = $json_obj->objToJson(\%json);
     print "Storing new genotype for stock " . $cassava_stock->name . " \n\n";
-    print "JSON: ".$json_string."\n";
+    #print "JSON: ".$json_string."\n";
     my $genotype = $schema->resultset("Genetic::Genotype")
       ->find_or_create({
 			name        => $cassava_stock->name . "|" . $experiment->nd_experiment_id,
