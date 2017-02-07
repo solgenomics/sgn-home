@@ -1,6 +1,7 @@
 format-version: 1.2
-date: 05:11:2012 15:34
-auto-generated-by: OBO-Edit 2.1-beta4
+date: 07:02:2017 10:27
+saved-by: naama
+auto-generated-by: OBO-Edit 2.3.1
 default-namespace: solanaceae_phenotype
 
 [Term]
@@ -54,6 +55,7 @@ is_a: SP:0000108 ! leaf
 [Term]
 id: SP:0000006
 name: flowering
+def: "Traits and phenotypes related to flowering." []
 xref: PO:0007016
 xref: PO:0009046
 is_a: SP:0001000 ! Solanaceae phenotype ontology
@@ -73,7 +75,7 @@ synonym: "TO:0000499" RELATED []
 xref: PATO:0000051
 xref: PO:0007615
 xref: PO:0009046
-is_a: SP:0000115 ! flower
+relationship: part_of SP:0000115 ! flower
 
 [Term]
 id: SP:0000009
@@ -82,7 +84,7 @@ synonym: "TO:0000537" RELATED []
 xref: PATO:0000014
 xref: PO:0007600
 xref: PO:0009046
-is_a: SP:0000115 ! flower
+relationship: part_of SP:0000115 ! flower
 
 [Term]
 id: SP:0000010
@@ -209,7 +211,7 @@ is_a: SP:0001000 ! Solanaceae phenotype ontology
 [Term]
 id: SP:0000026
 name: virescent leaf
-def: "Chlorophyll deficiency localized at growing point." [TGRC:F "Tomato Genetics Resource Center"]
+def: "Chlorophyll deficiency localized at growing point." [TGRC:F]
 xref: PATO:0001941
 xref: PO:0001050
 xref: PO:0005645
@@ -226,7 +228,7 @@ is_a: SP:0000015 ! disease and stress response
 [Term]
 id: SP:0000028
 name: brown green leaf color
-def: "Olive, brown, blue-green leaf." [TGRC:U "Tomato Genetics Resource Center"]
+def: "Olive, brown, blue-green leaf." [TGRC:U]
 xref: PATO:0001942
 xref: PO:0001050
 xref: PO:0005645
@@ -288,7 +290,7 @@ is_a: SP:0000019 ! biochemical metabolites
 [Term]
 id: SP:0000037
 name: fruit
-def: "Fruit." [SP:NM]
+def: "Fruit related traits and phenotypes." [SP:NM]
 xref: PO:0007010
 xref: PO:0007042
 xref: PO:0009001
@@ -506,7 +508,7 @@ synonym: "TO:0000366" RELATED []
 xref: PATO:0000165
 xref: PO:0007016
 xref: PO:0009046
-is_a: SP:0000006 ! flowering
+relationship: part_of SP:0000006 ! flowering
 
 [Term]
 id: SP:0000062
@@ -703,7 +705,7 @@ is_a: SP:0000072 ! proximal fruit end shape
 [Term]
 id: SP:0000080
 name: fruit mass
-def: "The mass of the fruit." [SGN:EVDK]
+def: "The mass of the fruit measured in grams." [SGN:EVDK]
 synonym: "fruit weight" RELATED []
 synonym: "fw" RELATED []
 xref: PATO:0000125
@@ -971,6 +973,7 @@ creation_date: 2008-02-22T10:27:00Z
 [Term]
 id: SP:0000106
 name: fruit number
+def: "Number of fruits per plant." [SGM:NM]
 xref: PO:0007042
 xref: PO:0009001
 is_a: SP:0000037 ! fruit
@@ -1050,6 +1053,7 @@ creation_date: 2008-02-22T10:30:00Z
 [Term]
 id: SP:0000115
 name: flower
+def: "Flower related traits and phenotypes." []
 xref: PO:0007615
 xref: PO:0009046
 is_a: SP:0001000 ! Solanaceae phenotype ontology
@@ -1059,11 +1063,12 @@ creation_date: 2008-02-22T10:47:00Z
 [Term]
 id: SP:0000116
 name: number of flowers per inflorescence
+def: "Count of the number of flowers per one inflorescence." []
 xref: PATO:0000053
 xref: PO:0007615
 xref: PO:0009046
 is_a: SP:0000007 ! inflorescence
-is_a: SP:0000117 ! flower number
+relationship: part_of SP:0000117 ! flower number
 created_by: naama
 creation_date: 2008-02-22T10:47:00Z
 
@@ -2682,7 +2687,6 @@ id: SP:0000297
 name: tuber flesh color white
 xref: PATO:0000323
 xref: PO:0025038
-xref: PO:0025038
 xref: PVP:1
 xref: solcap:9
 is_a: SP:0000188 ! tuber flesh color
@@ -3459,7 +3463,7 @@ creation_date: 2012-11-01T04:07:53Z
 [Term]
 id: SP:0000387
 name: field sucrose
-def: "sucrose measured in the field (mg/g fresh weight)" [SGN:NM]
+def: "sucrose measured in the field (mg/g fresh weight)." [SGN:NM]
 is_a: SP:0000214 ! sucrose
 created_by: Naama
 creation_date: 2012-11-01T04:16:50Z
@@ -3467,7 +3471,7 @@ creation_date: 2012-11-01T04:16:50Z
 [Term]
 id: SP:0000388
 name: storage sucrose
-def: "sucrose measured in storage (mg/g fresh weight)" [SGN:NM]
+def: "sucrose measured in storage (mg/g fresh weight)." [SGN:NM]
 is_a: SP:0000197 ! post harvest quality
 is_a: SP:0000214 ! sucrose
 created_by: Naama
@@ -3484,7 +3488,7 @@ creation_date: 2012-11-01T04:19:27Z
 [Term]
 id: SP:0000390
 name: storage glucose
-def: "glucose measured in the field (mg/g fresh weight)" [SGN:NM]
+def: "glucose measured in the field (mg/g fresh weight)." [SGN:NM]
 is_a: SP:0000197 ! post harvest quality
 is_a: SP:0000215 ! glucose
 created_by: Naama
@@ -3519,6 +3523,14 @@ created_by: Naama
 creation_date: 2012-11-02T04:03:23Z
 
 [Term]
+id: SP:0000394
+name: fruit solids percentage
+def: "Net dry weight (after 1 week in oven) divided by net fresh weight of the fruit and multiplied by 100." [SGN:EVDK]
+relationship: part_of SP:0000080 ! fruit mass
+created_by: naama
+creation_date: 2017-02-06T15:17:20Z
+
+[Term]
 id: SP:0000706
 name: male sterility
 synonym: "TO:0000437" RELATED []
@@ -3543,6 +3555,14 @@ id: SP:0001000
 name: Solanaceae phenotype ontology
 
 [Typedef]
+id: attribute_of
+name: attribute_of
+
+[Typedef]
 id: part_of
 name: part of
+
+[Typedef]
+id: variable_of
+name: variable_of
 
