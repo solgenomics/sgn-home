@@ -1,0 +1,289 @@
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:
+1001	SCT_0479	2009	Davis	California	1	Neptune
+1002	SCT_0153	2009	Davis	California	1	091004-4
+1003	SCT_0278	2009	Davis	California	1	UC-T338
+1004	SCT_0195	2009	Davis	California	1	Fla. 8124C
+1005	SCT_0227	2009	Davis	California	1	NC123S
+1006	SCT_0154	2009	Davis	California	1	091004-7
+1007	SCT_0245	2009	Davis	California	1	NC99471-3
+1008	SCT_0162	2009	Davis	California	1	091144-1
+1009	SCT_0273	2009	Davis	California	1	T-5
+1010	SCT_0250	2009	Davis	California	1	NCEBR-5
+1011	SCT_0238	2009	Davis	California	1	NC47NC2
+1012	SCT_0236	2009	Davis	California	1	NC2Y
+1013	SCT_0161	2009	Davis	California	1	091135-1
+1014	SCT_0190	2009	Davis	California	1	Fla. 8044
+1015	SCT_0281	2009	Davis	California	1	Willamette VF
+1016	SCT_0187	2009	Davis	California	1	Fla. 7907B
+1017	SCT_0264	2009	Davis	California	1	PI 281553
+1018	SCT_0212	2009	Davis	California	1	Fla. 8653
+1019	SCT_0164	2009	Davis	California	1	091153-1
+1020	SCT_0148	2009	Davis	California	1	091003-35
+1021	SCT_0158	2009	Davis	California	1	091119-2
+1022	SCT_0146	2009	Davis	California	1	091003-29
+1023	SCT_0191	2009	Davis	California	1	Fla. 8059
+1024	SCT_0237	2009	Davis	California	1	NC33EB-1
+1025	SCT_0247	2009	Davis	California	1	NCEBR-2
+1026	SCT_0254	2009	Davis	California	1	NCHS-1
+1027	SCT_0243	2009	Davis	California	1	NC84173
+1028	SCT_0283	2009	Davis	California	1	Ha7997
+1029	SCT_0267	2009	Davis	California	1	PI 65023
+1030	SCT_0197	2009	Davis	California	1	Fla. 8249
+1031	SCT_0218	2009	Davis	California	1	LA1996
+1032	SCT_0182	2009	Davis	California	1	Fla. 7771
+1033	SCT_0480	2009	Davis	California	1	NC0.23-93
+1034	SCT_0184	2009	Davis	California	1	Fla. 7776
+1035	SCT_0144	2009	Davis	California	1	071820-2
+1036	SCT_0152	2009	Davis	California	1	091004-32
+1037	SCT_0169	2009	Davis	California	1	88003-81
+1038	SCT_0186	2009	Davis	California	1	Fla. 7804
+1039	SCT_0244	2009	Davis	California	1	NC860-1(2008)
+1040	SCT_0251	2009	Davis	California	1	NCEBR-6
+1041	SCT_0203	2009	Davis	California	1	Fla. 8539
+1042	SCT_0174	2009	Davis	California	1	Fla. 678
+1043	SCT_0240	2009	Davis	California	1	NC714-3B(2007)
+1044	SCT_0219	2009	Davis	California	1	LA2378
+1045	SCT_0149	2009	Davis	California	1	091003-36
+1046	SCT_0166	2009	Davis	California	1	091183-1
+1047	SCT_0155	2009	Davis	California	1	091004-8
+1048	SCT_0151	2009	Davis	California	1	091004-16
+1049	SCT_0284	2009	Davis	California	1	Ha7998
+1050	SCT_0156	2009	Davis	California	1	091013/091031
+1051	SCT_0255	2009	Davis	California	1	Ohio11
+1052	SCT_0257	2009	Davis	California	1	OR11
+1053	SCT_0230	2009	Davis	California	1	NC140
+1054	SCT_0279	2009	Davis	California	1	UC-TR44
+1055	SCT_0199	2009	Davis	California	1	Fla. 8344
+1056	SCT_0276	2009	Davis	California	1	UC-MR20
+1057	SCT_0213	2009	Davis	California	1	Fla. 8735
+1058	SCT_0260	2009	Davis	California	1	P20-3-1
+1059	SCT_0248	2009	Davis	California	1	NCEBR-3
+1060	SCT_0481	2009	Davis	California	1	LA3668
+1061	SCT_0253	2009	Davis	California	1	NCEBR-8
+1062	SCT_0160	2009	Davis	California	1	091120-7
+1063	SCT_0277	2009	Davis	California	1	UC-N28
+1064	SCT_0185	2009	Davis	California	1	Fla. 7781
+1065	SCT_0265	2009	Davis	California	1	PI 340906
+1066	SCT_0249	2009	Davis	California	1	NCEBR-4
+1067	SCT_0210	2009	Davis	California	1	Fla. 8629
+1068	SCT_0175	2009	Davis	California	1	Fla. 701
+1069	SCT_0275	2009	Davis	California	1	Tropic
+1070	SCT_0282	2009	Davis	California	1	Ha7981
+1071	SCT_0159	2009	Davis	California	1	091120-2
+1072	SCT_0344	2009	Davis	California	1	PI 128586
+1073	SCT_0482	2009	Davis	California	1	NC265-1(93)-3-3
+1074	SCT_0177	2009	Davis	California	1	Fla. 726
+1075	SCT_0225	2009	Davis	California	1	Medford
+1076	SCT_0150	2009	Davis	California	1	091004-15
+1077	SCT_0205	2009	Davis	California	1	Fla. 8561B-6
+1078	SCT_0193	2009	Davis	California	1	Fla. 8109
+1079	SCT_0198	2009	Davis	California	1	Fla. 8293
+1080	SCT_0221	2009	Davis	California	1	LA3736
+1081	SCT_0226	2009	Davis	California	1	NC 7 P rep-8 (2006) - 96
+1082	SCT_0165	2009	Davis	California	1	091166-3
+1083	SCT_0208	2009	Davis	California	1	Fla. 8624
+1084	SCT_0274	2009	Davis	California	1	T-9
+1085	SCT_0235	2009	Davis	California	1	NC2C
+1086	SCT_0270	2009	Davis	California	1	Severianin
+1087	SCT_0189	2009	Davis	California	1	Fla. 8000
+1088	SCT_0181	2009	Davis	California	1	Fla. 7770
+1089	SCT_0272	2009	Davis	California	1	Summit
+1090	SCT_0229	2009	Davis	California	1	NC 13G
+1091	SCT_0209	2009	Davis	California	1	Fla. 8626
+1092	SCT_0269	2009	Davis	California	1	RioGrande
+1093	SCT_0163	2009	Davis	California	1	091144-2
+1094	SCT_0157	2009	Davis	California	1	091109-3
+1095	SCT_0232	2009	Davis	California	1	NC1CS
+1096	SCT_0271	2009	Davis	California	1	Siletz
+1097	SCT_0147	2009	Davis	California	1	091003-30
+1098	SCT_0220	2009	Davis	California	1	LA3163
+1099	SCT_0196	2009	Davis	California	1	Fla. 8233
+1100	SCT_0211	2009	Davis	California	1	Fla. 8646
+1101	SCT_0167	2009	Davis	California	1	88003-59
+1102	SCT_0194	2009	Davis	California	1	Fla. 8111BH
+1103	SCT_0200	2009	Davis	California	1	Fla. 8352
+1104	SCT_0173	2009	Davis	California	1	Cherokee
+1105	SCT_0239	2009	Davis	California	1	NC50-7
+1106	SCT_0201	2009	Davis	California	1	Fla. 8476
+1107	SCT_0258	2009	Davis	California	1	Oregon Spring
+1108	SCT_0176	2009	Davis	California	1	Fla. 7060
+1109	SCT_0262	2009	Davis	California	1	PI 647532
+1110	SCT_0192	2009	Davis	California	1	Fla. 8083
+1111	SCT_0215	2009	Davis	California	1	Flora-Dade
+1112	SCT_0241	2009	Davis	California	1	NC8276
+1113	SCT_0242	2009	Davis	California	1	NC8288
+1114	SCT_0256	2009	Davis	California	1	Ohio MR13
+1115	SCT_0179	2009	Davis	California	1	Fla. 7547
+1116	SCT_0168	2009	Davis	California	1	88003-62
+1117	SCT_0223	2009	Davis	California	1	Large German Cherry
+1118	SCT_0231	2009	Davis	California	1	NC161L-1W(2007)
+1119	SCT_0188	2009	Davis	California	1	Fla. 7946
+1120	SCT_0202	2009	Davis	California	1	Fla. 8516
+1121	SCT_0233	2009	Davis	California	1	NC23E-2 (93)
+1122	SCT_0217	2009	Davis	California	1	LA0797
+1123	SCT_0214	2009	Davis	California	1	Fla. 8737
+1124	SCT_0204	2009	Davis	California	2	Fla. 8543
+1125	SCT_0171	2009	Davis	California	2	88019 N
+1126	SCT_0252	2009	Davis	California	2	NCEBR-7
+1127	SCT_0143	2009	Davis	California	2	071733-1
+1128	SCT_0206	2009	Davis	California	2	Fla. 8599
+1129	SCT_0246	2009	Davis	California	2	NCEBR-1
+1130	SCT_0172	2009	Davis	California	2	Campbell 28
+1131	SCT_0145	2009	Davis	California	2	091003-21
+1132	SCT_0170	2009	Davis	California	2	88018 N
+1133	SCT_0483	2009	Davis	California	2	NC13
+1134	SCT_0280	2009	Davis	California	2	UC-TR51
+1135	SCT_0178	2009	Davis	California	2	Fla. 7481
+1136	SCT_0183	2009	Davis	California	2	Fla. 7775
+1137	SCT_0180	2009	Davis	California	2	Fla. 7600
+1138	SCT_0216	2009	Davis	California	2	Gold Nugget
+1139	SCT_0266	2009	Davis	California	2	PI 470262
+1140	SCT_0259	2009	Davis	California	2	Oregon Star
+1141	SCT_0268	2009	Davis	California	2	Piedmont
+1142	SCT_0207	2009	Davis	California	2	Fla. 8608
+1143	SCT_0261	2009	Davis	California	2	PI 564169
+1144	SCT_0224	2009	Davis	California	2	Legend
+2001	SCT_0153	2009	Davis	California	2	091004-4
+2002	SCT_0483	2009	Davis	California	2	NC13
+2003	SCT_0151	2009	Davis	California	2	091004-16
+2004	SCT_0277	2009	Davis	California	2	UC-N28
+2005	SCT_0147	2009	Davis	California	2	091003-30
+2006	SCT_0254	2009	Davis	California	2	NCHS-1
+2007	SCT_0265	2009	Davis	California	2	PI 340906
+2008	SCT_0217	2009	Davis	California	2	LA0797
+2009	SCT_0163	2009	Davis	California	2	091144-2
+2010	SCT_0220	2009	Davis	California	2	LA3163
+2011	SCT_0179	2009	Davis	California	2	Fla. 7547
+2012	SCT_0184	2009	Davis	California	2	Fla. 7776
+2013	SCT_0260	2009	Davis	California	2	P20-3-1
+2014	SCT_0157	2009	Davis	California	2	091109-3
+2015	SCT_0143	2009	Davis	California	2	071733-1
+2016	SCT_0205	2009	Davis	California	2	Fla. 8561B-6
+2017	SCT_0221	2009	Davis	California	2	LA3736
+2018	SCT_0271	2009	Davis	California	2	Siletz
+2019	SCT_0185	2009	Davis	California	2	Fla. 7781
+2020	SCT_0167	2009	Davis	California	2	88003-59
+2021	SCT_0177	2009	Davis	California	2	Fla. 726
+2022	SCT_0230	2009	Davis	California	2	NC140
+2023	SCT_0257	2009	Davis	California	2	OR11
+2024	SCT_0208	2009	Davis	California	2	Fla. 8624
+2025	SCT_0272	2009	Davis	California	2	Summit
+2026	SCT_0145	2009	Davis	California	2	091003-21
+2027	SCT_0152	2009	Davis	California	2	091004-32
+2028	SCT_0178	2009	Davis	California	2	Fla. 7481
+2029	SCT_0215	2009	Davis	California	2	Flora-Dade
+2030	SCT_0212	2009	Davis	California	2	Fla. 8653
+2031	SCT_0258	2009	Davis	California	2	Oregon Spring
+2032	SCT_0276	2009	Davis	California	2	UC-MR20
+2033	SCT_0279	2009	Davis	California	2	UC-TR44
+2034	SCT_0202	2009	Davis	California	2	Fla. 8516
+2035	SCT_0245	2009	Davis	California	2	NC99471-3
+2036	SCT_0198	2009	Davis	California	2	Fla. 8293
+2037	SCT_0480	2009	Davis	California	2	NC0.23-93
+2038	SCT_0144	2009	Davis	California	2	071820-2
+2039	SCT_0146	2009	Davis	California	2	091003-29
+2040	SCT_0149	2009	Davis	California	2	091003-36
+2041	SCT_0206	2009	Davis	California	2	Fla. 8599
+2042	SCT_0171	2009	Davis	California	2	88019 N
+2043	SCT_0172	2009	Davis	California	2	Campbell 28
+2044	SCT_0170	2009	Davis	California	2	88018 N
+2045	SCT_0216	2009	Davis	California	2	Gold Nugget
+2046	SCT_0199	2009	Davis	California	2	Fla. 8344
+2047	SCT_0269	2009	Davis	California	2	RioGrande
+2048	SCT_0197	2009	Davis	California	2	Fla. 8249
+2049	SCT_0218	2009	Davis	California	2	LA1996
+2050	SCT_0182	2009	Davis	California	2	Fla. 7771
+2051	SCT_0284	2009	Davis	California	2	Ha7998
+2052	SCT_0156	2009	Davis	California	2	091013/091031
+2053	SCT_0200	2009	Davis	California	2	Fla. 8352
+2054	SCT_0161	2009	Davis	California	2	091135-1
+2055	SCT_0201	2009	Davis	California	2	Fla. 8476
+2056	SCT_0244	2009	Davis	California	2	NC860-1(2008)
+2057	SCT_0159	2009	Davis	California	2	091120-2
+2058	SCT_0224	2009	Davis	California	2	Legend
+2059	SCT_0173	2009	Davis	California	2	Cherokee
+2060	SCT_0283	2009	Davis	California	2	Ha7997
+2061	SCT_0214	2009	Davis	California	2	Fla. 8737
+2062	SCT_0223	2009	Davis	California	2	Large German Cherry
+2063	SCT_0191	2009	Davis	California	2	Fla. 8059
+2064	SCT_0239	2009	Davis	California	2	NC50-7
+2065	SCT_0175	2009	Davis	California	2	Fla. 701
+2066	SCT_0150	2009	Davis	California	2	091004-15
+2067	SCT_0168	2009	Davis	California	2	88003-62
+2068	SCT_0158	2009	Davis	California	2	091119-2
+2069	SCT_0211	2009	Davis	California	2	Fla. 8646
+2070	SCT_0231	2009	Davis	California	2	NC161L-1W(2007)
+2071	SCT_0240	2009	Davis	California	2	NC714-3B(2007)
+2072	SCT_0190	2009	Davis	California	2	Fla. 8044
+2073	SCT_0180	2009	Davis	California	2	Fla. 7600
+2074	SCT_0275	2009	Davis	California	2	Tropic
+2075	SCT_0266	2009	Davis	California	2	PI 470262
+2076	SCT_0280	2009	Davis	California	2	UC-TR51
+2077	SCT_0238	2009	Davis	California	2	NC47NC2
+2078	SCT_0249	2009	Davis	California	2	NCEBR-4
+2079	SCT_0248	2009	Davis	California	2	NCEBR-3
+2080	SCT_0255	2009	Davis	California	2	Ohio11
+2081	SCT_0155	2009	Davis	California	2	091004-8
+2082	SCT_0186	2009	Davis	California	2	Fla. 7804
+2083	SCT_0195	2009	Davis	California	2	Fla. 8124C
+2084	SCT_0196	2009	Davis	California	2	Fla. 8233
+2085	SCT_0207	2009	Davis	California	2	Fla. 8608
+2086	SCT_0169	2009	Davis	California	2	88003-81
+2087	SCT_0219	2009	Davis	California	2	LA2378
+2088	SCT_0252	2009	Davis	California	2	NCEBR-7
+2089	SCT_0250	2009	Davis	California	2	NCEBR-5
+2090	SCT_0203	2009	Davis	California	2	Fla. 8539
+2091	SCT_0235	2009	Davis	California	2	NC2C
+2092	SCT_0268	2009	Davis	California	2	Piedmont
+2093	SCT_0204	2009	Davis	California	2	Fla. 8543
+2094	SCT_0162	2009	Davis	California	2	091144-1
+2095	SCT_0246	2009	Davis	California	2	NCEBR-1
+2096	SCT_0482	2009	Davis	California	2	NC265-1(93)-3-3
+2097	SCT_0193	2009	Davis	California	2	Fla. 8109
+2098	SCT_0251	2009	Davis	California	2	NCEBR-6
+2099	SCT_0243	2009	Davis	California	2	NC84173
+2100	SCT_0192	2009	Davis	California	2	Fla. 8083
+2101	SCT_0273	2009	Davis	California	2	T-5
+2102	SCT_0256	2009	Davis	California	2	Ohio MR13
+2103	SCT_0270	2009	Davis	California	2	Severianin
+2104	SCT_0209	2009	Davis	California	2	Fla. 8626
+2105	SCT_0194	2009	Davis	California	2	Fla. 8111BH
+2106	SCT_0189	2009	Davis	California	2	Fla. 8000
+2107	SCT_0278	2009	Davis	California	2	UC-T338
+2108	SCT_0176	2009	Davis	California	2	Fla. 7060
+2109	SCT_0247	2009	Davis	California	2	NCEBR-2
+2110	SCT_0165	2009	Davis	California	2	091166-3
+2111	SCT_0154	2009	Davis	California	2	091004-7
+2112	SCT_0160	2009	Davis	California	2	091120-7
+2113	SCT_0233	2009	Davis	California	2	NC23E-2 (93)
+2114	SCT_0148	2009	Davis	California	2	091003-35
+2115	SCT_0261	2009	Davis	California	2	PI 564169
+2116	SCT_0282	2009	Davis	California	2	Ha7981
+2117	SCT_0267	2009	Davis	California	2	PI 65023
+2118	SCT_0229	2009	Davis	California	2	NC 13G
+2119	SCT_0210	2009	Davis	California	2	Fla. 8629
+2120	SCT_0479	2009	Davis	California	2	Neptune
+2121	SCT_0344	2009	Davis	California	2	PI 128586
+2122	SCT_0226	2009	Davis	California	2	NC 7 P rep-8 (2006) - 96
+2123	SCT_0213	2009	Davis	California	2	Fla. 8735
+2124	SCT_0264	2009	Davis	California	2	PI 281553
+2125	SCT_0241	2009	Davis	California	2	NC8276
+2126	SCT_0232	2009	Davis	California	2	NC1CS
+2127	SCT_0187	2009	Davis	California	2	Fla. 7907B
+2128	SCT_0259	2009	Davis	California	2	Oregon Star
+2129	SCT_0253	2009	Davis	California	2	NCEBR-8
+2130	SCT_0236	2009	Davis	California	2	NC2Y
+2131	SCT_0225	2009	Davis	California	2	Medford
+2132	SCT_0166	2009	Davis	California	2	091183-1
+2133	SCT_0281	2009	Davis	California	2	Willamette VF
+2134	SCT_0481	2009	Davis	California	2	LA3668
+2135	SCT_0237	2009	Davis	California	2	NC33EB-1
+2136	SCT_0164	2009	Davis	California	2	091153-1
+2137	SCT_0242	2009	Davis	California	2	NC8288
+2138	SCT_0183	2009	Davis	California	2	Fla. 7775
+2139	SCT_0181	2009	Davis	California	2	Fla. 7770
+2140	SCT_0274	2009	Davis	California	2	T-9
+2141	SCT_0188	2009	Davis	California	2	Fla. 7946
+2142	SCT_0227	2009	Davis	California	2	NC123S
+2143	SCT_0174	2009	Davis	California	2	Fla. 678
+2144	SCT_0262	2009	Davis	California	2	PI 647532

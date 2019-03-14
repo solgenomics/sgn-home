@@ -1,0 +1,169 @@
+plot_name	accession_name	plot_number	block_number	is_a_control	rep_number	Brix|SP:0000165	PH|SP:0000170	titratable acids (g citric acid /100 ml)|SP:0000345	days to Maturity|SP:0000366						
+2010_vintage_Fremont_OH_8901_1	Ailsa Craig	8901	1		1	6.4	3.69	0.5344	146						
+2010_vintage_Fremont_OH_8902_1	Beauty	8902	1		1	6.9	3.82	0.55104	146						
+2010_vintage_Fremont_OH_8903_1	Black Plum	8903	1		1	7.6	3.87	0.57536	153						
+2010_vintage_Fremont_OH_8904_1	Favorite	8904	1		1	6.9	3.77	0.52864	153						
+2010_vintage_Fremont_OH_8905_1	Globe	8905	1		1	8.2	4.36	0.59776	160						
+2010_vintage_Fremont_OH_8906_1	Gold Ball	8906	1		1	6.6	4.32	0.59712	160						
+2010_vintage_Fremont_OH_8907_1	Grushovka	8907	1		1	5.1	4.45	0.39296	168						
+2010_vintage_Fremont_OH_8908_1	Marglobe	8908	1		1	5.9	4.41	0.37568	168						
+2010_vintage_Fremont_OH_8909_1	Marveille des Marches	8909	1		1	6.4	4.2	0.6464	168						
+2010_vintage_Fremont_OH_8910_1	Moneymaker	8910	1		1	5.7	4.35	0.37504	168						
+2010_vintage_Fremont_OH_8911_1	PARAGON	8911	1		1	5.6	4.54	0.496	160						
+2010_vintage_Fremont_OH_8912_1	Howard German	8912	1		1	7.3	4.62	0.38848	160						
+2010_vintage_Fremont_OH_8913_1	Ponderosa	8913	1		1	8	3.53	0.7904	153						
+2010_vintage_Fremont_OH_8914_1	Principe Borghese	8914	1		1	5.4	3.9	0.54016	153						
+2010_vintage_Fremont_OH_8915_1	RomaVF	8915	1		1	5	3.87	0.48576	146						
+2010_vintage_Fremont_OH_8916_1	San Marzano	8916	1		1	6	3.9	0.49152	146						
+2010_vintage_Fremont_OH_8917_1	VFNT Cherry	8917	1		1	5.6	3.92	0.49024	146						
+2010_vintage_Fremont_OH_8918_1	White Queen	8918	1		1	6.3	3.75	0.55744	153						
+2010_vintage_Fremont_OH_8919_1	Yellow Pear	8919	1		1	7.4	3.77	0.53184	153						
+2010_vintage_Fremont_OH_8920_1	Yellow Stuffer	8920	1		1	5.8	4.01	0.4256	153						
+2010_vintage_Fremont_OH_8921_1	Aker's West Virginia	8921	1		1	8.2	4.39	0.67584	160						
+2010_vintage_Fremont_OH_8922_1	Black From Tula	8922	1		1	6	4.45	0.52544	160						
+2010_vintage_Fremont_OH_8923_1	Burbank	8923	1		1	5.9	4.42	0.37824	168						
+2010_vintage_Fremont_OH_8924_1	Peron	8924	1		1	6.5	4.19	0.58048	168						
+2010_vintage_Fremont_OH_8925_1	Cherokee Purple	8925	1		1	7.1	4.46	0.34304	168						
+2010_vintage_Fremont_OH_8926_1	Oxheart	8926	1		1	5.8	4.49	0.39232	168						
+2010_vintage_Fremont_OH_8927_1	Rutgers	8927	1		1	6.2	4.41	0.41024	160						
+2010_vintage_Fremont_OH_8928_1	Amish Paste	8928	1		1	6.4	4.6	0.37376	160						```
+2010_vintage_Fremont_OH_8929_1	Opalka	8929	1		1	6.5	4.06	0.44224	153						
+2010_vintage_Fremont_OH_8930_1	Brandywine (Sudduth/Quisenberry)	8930	1		1	6.6	3.84	0.58112	153						
+2010_vintage_Fremont_OH_8931_1	Juane Flammee	8931	1		1	5.5	3.63	0.58368	146						
+2010_vintage_Fremont_OH_8932_1	Costoluto Genovese	8932	1		1	5.3	3.98	0.49344	146						
+2010_vintage_Fremont_OH_8933_1	D' Olvia x Industria	8933	1		1	5.4	3.82	0.4672	146						
+2010_vintage_Fremont_OH_8934_1	Orange Strawberry	8934	1		1	7.1	3.87	0.61248	146						
+2010_vintage_Fremont_OH_8935_1	Sponzillo	8935	1		1	8	3.99	0.5152	153						
+2010_vintage_Fremont_OH_8936_1	T1003	8936	1		1	5.4	3.98	0.52992	153						
+2010_vintage_Fremont_OH_8937_1	T1693	8937	1		1	5.3	4.27	0.4512	160						
+2010_vintage_Fremont_OH_8938_1	T1697	8938	1		1	6.1	4.29	0.61888	160						
+2010_vintage_Fremont_OH_8939_1	Tres Cantos	8939	1		1	6	4.24	0.57984	168						
+2010_vintage_Fremont_OH_8940_1	LYC1903	8940	1		1	5.6	4.53	0.29696	168						
+2010_vintage_Fremont_OH_8941_1	Tainan	8941	1		1	6.5	4.26	0.37376	168						
+2010_vintage_Fremont_OH_8942_1	Rinon PI 98097	8942	1		1	6.7	4.14	0.7648	168						
+2010_vintage_Fremont_OH_8943_1	Tomate	8943	1		1	7.9	4.27	0.68992	160						
+2010_vintage_Fremont_OH_8944_1	Sao Paulo	8944	1		1	6.9	4.42	0.49152	160						
+2010_vintage_Fremont_OH_8945_1	Rinon PI 118783	8945	1		1	5.6	3.84	0.54784	153						
+2010_vintage_Fremont_OH_8946_1	Abel	8946	1		1	5.2	3.88	0.50688	153						
+2010_vintage_Fremont_OH_8947_1	PI 124035	8947	1		1	6.1	3.75	0.61888	146						
+2010_vintage_Fremont_OH_8948_1	PI 124037	8948	1		1	7.5	4.15	0.50816	153						
+2010_vintage_Fremont_OH_8949_1	Rumi Banjan	8949	1		1	6	3.64	0.71936	146						
+2010_vintage_Fremont_OH_8950_1	PI 127820	8950	1		1	7.3	3.77	0.87168	146						
+2010_vintage_Fremont_OH_8951_1	PI 128586	8951	1		1	.	.	.	153						
+2010_vintage_Fremont_OH_8952_1	PI 128592	8952	1		1	7.1	3.92	0.55168	153						
+2010_vintage_Fremont_OH_8953_1	PI 129026	8953	1		1	7.3	4.3	0.52672	160						
+2010_vintage_Fremont_OH_8954_1	PI 129033	8954	1		1	6.1	4.38	0.4672	160						
+2010_vintage_Fremont_OH_8955_1	PI 129084	8955	1		1	6.2	4.45	0.5088	168						
+2010_vintage_Fremont_OH_8956_1	PI 129128	8956	1		1	6.3	4.79	0.36544	168						
+2010_vintage_Fremont_OH_8957_1	PI 129142	8957	1		1	5.6	3.73	0.70272	168						
+2010_vintage_Fremont_OH_8958_1	PI 155372	8958	1		1	7.2	4.36	0.72896	168						
+2010_vintage_Fremont_OH_8959_1	Prospero	8959	1		1	6.4	4.44	0.51648	160						
+2010_vintage_Fremont_OH_8960_1	Chih-mu-tao-se	8960	1		1	8.1	4.37	0.61312	160						
+2010_vintage_Fremont_OH_8961_1	PI 159009	8961	1		1	6.6	3.82	0.67968	153						
+2010_vintage_Fremont_OH_8962_1	PI 196297	8962	1		1	5.5	3.62	0.66496	153						
+2010_vintage_Fremont_OH_8963_1	Turrialba	8963	1		1	6.2	3.75	0.71104	146						
+2010_vintage_Fremont_OH_8964_1	LA0410	8964	1		1	5.8	3.68	0.67072	146						
+2010_vintage_Fremont_OH_8965_1	Cotaxtla I	8965	1		1	5.8	3.85	0.5984	146						
+2010_vintage_Fremont_OH_8966_1	PI 270430	8966	1		1	7.5	3.66	0.9696	146						
+2010_vintage_Fremont_OH_8967_1	PI 272703	8967	1		1	7.5	3.86	0.6368	153						
+2010_vintage_Fremont_OH_8968_1	Kiyosu No. 2	8968	1		1	6.5	3.84	0.57408	153						
+2010_vintage_Fremont_OH_8969_1	Hong Kong	8969	1		1	7.6	4.43	0.48384	160						
+2010_vintage_Fremont_OH_8970_1	Devon Surprise	8970	1		1	6.6	4.34	0.50688	160						
+2010_vintage_Fremont_OH_8971_1	Heinz 1370	8971	1		1	5.2	4.41	0.43584	168						
+2010_vintage_Fremont_OH_8972_1	W-C 1537	8972	1		1	5.4	4.48	0.31808	168						
+2010_vintage_Fremont_OH_8973_1	A-1770	8973	1		1	5.4	4.58	0.336	168						
+2010_vintage_Fremont_OH_8974_1	A-1771	8974	1		1	6.7	4.43	0.4544	168						
+2010_vintage_Fremont_OH_8975_1	1091-Chonto 21 (mataverde (3-21-2))	8975	1		1	6.9	4.44	0.4384	160						
+2010_vintage_Fremont_OH_8976_1	Peto 460	8976	1		1	5.5	4.46	0.33728	160						
+2010_vintage_Fremont_OH_8977_1	Rosa o Monserrat	8977	1		1	6.4	4.1	0.45952	153						
+2010_vintage_Fremont_OH_8978_1	Tomate del lugar	8978	1		1	6.2	3.83	0.53312	153						
+2010_vintage_Fremont_OH_8979_1	Pomodoro Superselezione di Marmande	8979	1		1	5	3.77	0.6048	146						
+2010_vintage_Fremont_OH_8980_1	PI 270408	8980	1		1	6.1	3.55	0.85888	146						
+2010_vintage_Fremont_OH_8981_1	W-C 1050	8981	1		1	6.5	4.01	0.56832	146						
+2010_vintage_Fremont_OH_8982_1	Zhongza No. 4	8982	1		1	6.9	3.83	0.6272	146						
+2010_vintage_Fremont_OH_8983_2	Ailsa Craig	8983	2		2	5.6	3.87	0.4928	153						
+2010_vintage_Fremont_OH_8984_2	Beauty	8984	2		2	6	3.85	0.544	153						
+2010_vintage_Fremont_OH_8985_2	Black Plum	8985	2		2	7.8	4.31	0.5632	160						
+2010_vintage_Fremont_OH_8986_2	Favorite	8986	2		2	7.1	4.37	0.62016	160						
+2010_vintage_Fremont_OH_8987_2	Globe	8987	2		2	5.4	4.31	0.46656	168						
+2010_vintage_Fremont_OH_8988_2	Gold Ball	8988	2		2	6	4.36	0.41472	168						
+2010_vintage_Fremont_OH_8989_2	Grushovka	8989	2		2	5.1	4.53	0.33472	168						
+2010_vintage_Fremont_OH_8990_2	Marglobe	8990	2		2	5.3	4.25	0.41088	168						
+2010_vintage_Fremont_OH_8991_2	Marveille des Marches	8991	2		2	7	4.13	0.864	160						
+2010_vintage_Fremont_OH_8992_2	Moneymaker	8992	2		2	7	4.32	0.4992	160						
+2010_vintage_Fremont_OH_8993_2	PARAGON	8993	2		2	5.8	3.88	0.5984	153						
+2010_vintage_Fremont_OH_8994_2	Howard German	8994	2		2	6.3	4.09	0.45824	153						
+2010_vintage_Fremont_OH_8995_2	Ponderosa	8995	2		2	7.3	3.91	0.67456	146						
+2010_vintage_Fremont_OH_8996_2	Principe Borghese	8996	2		2	5.4	3.77	0.50432	146						
+2010_vintage_Fremont_OH_8997_2	RomaVF	8997	2		2	5.3	3.91	0.47168	146						
+2010_vintage_Fremont_OH_8998_2	San Marzano	8998	2		2	5.9	3.92	0.4896	146						
+2010_vintage_Fremont_OH_8999_2	VFNT Cherry	8999	2		2	6	3.94	0.53376	153						
+2010_vintage_Fremont_OH_9000_2	White Queen	9000	2		2	6.4	4.21	0.61696	153						
+2010_vintage_Fremont_OH_9001_2	Yellow Pear	9001	2		2	9.7	4.27	0.63744	160						
+2010_vintage_Fremont_OH_9002_2	Yellow Stuffer	9002	2		2	5.5	4.46	0.32896	160						
+2010_vintage_Fremont_OH_9003_2	Aker's West Virginia	9003	2		2	7.3	4.49	0.55424	168						
+2010_vintage_Fremont_OH_9004_2	Black From Tula	9004	2		2	5.8	4.4	0.48	168						
+2010_vintage_Fremont_OH_9005_2	Burbank	9005	2		2	5.9	4.33	0.55872	168						
+2010_vintage_Fremont_OH_9006_2	Peron	9006	2		2	6	4.39	0.56576	168						
+2010_vintage_Fremont_OH_9007_2	Cherokee Purple	9007	2		2	6.7	4.5	0.43456	160						
+2010_vintage_Fremont_OH_9008_2	Oxheart	9008	2		2	7.8	4.59	0.47552	160						
+2010_vintage_Fremont_OH_9009_2	Rutgers	9009	2		2	5.8	4.48	0.48192	153						
+2010_vintage_Fremont_OH_9010_2	Amish Paste	9010	2		2	7.2	4.5	0.51968	153						
+2010_vintage_Fremont_OH_9011_2	Opalka	9011	2		2	6.8	4.62	0.40192	146						
+2010_vintage_Fremont_OH_9012_2	Brandywine (Sudduth/Quisenberry)	9012	2		2	6.8	4.35	0.62912	146						
+2010_vintage_Fremont_OH_9013_2	Juane Flammee	9013	2		2	6.4	4.13	0.56768	146						
+2010_vintage_Fremont_OH_9014_2	Costoluto Genovese	9014	2		2	6	4.48	0.44224	160						
+2010_vintage_Fremont_OH_9015_2	D' Olvia x Industria	9015	2		2	6.3	4.25	0.59968	153						
+2010_vintage_Fremont_OH_9016_2	Orange Strawberry	9016	2		2	7.2	4.28	0.62208	153						
+2010_vintage_Fremont_OH_9017_2	Sponzillo	9017	2		2	8.3	4.3	0.55744	160						
+2010_vintage_Fremont_OH_9018_2	T1003	9018	2		2	5.5	4.37	0.4864	160						
+2010_vintage_Fremont_OH_9019_2	T1693	9019	2		2	4.5	4.35	0.3968	168						
+2010_vintage_Fremont_OH_9020_2	T1697	9020	2		2	5.7	4.35	0.5504	168						
+2010_vintage_Fremont_OH_9021_2	Tres Cantos	9021	2		2	5.2	4.38	0.4032	168						
+2010_vintage_Fremont_OH_9022_2	LYC1903	9022	2		2	6.7	4.19	0.70912	168						
+2010_vintage_Fremont_OH_9023_2	Tainan	9023	2		2	6.9	4.23	0.4992	160						
+2010_vintage_Fremont_OH_9024_2	Rinon PI 98097	9024	2		2	8	4.09	0.9408	160						
+2010_vintage_Fremont_OH_9025_2	Tomate	9025	2		2	8.2	4.19	0.70336	153						
+2010_vintage_Fremont_OH_9026_2	Sao Paulo	9026	2		2	7.6	4.23	0.6976	153						
+2010_vintage_Fremont_OH_9027_2	Rinon PI 118783	9027	2		2	5.9	4.3	0.51136	146						
+2010_vintage_Fremont_OH_9028_2	Abel	9028	2		2	5.4	4.28	0.4992	146						
+2010_vintage_Fremont_OH_9029_2	PI 124035	9029	2		2	5.9	4.37	0.4736	146						
+2010_vintage_Fremont_OH_9030_2	PI 124037	9030	2		2	7.5	4.52	0.52288	160						
+2010_vintage_Fremont_OH_9031_2	Rumi Banjan	9031	2		2	6.9	4.16	0.7392	153						
+2010_vintage_Fremont_OH_9032_2	PI 127820	9032	2		2	7.9	4.21	0.80448	153						
+2010_vintage_Fremont_OH_9033_2	PI 128586	9033	2		2	6.4	4.26	0.66368	146						
+2010_vintage_Fremont_OH_9034_2	PI 128592	9034	2		2	6.9	4.46	0.54656	160						
+2010_vintage_Fremont_OH_9035_2	PI 129026	9035	2		2	5.87	4.33	0.52672	160						
+2010_vintage_Fremont_OH_9036_2	PI 129033	9036	2		2	4.6	4.28	0.43648	168						
+2010_vintage_Fremont_OH_9037_2	PI 129084	9037	2		2	4.8	4.51	0.28864	168						
+2010_vintage_Fremont_OH_9038_2	PI 129128	9038	2		2	6.3	4.4	0.58688	168						
+2010_vintage_Fremont_OH_9039_2	PI 129142	9039	2		2	6.5	4.32	0.52224	160						
+2010_vintage_Fremont_OH_9040_2	PI 155372	9040	2		2	8.1	4.21	0.81856	160						
+2010_vintage_Fremont_OH_9041_2	Prospero	9041	2		2	5.7	4.25	0.54272	153						
+2010_vintage_Fremont_OH_9042_2	Chih-mu-tao-se	9042	2		2	7.6	4.17	0.68992	153						
+2010_vintage_Fremont_OH_9043_2	PI 159009	9043	2		2	6.3	4.34	0.57024	146						
+2010_vintage_Fremont_OH_9044_2	PI 196297	9044	2		2	5.8	4.14	0.5472	146						
+2010_vintage_Fremont_OH_9045_2	Turrialba	9045	2		2	6.1	4.12	0.58048	146						
+2010_vintage_Fremont_OH_9046_2	LA0410	9046	2		2	6.2	4.15	0.64512	146						
+2010_vintage_Fremont_OH_9047_2	Cotaxtla I	9047	2		2	6.2	4.36	0.5248	153						
+2010_vintage_Fremont_OH_9048_2	PI 270430	9048	2		2	6.8	4.2	0.7136	153						
+2010_vintage_Fremont_OH_9049_2	PI 272703	9049	2		2	8.3	4.45	0.69632	160						
+2010_vintage_Fremont_OH_9050_2	Kiyosu No. 2	9050	2		2	6.7	4.38	0.52416	160						
+2010_vintage_Fremont_OH_9051_2	Hong Kong	9051	2		2	5.8	4.41	0.3648	168						
+2010_vintage_Fremont_OH_9052_2	Devon Surprise	9052	2		2	5.8	4.49	0.3968	168						
+2010_vintage_Fremont_OH_9053_2	Heinz 1370	9053	2		2	4.9	4.35	0.51264	168						
+2010_vintage_Fremont_OH_9054_2	W-C 1537	9054	2		2	7.9	4.17	0.7264	168						
+2010_vintage_Fremont_OH_9055_2	A-1770	9055	2		2	5.6	4.52	0.44992	160						
+2010_vintage_Fremont_OH_9056_2	A-1771	9056	2		2	8.2	4.26	0.63232	160						
+2010_vintage_Fremont_OH_9057_2	1091-Chonto 21 (mataverde (3-21-2))	9057	2		2	5.9	4.37	0.48064	153						
+2010_vintage_Fremont_OH_9058_2	Peto 460	9058	2		2	6.2	4.41	0.44352	153						
+2010_vintage_Fremont_OH_9059_2	Rosa o Monserrat	9059	2		2	7.2	4.39	0.46656	146						
+2010_vintage_Fremont_OH_9060_2	Tomate del lugar	9060	2		2	5.9	4.21	0.47424	146						
+2010_vintage_Fremont_OH_9061_2	Pomodoro Superselezione di Marmande	9061	2		2	5.6	4.29	0.48512	146						
+2010_vintage_Fremont_OH_9062_2	PI 270408	9062	2		2	6.4	4.04	0.8736	146						
+2010_vintage_Fremont_OH_9063_2	W-C 1050	9063	2		2	7	4.22	0.816	153						
+2010_vintage_Fremont_OH_9064_2	Zhongza No. 4	9064	2		2	6.6	4.33	0.5824	153						
+2010_vintage_Fremont_OH_9065_1	King Humbert	9065	1		1	7.6	4.13	0.94272	160						
+2010_vintage_Fremont_OH_9066_1	Stupice	9066	1		1	6.5	4.34	0.528	160						
+2010_vintage_Fremont_OH_9067_2	King Humbert	9067	2		2	6.1	4.01	0.88512	168						
+2010_vintage_Fremont_OH_9068_2	Stupice	9068	2		2	4.8	4.5	0.30912	168						

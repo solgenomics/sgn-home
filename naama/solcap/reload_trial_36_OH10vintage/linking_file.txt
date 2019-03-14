@@ -1,0 +1,169 @@
+Plot	SCT#	Year	Location	Location2	Replicate	Donor number/Variety Name:		
+8901	SCT_0325	2010	Fremont	Ohio	1	Ailsa Craig		
+8902	SCT_0287	2010	Fremont	Ohio	1	Beauty		
+8903	SCT_0289	2010	Fremont	Ohio	1	Black Plum		
+8904	SCT_0295	2010	Fremont	Ohio	1	Favorite		
+8905	SCT_0296	2010	Fremont	Ohio	1	Globe		
+8906	SCT_0297	2010	Fremont	Ohio	1	Gold Ball		
+8907	SCT_0298	2010	Fremont	Ohio	1	Grushovka		
+8908	SCT_0303	2010	Fremont	Ohio	1	Marglobe		
+8909	SCT_0326	2010	Fremont	Ohio	1	Marveille des Marches		
+8910	SCT_0304	2010	Fremont	Ohio	1	Moneymaker		
+8911	SCT_0308	2010	Fremont	Ohio	1	PARAGON		
+8912	SCT_0299	2010	Fremont	Ohio	1	Howard German		
+8913	SCT_0327	2010	Fremont	Ohio	1	Ponderosa		
+8914	SCT_0310	2010	Fremont	Ohio	1	Principe Borghese		
+8915	SCT_0312	2010	Fremont	Ohio	1	RomaVF		
+8916	SCT_0314	2010	Fremont	Ohio	1	San Marzano		
+8917	SCT_0321	2010	Fremont	Ohio	1	VFNT Cherry		
+8918	SCT_0322	2010	Fremont	Ohio	1	White Queen		
+8919	SCT_0323	2010	Fremont	Ohio	1	Yellow Pear		
+8920	SCT_0324	2010	Fremont	Ohio	1	Yellow Stuffer		
+8921	SCT_0285	2010	Fremont	Ohio	1	Aker's West Virginia		
+8922	SCT_0288	2010	Fremont	Ohio	1	Black From Tula		
+8923	SCT_0291	2010	Fremont	Ohio	1	Burbank		
+8924	SCT_0309	2010	Fremont	Ohio	1	Peron		
+8925	SCT_0292	2010	Fremont	Ohio	1	Cherokee Purple		
+8926	SCT_0307	2010	Fremont	Ohio	1	Oxheart		
+8927	SCT_0313	2010	Fremont	Ohio	1	Rutgers		
+8928	SCT_0286	2010	Fremont	Ohio	1	Amish Paste		
+8929	SCT_0305	2010	Fremont	Ohio	1	Opalka		
+8930	SCT_0290	2010	Fremont	Ohio	1	Brandywine ( Sudduth/Quisenberry)		
+8931	SCT_0300	2010	Fremont	Ohio	1	Juane Flammee		
+8932	SCT_0293	2010	Fremont	Ohio	1	Costoluto Genovese		
+8933	SCT_0294	2010	Fremont	Ohio	1	D' Olvia x Industria		
+8934	SCT_0306	2010	Fremont	Ohio	1	Orange Strawberry		
+8935	SCT_0315	2010	Fremont	Ohio	1	Sponzillo		
+8936	SCT_0317	2010	Fremont	Ohio	1	T1003		 
+8937	SCT_0318	2010	Fremont	Ohio	1	T1693		 
+8938	SCT_0319	2010	Fremont	Ohio	1	T1697		
+8939	SCT_0320	2010	Fremont	Ohio	1	Tres Cantos		
+8940	SCT_0302	2010	Fremont	Ohio	1	LYC1903		
+8941	SCT_0328	2010	Fremont	Ohio	1	Tainan (AVRDC #6)		
+8942	SCT_0359	2010	Fremont	Ohio	1	Rinon PI98097		
+8943	SCT_0364	2010	Fremont	Ohio	1	Tomate		
+8944	SCT_0363	2010	Fremont	Ohio	1	Sao Paulo		
+8945	SCT_0360	2010	Fremont	Ohio	1	Rinon PI118783		
+8946	SCT_0332	2010	Fremont	Ohio	1	Abel		
+8947	SCT_0341	2010	Fremont	Ohio	1	PI124035		
+8948	SCT_0342	2010	Fremont	Ohio	1	PI124037		
+8949	SCT_0362	2010	Fremont	Ohio	1	Rumi Banjan		
+8950	SCT_0343	2010	Fremont	Ohio	1	PI127820		
+8951	SCT_0344	2010	Fremont	Ohio	1	PI128586		
+8952	SCT_0345	2010	Fremont	Ohio	1	PI128592		
+8953	SCT_0346	2010	Fremont	Ohio	1	PI129026		
+8954	SCT_0347	2010	Fremont	Ohio	1	PI129033		
+8955	SCT_0348	2010	Fremont	Ohio	1	PI129084		
+8956	SCT_0349	2010	Fremont	Ohio	1	PI129128		
+8957	SCT_0350	2010	Fremont	Ohio	1	PI129142		
+8958	SCT_0351	2010	Fremont	Ohio	1	PI155372		
+8959	SCT_0358	2010	Fremont	Ohio	1	Prospero		
+8960	SCT_0333	2010	Fremont	Ohio	1	Chih-mu-tao-se		
+8961	SCT_0352	2010	Fremont	Ohio	1	PI159009		
+8962	SCT_0353	2010	Fremont	Ohio	1	PI196297		
+8963	SCT_0366	2010	Fremont	Ohio	1	Turrialba		
+8964	SCT_0339	2010	Fremont	Ohio	1	LA0410		
+8965	SCT_0334	2010	Fremont	Ohio	1	Cotaxtla I		
+8966	SCT_0355	2010	Fremont	Ohio	1	PI270430		
+8967	SCT_0356	2010	Fremont	Ohio	1	PI272703		
+8968	SCT_0338	2010	Fremont	Ohio	1	Kiyosu No. 2		
+8969	SCT_0337	2010	Fremont	Ohio	1	Hong Kong		
+8970	SCT_0335	2010	Fremont	Ohio	1	Devon Surprise		
+8971	SCT_0336	2010	Fremont	Ohio	1	Heinz 1370		
+8972	SCT_0368	2010	Fremont	Ohio	1	W-C 1537		
+8973	SCT_0330	2010	Fremont	Ohio	1	A-1770		
+8974	SCT_0331	2010	Fremont	Ohio	1	A-1771		
+8975	SCT_0329	2010	Fremont	Ohio	1	1091-Chonto 21 (mataverde (3-21-2)		
+8976	SCT_0340	2010	Fremont	Ohio	1	Peto 460		
+8977	SCT_0361	2010	Fremont	Ohio	1	Rosa o Monserrat		
+8978	SCT_0365	2010	Fremont	Ohio	1	Tomate del lugar		
+8979	SCT_0357	2010	Fremont	Ohio	1	Pomodoro Superselezione di Marmande		
+8980	SCT_0354	2010	Fremont	Ohio	1	PI270408		
+8981	SCT_0367	2010	Fremont	Ohio	1	W-C 1050		
+8982	SCT_0369	2010	Fremont	Ohio	1	Zhongza No. 4		
+8983	SCT_0325	2010	Fremont	Ohio	2	Ailsa Craig		
+8984	SCT_0287	2010	Fremont	Ohio	2	Beauty		
+8985	SCT_0289	2010	Fremont	Ohio	2	Black Plum		
+8986	SCT_0295	2010	Fremont	Ohio	2	Favorite		
+8987	SCT_0296	2010	Fremont	Ohio	2	Globe		
+8988	SCT_0297	2010	Fremont	Ohio	2	Gold Ball		
+8989	SCT_0298	2010	Fremont	Ohio	2	Grushovka		
+8990	SCT_0303	2010	Fremont	Ohio	2	Marglobe		
+8991	SCT_0326	2010	Fremont	Ohio	2	Marveille des Marches		
+8992	SCT_0304	2010	Fremont	Ohio	2	Moneymaker		
+8993	SCT_0308	2010	Fremont	Ohio	2	PARAGON		
+8994	SCT_0299	2010	Fremont	Ohio	2	Howard German		
+8995	SCT_0327	2010	Fremont	Ohio	2	Ponderosa		
+8996	SCT_0310	2010	Fremont	Ohio	2	Principe Borghese		
+8997	SCT_0312	2010	Fremont	Ohio	2	RomaVF		
+8998	SCT_0314	2010	Fremont	Ohio	2	SanMarzano		
+8999	SCT_0321	2010	Fremont	Ohio	2	VFNT Cherry		
+9000	SCT_0322	2010	Fremont	Ohio	2	White Queen		
+9001	SCT_0323	2010	Fremont	Ohio	2	Yellow Pear		
+9002	SCT_0324	2010	Fremont	Ohio	2	Yellow Stuffer		
+9003	SCT_0285	2010	Fremont	Ohio	2	Aker's West Virginia		
+9004	SCT_0288	2010	Fremont	Ohio	2	Black From Tula		
+9005	SCT_0291	2010	Fremont	Ohio	2	Burbank		
+9006	SCT_0309	2010	Fremont	Ohio	2	Peron		
+9007	SCT_0292	2010	Fremont	Ohio	2	Cherokee Purple		
+9008	SCT_0307	2010	Fremont	Ohio	2	Oxheart		
+9009	SCT_0313	2010	Fremont	Ohio	2	Rutgers		
+9010	SCT_0286	2010	Fremont	Ohio	2	Amish Paste		
+9011	SCT_0305	2010	Fremont	Ohio	2	Opalka		
+9012	SCT_0290	2010	Fremont	Ohio	2	Brandywine ( Sudduth/Quisenberry)		
+9013	SCT_0300	2010	Fremont	Ohio	2	Juane Flammee		
+9014	SCT_0293	2010	Fremont	Ohio	2	Costoluto Genovese		
+9015	SCT_0294	2010	Fremont	Ohio	2	D' Olvia x Industria		
+9016	SCT_0306	2010	Fremont	Ohio	2	Orange Strawberry		
+9017	SCT_0315	2010	Fremont	Ohio	2	Sponzillo		
+9018	SCT_0317	2010	Fremont	Ohio	2	T1003		
+9019	SCT_0318	2010	Fremont	Ohio	2	T1693		
+9020	SCT_0319	2010	Fremont	Ohio	2	T1697		
+9021	SCT_0320	2010	Fremont	Ohio	2	Tres Cantos		
+9022	SCT_0302	2010	Fremont	Ohio	2	LYC1903		
+9023	SCT_0328	2010	Fremont	Ohio	2	Tainan (AVRDC #6)		
+9024	SCT_0359	2010	Fremont	Ohio	2	Rinon PI98097		
+9025	SCT_0364	2010	Fremont	Ohio	2	Tomate		
+9026	SCT_0363	2010	Fremont	Ohio	2	Sao Paulo		
+9027	SCT_0360	2010	Fremont	Ohio	2	Rinon PI118783		
+9028	SCT_0332	2010	Fremont	Ohio	2	Abel		
+9029	SCT_0341	2010	Fremont	Ohio	2	PI124035		
+9030	SCT_0342	2010	Fremont	Ohio	2	PI124037		
+9031	SCT_0362	2010	Fremont	Ohio	2	Rumi Banjan		
+9032	SCT_0343	2010	Fremont	Ohio	2	PI127820		
+9033	SCT_0344	2010	Fremont	Ohio	2	PI128586		
+9034	SCT_0345	2010	Fremont	Ohio	2	PI128592		
+9035	SCT_0346	2010	Fremont	Ohio	2	PI129026		
+9036	SCT_0347	2010	Fremont	Ohio	2	PI129033		
+9037	SCT_0348	2010	Fremont	Ohio	2	PI129084		
+9038	SCT_0349	2010	Fremont	Ohio	2	PI129128		
+9039	SCT_0350	2010	Fremont	Ohio	2	PI129142		
+9040	SCT_0351	2010	Fremont	Ohio	2	PI155372		
+9041	SCT_0358	2010	Fremont	Ohio	2	Prospero		
+9042	SCT_0333	2010	Fremont	Ohio	2	Chih-mu-tao-se		
+9043	SCT_0352	2010	Fremont	Ohio	2	PI159009		
+9044	SCT_0353	2010	Fremont	Ohio	2	PI196297		
+9045	SCT_0366	2010	Fremont	Ohio	2	Turrialba		
+9046	SCT_0339	2010	Fremont	Ohio	2	LA0410		
+9047	SCT_0334	2010	Fremont	Ohio	2	Cotaxtla I		
+9048	SCT_0355	2010	Fremont	Ohio	2	PI270430		
+9049	SCT_0356	2010	Fremont	Ohio	2	PI272703		
+9050	SCT_0338	2010	Fremont	Ohio	2	Kiyosu No. 2		
+9051	SCT_0337	2010	Fremont	Ohio	2	Hong Kong		
+9052	SCT_0335	2010	Fremont	Ohio	2	Devon Surprise		
+9053	SCT_0336	2010	Fremont	Ohio	2	Heinz 1370		
+9054	SCT_0368	2010	Fremont	Ohio	2	W-C 1537		
+9055	SCT_0330	2010	Fremont	Ohio	2	A-1770		
+9056	SCT_0331	2010	Fremont	Ohio	2	A-1771		
+9057	SCT_0329	2010	Fremont	Ohio	2	1091-Chonto 21 (mataverde (3-21-2)		
+9058	SCT_0340	2010	Fremont	Ohio	2	Peto 460		
+9059	SCT_0361	2010	Fremont	Ohio	2	Rosa o Monserrat		
+9060	SCT_0365	2010	Fremont	Ohio	2	Tomate del lugar		
+9061	SCT_0357	2010	Fremont	Ohio	2	Pomodoro Superselezione di Marmande		
+9062	SCT_0354	2010	Fremont	Ohio	2	PI270408		
+9063	SCT_0367	2010	Fremont	Ohio	2	W-C 1050		
+9064	SCT_0369	2010	Fremont	Ohio	2	Zhongza No. 4		
+9065	SCT_0301	2010	Fremont	Ohio	1	King Humbert		
+9066	SCT_0316	2010	Fremont	Ohio	2	Stupice		
+9067	SCT_0301	2010	Fremont	Ohio	1	King Humbert		
+9068	SCT_0316	2010	Fremont	Ohio	2	Stupice		
